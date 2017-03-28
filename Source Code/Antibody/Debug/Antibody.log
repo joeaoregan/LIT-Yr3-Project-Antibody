@@ -1,0 +1,75 @@
+﻿  WeaponPlRocket.cpp
+d:\-  project\2017-03-22f comments\antibody\gameobject.h(243): warning C4244: 'initializing': conversion from 'double' to 'unsigned int', possible loss of data
+  Texture.cpp
+  StatusBar.cpp
+d:\-  project\2017-03-22f comments\antibody\statusbar.cpp(25): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+d:\-  project\2017-03-22f comments\antibody\statusbar.cpp(28): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+d:\-  project\2017-03-22f comments\antibody\statusbar.cpp(29): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+d:\-  project\2017-03-22f comments\antibody\statusbar.cpp(32): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+d:\-  project\2017-03-22f comments\antibody\statusbar.cpp(36): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+d:\-  project\2017-03-22f comments\antibody\statusbar.cpp(40): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+d:\-  project\2017-03-22f comments\antibody\statusbar.cpp(44): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+  Generating Code...
+  Compiling...
+  StatePlay.cpp
+d:\-  project\2017-03-22f comments\antibody\gameobject.h(243): warning C4244: 'initializing': conversion from 'double' to 'unsigned int', possible loss of data
+d:\-  project\2017-03-22f comments\antibody\stateplay.cpp(52): warning C4018: '<': signed/unsigned mismatch
+  SplashScreen.cpp
+  Settings.cpp
+  ScoreValueText.cpp
+d:\-  project\2017-03-22f comments\antibody\gameobject.h(243): warning C4244: 'initializing': conversion from 'double' to 'unsigned int', possible loss of data
+d:\-  project\2017-03-22f comments\antibody\scorevaluetext.cpp(25): warning C4244: 'argument': conversion from 'Uint32' to 'float', possible loss of data
+d:\-  project\2017-03-22f comments\antibody\scorevaluetext.cpp(42): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+d:\-  project\2017-03-22f comments\antibody\scorevaluetext.cpp(43): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+  Player.cpp
+d:\-  project\2017-03-22f comments\antibody\gameobject.h(243): warning C4244: 'initializing': conversion from 'double' to 'unsigned int', possible loss of data
+d:\-  project\2017-03-22f comments\antibody\player.cpp(343): warning C4244: 'return': conversion from 'double' to 'int', possible loss of data
+d:\-  project\2017-03-22f comments\antibody\player.cpp(483): warning C4244: 'argument': conversion from 'Uint32' to 'float', possible loss of data
+d:\-  project\2017-03-22f comments\antibody\player.cpp(484): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+d:\-  project\2017-03-22f comments\antibody\player.cpp(487): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
+d:\-  project\2017-03-22f comments\antibody\player.cpp(499): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+  Particle.cpp
+  Menu.cpp
+  HighScores.cpp
+d:\-  project\2017-03-22f comments\antibody\highscores.cpp(185): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
+  HUD.cpp
+d:\-  project\2017-03-22f comments\antibody\gameobject.h(243): warning C4244: 'initializing': conversion from 'double' to 'unsigned int', possible loss of data
+d:\-  project\2017-03-22f comments\antibody\statusbar.h(14): warning C4005: 'MAX_HEALTH': macro redefinition
+  d:\-  project\2017-03-22f comments\antibody\gameobject.h(24): note: see previous definition of 'MAX_HEALTH'
+d:\-  project\2017-03-22f comments\antibody\hud.cpp(197): warning C4305: 'argument': truncation from 'int' to 'bool'
+  GameObject.cpp
+d:\-  project\2017-03-22f comments\antibody\gameobject.h(243): warning C4244: 'initializing': conversion from 'double' to 'unsigned int', possible loss of data
+d:\-  project\2017-03-22f comments\antibody\gameobject.cpp(140): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+d:\-  project\2017-03-22f comments\antibody\gameobject.cpp(141): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+  Game.cpp
+d:\-  project\2017-03-22f comments\antibody\_testdata.h(58): warning C4005: 'SPAWN_NUM_POWER_UPS': macro redefinition
+  d:\-  project\2017-03-22f comments\antibody\_testdata.h(47): note: see previous definition of 'SPAWN_NUM_POWER_UPS'
+d:\-  project\2017-03-22f comments\antibody\gameobject.h(243): warning C4244: 'initializing': conversion from 'double' to 'unsigned int', possible loss of data
+d:\-  project\2017-03-22f comments\antibody\statusbar.h(14): warning C4005: 'MAX_HEALTH': macro redefinition
+  d:\-  project\2017-03-22f comments\antibody\gameobject.h(24): note: see previous definition of 'MAX_HEALTH'
+d:\-  project\2017-03-22f comments\antibody\game.cpp(982): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+d:\-  project\2017-03-22f comments\antibody\game.cpp(1010): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+d:\-  project\2017-03-22f comments\antibody\game.cpp(1029): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+d:\-  project\2017-03-22f comments\antibody\game.cpp(1056): warning C4244: 'argument': conversion from 'Uint32' to 'float', possible loss of data
+d:\-  project\2017-03-22f comments\antibody\game.cpp(1057): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+d:\-  project\2017-03-22f comments\antibody\game.cpp(1078): warning C4244: 'argument': conversion from 'Uint32' to 'float', possible loss of data
+d:\-  project\2017-03-22f comments\antibody\game.cpp(1079): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+d:\-  project\2017-03-22f comments\antibody\game.cpp(1745): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
+d:\-  project\2017-03-22f comments\antibody\game.cpp(1746): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
+d:\-  project\2017-03-22f comments\antibody\game.cpp(1749): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
+d:\-  project\2017-03-22f comments\antibody\game.cpp(1750): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
+d:\-  project\2017-03-22f comments\antibody\game.cpp(1753): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
+d:\-  project\2017-03-22f comments\antibody\game.cpp(1754): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
+d:\-  project\2017-03-22f comments\antibody\game.cpp(1757): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
+d:\-  project\2017-03-22f comments\antibody\game.cpp(1758): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
+d:\-  project\2017-03-22f comments\antibody\game.cpp(1920): warning C4305: 'argument': truncation from 'double' to 'float'
+  FPS.cpp
+  EnterName.cpp
+  EnemyVirus.cpp
+d:\-  project\2017-03-22f comments\antibody\gameobject.h(243): warning C4244: 'initializing': conversion from 'double' to 'unsigned int', possible loss of data
+  Button.cpp
+  BloodCell.cpp
+d:\-  project\2017-03-22f comments\antibody\gameobject.h(243): warning C4244: 'initializing': conversion from 'double' to 'unsigned int', possible loss of data
+  Generating Code...
+  Antibody.vcxproj -> D:\-  Project\2017-03-22f Comments\Debug\Antibody.exe
+  Antibody.vcxproj -> D:\-  Project\2017-03-22f Comments\Debug\Antibody.pdb (Partial PDB)
