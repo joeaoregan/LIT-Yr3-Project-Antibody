@@ -6,7 +6,10 @@ Requires Visual Studio to run (Created in Visual Studio 2015)
 
 Library and include folder paths: C:\SDL Proj
 
-#### Original Game Track:
+#### Game Trailer by Seán:
+[![Game Trailer](https://i.ytimg.com/vi/HQiAlmhXLqA/1.jpg)](https://youtu.be/HQiAlmhXLqA)
+
+#### Original Game Tracks by Joe:
 ##### 1. Blood Level
 [![Original Game Track: Blood Level](https://i.ytimg.com/vi/ibIjSwFLAGo/hqdefault.jpg?custom=true&w=196&h=110&stc=true&jpg444=true&jpgq=90&sp=68&sigh=nYI-pdR6HJ37sam_RIRuTq1szWY)](https://youtu.be/ibIjSwFLAGo)
 
