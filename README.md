@@ -6,6 +6,8 @@ Requires Visual Studio to run (Created in Visual Studio 2015)
 
 Library and include folder paths: C:\SDL Proj
 
+Created by following tutorials by [Lazy Foo' Productions](http://lazyfoo.net/tutorials/SDL/index.php) and adding to it.
+
 #### Game Trailer by Seán:
 [![Game Trailer](https://i.ytimg.com/vi/HQiAlmhXLqA/1.jpg)](https://youtu.be/HQiAlmhXLqA)
 
