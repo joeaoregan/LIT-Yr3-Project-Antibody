@@ -1,11 +1,11 @@
 # Antibody Games Fleadh Version 08/03/2017
 
-[![Game Repo](https://avatars2.githubusercontent.com/u/25029460?v=3&s=460)](https://github.com/Antibody2D "Click to go to Antibody Repo")
+<!---[![Game Repo](https://avatars2.githubusercontent.com/u/25029460?v=3&s=460)](https://github.com/Antibody2D "Click to go to Antibody Repo")--->
 
 <a href="https://github.com/Antibody2D" target="_blank"><img src="https://avatars2.githubusercontent.com/u/25029460?v=3&s=460" 
-alt="Click to go to Antibody Repo" width="240" height="180" border="10" /></a>
+alt="Click to go to Antibody Repo" width="240" height="200" border="10" /></a>
 
-This version of the game was winner of Best Windows Game at Games Fleadh 2017
+This version of the game was winner of **Best Windows Game** at Games Fleadh 2017
 
 Requires Visual Studio to run (Created in Visual Studio 2015)
 
