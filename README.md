@@ -1,4 +1,4 @@
-[![Game Repo](https://avatars2.githubusercontent.com/u/25029460?v=3&s=460](https://github.com/Antibody2D)
+[![Game Repo](https://avatars2.githubusercontent.com/u/25029460?v=3&s=460)](https://github.com/Antibody2D)
 
 # Antibody Games Fleadh Version 08/03/2017
 
