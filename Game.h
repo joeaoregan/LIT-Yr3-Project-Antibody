@@ -33,6 +33,7 @@ public:
 	void close();								// Frees media and shuts down SDL
 
 	void displayGameLogos();					// Display Logos at start of game
+	void displayL1Logo();
 
 	void spawnMovingObjects();
 	void spawnPlayer(int player);
@@ -42,10 +43,10 @@ public:
 	void spawnSmallBloodCell();
 	void spawnWhiteBloodCell();
 	void spawnLaser(int x, int y, int player, int v = 20, int grade = 0);	// 2017/01/16 spawn a laser at coords, with velocitys 2017/01/20 added Weapons grade
-	void spawnEnemyLaser(int x, int y);						// 2017/01/10
-	void spawnNinjaStar(int x, int y, int player);			// 2017/01/09 JOE: added function to create ninja star weapons - 2017/01/17 added player decision - player to spawn for and their coords
-	void spawnSaw(int x, int y, int player, bool active = false);				// 2017/01/20: Saw Weapon for player
-	//void spawnSaw(int x, int y, int player);				// 2017/01/17: Saw Weapon for player
+	void spawnEnemyLaser(int x, int y);										// 2017/01/10
+	void spawnNinjaStar(int x, int y, int player);							// 2017/01/09 JOE: added function to create ninja star weapons - 2017/01/17 added player decision - player to spawn for and their coords
+	void spawnSaw(int x, int y, int player, bool active = false);			// 2017/01/20: Saw Weapon for player
+	//void spawnSaw(int x, int y, int player);								// 2017/01/17: Saw Weapon for player
 	void spawnPowerUp();
 
 	void gamepadInfo();							// 2017/01/17: Separate gamepad information

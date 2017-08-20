@@ -63,7 +63,7 @@ Player::Player(LTexture &dark, LTexture &medium, LTexture &light) {
 	setAlive(false);
 	setNumLives(3);							// works, game is over when both players lives are <=
 
-											//Initialize particles
+	//Initialize particles
 	for (int i = 0; i < TOTAL_PARTICLES; ++i) {
 		particles[i] = new Particle(getX(), getY(), dark, medium, light);
 	}
@@ -73,10 +73,9 @@ Player::Player(LTexture &dark, LTexture &medium, LTexture &light) {
 
 
 void Player::render(LTexture &texture, LTexture &one, LTexture &two, LTexture &three, LTexture &four, SDL_Renderer *rend) {
-
 	renderParticles(one, two, three, four, rend);					// Show particles on top of dot
 
-	texture.render(getX(), getY(), rend);								// Show the dot 2017-01-20 Moved after, so ship is on top of particles
+	texture.render(getX(), getY(), rend);							// Show the dot 2017-01-20 Moved after, so ship is on top of particles
 }
 
 
@@ -106,20 +105,20 @@ void Player::setDrawParticle(bool p) {
 
 
 
-void Player::handleEvent(SDL_Event& e, int player) {
-	if (player == 1) {
+void Player::handleEvent(SDL_Event& e, int player, bool playerAlive) {	// 2017/01/20 added check for player being alive, to stop firing when game over
+	if (player == 1 && playerAlive) {
 		if (e.type == SDL_KEYDOWN && e.key.repeat == 0) {
 			switch (e.key.keysym.sym) {
-			case SDLK_w: moveUp(); break;
-			case SDLK_s: moveDown(); break;
-			case SDLK_a: moveLeft(); break;
-			case SDLK_d: moveRight(); break;
+				case SDLK_w: moveUp(); break;
+				case SDLK_s: moveDown(); break;
+				case SDLK_a: moveLeft(); break;
+				case SDLK_d: moveRight(); break;
 
-			// FIRE WEAPON
-			case SDLK_SPACE: game1.spawnLaser(getX(), getY(), 1, 20, 1); break;	// TEST NEW WEAPON
-			case SDLK_n: game1.spawnNinjaStar(getX(), getY(), 1); break;
-			case SDLK_e: game1.spawnSaw(getX(), getY(), 1, getSawActive()); break;			// 2017/01/17 Saw Weapon added, check saw is active with if statement in spawn Saw, and activate/deactivate the weapon
-			case SDLK_f: setSpeedBoost(true); break;
+				// FIRE WEAPON
+				case SDLK_SPACE: game1.spawnLaser(getX(), getY(), 1, 20, 1); break;	// TEST NEW WEAPON
+				case SDLK_n: game1.spawnNinjaStar(getX(), getY(), 1); break;
+				case SDLK_e: game1.spawnSaw(getX(), getY(), 1, getSawActive()); break;			// 2017/01/17 Saw Weapon added, check saw is active with if statement in spawn Saw, and activate/deactivate the weapon
+				case SDLK_f: setSpeedBoost(true); break;
 			}
 		}
 		else if (e.type == SDL_KEYUP && e.key.repeat == 0) {
@@ -132,7 +131,7 @@ void Player::handleEvent(SDL_Event& e, int player) {
 			}
 		}
 	}
-	else if (player == 2) {
+	else if (player == 2 && playerAlive) {
 		if (e.type == SDL_KEYDOWN && e.key.repeat == 0) {
 			switch (e.key.keysym.sym) {
 			case SDLK_UP: moveUp(); break;
@@ -157,7 +156,7 @@ void Player::handleEvent(SDL_Event& e, int player) {
 			case SDLK_RIGHT: moveLeft(); break;
 			}
 		}
-		if (SDL_NumJoysticks() > 0) {				// Joystick present
+		else if (SDL_NumJoysticks() > 0 && playerAlive) {	// Joystick present
 			if (e.type == SDL_JOYBUTTONDOWN) {		// Number of buttons
 				gameControllerButton(e);
 			}

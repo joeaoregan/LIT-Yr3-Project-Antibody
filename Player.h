@@ -25,7 +25,7 @@ public:
 	SDL_Rect mCollider;				// Players Hit Box
 
 	//void handleEvent(SDL_Event& e);
-	void handleEvent(SDL_Event& e, int player);	// Takes key presses and adjusts the ship's velocity
+	void handleEvent(SDL_Event& e, int player, bool playerAlive);	// Takes key presses and adjusts the ship's velocity
 	virtual void movement();		// Moves the ship	
 	void render();					// Shows the ship on the screen
 	void gameControllerDPad(SDL_Event& e);
