@@ -1,7 +1,7 @@
 // 09/01 Edited background to be 800 x 600 instead of 600 * 480
 
 /*
-    Game Up To Now - Combined - 2 Player
+    Ninja Star Collisions
 
     2017-08-11:
         Joe: Change window title
@@ -139,8 +139,8 @@ std::list<LaserEnemy*>::const_iterator iterEL;		// 2017/01/10
 std::vector<Laser*> listOfLaserObjects;			// List to store laser objects
 //std::list<Laser*>::const_iterator iter;			// Make them read only
 
-std::list<NinjaStar*> listOfNinjaStarObjects;	// 2017/01/09 JOE: List to store Ninja Star objects
-std::list<NinjaStar*>::const_iterator iterNS;	// 2017/01/09 JOE: Create global iterators to cycle through laser objects - Make them read only
+std::vector<NinjaStar*> listOfNinjaStarObjects;	// 2017/01/09 JOE: List to store Ninja Star objects
+//std::list<NinjaStar*>::const_iterator iterNS;	// 2017/01/09 JOE: Create global iterators to cycle through laser objects - Make them read only
 
 
 /*gRenderer*/
@@ -200,14 +200,14 @@ bool init() {
 		}
 
 		//Check for joysticks
-		if (SDL_NumJoysticks() < 1)	{						// check if there is at least one joystick connected.
+		if (SDL_NumJoysticks() < 0)	{						// check if there is at least one joystick connected.
 			printf("Warning: No joysticks connected!\n");
 		}
 		else {
 			//Load joystick
-			gController1 = SDL_JoystickOpen(1);			// open the joystick at index 0
+			gController1 = SDL_JoystickOpen(0);			// open the joystick at index 0
 			if(SDL_NumJoysticks() > 2)
-				gController2 = SDL_JoystickOpen(2);			// open the joystick at index 0
+				gController2 = SDL_JoystickOpen(1);			// open the joystick at index 0
 			printf("Joystick connected\n");				// DETECTS JOYSTICK
 			if (gController1 == NULL) {
 				printf("Warning: Unable to open game controller! SDL Error: %s\n", SDL_GetError());
@@ -215,7 +215,7 @@ bool init() {
 		}
 
 		// Create window
-		gWindow = SDL_CreateWindow("JOURNEY TO THE CENTER OF MY HEADACHE v1.19 by Joe O'Regan & Se\u00E1n Horgan - Combined Game Features: 2 Player", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);	/* Window name */
+		gWindow = SDL_CreateWindow("JOURNEY TO THE CENTER OF MY HEADACHE v1.20 by Joe O'Regan & Se\u00E1n Horgan - Ninja Star Collisions", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);	/* Window name */
 		if (gWindow == NULL) {
 			printf("Window could not be created! SDL Error: %s\n", SDL_GetError());
 			success = false;
@@ -284,21 +284,20 @@ bool loadMedia() {
 		success = false;
 	}
 	else {
-//		SDL_Color textColor = { 0, 100, 200, 255 };
-		TTF_SetFontStyle(gFont2, TTF_STYLE_BOLD);							    // Use bold font
-
+		//SDL_Color textColor = { 0, 100, 200, 255 };
+		TTF_SetFontStyle(gFont2, TTF_STYLE_BOLD);							// Use bold font
 	}
 
 	// Load Textures
-	if (!gPlayer1Texture.loadFromFile(".\\Art\\Player1Ship.png")) {				// Ship Texture
+	if (!gPlayer1Texture.loadFromFile(".\\Art\\Player1Ship.png")) {					// Ship Texture
 		printf("Failed to load Player 1 texture!\n");
 		success = false;
 	}
-	if (!gPlayer2Texture.loadFromFile(".\\Art\\Player2Ship.png")) {				// Ship Texture
+	if (!gPlayer2Texture.loadFromFile(".\\Art\\Player2Ship.png")) {					// Ship Texture
 		printf("Failed to load Player 2 texture!\n");
 		success = false;
 	}
-	if (!gEnemyShipTexture.loadFromFile(".\\Art\\NanobotOld.png")) {			// Enemy Ship Texture
+	if (!gEnemyShipTexture.loadFromFile(".\\Art\\NanobotOld.png")) {				// Enemy Ship Texture
 		printf("Failed to load Enemy Ship texture!\n");
 		success = false;
 	}
@@ -608,8 +607,6 @@ void Game::update(){
 }
 
 bool Game::playerInput(bool quit = false) {
-//	SDL_Color textColor = { 0, 0, 0, 255 };	//Set text color as green
-
 	// In memory text stream
 	// string streams - function like iostreams only instead of reading or writing to the console, they allow you to read and write to a string in memory
 	//std::stringstream timeText;		// string stream
@@ -706,9 +703,7 @@ void Game::renderGameObjects() {
 
 	if (gameOver == false) {
 		SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
-
-		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		//SDL_RenderDrawRect(gRenderer, &player1.getCollider());
+//		SDL_RenderDrawRect(gRenderer, &player1.getCollider());
 
 		// Cycle through list of small Blood Cells obstacles and render to screen
 		for (iterSBC = listOfSmallBloodCells.begin(); iterSBC != listOfSmallBloodCells.end();) {
@@ -737,7 +732,7 @@ void Game::renderGameObjects() {
 		// Cycle through list of power up objects and render them to screen
 		for (unsigned int index = 0; index != listOfPowerUps.size(); ++index) {
 			listOfPowerUps[index]->render();
-//			SDL_RenderDrawRect(gRenderer, &listOfPowerUps[index]->getCollider());               ///////////////////////////////////////////////////////////////////
+			//SDL_RenderDrawRect(gRenderer, &listOfPowerUps[index]->getCollider());
 		}
 
 		// Cycle through list of laser objects and render them to screen
@@ -748,8 +743,9 @@ void Game::renderGameObjects() {
 		for (iterEL = listOfEnemyLaserObjects.begin(); iterEL != listOfEnemyLaserObjects.end();) {
 			(*iterEL++)->render();	// Render the laser
 		}
-		for (iterNS = listOfNinjaStarObjects.begin(); iterNS != listOfNinjaStarObjects.end();) {
-			(*iterNS++)->render((*iterNS)->getPlayer());	// Render the ninja star
+		for (unsigned int index = 0; index != listOfNinjaStarObjects.size(); ++index) {
+			listOfNinjaStarObjects[index]->render(listOfNinjaStarObjects[index]->getPlayer());
+			//SDL_RenderDrawRect(gRenderer, &listOfNinjaStarObjects[index]->getNinjaStarCollider());
 		}
 
 		// Render Text
@@ -780,7 +776,7 @@ void Game::moveGameObjects() {
 	player2.movement();
 
 	// Cycle through lists of Enemys and move them
-	for (int index = 0; index != listOfEnemyShips.size(); ++index) {
+	for (unsigned int index = 0; index != listOfEnemyShips.size(); ++index) {
 		listOfEnemyShips[index]->movement();
 		spawnEnemyLaser(listOfEnemyShips[index]->getX(), listOfEnemyShips[index]->getY());
 		//SDL_RenderDrawRect(gRenderer, &listOfLaserObjects[index]->getLaserCollider());
@@ -808,10 +804,8 @@ void Game::moveGameObjects() {
 	// Cycle through list of Power Ups and move them
 	for (unsigned int index = 0; index != listOfPowerUps.size(); ++index) {
 		listOfPowerUps[index]->movement();
-	}
-	for (unsigned int index = 0; index != listOfPowerUps.size(); ++index) {
-		if (checkCollision(player1.getCollider(), listOfPowerUps[index]->getCollider()) == true) {
-			p1Score += listOfPowerUps[index]->getScore();
+		if (checkCollision(listOfPowerUps[index]->getCollider(), player1.getCollider()) == true) {
+
 			listOfPowerUps[index]->setAlive(false);
 			std::cout << "Power Up Picked Up by Player!\n";
 		}
@@ -843,8 +837,26 @@ void Game::moveGameObjects() {
 	for (iterEL = listOfEnemyLaserObjects.begin(); iterEL != listOfEnemyLaserObjects.end();) {
 		(*iterEL++)->movement();	// Move the enemy laser
 	}
-	for (iterNS = listOfNinjaStarObjects.begin(); iterNS != listOfNinjaStarObjects.end();) {
-		(*iterNS++)->movement();	// Move the ninja star
+	for (unsigned int index = 0; index != listOfNinjaStarObjects.size(); ++index) {
+		listOfNinjaStarObjects[index]->movement();
+		for (int index1 = 0; index1 != listOfEnemyVirus.size(); ++index1) {
+			if (checkCollision(listOfNinjaStarObjects[index]->getNinjaStarCollider(), listOfEnemyVirus[index1]->getCollider()) == true) {
+				p1Score += listOfEnemyVirus[index1]->getScore();	// Add score to total
+				listOfEnemyVirus[index1]->setAlive(false);
+				listOfNinjaStarObjects[index]->setAlive(false);
+				std::cout << "Enemy Virus Killed by Player!\n";
+				Mix_PlayChannel(-1, gExplosionFX, 0);
+			}
+		}
+		for (unsigned int index2 = 0; index2 != listOfEnemyShips.size(); ++index2) {
+			if (checkCollision(listOfNinjaStarObjects[index]->getNinjaStarCollider(), listOfEnemyShips[index2]->getCollider()) == true) {
+				p1Score += listOfEnemyShips[index2]->getScore();	// Add score to total
+				listOfEnemyShips[index2]->setAlive(false);
+				listOfNinjaStarObjects[index]->setAlive(false);
+				std::cout << "Enemy Ship Killed by Player!\n";
+				Mix_PlayChannel(-1, gExplosionFX, 0);
+			}
+		}
 	}
 }
 // Destroy Game Objects
@@ -906,15 +918,14 @@ void Game::destroyGameObjects() {
 			iterEL++;
 		}
 	}
-	for (iterNS = listOfNinjaStarObjects.begin(); iterNS != listOfNinjaStarObjects.end();) {
-		if (!(*iterNS)->getAlive()) {
-			iterNS = listOfNinjaStarObjects.erase(iterNS);
-			std::cout << "destroy ninja star" << std::endl;
+
+	for (unsigned int index = 0; index != listOfNinjaStarObjects.size(); ++index) {
+		if (!listOfNinjaStarObjects[index]->getAlive()) {
+			listOfNinjaStarObjects.erase(listOfNinjaStarObjects.begin() + index);
+			std::cout << "Ninja Star Destroyed." << std::endl;
+			index--;
 		}
-		else {
-			iterNS++;
-		}
-	}
+	}// end for
 	for (unsigned int index = 0; index != listOfPowerUps.size(); ++index) {
 		if (!listOfPowerUps[index]->getAlive()) {
 			listOfPowerUps.erase(listOfPowerUps.begin() + index);
@@ -1090,7 +1101,7 @@ void Game::spawnEnemyLaser(int shipX, int shipY) {
 }
 void Game::spawnNinjaStar(int x, int y, int player) {	// player to spawn for and their coords
 	NinjaStar* p_NinjaStar = new NinjaStar();
-	p_NinjaStar->spawn(x, y);
+	p_NinjaStar->spawn(x, y, p_NinjaStar->getNinjaStarCollider());
 	p_NinjaStar->setPlayer(player);					// 2017/01/17 Set the player the laser belongs too
 	listOfNinjaStarObjects.push_back(p_NinjaStar);
 	if (!gameOver) {
