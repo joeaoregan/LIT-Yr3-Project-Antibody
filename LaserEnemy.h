@@ -11,9 +11,13 @@ public:
 	LaserEnemy();						// Initializes the variables
 	~LaserEnemy();						// Destructor
 
-	virtual void movement();			// Moves the laser
+	virtual void movement();			// Moves the laser	
 	void render();						// Shows the laser on the screen
-	virtual void spawn(int x, int y);	// Spawn the laser at the coords provided
+	virtual void spawn(int x, int y, SDL_Rect collider);	// Spawn the object at the dimensions provided
+	SDL_Rect getELaserCollider();
+
+private:
+	SDL_Rect mELaserCollider;
 };
 
-#endif
+#endif#pragma once

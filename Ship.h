@@ -27,11 +27,15 @@ public:
 	void gameControllerDPad(SDL_Event& e);
 	void gameControllerButton(SDL_Event& e);
 	void resetPreviousDirection();
+	SDL_Rect getCollider();
+	void setShipColX(int x);					// get the ships X position
+	void setShipColY(int y);					// get the ships Y position
 
 protected:
 	// The dimensions of the ship (dimensions of sprite image)
 	static const int SHIP_WIDTH = 100;
 	static const int SHIP_HEIGHT = 47;
+	SDL_Rect mCollider;				// Players Hit Box
 };
 
 #endif

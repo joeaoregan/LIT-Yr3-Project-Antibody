@@ -42,6 +42,8 @@ public:
 	void displayText();							// 2017/01/17: Display game text
 	void pressButtonToContinue();				// 2017/01/18
 
+	void collisionCheck();
+
 	bool playerInput(bool quit);				// 2017/01/09 JOE: Handle input from player
 	void renderGameObjects();					// 2017-01-09 JOE: Render the game objects to the screen
 	void moveGameObjects();						// 2017-01-09 JOE: Move the game objects on the screen

@@ -14,6 +14,8 @@ LaserEnemy::LaserEnemy() {
 	setWidth(50);
 	setHeight(5);
 	setVelocity(15);
+	mELaserCollider.w = getWidth();
+	mELaserCollider.h = getHeight();
 	//std::cout << "Enemy Laser constuctor called.\n";
 }
 
@@ -25,14 +27,23 @@ LaserEnemy::~LaserEnemy() {
 void LaserEnemy::movement() {
 	GameObject::movement();
 
+	mELaserCollider.x = getX();
+	mELaserCollider.y = getY();
+
 	// destroy laser beam once it is offscreen
 	if (getX() < - getWidth()) setAlive(false);
 	else setAlive(true);
 }
 
-void LaserEnemy::spawn(int x, int y) {
+void LaserEnemy::spawn(int x, int y, SDL_Rect collider) {
 	setX(x - 20);
 	setY(y + 30);
 	setVelX(-getVelocity());	// Minus value as travelling right to left
 	setVelY(0);
+	mELaserCollider = collider;
+}
+
+SDL_Rect LaserEnemy::getELaserCollider()
+{
+	return mELaserCollider;
 }

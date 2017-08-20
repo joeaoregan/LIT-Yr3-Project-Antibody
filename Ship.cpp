@@ -24,6 +24,8 @@ Ship::Ship() {
 	setVelX(0);
 	setVelY(0);
 	setVelocity(10);
+	mCollider.w = SHIP_WIDTH;
+	mCollider.h = SHIP_HEIGHT;
 }
 
 void Ship::handleEvent(SDL_Event& e, int player) {
@@ -136,10 +138,12 @@ void Ship::handleEvent(SDL_Event& e, int player) {
 
 void Ship::movement() {
 	GameObject::movement();												// Move the ship left or right - setX(getX() + getVelX());
-
+	mCollider.x = getX();
+	mCollider.y = getY();
 	// If the ship went too far to the left or right
 	if ((getX() < 0) || ((getX() + SHIP_WIDTH) > SCREEN_WIDTH)) {
 		setX(getX() - getVelX());										// Move back
+		mCollider.x = getX();
 	}
 
 	setY(getY() + getVelY());											// Move the ship up or down
@@ -147,6 +151,7 @@ void Ship::movement() {
 	// If the ship went too far up or down
 	if ((getY() < 40) || ((getY() + SHIP_HEIGHT) > SCREEN_HEIGHT - 40)) {
 		setY(getY() - getVelY());										// Move back
+		mCollider.y = getY();
 	}
 }
 
@@ -249,3 +254,18 @@ void Ship::resetPreviousDirection() {
 		//	std::cout << " previous " << previous << std::endl;
 	}
 }
+
+SDL_Rect Ship::getCollider()
+{
+	return mCollider;
+}
+void Ship::setShipColX(int x)
+{
+	mCollider.x = x;
+}// end setX
+
+ // set Y
+void Ship::setShipColY(int y)
+{
+	mCollider.y = y;
+}// end setY
