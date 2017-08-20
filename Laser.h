@@ -19,8 +19,9 @@ public:
 	Laser();												// Initializes the variables
 	~Laser();												// Destructor
 
+	void spawn(int x, int y, int velocity);
 	virtual void movement();								// Moves the laser	
-	void render();											// Shows the laser on the screen
+	void render(int player);								// Shows the laser on the screen - 2017/01/17 Add player decision
 	//virtual void spawn(int x, int y);	
 	virtual void spawn(int x, int y, SDL_Rect collider);	// Spawn the object at the dimensions provided
 	SDL_Rect getLaserCollider();

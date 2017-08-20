@@ -9,7 +9,11 @@ public:
 	Weapon();
 	~Weapon();
 
+	int getPlayer();
+	void setPlayer(int p = 0);
+
 private:
+	int mPlayer;
 };
 
 #endif

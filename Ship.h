@@ -19,10 +19,13 @@ public:
 	static const int SHIP_VEL = 10;	// Maximum axis velocity of the ship
 	
 	Ship();							// Initializes the variables
-	
-	void handleEvent(SDL_Event& e);	// Takes key presses and adjusts the ship's velocity
+
+	//void handleEvent(SDL_Event& e);
+	void handleEvent(SDL_Event& e, int player);	// Takes key presses and adjusts the ship's velocity
 	virtual void movement();		// Moves the ship	
 	void render();					// Shows the ship on the screen
+	void gameControllerDPad(SDL_Event& e);
+	void gameControllerButton(SDL_Event& e);
 	void resetPreviousDirection();
 
 protected:

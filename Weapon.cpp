@@ -13,3 +13,11 @@ Weapon::Weapon() {
 Weapon::~Weapon() {
 
 }
+
+int Weapon::getPlayer() {
+	return mPlayer;
+}
+
+void Weapon::setPlayer(int p) {
+	mPlayer = p;
+}

@@ -19,27 +19,28 @@ class Game {
 public:
 	int counter = 0;
 
-	//bool init();						// Starts up SDL and creates window -- ERROR window won't close
+	//bool init();								// Starts up SDL and creates window -- ERROR window won't close
 	void update();
-	void close();						// Frees media and shuts down SDL
+	void close();								// Frees media and shuts down SDL
 
 
 	void spawnEnemies();
-	void spawnEnemyShip();				// 2017/01/09 JOE: added function to create enemy ships at random times and random y coord
-	void spawnEnemyVirus();				// 2017/01/10 JOE: added function to create enemy virus at random times and random y coord
-	void spawnBloodCell();				// 2017/01/10 JOE: add function to create blood cells
+	void spawnEnemyShip();						// 2017/01/09 JOE: added function to create enemy ships at random times and random y coord
+	void spawnEnemyVirus();						// 2017/01/10 JOE: added function to create enemy virus at random times and random y coord
+	void spawnBloodCell();						// 2017/01/10 JOE: add function to create blood cells
 	void spawnSmallBloodCell();
 	void spawnWhiteBloodCell();
 	void spawnLaser();
-	void spawnEnemyLaser(int x, int y);		// 2017/01/10
-	void spawnNinjaStar();				// 2017/01/09 JOE: added function to create ninja star weapons
+	void spawnLaser(int x, int y, int player, int v = 20);	// 2017/01/16 spawn a laser at coords, with velocitys
+	void spawnEnemyLaser(int x, int y);			// 2017/01/10
+	void spawnNinjaStar(int x, int y, int player);			// 2017/01/09 JOE: added function to create ninja star weapons - 2017/01/17 added player decision - player to spawn for and their coords
 	void spawnPowerUp();
 
-	bool playerInput(bool quit);		// 2017/01/09 JOE: Handle input from player
-	void renderGameObjects();			// 2017-01-09 JOE: Render the game objects to the screen
-	void moveGameObjects();				// 2017-01-09 JOE: Move the game objects on the screen
-	void destroyGameObjects();			// 2017-01-09 JOE: Destroy the game objects when finished on the screen
-	void playerFlashOnCollide();		// 2017-01-09 JOE: The player texture flashes on collision with other Game Objects
+	bool playerInput(bool quit);				// 2017/01/09 JOE: Handle input from player
+	void renderGameObjects();					// 2017-01-09 JOE: Render the game objects to the screen
+	void moveGameObjects();						// 2017-01-09 JOE: Move the game objects on the screen
+	void destroyGameObjects();					// 2017-01-09 JOE: Destroy the game objects when finished on the screen
+	void playerFlashOnCollide();				// 2017-01-09 JOE: The player texture flashes on collision with other Game Objects
 	void flashGameObject(int &alpha, bool &flash, int rate = 10, int times = 0);
 };
 

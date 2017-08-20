@@ -16,7 +16,7 @@ public:
 
 	virtual void spawn();
 	virtual void spawn(int x, int y);
-	void spawn(int x, int y, int vx);
+	void spawn(int x, int y, int vx);								// spawn with coords & velocity
 	void spawn(int x, int y, int vx, int vy);
 	void spawn(int x, int y, int vx, SDL_Rect collider);
 	void spawn(int x, int y, int vx, int vy, SDL_Rect collider);

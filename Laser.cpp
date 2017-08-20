@@ -46,6 +46,12 @@ void Laser::movement() {
 	else setAlive(true);
 }
 
+void Laser::spawn(int x, int y, int velocity) {
+	setX(x);
+	setY(y);
+	//setVelocity(velocity);
+	setVelX(velocity);
+}
 void Laser::spawn(int x, int y, SDL_Rect collider) {
 	setX(x + 65);
 	setY(y + 30);

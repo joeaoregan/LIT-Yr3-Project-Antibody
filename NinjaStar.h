@@ -19,7 +19,7 @@ public:
 	static const int NINJA_VEL = 10;		// Maximum axis velocity of the Ninja Star
 
 	virtual void movement();				// Moves the Ninja Star	
-	void render();							// Shows the Ninja Star on the screen
+	void render(int player);				// Shows the Ninja Star on the screen - 2017/01/17 Add player decision
 	virtual void spawn(int x, int y);
 };
 
