@@ -1,27 +1,19 @@
-#include <SDL.h>
-#include <SDL_image.h>
-#include "Ship.h"
+﻿#include "Ship.h"
 #include "Game.h"
-#include "EnemyShip.h"
-#include "LTexture.h"
 
 /*
 2017-01-04:
 Added asdw keyboard movement
 */
-Game game1;
+Game weapon;
 Ship::Ship() {
 	// Initialize the offsets
-	mPosX = 0;
-	mPosY = 200;
+	setX(0);
+	setY(SCREEN_HEIGHT / 2);
 
 	// Initialize the velocity
-	mVelX = 0;
-	mVelY = 0;
-
-	// Set Collision Box Dimension
-	mCollider.w = SHIP_WIDTH;
-	mCollider.h = SHIP_HEIGHT;
+	setVelX(0);
+	setVelY(0);
 }
 
 void Ship::handleEvent(SDL_Event& e) {
@@ -31,18 +23,24 @@ void Ship::handleEvent(SDL_Event& e) {
 		// Adjust the velocity
 		switch (e.key.keysym.sym) {
 		case SDLK_UP:
-		case SDLK_w: mVelY -= SHIP_VEL; break;
+		case SDLK_w: setVelY(getVelY() - SHIP_VEL); break;
 		case SDLK_DOWN:
-		case SDLK_s: mVelY += SHIP_VEL; break;
+		case SDLK_s: setVelY(getVelY() + SHIP_VEL); break;
 		case SDLK_LEFT:
-		case SDLK_a: mVelX -= SHIP_VEL; break;
+		case SDLK_a: setVelX(getVelX() - SHIP_VEL); break;
 		case SDLK_RIGHT:
-		case SDLK_d: mVelX += SHIP_VEL; break;
+		case SDLK_d: setVelX(getVelX() + SHIP_VEL); break;
 
+
+		// SELECT WEAPON
+		//case SDLK
 		// FIRE WEAPON
 		case SDLK_SPACE:
-			game1.spawnLaser();
+			weapon.spawnLaser();		// 2017/01/09 JOE: Added sound effect
 			break; // SEAN: Press space bar to spawn a new laser
+		case SDLK_n:
+			weapon.spawnNinjaStar();	// 2017/01/09 JOE: Added sound effect
+			break; // JOE: Press 'n' to spawn a new Ninja Star
 		}
 	}
 	// If a key was released
@@ -50,75 +48,30 @@ void Ship::handleEvent(SDL_Event& e) {
 		// Adjust the velocity
 		switch (e.key.keysym.sym) {
 		case SDLK_UP:
-		case SDLK_w: mVelY += SHIP_VEL; break;
+		case SDLK_w: setVelY(getVelY() + SHIP_VEL); break;
 		case SDLK_DOWN:
-		case SDLK_s: mVelY -= SHIP_VEL; break;
+		case SDLK_s: setVelY(getVelY() - SHIP_VEL); break;
 		case SDLK_LEFT:
-		case SDLK_a: mVelX += SHIP_VEL; break;
+		case SDLK_a: setVelX(getVelX() + SHIP_VEL); break;
 		case SDLK_RIGHT:
-		case SDLK_d: mVelX -= SHIP_VEL; break;
+		case SDLK_d: setVelX(getVelX() - SHIP_VEL); break;
 		}
 	}
 }
 
-void Ship::move() {
-	mPosX += mVelX;												// Move the ship left or right
-	mCollider.x = mPosX;
+void Ship::movement() {
+	GameObject::movement();
+	//setX(getX() + getVelX());											// Move the ship left or right	
 
 	// If the ship went too far to the left or right
-	if ((mPosX < 0) || (mPosX + SHIP_WIDTH > SCREEN_WIDTH)) {
-		mPosX -= mVelX;											// Move back
-		mCollider.x = mPosX;
+	if ((getX() < 0) || ((getX() + SHIP_WIDTH) > SCREEN_WIDTH)) {
+		setX(getX() - getVelX());										// Move back
 	}
 
-	mPosY += mVelY;												// Move the ship up or down
-	mCollider.y = mPosY;
+	setY(getY() + getVelY());											// Move the ship up or down
 
 	// If the ship went too far up or down
-	if ((mPosY < 32) || (mPosY + SHIP_HEIGHT > SCREEN_HEIGHT - 32)) {	// Changed to 40 to stay in boundaries
-		mPosY -= mVelY;
-		mCollider.y = mPosY;// Move back
+	if ((getY() < 40) || ((getY() + SHIP_HEIGHT) > SCREEN_HEIGHT - 40)) {
+		setY(getY() - getVelY());										// Move back
 	}
 }
-
-// SEAN: Added get x and y function for ship to allow laser to spawn at ships location
-int Ship::getShipX(){
-	return mPosX;
-}// end getX
-
-int Ship::getShipY(){
-	return mPosY;
-}// end getX
-
-int Ship::getShipVelX(){
-	return mVelX;
-}// end getX
-
-int Ship::getShipVelY(){
-	return mVelY;
-}// end getX
-
-//SDL_Rect Ship::getCollider() {
-//	return mCollider;
-//}
-SDL_Rect* Ship::getCollider() {
-	return &mCollider;
-}
-
-void Ship::setShipX(int x){
-	mPosX = x;
-}// end setX
-
- // set Y
-void Ship::setShipY(int y){
-	mPosY = y;
-}// end setY
-
-void Ship::setShipColX(int x){
-	mCollider.x = x;
-}// end setX
-
- // set Y
-void Ship::setShipColY(int y){
-	mCollider.y = y;
-}// end setY

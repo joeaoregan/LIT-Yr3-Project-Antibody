@@ -1,60 +1,58 @@
 #include "Game.h"
 #include "EnemyShip.h"
 
+#define SCREEN_WIDTH 800
+#define SCREEN_HEIGHT 600
+
 EnemyShip::EnemyShip() {
-	std::cout << "Enemy constuctor called.\n";
 	// Initialize the offsets
-	mEnPosX = 0;
-	mEnPosY = 0;
+	//mEnPosX = 0;
+	//mEnPosY = 0;
+	setX(0);
+	setY(0);
 
 	// Initialize the velocity
-	mEnVelX = 0;
-	mEnVelY = 0;
-
-	// Set Collision Box Dimension
-	mCollider.w = ENEMY_WIDTH;
-	mCollider.h = ENEMY_HEIGHT;
+	//mEnVelX = 0;
+	//mEnVelY = 0;
+	setVelX(0);
+	setVelY(0);
 }
 
-void EnemyShip::spawn() {
-	mEnPosX = 500;
-	mEnPosY = 240;
-	mEnVelX = 0;
+//void EnemyShip::spawn()/ {
+	//mEnPosX = SCREEN_WIDTH;
+	//mEnPosY = SCREEN_HEIGHT / 2 - ENEMY_HEIGHT / 2;	// JOE 09/01: Spawn Enemy in the middle of the screen
+	//mEnVelX = 5;
+//	setX(SCREEN_WIDTH);
+//	setY(SCREEN_HEIGHT / 2 - ENEMY_HEIGHT / 2);
+//	setVelX(5);
+//}
+
+//void EnemyShip::moveEnemy() {
+//	//mEnPosX -= mEnVelX;
+//	//setX(getX() - mEnVelX);
+//	setX(getX() - getVelX());
+//}
+void EnemyShip::movement() {
+	GameObject::movement();
+
+	// destroy enemy ship once it is offscreen
+	if (getX() < -100) setAlive(false);
+	else setAlive(true);
 }
-
-void EnemyShip::moveEnemy() {
-	mEnPosX -= mEnVelX;
-	mCollider.x = mEnPosX;
-
-	// If the ship went too far to the left or right
-	if ((mEnPosX < 0) || (mEnPosX + ENEMY_WIDTH > SCREEN_WIDTH)) {
-		mEnPosX += mEnVelX;											// Move back
-		mCollider.x = mEnPosX;
-	}
-
-	mEnPosY += mEnVelY;												// Move the ship up or down
-	mCollider.y = mEnPosY;
-
-	// If the ship went too far up or down
-	if ((mEnPosY < 0) || (mEnPosY + ENEMY_HEIGHT > SCREEN_HEIGHT)) {
-		mEnPosY -= mEnVelY;											// Move back
-		mCollider.y = mEnPosY;
-	}
-}
-
+/*
 // get x and y function for Enemy
-int EnemyShip::getEnemyX(){
+int EnemyShip::getEnemyX()
+{
 	return mEnPosX;
 }
 
-int EnemyShip::getEnemyY(){
+int EnemyShip::getEnemyY()
+{
 	return mEnPosY;
 }
 
-int EnemyShip::getEnemyVelX(){
+int EnemyShip::getEnemyVelX()
+{
 	return mEnVelX;
 }
-
-SDL_Rect* EnemyShip::getCollider(){
-	return &mCollider;
-}
+*/

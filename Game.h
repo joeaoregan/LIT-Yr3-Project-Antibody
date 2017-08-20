@@ -6,30 +6,26 @@
 *		Date Complete - 06/01/2017 - 19:47pm
 *-------------------------------------------------
 */
-#pragma once
+
 #ifndef GAME_H
 #define GAME_H
 
-#define SCREEN_WIDTH 800
-#define SCREEN_HEIGHT 600
-
-#include <iostream>
+#include <list>
 
 class Game {
 public:
-	int alphaUp = 5, alphaDown = 255;
-
-	bool init();					// Starts up SDL and creates window -- ERROR window won't close
+	//bool init();					// Starts up SDL and creates window -- ERROR window won't close
 	void update();
 	void close();					// Frees media and shuts down SDL
+	void spawnEnemyShip();			// 2017/01/09 JOE: added function to create enemy ships at random times and random y coord
 	void spawnLaser();
-
-	bool playerInput(bool quit);
-	void renderGameObjects();
-	void moveGameObjects();
-	void destroyGameObjects();
-
+	void spawnNinjaStar();			// 2017/01/09 JOE: added function to create ninja star weapons
+	bool playerInput(bool quit);	// 2017/01/09 JOE: Handle input from player
+	void renderGameObjects();		// 2017-01-09 JOE: Render the game objects to the screen
+	void moveGameObjects();			// 2017-01-09 JOE: Move the game objects on the screen
+	void destroyGameObjects();		// 2017-01-09 JOE: Destroy the game objects when finished on the screen
 	void playerFlashOnCollide();	// 2017-01-09 JOE: The player texture flashes on collision with other Game Objects
+	void engineFX();				// 2017-01-09 JOE: Engine Sound FX for ship
 };
 
 #endif
