@@ -1,5 +1,8 @@
 #include "GameObject.h"
 
+#define SCREEN_WIDTH 800
+#define SCREEN_HEIGHT 600
+
 // Constructor
 //GameObject::GameObject(int damage) :	// Constructor has default value for damage of 3
 //	m_Damage(damage)

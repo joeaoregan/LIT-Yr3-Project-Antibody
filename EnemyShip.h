@@ -1,9 +1,9 @@
-#ifndef ENEMY_H
-#define ENEMY_H
+#ifndef ENEMY_SHIP_H
+#define ENEMY_SHIP_H
 
-#include "GameObject.h"
+#include "Enemy.h"
 
-class EnemyShip : public GameObject {
+class EnemyShip : public Enemy {
 public:
 	EnemyShip();							// Initializes the variables
 	//~EnemyShip();

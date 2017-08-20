@@ -1,7 +1,7 @@
 // 09/01 Edited background to be 800 x 600 instead of 600 * 480
 
 /*
-    Music and Sound FX added, and GameObject class
+    Enemy Virus Moves Towards Player Ship
 
     2017-08-11:
         Joe: Change window title
@@ -17,6 +17,7 @@
 #include "LTexture.h"
 #include "Ship.h"
 #include "EnemyShip.h"
+#include "EnemyVirus.h"			// 2017/01/10 JOE: Added Seans virus enemy
 #include "Laser.h"
 #include "NinjaStar.h"
 
@@ -44,6 +45,7 @@ int alphaUp = 5, alphaDown = 5;
 LTexture gBGTexture;			// Background
 LTexture gShipTexture;			// Player ship
 LTexture gEnemyShipTexture;		// Enemy ship
+LTexture gEnemyVirusTexture;	// Enemy Virus
 LTexture gLaserTexture;			// Texture for Laser weapon
 LTexture gNinjaStar;			// Texture for Ninja Star weapon
 //LTexture gGO;
@@ -52,9 +54,12 @@ LTexture gNinjaStar;			// Texture for Ninja Star weapon
 Ship player;					// Declare a ship object that will be moving around on the screen
 EnemyShip* enemy1 = new EnemyShip();
 EnemyShip* enemy2 = new EnemyShip();
+EnemyVirus* virus1 = new EnemyVirus();
 
 std::list<EnemyShip*> listOfEnemyShips;			// 2017/01/09 JOE: List to store laser objects
 std::list<EnemyShip*>::const_iterator iterES;	// 2017/01/09 JOE: Make them read only
+std::list<EnemyVirus*> listOfEnemyVirus;			// 2017/01/09 JOE: List to store laser objects
+std::list<EnemyVirus*>::const_iterator iterEV;	// 2017/01/09 JOE: Make them read only
 // SEAN : Created list and iterator for laser objects
 std::list<Laser*> listOfLaserObjects;			// List to store laser objects
 std::list<Laser*>::const_iterator iter;			// Make them read only
@@ -115,10 +120,12 @@ bool init() {
 	//}
 
 	//player.spawn(10, SCREEN_HEIGHT / 2);
-	(*enemy1).spawn(850,200, -5);
-	(*enemy2).spawn(800, 400, -5);				// Spawn x, y, and x velocity
+	(*enemy1).spawn(800,200, -5);
+	(*enemy2).spawn(850, 400, -5);				// Spawn x, y, and x velocity
+	(*virus1).spawn(900, 300, -3);
 	listOfEnemyShips.push_back(enemy1);
 	listOfEnemyShips.push_back(enemy2);
+	listOfEnemyVirus.push_back(virus1);
 
 	// Initialize SDL
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0) {	// 2017/01/09 JOE: SOUND - Neet do initialise audio with video
@@ -131,7 +138,7 @@ bool init() {
 		}
 
 		// Create window
-		gWindow = SDL_CreateWindow("JOURNEY TO THE CENTER OF MY HEADACHE v1.07 by Joe O'Regan & Se\u00E1n Horgan - Music & FX", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);	/* Window name */
+		gWindow = SDL_CreateWindow("JOURNEY TO THE CENTER OF MY HEADACHE v1.08a by Joe O'Regan & Se\u00E1n Horgan - Virus Movement", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);	/* Window name */
 		if (gWindow == NULL) {
 			printf("Window could not be created! SDL Error: %s\n", SDL_GetError());
 			success = false;
@@ -171,15 +178,18 @@ bool loadMedia() {
 		printf("Failed to load Player texture!\n");
 		success = false;
 	}
-
 	// Load Enemy Ship texture
 	if (!gEnemyShipTexture.loadFromFile(".\\Art\\EnemyShipOld.png")) {
 		printf("Failed to load Enemy Ship texture!\n");
 		success = false;
 	}
-
+	// Load Enemy Virus texture
+	if (!gEnemyVirusTexture.loadFromFile(".\\Art\\EnemyVirus.png")) {
+		printf("Failed to load Enemy Virus texture!\n");
+		success = false;
+	}
 	// Load background texture
-	if (!gBGTexture.loadFromFile(".\\Art\\Background800.png")) {// 09/01 Edited background to be 800 x 600 instead of 600 * 480
+	if (!gBGTexture.loadFromFile(".\\Art\\Background800.png")) {			// 09/01 Edited background to be 800 x 600 instead of 600 * 480
 		printf("Failed to load background texture!\n");
 		success = false;
 	}
@@ -237,6 +247,7 @@ void Game::close() {
 	// Free loaded images
 	gShipTexture.free();
 	gEnemyShipTexture.free();
+	gEnemyVirusTexture.free();
 	gBGTexture.free();
 	gLaserTexture.free();
 	gNinjaStar.free();
@@ -248,7 +259,7 @@ void Game::close() {
 	Mix_FreeChunk(gEngineFX);	// Free a sound effect
 
 	//Free the music
-	Mix_FreeMusic(gMusic);	    // Free music
+	Mix_FreeMusic(gMusic);	// Free music
 	gMusic = NULL;
 
 	// Destroy window
@@ -289,13 +300,19 @@ void Game::update(){
 
 				destroyGameObjects();					// 2017-01-09 JOE: Destroy the game objects when finished on the screen
 
+				audio();								// 2017-01-10 JOE: Handle the audio for game objects
+
 				if (listOfEnemyShips.size() == 0) {
 					spawnEnemyShip();
-					engineFX();							// START ENGINE FX WHEN ENEMY SHIP SPAWNED
+					//engineFX();							// START ENGINE FX WHEN ENEMY SHIP SPAWNED
 				}
 			}
 		}
 	}
+}
+
+void Game::audio() {
+
 }
 
 bool Game::playerInput(bool quit = false) {
@@ -333,7 +350,11 @@ void Game::renderGameObjects() {
 
 	// Cycle through list of Enemy ships and render to screen
 	for (iterES = listOfEnemyShips.begin(); iterES != listOfEnemyShips.end();) {
-		(*iterES++)->render();	// Render the laser
+		(*iterES++)->render();	// Render the enemy ship
+	}
+	// Cycle through list of Enemy Virus and render to screen
+	for (iterEV = listOfEnemyVirus.begin(); iterEV != listOfEnemyVirus.end();) {
+		(*iterEV++)->render();	// Render the enemy ship
 	}
 
 	// Cycle through list of laser objects and render them to screen
@@ -341,7 +362,7 @@ void Game::renderGameObjects() {
 		(*iter++)->render();	// Render the laser
 	}
 	for (iterNS = listOfNinjaStarObjects.begin(); iterNS != listOfNinjaStarObjects.end();) {
-		(*iterNS++)->render();	// Render the laser
+		(*iterNS++)->render();	// Render the ninja star
 	}
 
 	/* Set the Alpha value for Enemy */
@@ -353,17 +374,21 @@ void Game::renderGameObjects() {
 void Game::moveGameObjects() {
 	player.movement();						// Update ship movement
 
-	// Cycle through list of Enemy ships and move them
+	// Cycle through lists of Enemys and move them
 	for (iterES = listOfEnemyShips.begin(); iterES != listOfEnemyShips.end();) {
-		(*iterES++)->movement();	// Render the laser
+		(*iterES++)->movement();	// Move the enemy ship
+	}
+	// Cycle through list of Enemy virus and move them
+	for (iterEV = listOfEnemyVirus.begin(); iterEV != listOfEnemyVirus.end();) {
+		(*iterEV++)->movement(player.getX(), player.getY());	// 2017/01/10 JOE: Move the enemy virus towards the player ship (change from player object to just player coords)
 	}
 
-	// Cycle through list of laser objects and move them
+	// Cycle through lists of weapons and move them
 	for (iter = listOfLaserObjects.begin(); iter != listOfLaserObjects.end();) {
-		(*iter++)->movement();					// Move the laser
+		(*iter++)->movement();		// Move the laser
 	}
 	for (iterNS = listOfNinjaStarObjects.begin(); iterNS != listOfNinjaStarObjects.end();) {
-		(*iterNS++)->movement();	// Render the laser
+		(*iterNS++)->movement();	// Move the ninja star
 	}
 }
 // Destroy Game Objects
@@ -375,6 +400,15 @@ void Game::destroyGameObjects() {
 		}
 		else {
 			iterES++;
+		}
+	}
+	for (iterEV = listOfEnemyVirus.begin(); iterEV != listOfEnemyVirus.end();) {
+		if (!(*iterEV)->getAlive()) {
+			iterEV = listOfEnemyVirus.erase(iterEV);
+			std::cout << "destroy enemy virus" << std::endl;
+		}
+		else {
+			iterEV++;
 		}
 	}
 	for (iter = listOfLaserObjects.begin(); iter != listOfLaserObjects.end();) {
@@ -429,6 +463,12 @@ void Game::spawnEnemyShip() {
 	listOfEnemyShips.push_back(p_Enemy);
 	//SDL_Delay(500);
 }
+void Game::spawnEnemyVirus() {
+	int y = SCREEN_HEIGHT / 2;
+	EnemyVirus* p_Virus = new EnemyVirus();
+	p_Virus->spawn(800, y, -5);
+	listOfEnemyVirus.push_back(p_Virus);
+}
 
 
 void Game::engineFX() {
@@ -465,6 +505,9 @@ void NinjaStar::render() {
 
 void EnemyShip::render() {
 	gEnemyShipTexture.render(getX(), getY());
+}
+void EnemyVirus::render() {
+	gEnemyVirusTexture.render(getX(), getY());
 }
 //void GameObject::render() {
 //	gGO.render(getX(), getY());
