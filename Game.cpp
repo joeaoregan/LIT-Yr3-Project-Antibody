@@ -6,7 +6,8 @@
 /*
     2017-08-11:
         Added relative filepaths for loading game images
-        Edited Window Title
+    2017-01-04:
+        Added game title to window
 */
 
 bool init();					// Starts up SDL and creates window
@@ -65,7 +66,7 @@ void LTexture::render(int x, int y, SDL_Rect* clip, double angle, SDL_Point* cen
 bool init() {
 	bool success = true;					// Initialization flag
 
-											// Initialize SDL
+	// Initialize SDL
 	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
 		printf("SDL could not initialize! SDL Error: %s\n", SDL_GetError());
 		success = false;
@@ -76,7 +77,7 @@ bool init() {
 		}
 
 		// Create window
-		gWindow = SDL_CreateWindow("JOURNEY TO THE CENTER OF MY HEADACHE v1.0 by Joe O'Regan & Se\u00E1n Horgan", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);	/* Window name */
+		gWindow = SDL_CreateWindow("JOURNEY TO THE CENTER OF MY HEADACHE v1.01 by Joe O'Regan & Se\u00E1n Horgan", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);	/* Window name */
 		if (gWindow == NULL) {
 			printf("Window could not be created! SDL Error: %s\n", SDL_GetError());
 			success = false;
@@ -104,14 +105,14 @@ bool loadMedia() {
 	bool success = true;			// Loading success flag
 
 	// Load dot texture
-	if (!gShipTexture.loadFromFile(".\\Art\\Player1Ship.png")) {	// 2017-08-11 Relative File Path. Escape character, to go up a directory
+	if (!gShipTexture.loadFromFile(".\\Art\\Player1Ship.png")) {    // 2017-08-11 Relative File Path. Escape character, to go up a directory
 		printf("Failed to load Player Ship texture!\n");
 		success = false;
 	}
 
 	// Load background texture
-	if (!gBGTexture.loadFromFile(".\\Art\\bg2.png")) {				// 2017-08-11 Relative File Path. Escape character, to go up a directory
-		printf("Failed to load background texture!\n");
+	if (!gBGTexture.loadFromFile(".\\Art\\bg2.png")) {              // 2017-08-11 Relative File Path. Escape character, to go up a directory
+		printf("Failed to load Background texture!\n");
 		success = false;
 	}
 

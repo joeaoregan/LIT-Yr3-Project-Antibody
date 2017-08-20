@@ -15,7 +15,7 @@ public:
 	static const int SHIP_WIDTH = 100;
 	static const int SHIP_HEIGHT = 47;
 			
-	static const int SHIP_VEL = 10;	// Maximum axis velocity of the ship
+	static const int SHIP_VEL = 5;	// Maximum axis velocity of the ship
 	
 	Ship();							// Initializes the variables
 	
