@@ -47,28 +47,33 @@ public:
 	SDL_Rect getCollider();
 	void setShipColX(int x);					// get the ships X position
 	void setShipColY(int y);					// get the ships Y position
-
-
+	
+	// Saw
 	bool getSawActive();
 	void setSawActive(bool active);
 	bool sawActive;
+
+	// Laser
+	int getLaserGrade();
+	void setLaserGrade(int grade);
 
 	void render(LTexture &player, LTexture &dark, LTexture &medium, LTexture &light, LTexture &shimmer, SDL_Renderer *rend);
 	void rendPlayerLives(LTexture &lives, int player, SDL_Renderer *rend);
 	//void render(LTexture &texture, LTexture &one, LTexture &two, LTexture &three, LTexture &four, SDL_Renderer *rend);	// Shows the ship with particles on the screen
 	bool getDrawParticle();
 	void setDrawParticle(bool p);
+
 private:
 	bool mSpeedBoost;
 	unsigned int mBoostStartTime;
-
-
 
 	Particle* particles[TOTAL_PARTICLES];	// The particles
 
 	void renderParticles(LTexture &one, LTexture &two, LTexture &three, LTexture &four, SDL_Renderer *rend);
 
 	bool drawParticle;
+
+	int mLaserGrade;
 };
 
 #endif

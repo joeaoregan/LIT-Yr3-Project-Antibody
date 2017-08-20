@@ -19,7 +19,7 @@ public:
 	Laser();												// Initializes the variables
 	~Laser();												// Destructor
 	
-	void spawn(int x, int y, int velocity);
+	void spawn(int x, int y, int velocity, int player);
 	virtual void movement();								// Moves the laser	
 	//void render(int player);								// Shows the laser on the screen - 2017/01/17 Add player decision
 	void render(int player, LTexture &orange, LTexture &green, SDL_Renderer *rend);	// 2017/01/22 added textures to renderer

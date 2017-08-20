@@ -448,3 +448,11 @@ bool Player::getSawActive() {
 void Player::setSawActive(bool active) {
 	sawActive = active;
 }
+
+int Player::getLaserGrade() {
+	return mLaserGrade;
+}
+
+void Player::setLaserGrade(int grade) {
+	mLaserGrade = grade;
+}
