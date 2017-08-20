@@ -15,21 +15,23 @@
 class Laser {
 public:
 	// The dimensions of the laser (dimensions of sprite image)
-	static const int LASER_WIDTH = 70;
+	static const int LASER_WIDTH = 50;
 	static const int LASER_HEIGHT = 5;
 
 	static const int LASER_VEL = 20;	// Maximum axis velocity of the laser
 
 	Laser();							// Initializes the variables
+	~Laser();
 	
 	void spawn(int x, int y, int velocity);
-	void move();					// Moves the laser	
-	void render();					// Shows the laser on the screen
+	void move();						// Moves the laser	
+	void render();						// Shows the laser on the screen
+	int getLaserX();					// Get the x coord of the laser
+	bool getLaserAlive();				// Check to see is laser off screen
 	
-	~Laser();
 private:
-	int mPosX, mPosY;				// The X and Y offsets of the laser	
-	int mVelX, mVelY;				// The velocity of the laser
+	int mPosX, mPosY;					// The X and Y offsets of the laser	
+	int mVelX, mVelY;					// The velocity of the laser
 	int mAlive;
 
 };

@@ -3,16 +3,20 @@
 #include "Game.h"
 #include "LTexture.h"
 #include "Ship.h"
+#include "EnemyShip.h"
 #include "Laser.h"
 #include <list>
 
 /*
-    2017-08-11 Joe: Added Relative path for assets in "Art" directory
+	Laser + Enemy Ship
+
+    2017-08-11:
+        Joe: Change window title
+        Joe: Add relative path for asset files in "Art" directory
 */
 
 bool init();					// Starts up SDL and creates window
-bool loadMedia();				// Loads media
-void close();					// Frees media and shuts down SDL
+bool loadMedia();				// Loads media//void close();
 
 SDL_Window* gWindow = NULL;		// The window we'll be rendering to
 SDL_Renderer* gRenderer = NULL;	// The window renderer
@@ -20,15 +24,17 @@ SDL_Renderer* gRenderer = NULL;	// The window renderer
 //Scene textures
 LTexture gBGTexture;
 LTexture gShipTexture;
+LTexture gEnemyShipTexture;
 LTexture gLaserTexture; // SEAN: Created Texture for Laser
 
+// SEAN: Move ship object outside of main so spawnLaser funtion can use it
+Ship ship;									// Declare a ship object that will be moving around on the screen
+EnemyShip enemy;
 
 // SEAN : Created list and iterator for laser objects
-// List to store laser objects
-std::list<Laser*> listOfLaserObjects;
+std::list<Laser*> listOfLaserObjects;		// List to store laser objects
 // Create global iterators to cycle through laser objects
-// Make them read only
-std::list<Laser*>::const_iterator iter;
+std::list<Laser*>::const_iterator iter;		// Make them read only
 
 /*gRenderer*/
 
@@ -72,7 +78,13 @@ void LTexture::render(int x, int y, SDL_Rect* clip, double angle, SDL_Point* cen
 	SDL_RenderCopyEx(gRenderer, mTexture, clip, &renderQuad, angle, center, flip);	// Render to screen
 }
 
+
+
 bool init() {
+
+	enemy.spawn();
+
+//bool Game::init() {
 	bool success = true;					// Initialization flag
 
 											// Initialize SDL
@@ -86,7 +98,7 @@ bool init() {
 		}
 
 		// Create window
-		gWindow = SDL_CreateWindow("JOURNEY TO THE CENTER OF MY HEADACHE v1.02 by Joe O'Regan & Se\u00E1n Horgan", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);	/* Window name */
+		gWindow = SDL_CreateWindow("JOURNEY TO THE CENTER OF MY HEADACHE v1.03 by Joe O'Regan & Se\u00E1n Horgan", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);	/* Window name */
 		if (gWindow == NULL) {
 			printf("Window could not be created! SDL Error: %s\n", SDL_GetError());
 			success = false;
@@ -113,9 +125,16 @@ bool init() {
 bool loadMedia() {
 	bool success = true;			// Loading success flag
 
-	// Load Ship texture
+									// Load Ship texture
 	if (!gShipTexture.loadFromFile(".\\Art\\Player1Ship.png")) {
-		printf("Failed to load dot texture!\n");
+		printf("Failed to load Player texture!\n");
+		success = false;
+	}
+
+	// Load Enemy Ship texture
+	//if (!gEnemyShipTexture.loadFromFile(".\\Art\\EnemyShip.png")) {
+	if (!gEnemyShipTexture.loadFromFile(".\\Art\\EnemyShipOld.png")) {	// 2017/08/11
+		printf("Failed to load Enemy texture!\n");
 		success = false;
 	}
 
@@ -126,17 +145,18 @@ bool loadMedia() {
 	}
 
 	// SEAN: Load Laser texture
-	if (!gLaserTexture.loadFromFile(".\\Art\\laser.png")) {
-		printf("Failed to load background texture!\n");
+	if (!gLaserTexture.loadFromFile(".\\Art\\LaserBeam.png")) {
+		printf("Failed to load Laser texture!\n");
 		success = false;
 	}
 
 	return success;
 }
 
-void close() {
+void Game::close() {
 	// Free loaded images
 	gShipTexture.free();
+	gEnemyShipTexture.free();
 	gBGTexture.free();
 	gLaserTexture.free();
 
@@ -151,18 +171,8 @@ void close() {
 	SDL_Quit();
 }
 
-// SEAN: Move ship object outside of main so spawnLaser funtion can use it
-Ship ship;									// Declare a ship object that will be moving around on the screen
-
-// SEAN: Function to spawn laser at ships location
-void Game::spawnLaser() {
-	Laser* p_Laser = new Laser();
-	p_Laser->spawn(ship.getShipX()+50, ship.getShipY()+30, 20);
-	listOfLaserObjects.push_back(p_Laser);
-
-}// end spawnLaser
-
-int main(int argc, char* args[]) {
+//int main(int argc, char* args[]) {
+void Game::update(){
 	// Start up SDL and create window
 	if (!init()) {
 		printf("Failed to initialize!\n");
@@ -183,7 +193,7 @@ int main(int argc, char* args[]) {
 			while (!quit) {
 				// Handle events on queue
 				while (SDL_PollEvent(&e) != 0) {
-					// User requests quit
+					// User requests quit	EXIT - CLOSE WINDOW
 					if (e.type == SDL_QUIT) {
 						quit = true;
 					}
@@ -192,12 +202,7 @@ int main(int argc, char* args[]) {
 				}
 
 				ship.move();							// Update ship movement
-				// SEAN: Cycle through list of laser objects and move them
-				for (iter = listOfLaserObjects.begin(); iter != listOfLaserObjects.end(); iter++)
-				{
-					// Move the laser
-					(*iter)->move();
-				}// end for
+				enemy.moveEnemy();
 
 				// Scroll background
 				--scrollingOffset;
@@ -214,22 +219,59 @@ int main(int argc, char* args[]) {
 				gBGTexture.render(scrollingOffset + gBGTexture.getWidth(), 0);
 
 				ship.render();							// render the ship over the background
-				// SEAN: Cycle through list of lasr objects and render them to screen
-				for (iter = listOfLaserObjects.begin(); iter != listOfLaserObjects.end(); iter++)
-				{
-					// Render the laser
-					(*iter)->render();
+				enemy.render();
+
+				// SEAN: Cycle through list of laser objects and render them to screen
+				for (iter = listOfLaserObjects.begin(); iter != listOfLaserObjects.end();) {
+
+					(*iter++)->render();	// Render the laser
 				}// end for
 
-				SDL_RenderPresent(gRenderer);			// Update screen
+  				SDL_RenderPresent(gRenderer);			// Update screen
+
+
+
+				// SEAN: Cycle through list of laser objects and move them
+				//if (!listOfLaserObjects.empty()) {
+				//while (listOfLaserObjects.begin() != NULL) {
+					for (iter = listOfLaserObjects.begin(); iter != listOfLaserObjects.end();) {
+						(*iter++)->move();					// Move the laser
+
+					}// end for
+				//}
+
+				destroyLaser();
 			}
 		}
 	}
-
-	close();											// Free resources and close SDL
-
-	return 0;
 }
+
+void Game::destroyLaser() {
+	for (iter = listOfLaserObjects.begin(); iter != listOfLaserObjects.end();) {
+		//for (iter = listOfLaserObjects.begin(); iter != listOfLaserObjects.end(); iter++) {
+		//(*iter)->erase();					// Move the laser
+		//while (!listOfLaserObjects.empty()) {
+		if (!(*iter)->getLaserAlive()) {
+			iter = listOfLaserObjects.erase(iter);
+			//iter.~iter();
+			std::cout << "destroy laser" << std::endl;
+
+		}
+		else {
+			iter++;
+			//std::cout << "increment" << std::endl;
+		}
+		//}
+	}// end for
+}
+
+// SEAN: Function to spawn laser at ships location
+void Game::spawnLaser() {
+	Laser* p_Laser = new Laser();
+	p_Laser->spawn(ship.getShipX() + 65, ship.getShipY() + 30, 20);
+	listOfLaserObjects.push_back(p_Laser);
+
+}// end spawnLaser
 
 void Ship::render() {
 	gShipTexture.render(mPosX, mPosY);					// Show the ship
@@ -240,5 +282,6 @@ void Laser::render() {
 	gLaserTexture.render(mPosX, mPosY);					// Show the Laser
 }
 
-
-
+void EnemyShip::render() {
+	gEnemyShipTexture.render(mEnPosX, mEnPosY);
+}

@@ -12,7 +12,11 @@
 
 class Game {
 public:
+	//bool init();					// Starts up SDL and creates window -- ERROR window won't close
+	void update();
+	void close();					// Frees media and shuts down SDL
 	void spawnLaser();
+	void destroyLaser();
 };
 
 #endif

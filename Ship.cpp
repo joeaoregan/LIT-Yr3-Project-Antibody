@@ -22,6 +22,7 @@ Ship::Ship() {
 void Ship::handleEvent(SDL_Event& e) {
 	// If a key was pressed
 	if (e.type == SDL_KEYDOWN && e.key.repeat == 0) {
+		// MOVEMENT
 		// Adjust the velocity
 		switch (e.key.keysym.sym) {
 		case SDLK_UP:
@@ -32,7 +33,11 @@ void Ship::handleEvent(SDL_Event& e) {
 		case SDLK_a: mVelX -= SHIP_VEL; break;
 		case SDLK_RIGHT:
 		case SDLK_d: mVelX += SHIP_VEL; break;
-		case SDLK_SPACE: game1.spawnLaser(); break; // SEAN: Press space bar to spawn a new laser
+
+		// FIRE WEAPON
+		case SDLK_SPACE: 
+			game1.spawnLaser(); 
+			break; // SEAN: Press space bar to spawn a new laser
 		}
 	}
 	// If a key was released

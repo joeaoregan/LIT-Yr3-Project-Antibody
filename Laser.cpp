@@ -28,7 +28,11 @@ void Laser::spawn(int x, int y, int velocity) {
 
 void Laser::move() {
 	mPosX += mVelX; 											// Move the ship left or right
-	mAlive = true;
+
+	// destroy laser beam once it is offscreen
+	if (getLaserX() > 645) mAlive = false;
+	else mAlive = true;
+
 }
 
  // Laser Destructor
@@ -36,3 +40,12 @@ Laser::~Laser()
 {
 	std::cout << "Laser destructor called.\n";
 }// end ~Laser
+
+/* Get the X coord of the laser beam. This tracks the laser beam so it can be destroyed once it moves off the screen */
+int Laser::getLaserX() {
+	return mPosX;
+}
+
+bool Laser::getLaserAlive() {
+	return mAlive;
+}
