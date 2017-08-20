@@ -26,6 +26,7 @@ public:
 	void spawnBloodCell();			// 2017/01/10 JOE: add function to create blood cells
 	void spawnSmallBloodCell();
 	void spawnLaser();
+	void spawnEnemyLaser(int x, int y);			// 2017/01/10
 	void spawnNinjaStar();			// 2017/01/09 JOE: added function to create ninja star weapons
 
 	bool playerInput(bool quit);	// 2017/01/09 JOE: Handle input from player
@@ -33,8 +34,8 @@ public:
 	void moveGameObjects();			// 2017-01-09 JOE: Move the game objects on the screen
 	void destroyGameObjects();		// 2017-01-09 JOE: Destroy the game objects when finished on the screen
 	void playerFlashOnCollide();	// 2017-01-09 JOE: The player texture flashes on collision with other Game Objects
-	void audio();					// 2017-01-10 JOE: Handle the audio for game objects
-	void engineFX();				// 2017-01-09 JOE: Engine Sound FX for ship
+	//void audio();					// 2017-01-10 JOE: Handle the audio for game objects
+	//void engineFX();				// 2017-01-09 JOE: Engine Sound FX for ship
 };
 
 #endif
