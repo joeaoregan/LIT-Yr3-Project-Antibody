@@ -25,8 +25,8 @@ Laser::Laser() {
 	setHeight(5);
 	setVelocity(15);
 
-	mLaserCollider.w = getWidth();
-	mLaserCollider.h = getHeight();
+	setColliderWidth(getWidth());
+	setColliderHeight(getHeight());
 }
 
 
@@ -39,8 +39,9 @@ Laser::~Laser()
 void Laser::movement() {
 	GameObject::movement();
 
-	mLaserCollider.x = getX();
-	mLaserCollider.y = getY();
+	setColliderX(getX());
+	setColliderY(getY());
+
 	// destroy laser beam once it is offscreen
 	if (getX() > SCREEN_WIDTH) setAlive(false);
 	else setAlive(true);
@@ -57,10 +58,5 @@ void Laser::spawn(int x, int y, SDL_Rect collider) {
 	setY(y + 30);
 	setVelX(getVelocity());
 	setVelY(0);
-	mLaserCollider = collider;
-}
-
-SDL_Rect Laser::getLaserCollider()
-{
-	return mLaserCollider;
+	setCollider( collider);
 }

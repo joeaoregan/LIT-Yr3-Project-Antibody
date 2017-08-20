@@ -10,8 +10,12 @@ NinjaStar::NinjaStar() {
 	setWidth(25);
 	setHeight(25);
 	setVelocity(10);
-	mNinjaStarCollider.w = getWidth();
-	mNinjaStarCollider.h = getHeight();
+
+	setColliderWidth(getWidth());
+	setColliderHeight(getHeight());
+
+	//mNinjaStarCollider.w = getWidth();
+	//mNinjaStarCollider.h = getHeight();
 }
 
 // Laser Destructor
@@ -22,8 +26,10 @@ NinjaStar::~NinjaStar() {
 void NinjaStar::movement() {
 	GameObject::movement();											// Move the NinjaStar
 
-	mNinjaStarCollider.x = getX();
-	mNinjaStarCollider.y = getY();
+	//mNinjaStarCollider.x = getX();
+	//mNinjaStarCollider.y = getY();
+	setColliderX(getX());
+	setColliderY(getY());
 
 	// destroy NinjaStar once it is offscreen
 	if (getX() > SCREEN_WIDTH) setAlive(false);
@@ -35,10 +41,10 @@ void NinjaStar::spawn(int x, int y, SDL_Rect collider) {
 	setY(y + 25);
 	setVelX(getVelocity());
 	setVelY(0);
-	mNinjaStarCollider = collider;
+	//mNinjaStarCollider = collider;
+	setCollider(collider);
 }
 
-SDL_Rect NinjaStar::getNinjaStarCollider()
-{
-	return mNinjaStarCollider;
-}
+//SDL_Rect NinjaStar::getNinjaStarCollider(){
+//	return mNinjaStarCollider;
+//}

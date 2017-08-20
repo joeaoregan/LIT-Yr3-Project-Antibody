@@ -31,6 +31,9 @@ public:
 	int getScore();
 	int getWidth();
 	int getHeight();
+	std::string getName();
+	int getHealth();
+	int getMaxHealth();
 
 	void setX(int x);			// Set GameObject X coord
 	void setY(int y);			// Set GameObject Y coord
@@ -41,8 +44,11 @@ public:
 	void setWidth(int w);		// set the objects width
 	void setHeight(int h);		// set the objects height
 	void setScore(int s);
+	void setName(std::string name);
+	void setHealth(int health);			// set the health
 
 	SDL_Rect getCollider();
+	void setCollider(SDL_Rect collider);	// 2017/01/19 Added as Sean keeps doing dumb things with the colliders
 	void setColliderWidth(int w);
 	void setColliderHeight(int h);
 	void setColliderX(int x);
@@ -50,12 +56,13 @@ public:
 
 private:
 	// GameObject Variables
-	int m_health;					// Value between 0 and 160
-	int m_speed;					// Value between 1 and 4
+	std::string m_Name;				// Name of the object
+	int m_Health;					// Value between 0 and 160
+	//int m_Speed;					// Value between 1 and 4
 	int m_x, m_y;					// GameObject coords
 	int m_xVel, m_yVel, m_Velocity;	// Velocity
 	int m_Width, m_Height;			// Dimensions
-	bool m_Alive;					// Is the weapon active on screen
+	bool m_Alive;					// Is the GameObject active on screen, return true if its health is greater than 0
 	SDL_Rect mCollider;
 	int m_Score;					// Score value for killing or collecting an object
 };
@@ -71,7 +78,6 @@ private:
 //int m_Damage;						// Damage to reduce health after an object moves
 //int m_direction;					// CA2 - set the objects direction
 
-//void render();
 //	void render();
 //	void render(LTexture x);
 
@@ -80,7 +86,6 @@ private:
 //void draw();						// print to the screen the typeID and its x and y coords
 //virtual void update();				// virtual function
 //void info();						// print all info relating to the object
-//bool isAlive();						// return true if its health is greater than 0
 
 // Getter Methods
 //std::string getID() const;			// Get GameObject name / ID
@@ -89,7 +94,6 @@ private:
 
 //int getDamage() const;				// Get GameObject Damage
 // Setter Methods
-//void setHealth(int health);			// set the health, Max health should be 160
 //void setSpeed(int speed);			// Set speed between 1 and 4
 
 // Indicate where the border has been impacted

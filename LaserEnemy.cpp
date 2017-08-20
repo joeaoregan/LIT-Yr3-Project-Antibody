@@ -11,12 +11,12 @@ Added enemy laser projectile, velocity is a minus value as it is travelling righ
 
 // LaserEnemy Constructor
 LaserEnemy::LaserEnemy() {
+	//std::cout << "Enemy Laser constuctor called.\n";
 	setWidth(50);
 	setHeight(5);
 	setVelocity(15);
-	mELaserCollider.w = getWidth();
-	mELaserCollider.h = getHeight();
-	//std::cout << "Enemy Laser constuctor called.\n";
+	setColliderWidth(getWidth());
+	setColliderHeight(getHeight());
 }
 
 // LaserEnemy Destructor
@@ -27,8 +27,8 @@ LaserEnemy::~LaserEnemy() {
 void LaserEnemy::movement() {
 	GameObject::movement();
 
-	mELaserCollider.x = getX();
-	mELaserCollider.y = getY();
+	setColliderX(getX());
+	setColliderY(getY());;
 
 	// destroy laser beam once it is offscreen
 	if (getX() < - getWidth()) setAlive(false);
@@ -40,9 +40,9 @@ void LaserEnemy::spawn(int x, int y, SDL_Rect collider) {
 	setY(y + 30);
 	setVelX(-getVelocity());	// Minus value as travelling right to left
 	setVelY(0);
-	mELaserCollider = collider;
+	setCollider(collider);
 }
 
-SDL_Rect LaserEnemy::getELaserCollider(){
-	return mELaserCollider;
-}
+//SDL_Rect LaserEnemy::getELaserCollider(){
+//	return mELaserCollider;
+//}

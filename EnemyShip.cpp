@@ -2,6 +2,8 @@
 #include "EnemyShip.h"
 
 EnemyShip::EnemyShip() {					// Constructor
+	setScore(25);							// Value for killing object
+
 	// Initialise Dimensions
 	setWidth(100);
 	setHeight(47);
@@ -26,8 +28,6 @@ EnemyShip::~EnemyShip() {					// Destructor
 
 void EnemyShip::movement() {
 	GameObject::movement();
-
-	setScore(25);
 
 	setColliderX(getX());
 	setColliderY(getY());

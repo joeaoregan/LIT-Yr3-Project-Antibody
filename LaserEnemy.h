@@ -14,10 +14,6 @@ public:
 	virtual void movement();			// Moves the laser	
 	void render();						// Shows the laser on the screen
 	virtual void spawn(int x, int y, SDL_Rect collider);	// Spawn the object at the dimensions provided
-	SDL_Rect getELaserCollider();
-
-private:
-	SDL_Rect mELaserCollider;
 };
 
 #endif#pragma once

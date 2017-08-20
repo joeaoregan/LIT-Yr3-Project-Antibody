@@ -1,5 +1,15 @@
 // 09/01 Edited background to be 800 x 600 instead of 600 * 480
 
+/*
+    Both Players Flash, Health Bars Work
+
+    2017-08-11:
+        Joe: Change window title
+        Joe: Add relative path for asset files in "Art" directory
+        Joe: Changed getCollision() for ship and enemyship
+        Joe: Add relative path for asset files in "Music" and "SoundFX" directories
+*/
+
 #include <SDL.h>
 #include <SDL_image.h>
 
@@ -22,6 +32,8 @@
 #include "WhiteBloodCell.h"
 #include "PowerUp.h"			// 2017/01/10 SEAN: Added Power Up
 #include "LaserEnemy.h"
+
+#define MAX_HEALTH 100.0
 
 // Render Healthbars
 void RenderHPBar(int x, int y, int w, int h, float Percent, SDL_Color FGColor, SDL_Color BGColor);
@@ -213,6 +225,11 @@ void LTexture::render(int x, int y, SDL_Rect* clip, double angle, SDL_Point* cen
 }
 
 bool init() {
+	// Test Player stuff
+	std::cout << player1.getName() << "! Health: " << player1.getHealth() << " " << player2.getName() << "! Health: " << player2.getHealth();
+	player1.setName("Player 1");
+	player2.setName("Player 2");
+
 	bool success = true;						// Initialization flag
 
 	srand(static_cast<unsigned int>(time(0)));	// Seed the random number
@@ -267,7 +284,7 @@ bool init() {
 		}
 
 		// Create window
-		gWindow = SDL_CreateWindow("JOURNEY TO THE CENTER OF MY HEADACHE v1.26 by Joe O'Regan & Se\u00E1n Horgan: Combined Version Fix Boost", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);	/* Window name */
+		gWindow = SDL_CreateWindow("JOURNEY TO THE CENTER OF MY HEADACHE v1.27 by Joe O'Regan & Se\u00E1n Horgan: Players Flash & Healthbars", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);	/* Window name */
 		if (gWindow == NULL) {
 			printf("Window could not be created! SDL Error: %s\n", SDL_GetError());
 			success = false;
@@ -881,7 +898,7 @@ void Game::displayText() {
 
 		countdownTimer -= 1;
 
-		std::cout << "Time: " << countdownTimer << " lastTime: " << lastTime << " currentTime: " << currentTime << std::endl;
+		//std::cout << "Time: " << countdownTimer << " lastTime: " << lastTime << " currentTime: " << currentTime << std::endl;
 	}
 
 	// Countdown Timer
@@ -980,7 +997,7 @@ bool Game::playerInput(bool quit = false) {
 		//Joystick button press
 		else if (e.type == SDL_JOYBUTTONDOWN) {
 			//Play rumble at 75% strenght for 500 milliseconds
-			if (SDL_HapticRumblePlay(gControllerHaptic, 0.75, 200) != 0) {
+			if (SDL_HapticRumblePlay(gControllerHaptic, 0.5, 200) != 0) {
 				printf("Warning: Unable to play rumble! %s\n", SDL_GetError());
 			}
 		}
@@ -1023,7 +1040,7 @@ void Game::renderGameObjects() {
 	displayText();										// 2017/01/17: Display the game text
 
 	flashGameObject(player1Alpha, player1Flash, 10, 4);	// Flash player ship when it has a collision, flash at faster rate, flash 4 times
-	flashGameObject(player1Alpha, player2Flash, 10, 4);	// Flash player ship when it has a collision, flash at faster rate, flash 4 times
+	flashGameObject(player2Alpha, player2Flash, 10, 4);	// Flash player ship when it has a collision, flash at faster rate, flash 4 times
 	flashGameObject(gameOverAlpha, gameOverFlash, 5);	// Flash game over at end of game, flash at slower rate for 5 than 10
 	flashGameObject(timerAlpha, timerFlash, 8);			// Flash timer when time is running out
 
@@ -1083,7 +1100,7 @@ void Game::renderGameObjects() {
 		// Cycle through list of power up objects and render them to screen
 		for (int index = 0; index != listOfPowerUps.size(); ++index) {
 			listOfPowerUps[index]->render();
-	//		SDL_RenderDrawRect(gRenderer, &listOfPowerUps[index]->getCollider());
+//			SDL_RenderDrawRect(gRenderer, &listOfPowerUps[index]->getCollider());
 		}
 
 		// Cycle through list of laser objects and render them to screen
@@ -1125,16 +1142,17 @@ void Game::renderGameObjects() {
 
 		gFPSTextTexture.render(200, 8);
 
+		// Health Bars for Players
+		SDL_Color fgColour = { 0, 255, 0, 255 };								// Set text color as blue
+		SDL_Color bgColour = { 255, 0, 0, 255 };
+
+		RenderHPBar(player1.getX() + (player1.getWidth() / 4), player1.getY() - 10, player1.getWidth() / 2, 5, player1.getHealth() / MAX_HEALTH, fgColour, bgColour);
+		RenderHPBar(player2.getX() + (player2.getWidth() / 4), player2.getY() - 10, player2.getWidth() / 2, 5, player2.getHealth() / MAX_HEALTH, fgColour, bgColour);
+
 		// Set the Alpha value for player when flashing
 		gPlayer1Texture.setAlpha(player1Alpha);
 		player1.render();							// render the ship over the background
 //		SDL_RenderDrawRect(gRenderer, &player1.getCollider());
-
-		SDL_Color fgColour = { 0, 255, 0, 255 };								// Set text color as blue
-		SDL_Color bgColour = { 255, 0, 0, 255 };
-
-		RenderHPBar(player1.getX() + (player1.getWidth() / 4), player1.getY() - 10, player1.getWidth() / 2, 5, .5, fgColour, bgColour);
-		RenderHPBar(player2.getX() + (player2.getWidth() / 4), player2.getY() - 10, player2.getWidth() / 2, 5, 5, fgColour, bgColour);
 
 		gPlayer2Texture.setAlpha(player2Alpha);
 		player2.render();							// render the ship over the background
@@ -1160,7 +1178,7 @@ void Game::moveGameObjects() {
 	for (int index = 0; index != listOfEnemyShips.size(); ++index) {
 		listOfEnemyShips[index]->movement();
 		spawnEnemyLaser(listOfEnemyShips[index]->getX(), listOfEnemyShips[index]->getY());
-		//SDL_RenderDrawRect(gRenderer, &listOfLaserObjects[index]->getLaserCollider());
+		//SDL_RenderDrawRect(gRenderer, &listOfLaserObjects[index]->getLaserCollider());///
 	}
 	// Cycle through list of Enemy virus and move them
 	for (int index = 0; index != listOfEnemyVirus.size(); ++index) {
@@ -1417,7 +1435,7 @@ void Game::spawnWhiteBloodCell() {
 // Spawn Weapon at ships location
 void Game::spawnLaser() {
 	Laser* p_Laser = new Laser();
-	p_Laser->spawn(player1.getX(), player1.getY(), p_Laser->getLaserCollider());
+	p_Laser->spawn(player1.getX(), player1.getY(), p_Laser->getCollider());
 	listOfLaserObjects.push_back(p_Laser);
 	if(!gameOver) Mix_PlayChannel(-1, gLaserFX1, 0);
 }
@@ -1435,14 +1453,14 @@ void Game::spawnEnemyLaser(int shipX, int shipY) {
 	LaserEnemy* p_LaserE = new LaserEnemy();
 
 	if (shipX % 100 == 0) {
-		p_LaserE->spawn(shipX, shipY, p_LaserE->getELaserCollider());
+		p_LaserE->spawn(shipX, shipY, p_LaserE->getCollider());
 		listOfEnemyLaserObjects.push_back(p_LaserE);
 		Mix_PlayChannel(-1, gLaserEFX, 0);
 	}
 }
 void Game::spawnNinjaStar(int x, int y, int player) {	// player to spawn for and their coords
 	NinjaStar* p_NinjaStar = new NinjaStar();
-	p_NinjaStar->spawn(x, y, p_NinjaStar->getNinjaStarCollider());
+	p_NinjaStar->spawn(x, y, p_NinjaStar->getCollider());
 	p_NinjaStar->setPlayer(player);					// 2017/01/17 Set the player the laser belongs too
 	listOfNinjaStarObjects.push_back(p_NinjaStar);
 	if (!gameOver) {
@@ -1653,7 +1671,7 @@ bool checkCollision(SDL_Rect a, SDL_Rect b) {
 		return false;
 	}
 
-	std::cout << "Collision!\n";
+	//std::cout << "Collision!\n";
 
 	//Handle ship collision with enemy (MOVE TO SEPERATE FUNCTION)
 	/*ship.setShipX(ship.getShipX() - ship.getShipVelX());
@@ -1757,9 +1775,8 @@ void Game::collisionCheck() {
 	for (int index1 = 0; index1 != listOfEnemyVirus.size(); ++index1) {
 		if (checkCollision(player1.getCollider(), listOfEnemyVirus[index1]->getCollider()) == true) {
 			player1Flash = true;					// Flash on collision with enemy
-			std::cout << "Collision between Player 1 and Enemy Virus!\n";
-			if (sawP1Active == true)
-			{
+			//std::cout << "Collision between " << player1.getName() << " and Enemy Virus!\n";
+			if (sawP1Active == true) {
 				listOfEnemyVirus[index1]->setAlive(false);						// If saw is active kill that enemy
 			}
 		}
@@ -1767,9 +1784,8 @@ void Game::collisionCheck() {
 	for (int index2 = 0; index2 != listOfEnemyShips.size(); ++index2) {
 		if (checkCollision(player1.getCollider(), listOfEnemyShips[index2]->getCollider()) == true) {
 			player1Flash = true;					// Flash on collision with enemy
-			std::cout << "Collision between Player 1 and Enemy Ship!\n";
-			if (sawP1Active == true)
-			{
+			//std::cout << "Collision between " << player1.getName() << " and Enemy Ship!\n";
+			if (sawP1Active == true) {
 				listOfEnemyShips[index2]->setAlive(false);						// If saw is active kill that enemy
 			}
 		}
@@ -1779,9 +1795,8 @@ void Game::collisionCheck() {
 	for (int index1 = 0; index1 != listOfEnemyVirus.size(); ++index1) {
 		if (checkCollision(player2.getCollider(), listOfEnemyVirus[index1]->getCollider()) == true) {
 			player2Flash = true;					// Flash on collision with enemy
-			std::cout << "Collision between Player 2 and Enemy Virus!\n";
-			if (sawP2Active == true)
-			{
+			//std::cout << "Collision between " << player2.getName() << " and Enemy Virus!\n";
+			if (sawP2Active == true) {
 				listOfEnemyVirus[index1]->setAlive(false);						// If saw is active kill that enemy
 			}
 		}
@@ -1789,9 +1804,8 @@ void Game::collisionCheck() {
 	for (int index2 = 0; index2 != listOfEnemyShips.size(); ++index2) {
 		if (checkCollision(player2.getCollider(), listOfEnemyShips[index2]->getCollider()) == true) {
 			player2Flash = true;					// Flash on collision with enemy
-			std::cout << "Collision between Player 2 and Enemy Ship!\n";
-			if (sawP2Active == true)
-			{
+			//std::cout << "Collision between " << player2.getName() << " and Enemy Ship!\n";
+			if (sawP2Active == true) {
 				listOfEnemyShips[index2]->setAlive(false);						// If saw is active kill that enemy
 			}
 		}
@@ -1801,24 +1815,27 @@ void Game::collisionCheck() {
 	for (int index = 0; index != listOfPowerUps.size(); ++index) {
 		if (checkCollision(player1.getCollider(), listOfPowerUps[index]->getCollider()) == true) {
 			p1Score += listOfPowerUps[index]->getScore();
+			player1.setHealth(player1.getHealth() + listOfPowerUps[index]->getScore());
 			listOfPowerUps[index]->setAlive(false);
-			std::cout << "Power Up Picked Up by Player 1!\n";
+			std::cout << "Power Up Picked Up by " << player1.getName() << "!\n";
 		}
 	}
 
 	// Check if player 2 has picked up a power up
 	for (int index = 0; index != listOfPowerUps.size(); ++index) {
 		if (checkCollision(player2.getCollider(), listOfPowerUps[index]->getCollider()) == true) {
-			p1Score += listOfPowerUps[index]->getScore();
+			p2Score += listOfPowerUps[index]->getScore();												// FIXED THIS, WAS PLAYER 1
+			player2.setHealth(player2.getHealth() + listOfPowerUps[index]->getScore());
 			listOfPowerUps[index]->setAlive(false);
-			std::cout << "Power Up Picked Up by Player 2!\n";
+			std::cout << "Power Up Picked Up by " << player2.getName() << "!\n";
 		}
 	}
 
 	// Cycle through lists of Lasers and check collision
 	for (int index = 0; index != listOfLaserObjects.size(); ++index) {
+		// Check if collision with Virus
 		for (int index1 = 0; index1 != listOfEnemyVirus.size(); ++index1) {
-			if (checkCollision(listOfLaserObjects[index]->getLaserCollider(), listOfEnemyVirus[index1]->getCollider()) == true) {
+			if (checkCollision(listOfLaserObjects[index]->getCollider(), listOfEnemyVirus[index1]->getCollider()) == true) {
 				if (listOfLaserObjects[index]->getPlayer() == 1)
 					p1Score += listOfEnemyVirus[index1]->getScore();	// Add score to total
 				if (listOfLaserObjects[index]->getPlayer() == 2)
@@ -1826,12 +1843,13 @@ void Game::collisionCheck() {
 
 				listOfEnemyVirus[index1]->setAlive(false);
 				listOfLaserObjects[index]->setAlive(false);
-				std::cout << "Enemy Virus Killed by Player!\n";
+				//std::cout << "Enemy Virus Killed by Player!\n";
 				Mix_PlayChannel(-1, gExplosionFX, 0);
 			}
 		}
+		// Check for Player Laser collision with Enemy Ship
 		for (int index2 = 0; index2 != listOfEnemyShips.size(); ++index2) {
-			if (checkCollision(listOfLaserObjects[index]->getLaserCollider(), listOfEnemyShips[index2]->getCollider()) == true) {
+			if (checkCollision(listOfLaserObjects[index]->getCollider(), listOfEnemyShips[index2]->getCollider()) == true) {
 				if (listOfLaserObjects[index]->getPlayer() == 1)
 					p1Score += listOfEnemyShips[index2]->getScore();	// Add score to total
 				if (listOfLaserObjects[index]->getPlayer() == 2)
@@ -1839,7 +1857,7 @@ void Game::collisionCheck() {
 
 				listOfEnemyShips[index2]->setAlive(false);
 				listOfLaserObjects[index]->setAlive(false);
-				std::cout << "Enemy Ship Killed by Player!\n";
+				//std::cout << "Enemy Ship Killed by Player!\n";
 				Mix_PlayChannel(-1, gExplosionFX, 0);
 			}
 		}
@@ -1849,39 +1867,48 @@ void Game::collisionCheck() {
 	for (int index = 0; index != listOfNinjaStarObjects.size(); ++index) {
 		listOfNinjaStarObjects[index]->movement();
 		for (int index1 = 0; index1 != listOfEnemyVirus.size(); ++index1) {
-			if (checkCollision(listOfNinjaStarObjects[index]->getNinjaStarCollider(), listOfEnemyVirus[index1]->getCollider()) == true) {
+			if (checkCollision(listOfNinjaStarObjects[index]->getCollider(), listOfEnemyVirus[index1]->getCollider()) == true) {
 				p1Score += listOfEnemyVirus[index1]->getScore();	// Add score to total
 				listOfEnemyVirus[index1]->setAlive(false);
 				listOfNinjaStarObjects[index]->setAlive(false);
-				std::cout << "Enemy Virus Killed by Player!\n";
+				//std::cout << "Enemy Virus Killed by Player!\n";
 				Mix_PlayChannel(-1, gExplosionFX, 0);
 			}
 		}
 		for (int index2 = 0; index2 != listOfEnemyShips.size(); ++index2) {
-			if (checkCollision(listOfNinjaStarObjects[index]->getNinjaStarCollider(), listOfEnemyShips[index2]->getCollider()) == true) {
+			if (checkCollision(listOfNinjaStarObjects[index]->getCollider(), listOfEnemyShips[index2]->getCollider()) == true) {
 				p1Score += listOfEnemyShips[index2]->getScore();	// Add score to total
 				listOfEnemyShips[index2]->setAlive(false);
 				listOfNinjaStarObjects[index]->setAlive(false);
-				std::cout << "Enemy Ship Killed by Player!\n";
+				//std::cout << "Enemy Ship Killed by Player!\n";
 				Mix_PlayChannel(-1, gExplosionFX, 0);
 			}
 		}
 	}
 
+	// Check if Enemy Laser has collided with Player 1 or 2
 	for (int index = 0; index != listOfEnemyLaserObjects.size(); ++index) {
-		if (checkCollision(listOfEnemyLaserObjects[index]->getELaserCollider(), player1.getCollider()) == true) {
+		if (checkCollision(listOfEnemyLaserObjects[index]->getCollider(), player1.getCollider()) == true) {
 			player1Flash = true;					// Flash on collision with Laser
-			std::cout << "Enemy Laser Hit Player 1!\n";
+			std::cout << "Enemy Laser Hit " << player1.getName() << "! Health: " << player1.getHealth();
+			listOfEnemyLaserObjects[index]->setAlive(false);
+			player1.setHealth(player1.getHealth() - 5);
+			//Play rumble at 75% strenght for 500 milliseconds
+			if (SDL_HapticRumblePlay(gControllerHaptic, 0.9, 500) != 0) {
+				printf("Warning: Unable to play rumble! %s\n", SDL_GetError());
+			}
 		}
-	}
-
-	for (int index = 0; index != listOfEnemyLaserObjects.size(); ++index) {
-		if (checkCollision(listOfEnemyLaserObjects[index]->getELaserCollider(), player2.getCollider()) == true) {
+		else if (checkCollision(listOfEnemyLaserObjects[index]->getCollider(), player2.getCollider()) == true) {
 			player2Flash = true;					// Flash on collision with Laser
-			std::cout << "Enemy Laser Hit Player 2!\n";
+			std::cout << "Enemy Laser Hit " << player2.getName() << "! Health: " << player2.getHealth();
+			listOfEnemyLaserObjects[index]->setAlive(false);
+			player2.setHealth(player2.getHealth() - 5);
+			//Play rumble at 75% strenght for 500 milliseconds
+			if (SDL_HapticRumblePlay(gControllerHaptic, 0.9, 500) != 0) {
+				printf("Warning: Unable to play rumble! %s\n", SDL_GetError());
+			}
 		}
 	}
-
 }
 
 void RenderHPBar(int x, int y, int w, int h, float Percent, SDL_Color FGColor, SDL_Color BGColor) {	// Horizontal healthbar

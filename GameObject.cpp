@@ -2,6 +2,7 @@
 
 #define SCREEN_WIDTH 800
 #define SCREEN_HEIGHT 600
+#define MAX_HEALTH 100
 
 // Constructor
 //GameObject::GameObject(int damage) :	// Constructor has default value for damage of 3
@@ -65,15 +66,10 @@ void GameObject::movement() {
 	m_x += m_xVel;
 }
 
-//void GameObject::render() {
-
-//}
-
 // Getter and Setter methods
 int GameObject::getX() {
 	return m_x;
 }
-
 int GameObject::getY() {
 	return m_y;
 }
@@ -81,13 +77,13 @@ int GameObject::getY() {
 int GameObject::getVelX() {
 	return m_xVel;
 }
+int GameObject::getVelY() {
+	return m_yVel;
+}
 int GameObject::getVelocity() {
 	return m_Velocity;
 }
 
-int GameObject::getVelY() {
-	return m_yVel;
-}
 bool GameObject::getAlive() {
 	return m_Alive;
 }
@@ -99,6 +95,15 @@ int GameObject::getWidth() {
 }
 int GameObject::getHeight() {
 	return m_Height;				// return the objects height
+}
+std::string GameObject::getName() {
+	return m_Name;
+}
+int GameObject::getHealth() {
+	return m_Health;
+}
+int GameObject::getMaxHealth() {
+	return MAX_HEALTH;
 }
 
 void GameObject::setX(int x) {
@@ -130,28 +135,40 @@ void GameObject::setWidth(int w) {
 void GameObject::setHeight(int h) {
 	m_Height = h;					// set the objects width
 }
-
-SDL_Rect GameObject::getCollider()
-{
-	return mCollider;
+void GameObject::setHealth(int h) {
+	if (h < 0) {
+		m_Health = 0;				// If health is less than 0 set 0
+		setAlive(false);			// set the Game object as not alive
+	}
+	else if (h > 100)
+		m_Health = 100;
+	else
+		m_Health = h;
 }
 
-void GameObject::setColliderWidth(int w)
-{
+SDL_Rect GameObject::getCollider(){
+	return mCollider;
+}
+void GameObject::setCollider(SDL_Rect collider) {
+	mCollider = collider;
+}
+
+void GameObject::setColliderWidth(int w){
 	mCollider.w = w;
 }
 
-void GameObject::setColliderHeight(int h)
-{
+void GameObject::setColliderHeight(int h){
 	mCollider.h = h;
 }
 
-void GameObject::setColliderX(int x)
-{
+void GameObject::setColliderX(int x){
 	mCollider.x = x;
 }
 
-void GameObject::setColliderY(int y)
-{
+void GameObject::setColliderY(int y){
 	mCollider.y = y;
+}
+
+void GameObject::setName(std::string name) {
+	m_Name = name;
 }

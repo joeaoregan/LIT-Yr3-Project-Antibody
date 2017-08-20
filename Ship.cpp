@@ -8,6 +8,7 @@ Added asdw keyboard movement
 
 #define VELOCITY 10
 #define BOOST 2
+#define MAX_HEALTH 100
 
 //Analog joystick dead zone
 const int JOYSTICK_DEAD_ZONE = 8000;	// Create a deadzone where input from the controller is ignored
@@ -26,6 +27,7 @@ Ship::Ship() {
 
 	setWidth(100);
 	setHeight(47);
+	setHealth(MAX_HEALTH);
 
 	// Initialize the velocity
 	setVelX(0);
@@ -143,7 +145,7 @@ void Ship::handleEvent(SDL_Event& e, int player) {
 	*/
 }
 void Ship::moveUp() {
-	if (getSpeedBoost() && getVelocity() != 0)
+	if (getSpeedBoost() && getVelocity() != 0)			// If speedboost is active, and the player is moving
 		setVelY(getVelY() - (getVelocity() + BOOST));
 	else
 		setVelY(getVelY() - getVelocity());
@@ -167,8 +169,8 @@ void Ship::moveRight() {
 		setVelX(getVelX() + getVelocity());
 }
 int Ship::moveDiagonal() {
-	if (getSpeedBoost() && getVelocity() != 0)
-		return getVelocity() + BOOST / sqrt(2);
+	//if (getSpeedBoost() && getVelocity() != 0)
+	//	return getVelocity() + BOOST / sqrt(2);
 
 	return getVelocity() / sqrt(2);
 }
