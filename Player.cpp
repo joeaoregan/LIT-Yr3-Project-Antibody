@@ -72,18 +72,31 @@ Player::Player(LTexture &dark, LTexture &medium, LTexture &light) {
 }
 
 // 2017/01/22 Separated player render() from game.cpp
-void Player::render(LTexture &player, LTexture &dark, LTexture &medium, LTexture &light, LTexture &shimmer, LTexture &lives, SDL_Renderer *rend) {
+void Player::render(LTexture &player, LTexture &dark, LTexture &medium, LTexture &light, LTexture &shimmer, SDL_Renderer *rend) {
 	if (getAlive()) {																			// 2017/01/22 If the player is alive render the player, with particles
 		renderParticles(dark, medium, light, shimmer, rend);
 		player.render(getX(), getY(), rend);
 	}
+}
 
-	if (getNumLives() > 0)
-		lives.render(10, SCREEN_HEIGHT - lives.getHeight() - 10, rend);							// Display the players lives
-	if (getNumLives() > 1)
-		lives.render(10 + lives.getWidth(), SCREEN_HEIGHT - lives.getHeight() - 10, rend);
-	if (getNumLives() > 2)
-		lives.render(10 + (lives.getWidth() * 2), SCREEN_HEIGHT - lives.getHeight() - 10, rend);
+void Player::rendPlayerLives(LTexture &lives, int player, SDL_Renderer *rend) {
+	if (player == 1) {
+		if (getNumLives() > 0)
+			lives.render(10, SCREEN_HEIGHT - lives.getHeight() - 10, rend);
+		if (getNumLives() > 1)
+			lives.render(10 + lives.getWidth(), SCREEN_HEIGHT - lives.getHeight() - 10, rend);
+		if (getNumLives() > 2)
+			lives.render(10 + (lives.getWidth() * 2), SCREEN_HEIGHT - lives.getHeight() - 10, rend);
+	}
+
+	if (player == 2) {
+		if (getNumLives() > 0)
+			lives.render(SCREEN_WIDTH - lives.getWidth() - 10, SCREEN_HEIGHT - lives.getHeight() - 10, rend);
+		if (getNumLives() > 1)
+			lives.render(SCREEN_WIDTH - (lives.getWidth() * 2) - 10, SCREEN_HEIGHT - lives.getHeight() - 10, rend);
+		if (getNumLives() > 2)
+			lives.render(SCREEN_WIDTH - (lives.getWidth() * 3) - 10, SCREEN_HEIGHT - lives.getHeight() - 10, rend);
+	}
 }
 /*
 

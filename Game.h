@@ -12,6 +12,7 @@
 
 //#include <SDL.h>
 //#include <SDL_image.h>
+//#include "LTexture.h"
 #include <cstdlib>		// For Random Numbers
 #include <ctime>		// For Random Numbers
 #include <list>
@@ -22,17 +23,25 @@ class Game {
 public:
 	int counter = 0;
 	bool gameOver = false;
+	bool levelOver = false;
 
 	// Render Healthbars
 	//enum healthBarOrientation { VERTICAL, HORIZONTAL };
 	//void renderHealthBar(int x, int y, int w, int h, float Percent, SDL_Color FGColor, SDL_Color BGColor, int orientation);	// 2017/01/20 Added orientation
-
 
 	//bool init();								// Starts up SDL and creates window -- ERROR window won't close
 	void update();
 	void close();								// Frees media and shuts down SDL
 
 	void displayGameLogos();					// Display Logos at start of game
+	void displayLevelSplashScreen(std::string objective);
+
+	//void menu();
+	void playLevel(int levelNum);
+	//void level2();
+	//void level3();
+
+	void resetGame(int level);					// Reset game to this level
 
 	void spawnMovingObjects();
 	void spawnPlayer(int player);
