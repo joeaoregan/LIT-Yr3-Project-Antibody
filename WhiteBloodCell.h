@@ -10,7 +10,7 @@ public:
 	~WhiteBloodCell();
 	
 	virtual void movement();
-	void render();							// Shows the Blood Cell on the screen
+	//void render(LTexture &texture, SDL_Renderer *rend, int degrees);							// Shows the Blood Cell on the screen
 };
 
 #endif

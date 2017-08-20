@@ -9,7 +9,7 @@ public:
 	~PowerUp();
 
 	virtual void movement();
-	void render();							// Shows the Power Up on the screen
+	void render(LTexture &texture, SDL_Renderer *rend);							// Shows the Power Up on the screen
 };
 
 #endif

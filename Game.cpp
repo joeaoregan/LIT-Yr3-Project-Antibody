@@ -10,7 +10,7 @@
         Joe: Add relative path for asset files in "Music" and "SoundFX" directories
 */
 
-#include <SDL.h>
+//#include <SDL.h>
 #include <SDL_image.h>
 
 #include <SDL_ttf.h>
@@ -34,9 +34,14 @@
 #include "LaserEnemy.h"
 #include "Particle.h"
 
+//void displayLevelSplashScreen(LTexture &levelBackDrop);
+
+bool quit = false;						// Main loop flag
 bool testMode = true;
-bool displayIntro = false;	// false means off
+bool displayIntro = true;				// false means off
 bool displayL1Intro = true;
+bool displayL2Intro = true;
+bool displayL3Intro = true;
 int currentLevel = 1;
 #define NUM_LIVES 1
 
@@ -63,7 +68,7 @@ void renderHealthBar(int x, int y, int w, int h, float Percent, SDL_Color FGColo
 #define NUM_PLAYERS 2
 #define BACKGROUND_SCROLL_TIMES 10
 #define MAX_HEALTH 100.0
-#define GAME_TIMER 5				// Time to start counting down from in seconds
+#define GAME_TIMER 50				// Time to start counting down from in seconds
 #define NUMBER_OF_SONGS = 3;
 
 // Time
@@ -144,6 +149,8 @@ SDL_Color textColor;
 TTF_Font *gFont = NULL;				// Globally used font
 TTF_Font *gFont2 = NULL;
 std::string l1Objective = "Destroy enemy virus and ships\nThe player with the highest score\nIs the winner";
+std::string l2Objective = "Destroy more enemy virus and ships\nThe player with the highest score\nIs the winner";
+std::string l3Objective = "Destroy even more enemy virus and ships\nThe player with the highest score\nIs the winner";
 
 //Player player1;						// SEAN: Move ship object outside of main so spawnLaser funtion can use it
 //Player player2;						// Declare a ship object that will be moving around on the screen
@@ -184,7 +191,7 @@ LTexture gP2ScoreTextTexture;
 LTexture gFPSTextTexture;
 LTexture gFinalScoreTextTexture;
 LTexture gGameWinnerTextTexture;
-LTexture gLevel1ObjectiveTextTexture;
+LTexture gLevelObjectiveTextTexture;
 
 // Vectors for objects that have collisions
 std::vector<PowerUp*> listOfPowerUps;
@@ -277,7 +284,7 @@ bool init() {
 		}
 
 		// Create window
-		gWindow = SDL_CreateWindow("JOURNEY TO THE CENTER OF MY HEADACHE v1.30b by Joe O'Regan & Se\u00E1n Horgan: Particles", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);	/* Window name */
+		gWindow = SDL_CreateWindow("JOURNEY TO THE CENTER OF MY HEADACHE v1.30c by Joe O'Regan & Se\u00E1n Horgan: Particles", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);	/* Window name */
 		if (gWindow == NULL) {
 			printf("Window could not be created! SDL Error: %s\n", SDL_GetError());
 			success = false;
@@ -346,6 +353,8 @@ bool loadMedia() {
 	gLightBlueParticleTexture.modifyAlpha(150);
 	gShimmerTexture.modifyAlpha(150);
 
+	textColor = { 0, 100, 200, 255 };								// Set text color as blue
+
 	// Open the font
 	//gFont = TTF_OpenFont("22_timing/lazy.ttf", 28);
 	gFont = TTF_OpenFont(".\\Font\\lazy.ttf", 28);
@@ -354,7 +363,6 @@ bool loadMedia() {
 		success = false;
 	}
 	else {
-		SDL_Color textColor = { 0, 100, 200, 255 };								// Set text color as blue
 		TTF_SetFontStyle(gFont, TTF_STYLE_BOLD);								// Use bold font
 
 		if (!gCreatedByTextTexture.loadFromRenderedText("A Game By Sean Horgan And Joe O'Regan", textColor, gFont, gRenderer)) {
@@ -374,24 +382,23 @@ bool loadMedia() {
 		success = false;
 	}
 	else {
-		SDL_Color textColor = { 0, 100, 200, 255 };
 		TTF_SetFontStyle(gFont2, TTF_STYLE_BOLD);											// Use bold font
 	}
 
 	// Load Textures
-	if (!gPlayer1Texture.loadFromFile(".\\Art\\Player1Ship.png", gRenderer)) {					// Ship Texture
+	if (!gPlayer1Texture.loadFromFile(".\\Art\\Player1Ship.png", gRenderer)) {					// Player 1 Ship Texture
 		printf("Failed to load Player 1 texture!\n");
 		success = false;
 	}
-	if (!gPlayer2Texture.loadFromFile(".\\Art\\Player2Ship.png", gRenderer)) {					// Ship Texture
+	if (!gPlayer2Texture.loadFromFile(".\\Art\\Player2Ship.png", gRenderer)) {					// Player 2 Ship Texture
 		printf("Failed to load Player 2 texture!\n");
 		success = false;
 	}
-	if (!gP1LivesTexture.loadFromFile(".\\Art\\Player1ShipSmall.png", gRenderer)) {					// Ship Texture
+	if (!gP1LivesTexture.loadFromFile(".\\Art\\Player1ShipSmall.png", gRenderer)) {				// Player 1 Ship Lives Texture
 		printf("Failed to load Player 1 Small Ship texture!\n");
 		success = false;
 	}
-	if (!gP2LivesTexture.loadFromFile(".\\Art\\Player2ShipSmall.png", gRenderer)) {					// Ship Texture
+	if (!gP2LivesTexture.loadFromFile(".\\Art\\Player2ShipSmall.png", gRenderer)) {				// Player 2 Ship Lives Texture
 		printf("Failed to load Player 2 Small Ship texture!\n");
 		success = false;
 	}
@@ -620,8 +627,8 @@ void Game::close() {
 	gP2ScoreTextTexture.free();
 	gFPSTextTexture.free();
 	gFinalScoreTextTexture.free();
-	gGameWinnerTextTexture.free(); // gLevel1ObjectiveTextTexture
-	gLevel1ObjectiveTextTexture.free();
+	gGameWinnerTextTexture.free();
+	gLevelObjectiveTextTexture.free();
 
 	//Free global font
 	TTF_CloseFont(gFont);
@@ -665,12 +672,6 @@ void Game::close() {
 	SDL_Quit();
 }
 
-
-
-bool quit = false;							// Main loop flag
-
-
-
 void Game::update(){
 	// Start up SDL and create window
 	if (!init()) {
@@ -696,19 +697,19 @@ void Game::update(){
 
 				quit = playerInput(quit);				// 2017/01/09 JOE: Handle input from player
 
-				displayGameLogos();	// 2017/01/18 Splash screens at start of game
+				//displayGameLogos();	// 2017/01/18 Splash screens at start of game
+
+				//if (currentlevel == 0) menu();
+
+				if (currentLevel == 1) level1();
+
+				//if (currentLevel == 2) level2();
+
+				//if (currentLevel == 3) level3();
 
 				//fpsthink();
 
 				//if (player1.getAlive() && player2.getAlive()) gameOver = true;
-
-				if(!gameOver) spawnMovingObjects();		// 2017/01/10 JOE: Spawn enemies and obstacles at random coords and distances apart
-
-				renderGameObjects();					// 2017-01-09 JOE: Render the game objects to the screen
-
-				if(!gameOver) moveGameObjects();		// 2017-01-09 JOE: Move the game objects on the screen
-
-				if(!gameOver) collisionCheck();
 
 				destroyGameObjects();					// 2017-01-09 JOE: Destroy the game objects when finished on the screen
 			}
@@ -716,243 +717,58 @@ void Game::update(){
 	}
 }
 
+void Game::level1() {
+	//if (displayL1Intro) displayLevelSplashScreen(gLevel1, l1Objective);
+	//if (displayL1Intro) displayLevelSplashScreen(gLevel1);
+	if (displayL1Intro) displayLevelSplashScreen();
 
-void Game::displayGameLogos() {
-	if (displayIntro) {
-		SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
-		SDL_RenderClear(gRenderer);
+	if (!gameOver) {
+		spawnMovingObjects();		// 2017/01/10 JOE: Spawn enemies and obstacles at random coords and distances apart
 
-		gLogo1.render(0, 0, gRenderer);
+		moveGameObjects();			// 2017-01-09 JOE: Move the game objects on the screen
 
-		SDL_RenderPresent(gRenderer);			// Update screen
-		SDL_Delay(1000);						// Pause with image on screen
-
-		while (scrollingOffsetLogo >= 0) {
-			gLogo2.render(0, scrollingOffsetLogo, gRenderer);
-			scrollingOffsetLogo -= 10;
-
-			SDL_RenderPresent(gRenderer);			// Update screen
-		}
-
-		SDL_Delay(1000);							// Pause with image on screen
-
-		scrollingOffsetLogo = -600;					// Logo will start above window
-
-		while (scrollingOffsetLogo <= 0) {
-			gLevel1.render(0, scrollingOffsetLogo, gRenderer);
-			scrollingOffsetLogo += 5;
-
-			SDL_RenderPresent(gRenderer);			// Update screen
-		}
-
-		displayIntro = false;
+		collisionCheck();
 	}
 
-	if(currentLevel == 1 && displayL1Intro) displayL1Logo();
+	renderGameObjects();			// 2017-01-09 JOE: Render the game objects to the screen
 
+	//currentlevel++;				// if level completed successfully
 }
+void Game::level2() {
+	//if (displayL2Intro) displayLevelSplashScreen(gLevel2, l2Objective);
 
-void Game::displayL1Logo() {
-	scrollingOffsetLogo = 600;				// Texture will start below window
+	if (!gameOver) {
+		spawnMovingObjects();		// 2017/01/10 JOE: Spawn enemies and obstacles at random coords and distances apart
 
-	textColor = { 255, 255, 255, 255 };
+		moveGameObjects();			// 2017-01-09 JOE: Move the game objects on the screen
 
-	if (!gLevel1ObjectiveTextTexture.loadFromRenderedText(l1Objective, textColor, gFont, gRenderer, true)) { // gLevel1ObjectiveTextTexture
-		printf("Unable to render level 1 game objective texture!\n");
+		collisionCheck();
 	}
 
-	while (scrollingOffsetLogo >= 300) {
-		SDL_RenderClear(gRenderer);
-		gLevel1.render(0, 0, gRenderer);
+	renderGameObjects();			// 2017-01-09 JOE: Render the game objects to the screen
 
-		scrollingOffsetLogo -= 5;									// decrementing moves up the screen
-		gLevel1ObjectiveTextTexture.render(100, scrollingOffsetLogo, gRenderer);	// FOR TESTING
-
-		SDL_RenderPresent(gRenderer);								// Update screen
-	}
-
-	displayIntro = false;
-
-	pressButtonToContinue();
+	//currentlevel++;				// if level completed successfully
 }
+void Game::level3() {
+	//if (displayL3Intro) displayLevelSplashScreen(gLevel3, l3Objective);
 
-void Game::pressButtonToContinue() {
-	bool continueGame = false;
+	if (!gameOver) {
+		spawnMovingObjects();		// 2017/01/10 JOE: Spawn enemies and obstacles at random coords and distances apart
 
-	SDL_Rect* currentClip = &gSpriteClips[frame / 6];	// Render current frame
-	gSpriteSheetTexture.render((SCREEN_WIDTH - currentClip->w) / 2, (SCREEN_HEIGHT - currentClip->h) / 2 + 200, gRenderer, currentClip);
+		moveGameObjects();			// 2017-01-09 JOE: Move the game objects on the screen
 
-	SDL_RenderPresent(gRenderer);			// Update screen
-	++frame;	// Go to next frame
-
-	if (frame / 6 >= ANIMATION_FRAMES) {	// Cycle animation
-		frame = 0;
+		collisionCheck();
 	}
 
-	//while (SDL_WaitEvent(&e)) {
-	while (SDL_PollEvent(&e)) {
-		if (e.type == SDL_QUIT) {
-			quit = true;
-			return;						// Exits The Game
-		}
+	renderGameObjects();			// 2017-01-09 JOE: Render the game objects to the screen
 
-		switch (e.type) {
-			std::cout << "test 2" << std::endl;
-			/* Keyboard event */
-			/* Pass the event data onto PrintKeyInfo() */
-		case SDL_KEYDOWN:
-			printf("Key press detected\n");
-			continueGame = true;
-			displayL1Intro = false;
-			break;
-			//if (e.type == SDL_JOYBUTTONDOWN) {
-		}
-		break;
-	}
-
-	if (!continueGame) pressButtonToContinue();
-}
-
-void Game::gamepadInfo() {
-	if (SDL_NumJoysticks() > 0) {
-		if (strcmp(SDL_JoystickName(gController1), "NVIDIA Shield") == 0) {
-			std::cout << "nv test" << std::endl;
-			// put test here to make NVIDIA Shield controller as 2 controllers
-		}
-
-		std::cout << "joystick instance id: " << SDL_JoystickInstanceID(gController1) << std::endl;
-
-		for (int i = 0; i < SDL_NumJoysticks(); ++i) {
-			const char *name = SDL_GameControllerNameForIndex(i);
-			if (name) {
-				printf("Joystick %i has game controller name '%s'\n", i, name);
-			}
-			else {
-				printf("Joystick %i has no game controller name.\n", i);
-			}
-		}
-
-		printf("Joystick connected %d\n", e.jaxis.which);												// DETECTS JOYSTICK
-		std::cout << "Number of joystics: " << SDL_NumJoysticks() << std::endl;
-
-		std::cout << "Controller Name: " << SDL_JoystickName(gController1) << std::endl;				// Name of joystick
-		std::cout << "Number of buttons: " << SDL_JoystickNumButtons(gController1) << std::endl;		// Number of useable buttons
-		std::cout << "Number of axes: " << SDL_JoystickNumAxes(gController1) << std::endl;				// Number of axes on the controller, includes sticks and triggers.
-		std::cout << "Number of trackballs: " << SDL_JoystickNumBalls(gController1) << std::endl;		// No trackballs on NVidia Shield Controller
-		std::cout << "Number of hats: " << SDL_JoystickNumHats(gController1) << std::endl << std::endl;	// Hats = d-pad on NVidia Shield Controller
-
-		if (SDL_NumJoysticks() > 2) {
-			std::cout << "Controller Name: " << SDL_JoystickName(gController2) << std::endl;				// Name of joystick
-			std::cout << "Number of buttons: " << SDL_JoystickNumButtons(gController2) << std::endl;		// Number of useable buttons
-			std::cout << "Number of axes: " << SDL_JoystickNumAxes(gController2) << std::endl;				// Number of axes on the controller, includes sticks and triggers.
-			std::cout << "Number of trackballs: " << SDL_JoystickNumBalls(gController2) << std::endl;		// No trackballs on NVidia Shield Controller
-			std::cout << "Number of hats: " << SDL_JoystickNumHats(gController2) << std::endl << std::endl;	// Hats = d-pad on NVidia Shield Controller
-		}
-	}
-}
-
-void Game::displayText() {
-	// Splash Screen
-	textColor = { 72, 0, 255, 255 };
-
-	if (!gLevel1ObjectiveTextTexture.loadFromRenderedText(l1Objective, textColor, gFont2, gRenderer)) { // gLevel1ObjectiveTextTexture
-		printf("Unable to render level 1 game objective texture!\n");
-	}
-
-	//In memory text stream - string streams - function like iostreams only instead of reading or writing to the console, they allow you to read and write to a string in memory
-	std::stringstream timeText;		// string stream
-	std::stringstream score1Text;	// string stream
-	std::stringstream score2Text;	// string stream
-	std::string finalScores;
-	std::string gameWinner;
-	std::stringstream framesPerSec;
-
-	timeText.str("");				// Set text to be rendered - string stream - print the time since timer last started - initialise empty
-	score1Text.str("");
-	score2Text.str("");
-	framesPerSec.str("");
-	framesPerSec << "FPS: " << framespersecond;
-	score1Text << "P1: " << player1.getScore();
-	score2Text << "P2: " << player2.getScore();
-	finalScores = "Player 1: " + std::to_string(player1.getScore()) + " Player 2: " + std::to_string(player2.getScore());
-
-
-	// Game Over
-	if (gameOver == true) {
-		if (player1.getScore() > player2.getScore())
-			gameWinner = "Player 1 Wins";
-		else if (player2.getScore() > player1.getScore())
-			gameWinner = "Player 2 Wins";
-		else
-			gameWinner = "It's a draw";
-
-		textColor = { 72, 0, 255, 255 };
-		if (!gFinalScoreTextTexture.loadFromRenderedText(finalScores, textColor, gFont2, gRenderer)) {
-			printf("Unable to render final scores texture!\n");
-		}
-		if (!gGameWinnerTextTexture.loadFromRenderedText(gameWinner, textColor, gFont2, gRenderer)) {
-			printf("Unable to render game winner texture!\n");
-		}
-	}
-	// Levels
-	else {
-		currentTime = SDL_GetTicks();
-
-		// Countdown Timer
-		//if (countdownTimer > GAME_TIMER && countdownTimer < GAME_TIMER + 6) {	//
-		//	timeText << "Game Over";
-		//	gameOver = true;
-		//}
-		//else
-		if (countdownTimer >= 0 && countdownTimer <= GAME_TIMER) {
-			timeText << "Time: " << countdownTimer;
-			gameOver = false;
-		}
-		if (countdownTimer <= 0 || countdownTimer > GAME_TIMER + 6) {
-			//timeText << "Game Over";
-			gameOver = true;
-			//countdownTimer = GAME_TIMER + 5;	// flash game over for 5 seconds
-		}
-
-		if (currentTime > lastTime + 1000) {
-			lastTime = currentTime;
-			countdownTimer -= 1;
-			//std::cout << "Time: " << countdownTimer << " lastTime: " << lastTime << " currentTime: " << currentTime << std::endl;
-		}
-
-		// Time running out change colour to red
-		if (countdownTimer >= 0 && countdownTimer <= 5) {
-			textColor = { 255, 0, 0, 255 };
-			timerFlash = true;
-		}
-		else {
-			textColor = { 0, 100, 200, 255 };
-			timerFlash = false;
-		}
-
-		//Render text - Get a string from it and use it to render the current time to a texture
-		if (!gTimeTextTexture.loadFromRenderedText(timeText.str().c_str(), textColor, gFont, gRenderer)) {
-			printf("Unable to render time texture!\n");
-		}
-		textColor = { 0, 100, 200, 255 };
-		if (!gP1ScoreTextTexture.loadFromRenderedText(score1Text.str().c_str(), textColor, gFont, gRenderer)) {
-			printf("Unable to render P1 score texture!\n");
-		}
-		if (!gP2ScoreTextTexture.loadFromRenderedText(score2Text.str().c_str(), textColor, gFont, gRenderer)) {
-			printf("Unable to render P2 score texture!\n");
-		}
-		if (!gFPSTextTexture.loadFromRenderedText(framesPerSec.str().c_str(), textColor, gFont, gRenderer)) {
-			printf("Unable to render FPS texture!\n");
-		}
-	}
+	//currentlevel++;				// if level completed successfully
 }
 
 bool Game::playerInput(bool quit = false) {
 	SDL_Color textColor = { 0, 0, 0, 255 };	//Set text color as green
 
-	// In memory text stream
-	// string streams - function like iostreams only instead of reading or writing to the console, they allow you to read and write to a string in memory
-	//std::stringstream timeText;		// string stream
+	// In memory text stream// string streams - function like iostreams only instead of reading or writing to the console, they allow you to read and write to a string in memory
 	while (SDL_PollEvent(&e) != 0) {
 		// User requests quit	EXIT - CLOSE WINDOW
 		if (e.type == SDL_QUIT) {
@@ -1004,6 +820,247 @@ bool Game::playerInput(bool quit = false) {
 	return quit;
 }
 
+void Game::displayGameLogos() {
+	if (displayIntro) {
+		SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
+		SDL_RenderClear(gRenderer);
+
+		gLogo1.render(0, 0, gRenderer);
+
+		SDL_RenderPresent(gRenderer);			// Update screen
+		SDL_Delay(1000);						// Pause with image on screen
+
+		while (scrollingOffsetLogo >= 0) {
+			gLogo2.render(0, scrollingOffsetLogo, gRenderer);
+			scrollingOffsetLogo -= 10;
+
+			SDL_RenderPresent(gRenderer);			// Update screen
+		}
+
+		SDL_Delay(1000);							// Pause with image on screen
+
+		scrollingOffsetLogo = -600;					// Logo will start above window
+
+		while (scrollingOffsetLogo <= 0) {
+			gLevel1.render(0, scrollingOffsetLogo, gRenderer);
+			scrollingOffsetLogo += 5;
+
+			SDL_RenderPresent(gRenderer);			// Update screen
+		}
+
+		displayIntro = false;
+	}
+}
+
+//void Game::displayLevelSplashScreen(LTexture &levelBackDrop, std::string objective) {
+//void Game::displayLevelSplashScreen(LTexture &levelBackDrop) {
+//void displayLevelSplashScreen(LTexture &levelBackDrop) {
+
+void Game::displayLevelSplashScreen() {
+	scrollingOffsetLogo = 600;				// Texture will start below window
+
+	textColor = { 255, 255, 255, 255 };
+
+	//if (!gLevelObjectiveTextTexture.loadFromRenderedText(objective, textColor, gFont, gRenderer, true)) { // gLevel1ObjectiveTextTexture
+	if (!gLevelObjectiveTextTexture.loadFromRenderedText(l1Objective, textColor, gFont, gRenderer, true)) { // gLevel1ObjectiveTextTexture
+		printf("Unable to render game level objective texture!\n");
+	}
+
+	while (scrollingOffsetLogo >= 300) {
+		SDL_RenderClear(gRenderer);
+		//levelBackDrop.render(0, 0, gRenderer);
+		gLevel1.render(0, 0, gRenderer);										// Static background
+
+		scrollingOffsetLogo -= 5;												// decrementing moves up the screen
+		gLevelObjectiveTextTexture.render(100, scrollingOffsetLogo, gRenderer);	// FOR TESTING
+
+		SDL_RenderPresent(gRenderer);											// Update screen
+	}
+
+	displayIntro = false;
+
+	Game::pressButtonToContinue();
+}
+
+void Game::pressButtonToContinue() {
+	bool continueGame = false;
+
+	SDL_Rect* currentClip = &gSpriteClips[frame / 6];	// Render current frame
+	gSpriteSheetTexture.render((SCREEN_WIDTH - currentClip->w) / 2, (SCREEN_HEIGHT - currentClip->h) / 2 + 200, gRenderer, currentClip);
+
+	SDL_RenderPresent(gRenderer);			// Update screen
+	++frame;	// Go to next frame
+
+	if (frame / 6 >= ANIMATION_FRAMES) {	// Cycle animation
+		frame = 0;
+	}
+
+	//while (SDL_WaitEvent(&e)) {
+	while (SDL_PollEvent(&e)) {
+		if (e.type == SDL_QUIT) {
+			quit = true;
+			return;						// Exits The Game
+		}
+
+		switch (e.type) {
+			std::cout << "test 2" << std::endl;
+			/* Keyboard event */
+			/* Pass the event data onto PrintKeyInfo() */
+		case SDL_KEYDOWN:
+			printf("Key press detected\n");
+			continueGame = true;
+			displayL1Intro = false;
+			break;
+			//if (e.type == SDL_JOYBUTTONDOWN) {
+		}
+		break;
+	}
+
+	if (!continueGame) pressButtonToContinue();
+}
+
+
+
+
+
+
+
+
+
+
+void Game::menu() {
+
+}
+
+void Game::gamepadInfo() {
+	if (SDL_NumJoysticks() > 0) {
+		if (strcmp(SDL_JoystickName(gController1), "NVIDIA Shield") == 0) {
+			std::cout << "nv test" << std::endl;
+			// put test here to make NVIDIA Shield controller as 2 controllers
+		}
+
+		std::cout << "joystick instance id: " << SDL_JoystickInstanceID(gController1) << std::endl;
+
+		for (int i = 0; i < SDL_NumJoysticks(); ++i) {
+			const char *name = SDL_GameControllerNameForIndex(i);
+			if (name) {
+				printf("Joystick %i has game controller name '%s'\n", i, name);
+			}
+			else {
+				printf("Joystick %i has no game controller name.\n", i);
+			}
+		}
+
+		printf("Joystick connected %d\n", e.jaxis.which);												// DETECTS JOYSTICK
+		std::cout << "Number of joystics: " << SDL_NumJoysticks() << std::endl;
+
+		std::cout << "Controller Name: " << SDL_JoystickName(gController1) << std::endl;				// Name of joystick
+		std::cout << "Number of buttons: " << SDL_JoystickNumButtons(gController1) << std::endl;		// Number of useable buttons
+		std::cout << "Number of axes: " << SDL_JoystickNumAxes(gController1) << std::endl;				// Number of axes on the controller, includes sticks and triggers.
+		std::cout << "Number of trackballs: " << SDL_JoystickNumBalls(gController1) << std::endl;		// No trackballs on NVidia Shield Controller
+		std::cout << "Number of hats: " << SDL_JoystickNumHats(gController1) << std::endl << std::endl;	// Hats = d-pad on NVidia Shield Controller
+
+		if (SDL_NumJoysticks() > 2) {
+			std::cout << "Controller Name: " << SDL_JoystickName(gController2) << std::endl;				// Name of joystick
+			std::cout << "Number of buttons: " << SDL_JoystickNumButtons(gController2) << std::endl;		// Number of useable buttons
+			std::cout << "Number of axes: " << SDL_JoystickNumAxes(gController2) << std::endl;				// Number of axes on the controller, includes sticks and triggers.
+			std::cout << "Number of trackballs: " << SDL_JoystickNumBalls(gController2) << std::endl;		// No trackballs on NVidia Shield Controller
+			std::cout << "Number of hats: " << SDL_JoystickNumHats(gController2) << std::endl << std::endl;	// Hats = d-pad on NVidia Shield Controller
+		}
+	}
+}
+
+void Game::displayText() {
+	// Splash Screen
+	//In memory text stream - string streams - function like iostreams only instead of reading or writing to the console, they allow you to read and write to a string in memory
+	std::stringstream timeText;		// string stream
+	std::stringstream score1Text;	// string stream
+	std::stringstream score2Text;	// string stream
+	std::string finalScores;
+	std::string gameWinner;
+	std::stringstream framesPerSec;
+
+	textColor = { 72, 0, 255, 255 };
+
+	timeText.str("");				// Set text to be rendered - string stream - print the time since timer last started - initialise empty
+	score1Text.str("");
+	score2Text.str("");
+	framesPerSec.str("");
+	framesPerSec << "FPS: " << framespersecond;
+	score1Text << "P1: " << player1.getScore();
+	score2Text << "P2: " << player2.getScore();
+	finalScores = "Player 1: " + std::to_string(player1.getScore()) + " Player 2: " + std::to_string(player2.getScore());
+
+
+	// Game Over
+	if (gameOver == true) {
+		if (player1.getScore() > player2.getScore())
+			gameWinner = "Player 1 Wins";
+		else if (player2.getScore() > player1.getScore())
+			gameWinner = "Player 2 Wins";
+		else
+			gameWinner = "It's a draw";
+
+		if (!gFinalScoreTextTexture.loadFromRenderedText(finalScores, textColor, gFont2, gRenderer)) {
+			printf("Unable to render final scores texture!\n");
+		}
+		if (!gGameWinnerTextTexture.loadFromRenderedText(gameWinner, textColor, gFont2, gRenderer)) {
+			printf("Unable to render game winner texture!\n");
+		}
+	}
+	// Levels
+	else {
+		currentTime = SDL_GetTicks();
+
+		// Countdown Timer
+		//if (countdownTimer > GAME_TIMER && countdownTimer < GAME_TIMER + 6) {	//
+		//	timeText << "Game Over";
+		//	gameOver = true;
+		//}
+		//else
+		if (countdownTimer > 0 && countdownTimer <= GAME_TIMER) {
+			timeText << "Time: " << countdownTimer;
+			gameOver = false;
+		}
+		else if (countdownTimer <= 0 || countdownTimer > GAME_TIMER + 6) {
+			//timeText << "Game Over";
+			gameOver = true;
+			//countdownTimer = GAME_TIMER + 5;	// flash game over for 5 seconds
+		}
+
+		if (currentTime > lastTime + 1000) {
+			lastTime = currentTime;
+			countdownTimer -= 1;
+			//std::cout << "Time: " << countdownTimer << " lastTime: " << lastTime << " currentTime: " << currentTime << std::endl;
+		}
+
+		// Time running out change colour to red
+		if (countdownTimer >= 0 && countdownTimer <= 5) {
+			textColor = { 255, 0, 0, 255 };
+			timerFlash = true;
+		}
+		else {
+			textColor = { 0, 100, 200, 255 };
+			timerFlash = false;
+		}
+
+		//Render text - Get a string from it and use it to render the current time to a texture
+		if (!gTimeTextTexture.loadFromRenderedText(timeText.str().c_str(), textColor, gFont, gRenderer)) {
+			printf("Unable to render time texture!\n");
+		}
+		textColor = { 0, 100, 200, 255 };
+		if (!gP1ScoreTextTexture.loadFromRenderedText(score1Text.str().c_str(), textColor, gFont, gRenderer)) {
+			printf("Unable to render P1 score texture!\n");
+		}
+		if (!gP2ScoreTextTexture.loadFromRenderedText(score2Text.str().c_str(), textColor, gFont, gRenderer)) {
+			printf("Unable to render P2 score texture!\n");
+		}
+		if (!gFPSTextTexture.loadFromRenderedText(framesPerSec.str().c_str(), textColor, gFont, gRenderer)) {
+			printf("Unable to render FPS texture!\n");
+		}
+	}
+}
+
 void Game::musicForward() {								// Pick next track on the list
 	if (currentSong + 1 < listOfMusic.size())			// If the current song number (0 number start value) is less than the number of tracks on the list
 		currentSong++;									// go to next track on list
@@ -1043,10 +1100,7 @@ void Game::renderGameObjects() {
 	SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
 	SDL_RenderClear(gRenderer);
 
-
-
 	if (gameOver == false) {
-
 		fpsthink();										// No need to do this if the game is over
 
 		if (backgroundLoopCounter <= BACKGROUND_SCROLL_TIMES) scrollingOffset -= 5;
@@ -1070,58 +1124,65 @@ void Game::renderGameObjects() {
 		else
 			gBGEndTexture.render(scrollingOffset + gBGTexture.getWidth(), 0, gRenderer);	// end background
 
-
-
-
 	//if (gameOver == false) {
 		SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
 		//SDL_RenderDrawRect(gRenderer, &player1.getCollider());
 
-		// Cycle through list of small Blood Cells obstacles and render to screen
+		// Cycle through list of Blood Cells obstacles and render to screen
+		//int bloodCellCounter = 0;
+		for (iterBC = listOfBloodCells.begin(); iterBC != listOfBloodCells.end();) {
+			//bloodCellCounter++;
+			//if(bloodCellCounter % 2 == 0)
+				(*iterBC++)->render(gBloodCellTexture, gRenderer, -degreesBC);	// Render the blood cell
+			//else
+			//	(*iterBC++)->render(gBloodCellTexture, gRenderer, degreesBC);	// 2017/01/22 rotate forwards
+		}
+		//bloodCellCounter = 0;
 		for (iterSBC = listOfSmallBloodCells.begin(); iterSBC != listOfSmallBloodCells.end();) {
-			(*iterSBC++)->render();	// Render the blood cell
+			//bloodCellCounter++;
+			//if (bloodCellCounter % 2 == 0)
+				(*iterSBC++)->render(gBloodCellSmallTexture, gRenderer, -degreesBCS);	// Render the blood cell - rotate backwards
+			//else
+			//	(*iterSBC++)->render(gBloodCellSmallTexture, gRenderer, degreesBCS);	// 2017/01/22 rotate forwards
+		}
+		for (iterWBC = listOfWhiteBloodCells.begin(); iterWBC != listOfWhiteBloodCells.end();) {
+			(*iterWBC++)->render(gWhiteBloodCellTexture, gRenderer, -degreesBCS);	// Render the blood cell
 		}
 
-		// Cycle through list of small Blood Cells obstacles and render to screen
-		for (iterWBC = listOfWhiteBloodCells.begin(); iterWBC != listOfWhiteBloodCells.end();) {
-			(*iterWBC++)->render();	// Render the blood cell
-		}
-		// Cycle through list of Enemy ships and render to screen
+		// Cycle through list of Enemy Ships and Virus and render to screen
 		for (int index = 0; index != listOfEnemyShips.size(); ++index) {
-			listOfEnemyShips[index]->render();
+			listOfEnemyShips[index]->render(gEnemySpriteSheetTexture, gRenderer, &gEnemySpriteClips[enemyframe / 10], enemyframe);
 			//SDL_RenderDrawRect(gRenderer, &listOfEnemyShips[index]->getCollider());
 		}
-		// Cycle through list of Enemy Virus and render to screen
 		for (int index = 0; index != listOfEnemyVirus.size(); ++index) {
-			listOfEnemyVirus[index]->render();
+			listOfEnemyVirus[index]->render(gEnemyVirusTexture, gRenderer);
 			//SDL_RenderDrawRect(gRenderer, &listOfEnemyVirus[index]->getCollider());
-		}
-		// Cycle through list of Blood Cells obstacles and render to screen
-		for (iterBC = listOfBloodCells.begin(); iterBC != listOfBloodCells.end();) {
-			(*iterBC++)->render();	// Render the blood cell
 		}
 
 		// Cycle through list of power up objects and render them to screen
 		for (int index = 0; index != listOfPowerUps.size(); ++index) {
-			listOfPowerUps[index]->render();
+			listOfPowerUps[index]->render(gPowerUpTexture, gRenderer);
 			//SDL_RenderDrawRect(gRenderer, &listOfPowerUps[index]->getCollider());
 		}
 
-		// Cycle through list of laser objects and render them to screen
+		// Cycle through list of Weapon objects and render them to screen
 		for (int index = 0; index != listOfLaserObjects.size(); ++index) {
-			listOfLaserObjects[index]->render(listOfLaserObjects[index]->getPlayer());
+			listOfLaserObjects[index]->render(listOfLaserObjects[index]->getPlayer(), gLaserOrangeTexture, gLaserGreenTexture, gRenderer);
 			//SDL_RenderDrawRect(gRenderer, &listOfLaserObjects[index]->getLaserCollider());
 		}
 		for (int index = 0; index != listOfEnemyLaserObjects.size(); ++index) {
-			listOfEnemyLaserObjects[index]->render();
+			listOfEnemyLaserObjects[index]->render(gLaserBlueTexture, gRenderer);	// 2017/01/22 added texture and renderer
 			//SDL_RenderDrawRect(gRenderer, &listOfEnemyLaserObjects[index]->getELaserCollider());
 		}
 		for (int index = 0; index != listOfNinjaStarObjects.size(); ++index) {
-			listOfNinjaStarObjects[index]->render(listOfNinjaStarObjects[index]->getPlayer());
+			if(listOfNinjaStarObjects[index]->getPlayer() == PLAYER_1)
+				listOfNinjaStarObjects[index]->render(degrees, gNinjaStarYellowTexture, gRenderer);	// Yellow ninja star for player 1
+			else
+				listOfNinjaStarObjects[index]->render(degrees, gNinjaStarBlueTexture, gRenderer);	// Blue ninja star for player 2
 			//SDL_RenderDrawRect(gRenderer, &listOfNinjaStarObjects[index]->getNinjaStarCollider());
 		}
 		for (iterSaw = listOfSawObjects.begin(); iterSaw != listOfSawObjects.end();) {
-			(*iterSaw++)->render();	// Render the ninja star
+			(*iterSaw++)->render(gSawTexture, gRenderer, degrees);									// Render the Saw
 		}
 
 		// Render Text
@@ -1140,23 +1201,13 @@ void Game::renderGameObjects() {
 		if (player1.getAlive()) {
 			renderHealthBar(player1.getX() + (player1.getWidth() / 4), player1.getY() - 10, player1.getWidth() / 2, 5, player1.getHealth() / MAX_HEALTH, fgColour, bgColour, HORIZONTAL);
 			gPlayer1Texture.modifyAlpha(player1Alpha);
-			player1.render();
+			player1.render(gPlayer1Texture, gDarkBlueParticleTexture, gMediumBlueParticlTexture, gLightBlueParticleTexture, gShimmerTexture, gP1LivesTexture, gRenderer);
 		}// render the ship over the background
 		if (player2.getAlive()) {
 			renderHealthBar(player2.getX() + (player2.getWidth() / 4), player2.getY() - 10, player2.getWidth() / 2, 5, player2.getHealth() / MAX_HEALTH, fgColour, bgColour, HORIZONTAL);
 			gPlayer2Texture.modifyAlpha(player2Alpha);
-			player2.render();							// render the ship over the background
+			player2.render(gPlayer2Texture, gDarkBlueParticleTexture, gMediumBlueParticlTexture, gLightBlueParticleTexture, gShimmerTexture, gP2LivesTexture, gRenderer);							// render the ship over the background
 		}
-		// Set the Alpha value for player when flashing
-		//gPlayer1Texture.modifyAlpha(player1Alpha);
-		//player1.render();							// render the ship over the background
-		//player1.render(gPlayer1Texture, gDarkBlueParticleTexture, gMediumBlueParticlTexture, gLightBlueParticleTexture, gShimmerTexture, gRenderer);
-		//SDL_RenderDrawRect(gRenderer, &player1.getCollider());
-
-		//gPlayer2Texture.modifyAlpha(player2Alpha);
-		//player2.render();							// render the ship over the background
-		//player2.render(gPlayer2Texture, gDarkBlueParticleTexture, gMediumBlueParticlTexture, gLightBlueParticleTexture, gShimmerTexture, gRenderer);
-		//SDL_RenderDrawRect(gRenderer, &player2.getCollider());
 	}
 	else if (gameOver == true) {
 		gGameOverTextTexture.modifyAlpha(gameOverAlpha);
@@ -1216,9 +1267,9 @@ void Game::moveGameObjects() {
 	}
 	for (iterSaw = listOfSawObjects.begin(); iterSaw != listOfSawObjects.end();) {
 		if ((*iterSaw)->getPlayer() == PLAYER_1)
-			(*iterSaw++)->movement(player1.getX(), player1.getY());	// Move the ninja star
+			(*iterSaw++)->movement(player1.getX(), player1.getY());	// Move the saw
 		else if ((*iterSaw)->getPlayer() == PLAYER_2)
-			(*iterSaw++)->movement(player2.getX(), player2.getY());	// Move the ninja star
+			(*iterSaw++)->movement(player2.getX(), player2.getY());	// Move the saw
 	}
 }
 
@@ -1432,19 +1483,6 @@ void Game::spawnRandom(int &x, int &y, int &randomSpeed, int xMuliplier, int spe
 	x = SCREEN_WIDTH + (randomX * xMuliplier);
 	y = (randomY * 120) - 80;
 }
-// Spawn Weapon at ships location
-/*
-void Game::spawnLaser(int x, int y, int player, int velocity) {
-	Laser* p_Laser = new Laser();
-	p_Laser->spawn(x + 65, y + 30, velocity);											// adjust spawn position to front of ship
-	p_Laser->setPlayer(player);															// 2017/01/17 Set the player the laser belongs too
-	listOfLaserObjects.push_back(p_Laser);
-	if (!gameOver) {
-		if (player == 1) Mix_PlayChannel(-1, gLaserFX1, 0);
-		if (player == 2) Mix_PlayChannel(-1, gLaserFX2, 0);
-	}
-}
-*/
 
 bool stop = false;
 
@@ -1496,7 +1534,7 @@ void Game::spawnNinjaStar(int x, int y, int player) {				// player to spawn for 
 		if (player == 2) Mix_PlayChannel(-1, gNinjaFX2, 0);
 	}
 }
-void Game::spawnSaw(int x, int y, int player, bool sawActive) {		// player to spawn for and their coords, turn on if inacive, off if active
+/*void Game::spawnSaw(int x, int y, int player) {		// player to spawn for and their coords, turn on if inacive, off if active
 	// IF SAW IS ALREADY ACTIVE KILL IT OTHERWISE SPAWN IT - Individual saw for each player
 	if (!sawActive) {
 		Saw* p_Saw = new Saw();
@@ -1522,80 +1560,40 @@ void Game::spawnSaw(int x, int y, int player, bool sawActive) {		// player to sp
 			}
 		}
 	}
-}
-
-void Player::render() {
-	//if (player1.getAlive()) gPlayer1Texture.render(player1.getX(), player1.getY(), gRenderer);	// Show P1 ship
-	if (player1.getAlive()) player1.render(gPlayer1Texture, gDarkBlueParticleTexture, gMediumBlueParticlTexture, gLightBlueParticleTexture, gShimmerTexture, gRenderer);
-
-	if (player1.getNumLives() > 0)
-		gP1LivesTexture.render(10, SCREEN_HEIGHT - gP1LivesTexture.getHeight() - 10, gRenderer);
-	if (player1.getNumLives() > 1)
-		gP1LivesTexture.render(10 + gP1LivesTexture.getWidth(), SCREEN_HEIGHT - gP1LivesTexture.getHeight() - 10, gRenderer);
-	if (player1.getNumLives() > 2)
-		gP1LivesTexture.render(10 + (gP1LivesTexture.getWidth() * 2), SCREEN_HEIGHT - gP1LivesTexture.getHeight() - 10, gRenderer);
-
-	//if (player2.getAlive()) gPlayer2Texture.render(player2.getX(), player2.getY(), gRenderer);	// Show P2 ship
-	if (player2.getAlive())player2.render(gPlayer2Texture, gDarkBlueParticleTexture, gMediumBlueParticlTexture, gLightBlueParticleTexture, gShimmerTexture, gRenderer);
-
-	if (player2.getNumLives() > 0)
-		gP2LivesTexture.render(SCREEN_WIDTH - gP2LivesTexture.getWidth() - 10, SCREEN_HEIGHT - gP2LivesTexture.getHeight() - 10, gRenderer);
-	if (player2.getNumLives() > 1)
-		gP2LivesTexture.render(SCREEN_WIDTH - (gP2LivesTexture.getWidth() * 2) - 10, SCREEN_HEIGHT - gP2LivesTexture.getHeight() - 10, gRenderer);
-	if (player2.getNumLives() > 2)
-		gP2LivesTexture.render(SCREEN_WIDTH - (gP2LivesTexture.getWidth() * 3) - 10, SCREEN_HEIGHT - gP2LivesTexture.getHeight() - 10, gRenderer);
-}
-
-// Render the laser objects to the screen
-void Laser::render(int player) {
-	if (player == PLAYER_1)
-		gLaserOrangeTexture.render(getX(), getY(), gRenderer);
-	else if (player == PLAYER_2)
-		gLaserGreenTexture.render(getX(), getY(), gRenderer);
-}
-void LaserEnemy::render() {
-	gLaserBlueTexture.render(getX(), getY(), gRenderer);
-}
-/* Render the Ninja Star objects to the screen*/
-void NinjaStar::render(int player) {																// Render different colour ninja star
-	if (player == PLAYER_1)
-		gNinjaStarYellowTexture.render(getX(), getY(), gRenderer, NULL, degrees, NULL, SDL_FLIP_NONE);
-	else if (player == PLAYER_2)
-		gNinjaStarBlueTexture.render(getX(), getY(), gRenderer, NULL, degrees, NULL, SDL_FLIP_NONE);
-}
-void Saw::render() {
-	//if (player == 1)
-	//	gSawTexture.render(getX(), getY(), NULL, degrees, NULL, SDL_FLIP_NONE);
-	//else if (player == 2)
-		gSawTexture.render(getX(), getY(), gRenderer, NULL, degrees, NULL, SDL_FLIP_NONE);
-}
-
-// Enemies and Obstacles
-void EnemyShip::render() {
-	SDL_Rect* currentClip = &gEnemySpriteClips[enemyframe / 10];		// Render current frame
-	//std::cout << enemyframe / 10 << std::endl;
-	gEnemySpriteSheetTexture.render(getX(), getY(), gRenderer, currentClip);
-
-	++enemyframe;	// Go to next frame
-
-	if (enemyframe >= ANIMATION_FRAMES * 10) {	// Cycle animation
-		enemyframe = 0;
+}*/
+void Game::spawnSaw(int x, int y, int player) {		// player to spawn for and their coords, turn on if inacive, off if active
+													// IF SAW IS ALREADY ACTIVE KILL IT OTHERWISE SPAWN IT - Individual saw for each player
+	if (player == PLAYER_1 && !player1.getSawActive()) {
+		Saw* p_Saw = new Saw();								// Create new saw
+		p_Saw->spawn(x, y);									// spawn the saw
+		p_Saw->setPlayer(player);							// set the saw to the current player
+		listOfSawObjects.push_back(p_Saw);					// add to list of saws
+		player1.setSawActive(true);							// show saw
+		if (!gameOver) Mix_PlayChannel(-1, gSawFX, 0);
 	}
-}
-void EnemyVirus::render() {
-	gEnemyVirusTexture.render(getX(), getY(), gRenderer);
-}
-void BloodCell::render() {
-	gBloodCellTexture.render(getX(), getY(), gRenderer, NULL, -degreesBC, NULL, SDL_FLIP_NONE);
-}
-void BloodCellSmall::render() {
-	gBloodCellSmallTexture.render(getX(), getY(), gRenderer, NULL, -degreesBCS, NULL, SDL_FLIP_NONE);
-}
-void WhiteBloodCell::render() {
-	gWhiteBloodCellTexture.render(getX(), getY(), gRenderer, NULL, -degreesBCS, NULL, SDL_FLIP_NONE);
-}
-void PowerUp::render() {
-	gPowerUpTexture.render(getX(), getY(), gRenderer);
+	else if (player == PLAYER_2 && !player2.getSawActive()) {
+		Saw* p_Saw = new Saw();
+		p_Saw->spawn(x, y);
+		p_Saw->setPlayer(player);
+		listOfSawObjects.push_back(p_Saw);
+		player2.setSawActive(true);
+		if (!gameOver) Mix_PlayChannel(-1, gSawFX, 0);
+	}
+	else {
+		for (iterSaw = listOfSawObjects.begin(); iterSaw != listOfSawObjects.end();) {
+			if (player1.getSawActive() && player == PLAYER_1) {					// if saw is active
+				player1.setSawActive(false);									// hide saw
+				iterSaw = listOfSawObjects.erase(iterSaw);						// erase
+			}
+			else if (player2.getSawActive() && player == PLAYER_2) {			// if saw is active
+				player2.setSawActive(false);									// hide saw
+				iterSaw = listOfSawObjects.erase(iterSaw);						// erase
+			}
+			else {
+				iterSaw++;
+			}
+		}
+	}
 }
 
 bool checkCollision(SDL_Rect a, SDL_Rect b) {
@@ -1815,7 +1813,7 @@ void Game::collisionCheck() {
 			if (!player1Flash) managePlayerHealth(PLAYER_1, listOfEnemyLaserObjects[index]->getScore());
 			listOfEnemyLaserObjects[index]->setAlive(false);
 		}
-		else if (checkCollision(listOfEnemyLaserObjects[index]->getCollider(), player2.getCollider()) == true) {
+		if (checkCollision(listOfEnemyLaserObjects[index]->getCollider(), player2.getCollider()) == true) {
 			if(!player2Flash) managePlayerHealth(PLAYER_2, listOfEnemyLaserObjects[index]->getScore());				// If the player isn't flashing -> has been hit
 			listOfEnemyLaserObjects[index]->setAlive(false);
 		}
@@ -1826,8 +1824,10 @@ void Game::managePlayerHealth(int player, int score, std::string name) {
 		player1Flash = true;										// Flash on collision with Game Object
 		player1.setHealth(player1.getHealth() - score);
 
-		if (player1.getNumLives() <= 0)
+		if (player1.getNumLives() <= 0) {
+			player1.setSawActive(false);
 			player1.setAlive(false);
+		}
 		else if (player1.getHealth() <= 0 && player1.getAlive()){
 			player1.setNumLives(player1.getNumLives() - 1);
 			if(player1.getNumLives() > 0) spawnPlayer(PLAYER_1);
@@ -1838,8 +1838,10 @@ void Game::managePlayerHealth(int player, int score, std::string name) {
 		player2Flash = true;										// Flash on collision with Game Object
 		player2.setHealth(player2.getHealth() - score);
 
-		if (player2.getNumLives() <= 0)
+		if (player2.getNumLives() <= 0) {
+			player2.setSawActive(false);
 			player2.setAlive(false);
+		}
 		else if (player2.getHealth() <= 0 && player2.getAlive()) {
 			player2.setNumLives(player2.getNumLives() - 1);
 			if(player2.getNumLives() > 0) spawnPlayer(PLAYER_2);
@@ -1856,7 +1858,7 @@ void Game::managePlayerHealth(int player, int score, std::string name) {
 		if (player == PLAYER_1 && player1.getAlive()) std::cout << "Player 1 has collided with " << name << "! Health: " << player1.getHealth();
 		if (player == PLAYER_2 && player2.getAlive()) std::cout << "Player 2 has collided with " << name << "! Health: " << player2.getHealth();
 	}
-	if (score < 0 && !gameOver) std::cout << "Player" << player << " has received a power up of " << -score << " health";
+	else if (score < 0 && !gameOver) std::cout << "Player" << player << " has received a power up of " << -score << " health";
 }
 void renderHealthBar(int x, int y, int w, int h, float Percent, SDL_Color FGColor, SDL_Color BGColor, int orientation) {	// Horizontal healthbar 2017/01/20 added if statement to decide orientation of health bar
 	SDL_Rect fgrect;

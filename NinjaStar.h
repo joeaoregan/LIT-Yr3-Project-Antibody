@@ -13,7 +13,7 @@ public:
 	~NinjaStar();
 	
 	virtual void movement();				// Moves the Ninja Star	
-	void render(int player);				// Shows the Ninja Star on the screen - 2017/01/17 Add player decision
+	void render(int player, LTexture &texture, SDL_Renderer *rend);				// Shows the Ninja Star on the screen - 2017/01/17 Add player decision
 	virtual void spawn(int x, int y, SDL_Rect collider);
 };
 

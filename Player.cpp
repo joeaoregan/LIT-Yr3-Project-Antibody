@@ -33,8 +33,9 @@ Player::Player() {
 	setVelX(0);
 	setVelY(0);
 	setVelocity(VELOCITY);
-	mCollider.w = getWidth();
-	mCollider.h = getHeight();
+
+	setColliderWidth(getWidth());
+	setColliderHeight(getHeight());
 
 	setSawActive(false);
 	setScore(0);
@@ -55,8 +56,9 @@ Player::Player(LTexture &dark, LTexture &medium, LTexture &light) {
 	setVelX(0);
 	setVelY(0);
 	setVelocity(VELOCITY);
-	mCollider.w = getWidth();
-	mCollider.h = getHeight();
+
+	setColliderWidth(getWidth());
+	setColliderHeight(getHeight());
 
 	setSawActive(false);
 	setScore(0);
@@ -71,14 +73,20 @@ Player::Player(LTexture &dark, LTexture &medium, LTexture &light) {
 	drawParticle = true;
 }
 
+// 2017/01/22 Separated player render() from game.cpp
+void Player::render(LTexture &player, LTexture &dark, LTexture &medium, LTexture &light, LTexture &shimmer, LTexture &lives, SDL_Renderer *rend) {
+	if (getAlive()) {																			// 2017/01/22 If the player is alive render the player, with particles
+		renderParticles(dark, medium, light, shimmer, rend);
+		player.render(getX(), getY(), rend);
+	}
 
-void Player::render(LTexture &texture, LTexture &one, LTexture &two, LTexture &three, LTexture &four, SDL_Renderer *rend) {
-	renderParticles(one, two, three, four, rend);					// Show particles on top of dot
-
-	texture.render(getX(), getY(), rend);							// Show the dot 2017-01-20 Moved after, so ship is on top of particles
+	if (getNumLives() > 0)
+		lives.render(10, SCREEN_HEIGHT - lives.getHeight() - 10, rend);							// Display the players lives
+	if (getNumLives() > 1)
+		lives.render(10 + lives.getWidth(), SCREEN_HEIGHT - lives.getHeight() - 10, rend);
+	if (getNumLives() > 2)
+		lives.render(10 + (lives.getWidth() * 2), SCREEN_HEIGHT - lives.getHeight() - 10, rend);
 }
-
-
 
 void Player::renderParticles(LTexture &one, LTexture &two, LTexture &three, LTexture &four, SDL_Renderer *rend) {
 	//Go through particles
@@ -117,7 +125,8 @@ void Player::handleEvent(SDL_Event& e, int player, bool playerAlive) {	// 2017/0
 				// FIRE WEAPON
 				case SDLK_SPACE: game1.spawnLaser(getX(), getY(), 1, 20, 1); break;	// TEST NEW WEAPON
 				case SDLK_n: game1.spawnNinjaStar(getX(), getY(), 1); break;
-				case SDLK_e: game1.spawnSaw(getX(), getY(), 1, getSawActive()); break;			// 2017/01/17 Saw Weapon added, check saw is active with if statement in spawn Saw, and activate/deactivate the weapon
+				//case SDLK_e: game1.spawnSaw(getX(), getY(), 1, getSawActive()); break;			// 2017/01/17 Saw Weapon added, check saw is active with if statement in spawn Saw, and activate/deactivate the weapon
+				case SDLK_e: game1.spawnSaw(getX(), getY(), 1); break;			// 2017/01/17 Saw Weapon added, check saw is active with if statement in spawn Saw, and activate/deactivate the weapon 2017/01/23 setting saw active not correct
 				case SDLK_f: setSpeedBoost(true); break;
 			}
 		}
@@ -143,7 +152,8 @@ void Player::handleEvent(SDL_Event& e, int player, bool playerAlive) {	// 2017/0
 			//case SDLK_e: game1.spawnLaser(getX(), getY()); break; // SEAN: Press space bar to spawn a new laser
 			case SDLK_RCTRL: game1.spawnLaser(getX(), getY(), 2); break;
 			case SDLK_RSHIFT: game1.spawnNinjaStar(getX(), getY(), 2); break;
-			case SDLK_r: game1.spawnSaw(getX(), getY(), 2, getSawActive()); break;			// 2017/01/17 Separate saw for player 2
+			//case SDLK_r: game1.spawnSaw(getX(), getY(), 2, getSawActive()); break;			// 2017/01/17 Separate saw for player 2
+			case SDLK_r: game1.spawnSaw(getX(), getY(), 2); break;			// 2017/01/17 Separate saw for player 2 2017/01/23 setting saw active not correct
 			case SDLK_g: setSpeedBoost(true); break;
 			}
 		}
@@ -265,8 +275,10 @@ void Player::movement() {
 		setY(getY() - getVelY());										// Move back
 	}
 
-	mCollider.x = getX();												// Only needed once if you check after movement
-	mCollider.y = getY();
+	//mCollider.x = getX();												// Only needed once if you check after movement
+	//mCollider.y = getY();
+	setColliderX(getX());
+	setColliderY(getY());
 }
 
 void Player::gameControllerDPad(SDL_Event& e) {
@@ -331,7 +343,8 @@ void Player::gameControllerButton(SDL_Event& e) {
 		std::cout << "Ninja Star Button: " << (int)e.jbutton.button << std::endl;	// shows which button has been pressed
 	}
 	if (e.jbutton.button == 2) {
-		game1.spawnSaw(getX(), getY(), 2, getSawActive());											// Saw Weapon
+		//game1.spawnSaw(getX(), getY(), 2, getSawActive());							// Saw Weapon
+		game1.spawnSaw(getX(), getY(), 2);											// Saw Weapon 2017/01/23 setting saw active not correct
 		std::cout << "Saw Button: " << (int)e.jbutton.button << std::endl;			// shows which button has been pressed
 	}
 	if (e.jbutton.button == 3) {
@@ -381,16 +394,16 @@ void Player::resetPreviousDirection() {
 }
 
 // Collisiona
-SDL_Rect Player::getCollider() {
-	return mCollider;
-}
-void Player::setShipColX(int x) {
-	mCollider.x = x;
-}// end setX
-void Player::setShipColY(int y)
-{
-	mCollider.y = y;
-}// end setY
+//SDL_Rect Player::getCollider() {
+//	return mCollider;
+//}
+//void Player::setShipColX(int x) {
+//	mCollider.x = x;
+//}// end setX
+//void Player::setShipColY(int y)
+//{
+//	mCollider.y = y;
+//}// end setY
 
 // Speed Boost
 bool Player::getSpeedBoost() {

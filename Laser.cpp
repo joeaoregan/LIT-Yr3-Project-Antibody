@@ -70,3 +70,11 @@ void Laser::spawn(int x, int y, SDL_Rect collider) {
 	setVelY(0);
 	setCollider( collider);
 }
+
+// Render the laser objects to the screen // 2017/01/22 Moved from game.cpp
+void Laser::render(int player, LTexture &orange, LTexture &green, SDL_Renderer *rend) {
+	if (player == 1)
+		orange.render(getX(), getY(), rend);
+	else if (player == 2)
+		green.render(getX(), getY(), rend);
+}

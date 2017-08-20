@@ -25,3 +25,7 @@ void PowerUp::movement() {
 	if (getX() < -100) setAlive(false);
 	else setAlive(true);
 }
+
+void PowerUp::render(LTexture &texture, SDL_Renderer *rend) {
+	texture.render(getX(), getY(), rend);
+}

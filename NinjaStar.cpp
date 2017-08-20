@@ -48,3 +48,8 @@ void NinjaStar::spawn(int x, int y, SDL_Rect collider) {
 //SDL_Rect NinjaStar::getNinjaStarCollider(){
 //	return mNinjaStarCollider;
 //}
+
+// Render the Ninja Star objects to the screen
+void NinjaStar::render(int degrees, LTexture &texture, SDL_Renderer *rend) {
+	texture.render(getX(), getY(), rend, NULL, degrees);
+}

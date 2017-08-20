@@ -108,7 +108,11 @@ int GameObject::getMaxHealth() {
 int GameObject::getNumLives() {
 	return m_NumLives;
 }
+LTexture GameObject::getTexture() {
+	return *mTexture;
+}
 
+// Set variables
 void GameObject::setX(int x) {
 	m_x = x;
 }
@@ -177,4 +181,12 @@ void GameObject::setColliderY(int y){
 
 void GameObject::setName(std::string name) {
 	m_Name = name;
+}
+
+void GameObject::setTexture(LTexture *texture) {
+	mTexture = texture;
+}
+
+void GameObject::render(LTexture &texture, SDL_Renderer *rend, int degrees) { // 2017/01/22 Moved from game.cpp 2017/01/23 Moved from LaserEnemy
+	texture.render(getX(), getY(), rend, NULL, degrees);
 }
