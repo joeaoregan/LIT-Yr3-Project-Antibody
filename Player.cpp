@@ -42,6 +42,70 @@ Player::Player() {
 	setNumLives(3);							// works, game is over when both players lives are <= 0
 }
 
+Player::Player(LTexture &dark, LTexture &medium, LTexture &light) {
+	// Initialize the offsets
+	setX(0);
+	setY(SCREEN_HEIGHT / 2);
+
+	setWidth(100);
+	setHeight(47);
+	setHealth(MAX_HEALTH);
+
+	// Initialize the velocity
+	setVelX(0);
+	setVelY(0);
+	setVelocity(VELOCITY);
+	mCollider.w = getWidth();
+	mCollider.h = getHeight();
+
+	setSawActive(false);
+	setScore(0);
+	setAlive(false);
+	setNumLives(3);							// works, game is over when both players lives are <=
+
+											//Initialize particles
+	for (int i = 0; i < TOTAL_PARTICLES; ++i) {
+		particles[i] = new Particle(getX(), getY(), dark, medium, light);
+	}
+
+	drawParticle = true;
+}
+
+
+void Player::render(LTexture &texture, LTexture &one, LTexture &two, LTexture &three, LTexture &four, SDL_Renderer *rend) {
+
+	renderParticles(one, two, three, four, rend);					// Show particles on top of dot
+
+	texture.render(getX(), getY(), rend);								// Show the dot 2017-01-20 Moved after, so ship is on top of particles
+}
+
+
+
+void Player::renderParticles(LTexture &one, LTexture &two, LTexture &three, LTexture &four, SDL_Renderer *rend) {
+	//Go through particles
+	for (int i = 0; i < TOTAL_PARTICLES; ++i) {
+		//Delete and replace dead particles
+		if (particles[i]->isDead(getDrawParticle())) {
+			delete particles[i];
+			particles[i] = new Particle(getX() + 9, getY() + 30, one, two, three);
+		}
+	}
+
+	//Show particles
+	for (int i = 0; i < TOTAL_PARTICLES; ++i) {
+		particles[i]->render(four, rend);
+	}
+}
+
+bool Player::getDrawParticle() {
+	return drawParticle;
+}
+void Player::setDrawParticle(bool p) {
+	drawParticle = p;
+}
+
+
+
 void Player::handleEvent(SDL_Event& e, int player) {
 	if (player == 1) {
 		if (e.type == SDL_KEYDOWN && e.key.repeat == 0) {

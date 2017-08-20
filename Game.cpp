@@ -1,7 +1,7 @@
 // 09/01 Edited background to be 800 x 600 instead of 600 * 480
 
 /*
-    Game Over, Lives, New Weapon
+    Particles
 
     2017-08-11:
         Joe: Change window title
@@ -32,6 +32,20 @@
 #include "WhiteBloodCell.h"
 #include "PowerUp.h"				// 2017/01/10 SEAN: Added Power Up
 #include "LaserEnemy.h"
+#include "Particle.h"
+
+#define SPAWN_NUM_ENEMY_SHIPS 1			// WAS 2
+#define SPAWN_NUM_ENEMY_VIRUS 1			// WAS 2
+#define SPAWN_NUM_BLOOD_CELL 4			// WAS 6
+#define SPAWN_NUM_BLOOD_CELL_S 5		// WAS 9
+#define SPAWN_NUM_BLOOD_CELL_WHITE 2	// WAS 3
+#define SPAWN_NUM_POWER_UPS 1
+
+// Particles
+LTexture gDarkBlueParticleTexture;
+LTexture gMediumBlueParticlTexture;
+LTexture gLightBlueParticleTexture;
+LTexture gShimmerTexture;
 
 // Render Healthbars
 enum healthBarOrientation { VERTICAL, HORIZONTAL };
@@ -40,9 +54,9 @@ void renderHealthBar(int x, int y, int w, int h, float Percent, SDL_Color FGColo
 #define PLAYER_1 1
 #define PLAYER_2 2
 #define NUM_PLAYERS 2
-#define BACKGROUND_SCROLL_TIMES 5
+#define BACKGROUND_SCROLL_TIMES 20
 #define MAX_HEALTH 100.0
-#define GAME_TIMER 15				// Time to start counting down from in seconds
+#define GAME_TIMER 60				// Time to start counting down from in seconds
 #define NUMBER_OF_SONGS = 3;
 
 // Time
@@ -125,8 +139,8 @@ TTF_Font *gFont = NULL;				// Globally used font
 TTF_Font *gFont2 = NULL;
 std::string l1Objective = "Destroy enemy virus and ships\nThe player with the highest score\nIs the winner";
 
-Player player1;						// SEAN: Move ship object outside of main so spawnLaser funtion can use it
-Player player2;						// Declare a ship object that will be moving around on the screen
+//Player player1;						// SEAN: Move ship object outside of main so spawnLaser funtion can use it
+//Player player2;						// Declare a ship object that will be moving around on the screen
 
 // Scene textures
 LTexture gBGTexture;				// Background
@@ -192,8 +206,13 @@ std::list<WhiteBloodCell*>::const_iterator iterWBC;
 //std::list<NinjaStar*> listOfNinjaStarObjects;			// 2017/01/09 JOE: List to store Ninja Star objects
 //std::list<NinjaStar*>::const_iterator iterNS;			// 2017/01/09 JOE: Create global iterators to cycle through laser objects - Make them read only
 
+Player player1(gDarkBlueParticleTexture, gMediumBlueParticlTexture, gLightBlueParticleTexture);
+Player player2(gDarkBlueParticleTexture, gMediumBlueParticlTexture, gLightBlueParticleTexture);
+
 bool init() {
 	// Test Player stuff
+	//Player player1(gDarkBlueParticleTexture, gMediumBlueParticlTexture, gLightBlueParticleTexture);
+
 	std::cout << player1.getName() << "! Health: " << player1.getHealth() << " " << player2.getName() << "! Health: " << player2.getHealth();
 	player1.setName("Player 1");
 	player2.setName("Player 2");
@@ -250,7 +269,7 @@ bool init() {
 		}
 
 		// Create window
-		gWindow = SDL_CreateWindow("JOURNEY TO THE CENTER OF MY HEADACHE v1.29 by Joe O'Regan & Se\u00E1n Horgan: Game Over, Lives, New Weapon", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);	/* Window name */
+		gWindow = SDL_CreateWindow("JOURNEY TO THE CENTER OF MY HEADACHE v1.30 by Joe O'Regan & Se\u00E1n Horgan: Particles", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);	/* Window name */
 		if (gWindow == NULL) {
 			printf("Window could not be created! SDL Error: %s\n", SDL_GetError());
 			success = false;
@@ -290,6 +309,34 @@ bool init() {
 
 bool loadMedia() {
 	bool success = true;			// Loading success flag
+
+	// Particles
+	//Load Dark Particle texture
+	if (!gDarkBlueParticleTexture.loadFromFile(".\\Art\\particleDarkBlue.bmp", gRenderer)) {
+		printf("Failed to load red texture!\n");
+		success = false;
+	}
+	//Load Medium Particle texture
+	if (!gMediumBlueParticlTexture.loadFromFile(".\\Art\\particleMediumBlue.bmp", gRenderer)) {
+		printf("Failed to load green texture!\n");
+		success = false;
+	}
+	//Load Light Particle texture
+	if (!gLightBlueParticleTexture.loadFromFile(".\\Art\\particleLightBlue.bmp", gRenderer)) {
+		printf("Failed to load blue texture!\n");
+		success = false;
+	}
+	//Load shimmer texture
+	if (!gShimmerTexture.loadFromFile(".\\Art\\shimmer.bmp", gRenderer)) {
+		printf("Failed to load shimmer texture!\n");
+		success = false;
+	}
+
+	//Set texture transparency
+	gDarkBlueParticleTexture.modifyAlpha(150);	// Alpha of 192 gives particles a semi transparent look
+	gMediumBlueParticlTexture.modifyAlpha(150);
+	gLightBlueParticleTexture.modifyAlpha(150);
+	gShimmerTexture.modifyAlpha(150);
 
 	// Open the font
 	//gFont = TTF_OpenFont("22_timing/lazy.ttf", 28);
@@ -332,11 +379,11 @@ bool loadMedia() {
 		printf("Failed to load Player 2 texture!\n");
 		success = false;
 	}
-	if (!gP1LivesTexture.loadFromFile(".\\Art\\Player1ShipSmall.png", gRenderer)) {					// Ship Texture
+	if (!gP1LivesTexture.loadFromFile(".\\Art\\Player1ShipSmall.png", gRenderer)) {				// Ship Texture
 		printf("Failed to load Player 1 Small Ship texture!\n");
 		success = false;
 	}
-	if (!gP2LivesTexture.loadFromFile(".\\Art\\Player2ShipSmall.png", gRenderer)) {					// Ship Texture
+	if (!gP2LivesTexture.loadFromFile(".\\Art\\Player2ShipSmall.png", gRenderer)) {				// Ship Texture
 		printf("Failed to load Player 2 Small Ship texture!\n");
 		success = false;
 	}
@@ -466,7 +513,7 @@ bool loadMedia() {
 		printf("Failed to load rage music! SDL_mixer Error: %s\n", Mix_GetError());
 		success = false;
 	}
-	gMusic3 = Mix_LoadMUS(".\\Music\\/GameSong3.mp3");	// Load music
+	gMusic3 = Mix_LoadMUS(".\\Music\\GameSong3.mp3");	// Load music
 	if (gMusic3 == NULL) {
 		printf("Failed to load rage music! SDL_mixer Error: %s\n", Mix_GetError());
 		success = false;
@@ -522,6 +569,12 @@ bool loadMedia() {
 }
 
 void Game::close() {
+	// Particles
+	gDarkBlueParticleTexture.free();
+	gMediumBlueParticlTexture.free();
+	gLightBlueParticleTexture.free();
+	gShimmerTexture.free();
+
 	// Free loaded images
 	gPlayer1Texture.free();
 	gPlayer2Texture.free();
@@ -613,6 +666,7 @@ void Game::update(){
 		if (!loadMedia()) {
 			printf("Failed to load media!\n");
 		} else {
+			//Player player1(gDarkBlueParticleTexture, gMediumBlueParticlTexture, gLightBlueParticleTexture);
 
 			bool quit = false;							// Main loop flag
 
@@ -1108,10 +1162,12 @@ void Game::renderGameObjects() {
 		// Set the Alpha value for player when flashing
 		gPlayer1Texture.modifyAlpha(player1Alpha);
 		player1.render();							// render the ship over the background
+		//player1.render(gPlayer1Texture, gDarkBlueParticleTexture, gMediumBlueParticlTexture, gLightBlueParticleTexture, gShimmerTexture, gRenderer);
 		//SDL_RenderDrawRect(gRenderer, &player1.getCollider());
 
 		gPlayer2Texture.modifyAlpha(player2Alpha);
 		player2.render();							// render the ship over the background
+		//player2.render(gPlayer2Texture, gDarkBlueParticleTexture, gMediumBlueParticlTexture, gLightBlueParticleTexture, gShimmerTexture, gRenderer);
 		//SDL_RenderDrawRect(gRenderer, &player2.getCollider());
 	}
 	else if (gameOver == true) {
@@ -1294,24 +1350,22 @@ void Game::spawnMovingObjects() {
 
 	if (!player1.getAlive() && !player2.getAlive()) gameOver = true;
 
-
-
-	if (listOfEnemyShips.size() <= 1) {
+	if (listOfEnemyShips.size() < SPAWN_NUM_ENEMY_SHIPS) {
 		spawnEnemyShip();
 	}
-	if (listOfEnemyVirus.size() < 2) {
+	if (listOfEnemyVirus.size() < SPAWN_NUM_ENEMY_VIRUS) {
 		spawnEnemyVirus();
 	}
-	if (listOfBloodCells.size() <= 5) {
+	if (listOfBloodCells.size() < SPAWN_NUM_BLOOD_CELL) {
 		spawnBloodCell();
 	}
-	if (listOfSmallBloodCells.size() <= 8) {
+	if (listOfSmallBloodCells.size() < SPAWN_NUM_BLOOD_CELL_S) {
 		spawnSmallBloodCell();
 	}
-	if(listOfWhiteBloodCells.size() <= 2) {
+	if(listOfWhiteBloodCells.size() < SPAWN_NUM_BLOOD_CELL_WHITE) {
 		spawnWhiteBloodCell();
 	}
-	if (listOfPowerUps.size() == 0) {
+	if (listOfPowerUps.size() < SPAWN_NUM_POWER_UPS) {
 		spawnPowerUp();
 	}
 }
@@ -1476,7 +1530,9 @@ void Game::spawnSaw(int x, int y, int player, bool sawActive) {		// player to sp
 }
 
 void Player::render() {
-	if (player1.getAlive()) gPlayer1Texture.render(player1.getX(), player1.getY(), gRenderer);	// Show P1 ship
+	//if (player1.getAlive()) gPlayer1Texture.render(player1.getX(), player1.getY(), gRenderer);	// Show P1 ship
+	player1.render(gPlayer1Texture, gDarkBlueParticleTexture, gMediumBlueParticlTexture, gLightBlueParticleTexture, gShimmerTexture, gRenderer);
+
 	if (player1.getNumLives() > 0)
 		gP1LivesTexture.render(10, SCREEN_HEIGHT - gP1LivesTexture.getHeight() - 10, gRenderer);
 	if (player1.getNumLives() > 1)
@@ -1484,7 +1540,9 @@ void Player::render() {
 	if (player1.getNumLives() > 2)
 		gP1LivesTexture.render(10 + (gP1LivesTexture.getWidth() * 2), SCREEN_HEIGHT - gP1LivesTexture.getHeight() - 10, gRenderer);
 
-	if (player2.getAlive()) gPlayer2Texture.render(player2.getX(), player2.getY(), gRenderer);	// Show P2 ship
+	//if (player2.getAlive()) gPlayer2Texture.render(player2.getX(), player2.getY(), gRenderer);	// Show P2 ship
+	player2.render(gPlayer2Texture, gDarkBlueParticleTexture, gMediumBlueParticlTexture, gLightBlueParticleTexture, gShimmerTexture, gRenderer);
+
 	if (player2.getNumLives() > 0)
 		gP2LivesTexture.render(SCREEN_WIDTH - gP2LivesTexture.getWidth() - 10, SCREEN_HEIGHT - gP2LivesTexture.getHeight() - 10, gRenderer);
 	if (player2.getNumLives() > 1)

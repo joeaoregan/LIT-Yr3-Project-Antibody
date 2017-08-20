@@ -2,6 +2,7 @@
 #define PLAYER_H
 
 #include "GameObject.h"
+#include "Particle.h"
 
 // The Player ship that will move around on the screen
 
@@ -13,9 +14,13 @@ Fixed dimensions of ship
 JOE: Moved functionality common to game objects to GameObjects class reducing the code
 */
 
+const int TOTAL_PARTICLES = 20;	// Particle count
+
+
 class Player : public GameObject {
 public:				
 	Player();							// Initializes the variables
+	Player(LTexture &dark, LTexture &medium, LTexture &light);				// 2017/01/20 Particles
 
 	SDL_Rect mCollider;				// Players Hit Box
 
@@ -48,9 +53,21 @@ public:
 	void setSawActive(bool active);
 
 	bool sawActive;
+
+	void render(LTexture &texture, LTexture &one, LTexture &two, LTexture &three, LTexture &four, SDL_Renderer *rend);	// Shows the ship with particles on the screen
+	bool getDrawParticle();
+	void setDrawParticle(bool p);
 private:
 	bool mSpeedBoost;
 	unsigned int mBoostStartTime;
+
+
+
+	Particle* particles[TOTAL_PARTICLES];	// The particles
+
+	void renderParticles(LTexture &one, LTexture &two, LTexture &three, LTexture &four, SDL_Renderer *rend);
+
+	bool drawParticle;
 };
 
 #endif
