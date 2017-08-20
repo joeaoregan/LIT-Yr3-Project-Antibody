@@ -18,6 +18,8 @@
 Laser::Laser()
 {
 	std::cout << "Laser constuctor called.\n";
+	mLaserCollider.w = LASER_WIDTH;
+	mLaserCollider.h = LASER_HEIGHT;
 }// end Laser constructor
 
 void Laser::spawn(int x, int y, int velocity) {
@@ -28,6 +30,7 @@ void Laser::spawn(int x, int y, int velocity) {
 
 void Laser::move() {
 	mPosX += mVelX; 											// Move the ship left or right
+	mLaserCollider.x = mPosX;
 
 	// destroy laser beam once it is offscreen
 	if (getLaserX() > 645) mAlive = false;
@@ -46,10 +49,11 @@ int Laser::getLaserX() {
 	return mPosX;
 }
 
-int Laser::getLaserY() {
-	return mPosY;
-}
-
 bool Laser::getLaserAlive() {
 	return mAlive;
+}
+
+SDL_Rect Laser::getLaserCollider()
+{
+	return mLaserCollider;
 }

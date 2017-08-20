@@ -10,6 +10,8 @@
 #ifndef GAME_H
 #define GAME_H
 
+#include <iostream>
+
 class Game {
 public:
 	//bool init();					// Starts up SDL and creates window -- ERROR window won't close
