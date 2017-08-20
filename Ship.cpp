@@ -7,13 +7,23 @@ Added asdw keyboard movement
 */
 Game weapon;
 Ship::Ship() {
+	// Set dimensions
+	setWidth(100);
+	setHeight(47);
+
 	// Initialize the offsets
 	setX(0);
 	setY(SCREEN_HEIGHT / 2);
 
+	setColliderR(getWidth() / 2);		// Set circular collider
+
 	// Initialize the velocity
 	setVelX(0);
 	setVelY(0);
+	setVelocity(10);
+
+	setColliderWidth(getWidth());
+	setColliderHeight(getHeight());
 }
 
 void Ship::handleEvent(SDL_Event& e) {
@@ -23,13 +33,13 @@ void Ship::handleEvent(SDL_Event& e) {
 		// Adjust the velocity
 		switch (e.key.keysym.sym) {
 		case SDLK_UP:
-		case SDLK_w: setVelY(getVelY() - SHIP_VEL); break;
+		case SDLK_w: setVelY(getVelY() - getVelocity()); break;
 		case SDLK_DOWN:
-		case SDLK_s: setVelY(getVelY() + SHIP_VEL); break;
+		case SDLK_s: setVelY(getVelY() + getVelocity()); break;
 		case SDLK_LEFT:
-		case SDLK_a: setVelX(getVelX() - SHIP_VEL); break;
+		case SDLK_a: setVelX(getVelX() - getVelocity()); break;
 		case SDLK_RIGHT:
-		case SDLK_d: setVelX(getVelX() + SHIP_VEL); break;
+		case SDLK_d: setVelX(getVelX() + getVelocity()); break;
 
 
 		// SELECT WEAPON
@@ -48,13 +58,13 @@ void Ship::handleEvent(SDL_Event& e) {
 		// Adjust the velocity
 		switch (e.key.keysym.sym) {
 		case SDLK_UP:
-		case SDLK_w: setVelY(getVelY() + SHIP_VEL); break;
+		case SDLK_w: setVelY(getVelY() + getVelocity()); break;
 		case SDLK_DOWN:
-		case SDLK_s: setVelY(getVelY() - SHIP_VEL); break;
+		case SDLK_s: setVelY(getVelY() - getVelocity()); break;
 		case SDLK_LEFT:
-		case SDLK_a: setVelX(getVelX() + SHIP_VEL); break;
+		case SDLK_a: setVelX(getVelX() + getVelocity()); break;
 		case SDLK_RIGHT:
-		case SDLK_d: setVelX(getVelX() - SHIP_VEL); break;
+		case SDLK_d: setVelX(getVelX() - getVelocity()); break;
 		}
 	}
 }
@@ -64,14 +74,31 @@ void Ship::movement() {
 	//setX(getX() + getVelX());											// Move the ship left or right	
 
 	// If the ship went too far to the left or right
-	if ((getX() < 0) || ((getX() + SHIP_WIDTH) > SCREEN_WIDTH)) {
+	if ((getX() < 0) || ((getX() + getWidth()) > SCREEN_WIDTH)) {
 		setX(getX() - getVelX());										// Move back
 	}
 
 	setY(getY() + getVelY());											// Move the ship up or down
 
 	// If the ship went too far up or down
-	if ((getY() < 40) || ((getY() + SHIP_HEIGHT) > SCREEN_HEIGHT - 40)) {
+	if ((getY() < 40) || ((getY() + getHeight()) > SCREEN_HEIGHT - 40)) {
 		setY(getY() - getVelY());										// Move back
 	}
+}
+
+void Ship::movement(SDL_Rect& square, Circle& circle) {
+	GameObject::movement(square, circle);
+	//setX(getX() + getVelX());											// Move the ship left or right	
+
+	// If the ship went too far to the left or right
+	if ((getX() < 0) || ((getX() + getWidth()) > SCREEN_WIDTH)) {
+		setX(getX() - getVelX());										// Move back
+	}
+
+	//setY(getY() + getVelY());											// Move the ship up or down
+
+	// If the ship went too far up or down
+	//if ((getY() < 40) || ((getY() + SHIP_HEIGHT) > SCREEN_HEIGHT - 40)) {
+	//	setY(getY() - getVelY());										// Move back
+	//}
 }

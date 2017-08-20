@@ -8,6 +8,8 @@ JOE: Moved functionality common to game objects to GameObjects class reducing th
 #include <SDL_image.h>
 #include "LTexture.h"
 #include <iostream>
+#include <stdio.h>
+#include <string>
 
 class GameObject
 {
@@ -15,35 +17,72 @@ public:
 	GameObject();
 	~GameObject();				// Deconstructor
 
+	struct Circle {	// needs to be before movement()
+		int x, y;
+		int r;
+	};
+
 	virtual void spawn();
 	virtual void spawn(int x, int y);
 	void spawn(int x, int y, int vx);
 	void spawn(int x, int y, int vx, int vy);
 	virtual void movement();
+	void movement(SDL_Rect& square, Circle& circle);
 	//void render();
+	void renderTexture(LTexture ltexture, int x, int y);
 	//void renderTexture(LTexture renderThis);
 
 	int getX();					// Get GameObject X coord
 	int getY();					// Get GameObject Y coord
 	int getVelX();
 	int getVelY();
+	int getVelocity();
 	bool getAlive();
+
+	int getWidth();
+	int getHeight();
 
 	void setX(int x);			// Set GameObject X coord
 	void setY(int y);			// Set GameObject Y coord
 	void setVelX(int x);
 	void setVelY(int y);
-	void setAlive(bool alive);
+	void setVelocity(int v);
+	void setAlive(bool alive); 
+	void setWidth(int w);		// set the objects width
+	void setHeight(int h);		// set the objects height
+
+	// Collision stuff
+	void setColliderX(int x);					// get the ships X position
+	void setColliderY(int y);					// get the ships Y position
+	bool checkCollision(Circle& a, Circle& b);
+	bool checkCollision(Circle& a, SDL_Rect& b);
+
+	double distanceSquared(int x1, int y1, int x2, int y2);	 // Calculates distance squared between two points - optimisation
+
+	Circle getCircleCollider();
+
+	SDL_Rect getCollider();
+	SDL_Rect mCollider;
+
+	void setCollider(Circle c);
+
+	void setColliderR(int r);
+	void setColliderWidth(int w);
+	void setColliderHeight(int h);
+
+	void shiftColliders();
 
 private:
 	// GameObject Variables
-	int m_health;				// Value between 0 and 160
-	int m_speed;				// Value between 1 and 4
-	int m_x;					// GameObject x coord
-	int m_y;					// GameObject y coord
-	int m_xVel;
-	int m_yVel;
-	bool m_Alive;				// Is the weapon active on screen
+	int m_health;					// Value between 0 and 160
+	int m_speed;					// Value between 1 and 4
+	int m_x, m_y;					// GameObject coords
+	int m_xVel, m_yVel, m_Velocity;	// Velocity
+
+	int m_Width, m_Height;			// Dimensions
+	bool m_Alive;					// Is the weapon active on screen
+
+	Circle mColliderCirc;
 };
 
 #endif

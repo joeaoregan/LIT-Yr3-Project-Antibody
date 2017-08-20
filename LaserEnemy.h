@@ -9,17 +9,11 @@ JOE: Added Laser For Enemy ship
 class LaserEnemy : public Weapon {
 public:
 	LaserEnemy();						// Initializes the variables
-	~LaserEnemy();
+	~LaserEnemy();						// Destructor
 
-	// The dimensions of the laser (dimensions of sprite image)
-	static const int LASER_E_WIDTH = 50;
-	static const int LASER_E_HEIGHT = 5;
-
-	static const int LASER_E_VEL = 15;	// Maximum axis velocity of the laser
-
-	virtual void movement();			// Moves the laser	
+	virtual void movement();			// Moves the laser
 	void render();						// Shows the laser on the screen
-	virtual void spawn(int x, int y);
+	virtual void spawn(int x, int y);	// Spawn the laser at the coords provided
 };
 
-#endif#pragma once
+#endif

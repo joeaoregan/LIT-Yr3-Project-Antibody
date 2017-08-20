@@ -18,14 +18,19 @@ JOE: Moved functionality common to game objects to GameObjects class reducing th
 #include "Ship.h"
 
 // Laser Constructor
-Laser::Laser()
-{
+Laser::Laser() {
 	std::cout << "Laser constuctor called.\n";
+
+	setWidth(50);
+	setHeight(5);
+	setVelocity(15);
+
+	mLaserCollider.w = getWidth();
+	mLaserCollider.h = getHeight();
 }
 
 // Laser Destructor
-Laser::~Laser()
-{
+Laser::~Laser() {
 	std::cout << "Laser destructor called.\n";
 }
 
@@ -40,6 +45,19 @@ void Laser::movement() {
 void Laser::spawn(int x, int y) {
 	setX(x + 65);
 	setY(y + 30);
-	setVelX(LASER_VEL);
+	setVelX(getVelocity());
 	setVelY(0);
+}
+
+void Laser::spawn(int x, int y, SDL_Rect collider) {
+	setX(x + 65);
+	setY(y + 30);
+	setVelX(getVelocity());
+	setVelY(0);
+	mLaserCollider = collider;
+}
+
+SDL_Rect Laser::getLaserCollider()
+{
+	return mLaserCollider;
 }

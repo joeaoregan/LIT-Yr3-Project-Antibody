@@ -8,8 +8,6 @@ class Weapon : public GameObject {
 public:
 	Weapon();
 	~Weapon();
-
-private:
 };
 
 #endif

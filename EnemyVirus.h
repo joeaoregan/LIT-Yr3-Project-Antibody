@@ -7,15 +7,10 @@
 class EnemyVirus : public Enemy {
 public:
 	EnemyVirus();							// Initializes the variables
-	~EnemyVirus();
-
-	// The dimensions of the Enemy (dimensions of sprite image)
-	//static const int ENEMY_WIDTH = 100;
-	//static const int ENEMY_HEIGHT = 47;
-
-	static const int VIRUS_VEL = 3;		// 2017/01/10 JOE: Maximum axis velocity of the Enemy Virus (Slower than a ship)
-
+	~EnemyVirus();							// Destructor
+	
 	virtual void movement(int playerX, int playerY);
+	//virtual void movement(int shipX, int shipY, SDL_Rect& square, Circle& circle); // 2017-01-10e collisions
 	void render();							// Shows the Enemy on the screen
 };
 

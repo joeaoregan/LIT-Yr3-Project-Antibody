@@ -1,31 +1,36 @@
 #include "EnemyVirus.h"
 
 EnemyVirus::EnemyVirus() {
+	setWidth(75);
+	setHeight(75);
 
+	setVelocity(3);
+
+	setColliderWidth(getWidth());
+	setColliderHeight(getHeight());
 }
 
 EnemyVirus::~EnemyVirus() {
 
 }
 
-
-//void EnemyVirus::movement(Ship ship) {	// No need for full ship object, just ship y coord will do
 void EnemyVirus::movement(int shipX, int shipY) {
 	GameObject::movement();
 	
 	if (getX() > shipX) {
 		if (getY() - shipY >= 0) {
-			if (getY() - shipY >= VIRUS_VEL)
-				setY(getY() - VIRUS_VEL);			// No need to make smaller movements, as velocity is v.low anyway
+			if (getY() - shipY >= getVelocity())
+				setY(getY() - getVelocity());			// No need to make smaller movements at the moment, as velocity is v.low anyway
 		}
 		else if (getY() - shipY < 0) {
-			setY(getY() + VIRUS_VEL);
+			setY(getY() + getVelocity());
 		}
 	}
-	//else if (getY() - ship.getY() > 0 && getY() - ship.getY() < VIRUS_VEL)
-	//	setY(getY() - ship.getY());
+
+	setColliderX(getX());
+	setColliderY(getY());
 
 	// destroy enemy ship once it is offscreen
-	if (getX() < -100) setAlive(false);
+	if (getX() < -getWidth()) setAlive(false);
 	else setAlive(true);
 }

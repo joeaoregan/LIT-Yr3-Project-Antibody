@@ -11,7 +11,6 @@ LTexture::~LTexture() {
 	free();						// Deallocate
 }
 
-
 void LTexture::free() {
 	// Free texture if it exists
 	if (mTexture != NULL) {

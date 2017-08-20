@@ -17,17 +17,16 @@ JOE: Moved functionality common to game objects to GameObjects class reducing th
 class Laser : public Weapon {
 public:
 	Laser();							// Initializes the variables
-	~Laser();
-
-	// The dimensions of the laser (dimensions of sprite image)
-	static const int LASER_WIDTH = 50;
-	static const int LASER_HEIGHT = 5;
-
-	static const int LASER_VEL = 15;	// Maximum axis velocity of the laser
+	~Laser();							// Destructor
 		
 	virtual void movement();			// Moves the laser	
 	void render();						// Shows the laser on the screen
-	virtual void spawn(int x, int y);
+	virtual void spawn(int x, int y);	// Spawn the object at the dimensions provided
+	virtual void spawn(int x, int y, SDL_Rect collider);
+	SDL_Rect getLaserCollider();
+
+private:
+	SDL_Rect mLaserCollider;
 };
 
 #endif
