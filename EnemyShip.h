@@ -21,6 +21,7 @@ public:
 	//void moveEnemy();						// Moves the Enemy	
 	virtual void movement();
 	void render();							// Shows the Enemy on the screen
+	int getESwidth();						// get the width of an enemy ship
 	
 	//int getEnemyX();
 	//int getEnemyY();

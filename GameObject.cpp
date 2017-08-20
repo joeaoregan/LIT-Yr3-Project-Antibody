@@ -34,7 +34,14 @@ void GameObject::spawn(int x, int y, int vx) {
 	m_x = x;
 	m_y = y;
 	m_xVel = vx;
-	m_yVel = 0;
+	m_yVel = vx;	// 2017-01-10 JOE: use same velocity for x and y
+}
+
+void GameObject::spawn(int x, int y, int vx, int vy) {
+	m_x = x;
+	m_y = y;
+	m_xVel = vx;
+	m_yVel = vy;	// 2017-01-10 JOE: use same velocity for x and y
 }
 
 void GameObject::movement() {

@@ -1,7 +1,7 @@
 // 09/01 Edited background to be 800 x 600 instead of 600 * 480
 
 /*
-    Enemy Virus Moves Towards Player Ship
+    Random Enemy spawning, Blood Cells added, and better Enemy Virus movement
 
     2017-08-11:
         Joe: Change window title
@@ -20,9 +20,12 @@
 #include "EnemyVirus.h"			// 2017/01/10 JOE: Added Seans virus enemy
 #include "Laser.h"
 #include "NinjaStar.h"
+#include "BloodCell.h"			// 2017/01/10 JOE: Added Blood Cell
+#include "BloodCellSmall.h"		// 2017/01/10 JOE: Added Small Blood Cell
 
 //The music that will be played
 Mix_Music *gMusic = NULL;		// Mix_Music: Data type for music
+//Mix_Music *gEngineFX = NULL;	// 2017/01/10 JOE: Change Engine effect to music, turn off when no enemy ship on screen
 
 //The sound effects that will be used (pointers)
 Mix_Chunk *gNinjaFX = NULL;		// 2017/01/09 JOE: SOUND - Mix_Chunk: Data type for short sounds
@@ -39,6 +42,8 @@ Uint8 a = 0;					// Modulation component
 int scrollingOffset = 0;		// 2017/01/10 JOE: Declare the background scrolling offset (Moved as stops background scrolling when in the render function)
 
 int degrees = 0;
+int degreesBC = 0;				// 2017/01/10 JOE: Added degrees for blood cell rotation
+int degreesBCS = 0;
 int alphaUp = 5, alphaDown = 5;
 
 //Scene textures
@@ -48,6 +53,8 @@ LTexture gEnemyShipTexture;		// Enemy ship
 LTexture gEnemyVirusTexture;	// Enemy Virus
 LTexture gLaserTexture;			// Texture for Laser weapon
 LTexture gNinjaStar;			// Texture for Ninja Star weapon
+LTexture gBloodCell;			// Texture for Blood Cell obstacle (classed as enemy as it causes damage on impact)
+LTexture gBloodCellSmall;		// Texture for Smaller Blood Cell
 //LTexture gGO;
 
 // SEAN: Move ship object outside of main so spawnLaser funtion can use it
@@ -58,8 +65,12 @@ EnemyVirus* virus1 = new EnemyVirus();
 
 std::list<EnemyShip*> listOfEnemyShips;			// 2017/01/09 JOE: List to store laser objects
 std::list<EnemyShip*>::const_iterator iterES;	// 2017/01/09 JOE: Make them read only
-std::list<EnemyVirus*> listOfEnemyVirus;			// 2017/01/09 JOE: List to store laser objects
+std::list<EnemyVirus*> listOfEnemyVirus;		// 2017/01/09 JOE: List to store laser objects
 std::list<EnemyVirus*>::const_iterator iterEV;	// 2017/01/09 JOE: Make them read only
+std::list<BloodCell*> listOfBloodCells;			// 2017/01/10 JOE: List to store laser objects
+std::list<BloodCell*>::const_iterator iterBC;	// 2017/01/10 JOE: Make them read only
+std::list<BloodCellSmall*> listOfSmallBloodCells;			// 2017/01/10 JOE: List to store laser objects
+std::list<BloodCellSmall*>::const_iterator iterSBC;	// 2017/01/10 JOE: Make them read only
 // SEAN : Created list and iterator for laser objects
 std::list<Laser*> listOfLaserObjects;			// List to store laser objects
 std::list<Laser*>::const_iterator iter;			// Make them read only
@@ -110,22 +121,17 @@ void LTexture::render(int x, int y, SDL_Rect* clip, double angle, SDL_Point* cen
 }
 
 bool init() {
-	bool success = true;					// Initialization flag
+	bool success = true;						// Initialization flag
 
-	//If there is no music playing
-	//if (Mix_PlayingMusic() == 0)
-	//{
-		//Play the music
-	//	Mix_PlayMusic(gMusic, -1);	// start if not playing
-	//}
+	srand(static_cast<unsigned int>(time(0)));	// Seed the random number
 
 	//player.spawn(10, SCREEN_HEIGHT / 2);
-	(*enemy1).spawn(800,200, -5);
-	(*enemy2).spawn(850, 400, -5);				// Spawn x, y, and x velocity
-	(*virus1).spawn(900, 300, -3);
-	listOfEnemyShips.push_back(enemy1);
-	listOfEnemyShips.push_back(enemy2);
-	listOfEnemyVirus.push_back(virus1);
+	//(*enemy1).spawn(800,200, -5);
+	//(*enemy2).spawn(850, 400, -5);				// Spawn x, y, and x velocity
+	//(*virus1).spawn(900, 300, -3);
+	//listOfEnemyShips.push_back(enemy1);
+	//listOfEnemyShips.push_back(enemy2);
+	//listOfEnemyVirus.push_back(virus1);
 
 	// Initialize SDL
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0) {	// 2017/01/09 JOE: SOUND - Neet do initialise audio with video
@@ -138,7 +144,7 @@ bool init() {
 		}
 
 		// Create window
-		gWindow = SDL_CreateWindow("JOURNEY TO THE CENTER OF MY HEADACHE v1.08a by Joe O'Regan & Se\u00E1n Horgan - Virus Movement", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);	/* Window name */
+		gWindow = SDL_CreateWindow("JOURNEY TO THE CENTER OF MY HEADACHE v1.09 by Joe O'Regan & Se\u00E1n Horgan - Random Spawning & Blood Cells", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);	/* Window name */
 		if (gWindow == NULL) {
 			printf("Window could not be created! SDL Error: %s\n", SDL_GetError());
 			success = false;
@@ -162,7 +168,15 @@ bool init() {
 					printf("SDL_mixer could not initialize! SDL_mixer Error: %s\n", Mix_GetError());	// report errors with SDL_mixer
 					success = false;
 				}
-				//Mix_PlayMusic(gMusic, -1);
+
+				Mix_Volume(-1, MIX_MAX_VOLUME);	// sets the volume for all channels MIX_MAX_VOLUME = 128 BALANCES OUT THE VOLUMES A BIT BETTER - LEAVE IN
+
+				//If there is no music playing
+				//if (Mix_PlayingMusic() == 0)
+				//{
+				//Play the music
+				//	Mix_PlayMusic(gMusic, -1);	// start if not playing
+				//}
 			}
 		}
 	}
@@ -188,8 +202,18 @@ bool loadMedia() {
 		printf("Failed to load Enemy Virus texture!\n");
 		success = false;
 	}
+	// Load Blood Cell texture
+	if (!gBloodCell.loadFromFile(".\\Art\\bloodCell.png")) {			        // 10/01 Added Blood Cell
+		printf("Failed to load Blood Cell texture!\n");
+		success = false;
+	}
+	// Load Blood Cell texture
+	if (!gBloodCellSmall.loadFromFile(".\\Art\\bloodCell2.png")) {			// 10/01 Added Blood Cell
+		printf("Failed to load Small Blood Cell texture!\n");
+		success = false;
+	}
 	// Load background texture
-	if (!gBGTexture.loadFromFile(".\\Art\\Background800.png")) {			// 09/01 Edited background to be 800 x 600 instead of 600 * 480
+	if (!gBGTexture.loadFromFile(".\\Art\\Background800.png")) {				// 09/01 Edited background to be 800 x 600 instead of 600 * 480
 		printf("Failed to load background texture!\n");
 		success = false;
 	}
@@ -213,12 +237,16 @@ bool loadMedia() {
 
 	//Load music
 	gMusic = Mix_LoadMUS(".\\Music\\SleepNow2.wav");	// Load music
-	if (gMusic == NULL)
-	{
+	if (gMusic == NULL) {
 		printf("Failed to load rage music! SDL_mixer Error: %s\n", Mix_GetError());
 		success = false;
 	}
-
+	/*
+	gEngineFX = Mix_LoadMUS("Engine1.wav");	// Load music
+	if (gEngineFX == NULL) {
+		printf("Failed to load engine effect! SDL_mixer Error: %s\n", Mix_GetError());
+		success = false;
+	} */
 	//Load sound effects
 	gNinjaFX = Mix_LoadWAV(".\\SoundFx\\Swoosh1.wav");	// Load sound effects
 	if (gNinjaFX == NULL) {
@@ -226,19 +254,20 @@ bool loadMedia() {
 		success = false;
 	}
 
-	gLaserFX = Mix_LoadWAV(".\\SoundFx\\Laser3.wav");	// Load sound effects
-	if (gNinjaFX == NULL) {
+	gLaserFX = Mix_LoadWAV(".\\SoundFx\\LaserEnemy.wav");	// Load sound effects
+	if (gLaserFX == NULL) {
 		printf("Failed to load laser beam sound effect! SDL_mixer Error: %s\n", Mix_GetError());
 		success = false;
 	}
 
 	gEngineFX = Mix_LoadWAV(".\\SoundFx\\Engine1.wav");	// Load sound effects
 	if (gNinjaFX == NULL) {
-		printf("Failed to load laser beam sound effect! SDL_mixer Error: %s\n", Mix_GetError());
+		printf("Failed to load engine sound effect! SDL_mixer Error: %s\n", Mix_GetError());
 		success = false;
 	}
 
 	Mix_PlayMusic(gMusic, -1);
+	//Mix_PlayMusic(gEngineFX, -1);	// can only play one music track at a time
 
 	return success;
 }
@@ -251,6 +280,8 @@ void Game::close() {
 	gBGTexture.free();
 	gLaserTexture.free();
 	gNinjaStar.free();
+	gBloodCell.free();
+	gBloodCellSmall.free();
 	//gGO.free();
 
 	//Free the sound effects
@@ -261,6 +292,8 @@ void Game::close() {
 	//Free the music
 	Mix_FreeMusic(gMusic);	// Free music
 	gMusic = NULL;
+	//Mix_FreeMusic(gEngineFX);	// Free music
+	//gEngineFX = NULL;
 
 	// Destroy window
 	SDL_DestroyRenderer(gRenderer);
@@ -302,17 +335,25 @@ void Game::update(){
 
 				audio();								// 2017-01-10 JOE: Handle the audio for game objects
 
-				if (listOfEnemyShips.size() == 0) {
-					spawnEnemyShip();
-					//engineFX();							// START ENGINE FX WHEN ENEMY SHIP SPAWNED
-				}
+				spawnEnemies();							// 2017/01/10 JOE: Spawn enemies and obstacles at random coords and distances apart
 			}
 		}
 	}
 }
 
 void Game::audio() {
-
+	// Cycle through list of Enemy ships and play engine sound
+	if (listOfEnemyShips.size() > 0){
+	//for (iterES = listOfEnemyShips.begin(); iterES != listOfEnemyShips.end();) {
+		//if ((*iterES++)->getX() < 800 && (*iterES++)->getX() > 0 - (*iterES)->getESwidth())
+		//if ((*iterES++)->getX() == 800) {
+			//Mix_PlayChannel(-1, gEngineFX, 0);
+			Mix_FadeInChannel(-1, gEngineFX, 0, 300);
+			//std::cout << "test audio" << std::endl;
+		//}
+	}
+	if (listOfEnemyShips.size() == 1 && (*listOfEnemyShips.begin())->getX() < 0)
+		Mix_FadeOutChannel(-1, 300);
 }
 
 bool Game::playerInput(bool quit = false) {
@@ -334,6 +375,10 @@ void Game::renderGameObjects() {
 
 	degrees += 5;								// Number of degrees to rotate spinning objects
 	degrees %= 360;
+	degreesBC += 1;								// Number of degrees to rotate spinning objects
+	degreesBC %= 360;
+	degreesBCS += 2;								// Number of degrees to rotate spinning objects
+	degreesBCS %= 360;
 
 	// Scroll background
 	--scrollingOffset;
@@ -348,13 +393,21 @@ void Game::renderGameObjects() {
 	gBGTexture.render(scrollingOffset, 0);
 	gBGTexture.render(scrollingOffset + gBGTexture.getWidth(), 0);
 
+	// Cycle through list of small Blood Cells obstacles and render to screen
+	for (iterSBC = listOfSmallBloodCells.begin(); iterSBC != listOfSmallBloodCells.end();) {
+		(*iterSBC++)->render();	// Render the blood cell
+	}
 	// Cycle through list of Enemy ships and render to screen
 	for (iterES = listOfEnemyShips.begin(); iterES != listOfEnemyShips.end();) {
 		(*iterES++)->render();	// Render the enemy ship
 	}
 	// Cycle through list of Enemy Virus and render to screen
 	for (iterEV = listOfEnemyVirus.begin(); iterEV != listOfEnemyVirus.end();) {
-		(*iterEV++)->render();	// Render the enemy ship
+		(*iterEV++)->render();	// Render the enemy virus
+	}
+	// Cycle through list of Blood Cells obstacles and render to screen
+	for (iterBC = listOfBloodCells.begin(); iterBC != listOfBloodCells.end();) {
+		(*iterBC++)->render();	// Render the blood cell
 	}
 
 	// Cycle through list of laser objects and render them to screen
@@ -381,6 +434,14 @@ void Game::moveGameObjects() {
 	// Cycle through list of Enemy virus and move them
 	for (iterEV = listOfEnemyVirus.begin(); iterEV != listOfEnemyVirus.end();) {
 		(*iterEV++)->movement(player.getX(), player.getY());	// 2017/01/10 JOE: Move the enemy virus towards the player ship (change from player object to just player coords)
+	}
+	// Cycle through list of Blood Cells and move them
+	for (iterBC = listOfBloodCells.begin(); iterBC != listOfBloodCells.end();) {
+		(*iterBC++)->movement();	// 2017/01/10 JOE: Move the blood cells in a wavey line
+	}
+	// Cycle through list of Small Blood Cells and move them
+	for (iterSBC = listOfSmallBloodCells.begin(); iterSBC != listOfSmallBloodCells.end();) {
+		(*iterSBC++)->movement();	// 2017/01/10 JOE: Move the blood cells in a wavey line
 	}
 
 	// Cycle through lists of weapons and move them
@@ -409,6 +470,24 @@ void Game::destroyGameObjects() {
 		}
 		else {
 			iterEV++;
+		}
+	}
+	for (iterBC = listOfBloodCells.begin(); iterBC != listOfBloodCells.end();) {
+		if (!(*iterBC)->getAlive()) {
+			iterBC = listOfBloodCells.erase(iterBC);
+			std::cout << "destroy blood cell" << std::endl;
+		}
+		else {
+			iterBC++;
+		}
+	}
+	for (iterSBC = listOfSmallBloodCells.begin(); iterSBC != listOfSmallBloodCells.end();) {
+		if (!(*iterSBC)->getAlive()) {
+			iterSBC = listOfSmallBloodCells.erase(iterSBC);
+			std::cout << "destroy small blood cell" << std::endl;
+		}
+		else {
+			iterSBC++;
 		}
 	}
 	for (iter = listOfLaserObjects.begin(); iter != listOfLaserObjects.end();) {
@@ -452,27 +531,83 @@ void Game::playerFlashOnCollide() {
 }
 
 
-
-
+// Decide how many of each enemy / obstacle on screen at a given time
+void Game::spawnEnemies() {
+	if (listOfEnemyShips.size() <= 1) {
+		spawnEnemyShip();
+	}
+	if (listOfEnemyVirus.size() == 0) {
+		spawnEnemyVirus();
+	}
+	if (listOfBloodCells.size() <= 12) {
+		spawnBloodCell();
+	}
+	if (listOfSmallBloodCells.size() <= 16) {
+		spawnSmallBloodCell();
+	}
+}
 
 // List of enemy ships to spawn at random times and positions
 void Game::spawnEnemyShip() {
-	int y = SCREEN_HEIGHT / 2;
+	int x, y, randomX, randomY, randomSpeed;
+	randomX = rand() % 5 + 1;
+	randomY = rand() % 5 + 1;
+	randomSpeed = rand() % 3 + 3;
+
+	x = SCREEN_WIDTH + (randomX * 50);
+	y = (randomY * 120) - 80;
+
+	//int y = SCREEN_HEIGHT / 2;
 	EnemyShip* p_Enemy = new EnemyShip();
-	p_Enemy->spawn(800, y, -5);
+	//p_Enemy->spawn(800, y, -5);
+	p_Enemy->spawn(x, y, -randomSpeed);
 	listOfEnemyShips.push_back(p_Enemy);
-	//SDL_Delay(500);
 }
+
 void Game::spawnEnemyVirus() {
-	int y = SCREEN_HEIGHT / 2;
+	int x, y, randomX, randomY;
+	randomX = rand() % 5 + 1;
+	randomY = rand() % 5 + 1;
+
+	x = SCREEN_WIDTH + (randomX * 50);
+	y = (randomY * 120) - 80;
+
+	//int y = SCREEN_HEIGHT / 2;
 	EnemyVirus* p_Virus = new EnemyVirus();
-	p_Virus->spawn(800, y, -5);
+	//p_Virus->spawn(800, y, -2);
+	p_Virus->spawn(x, y, -2);
 	listOfEnemyVirus.push_back(p_Virus);
 }
 
+void Game::spawnBloodCell() {
+	int x, y, randomX, randomY, randomSpeed;
+	randomX = rand() % 5 + 1;
+	randomY = rand() % 5 + 1;
+	randomSpeed = rand() % 3 + 1;
+
+	x = SCREEN_WIDTH + (randomX * 200);
+	y = (randomY * 120) - 80;
+
+	BloodCell* p_BloodCell = new BloodCell();
+	p_BloodCell->spawn(x, y, -randomSpeed);
+	listOfBloodCells.push_back(p_BloodCell);
+}
+void Game::spawnSmallBloodCell() {
+	int x, y, randomX, randomY, randomSpeed;
+	randomX = rand() % 5 + 1;
+	randomY = rand() % 5 + 1;
+	randomSpeed = rand() % 3 + 1;
+
+	x = SCREEN_WIDTH + (randomX * 150);
+	y = (randomY * 120) - 80;
+
+	BloodCellSmall* p_SmallBloodCell = new BloodCellSmall();
+	p_SmallBloodCell->spawn(x, y, -randomSpeed);
+	listOfSmallBloodCells.push_back(p_SmallBloodCell);
+}
 
 void Game::engineFX() {
-	Mix_PlayChannel(-1, gEngineFX, 0);
+//	Mix_PlayChannel(-1, gEngineFX, 0);
 }
 
 // Spawn Weapon at ships location
@@ -502,12 +637,19 @@ void Laser::render() {
 void NinjaStar::render() {
 	gNinjaStar.render(getX(), getY(), NULL, degrees, NULL, SDL_FLIP_NONE);
 }
-
+// Enemies and Obstacles
 void EnemyShip::render() {
 	gEnemyShipTexture.render(getX(), getY());
 }
 void EnemyVirus::render() {
 	gEnemyVirusTexture.render(getX(), getY());
+}
+void BloodCell::render() {
+	//gBloodCell.render(getX(), getY());
+	gBloodCell.render(getX(), getY(), NULL, -degreesBC, NULL, SDL_FLIP_NONE);
+}
+void BloodCellSmall::render() {
+	gBloodCellSmall.render(getX(), getY(), NULL, -degreesBCS, NULL, SDL_FLIP_NONE);
 }
 //void GameObject::render() {
 //	gGO.render(getX(), getY());

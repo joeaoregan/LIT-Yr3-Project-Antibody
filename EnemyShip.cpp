@@ -36,6 +36,9 @@ void EnemyShip::movement() {
 	if (getX() < -100) setAlive(false);
 	else setAlive(true);
 }
+int EnemyShip::getESwidth() {
+	return ENEMY_WIDTH;
+}
 /*
 // get x and y function for Enemy
 int EnemyShip::getEnemyX()

@@ -18,6 +18,7 @@ public:
 	virtual void spawn();
 	virtual void spawn(int x, int y);
 	void spawn(int x, int y, int vx);
+	void spawn(int x, int y, int vx, int vy);
 	virtual void movement();
 	//void render();
 	//void renderTexture(LTexture renderThis);
