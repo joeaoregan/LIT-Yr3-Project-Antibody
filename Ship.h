@@ -15,13 +15,15 @@ public:
 	static const int SHIP_WIDTH = 100;
 	static const int SHIP_HEIGHT = 47;
 			
-	static const int SHIP_VEL = 5;	// Maximum axis velocity of the ship
+	static const int SHIP_VEL = 10;	// Maximum axis velocity of the ship
 	
 	Ship();							// Initializes the variables
 	
 	void handleEvent(SDL_Event& e);	// Takes key presses and adjusts the ship's velocity	
 	void move();					// Moves the ship	
 	void render();					// Shows the ship on the screen
+	int getShipX();					// get the ships X position
+	int getShipY();					// get the ships Y position
 
 private:	
 	int mPosX, mPosY;				// The X and Y offsets of the ship	
