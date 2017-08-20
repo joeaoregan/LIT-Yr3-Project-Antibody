@@ -2,8 +2,7 @@
 
 //#define GAME_LOOPS 20		// Number of times to loop the game
 
-//int main()
-int main(int argc, char *argv[])
+int main()
 {
 	Game game;				// Create a game object
 
@@ -20,7 +19,7 @@ int main(int argc, char *argv[])
 
 	//game.init();			// Call the Game Class init function
 
-							// game loop
+							// game loop	
 							//while (loopNum < GAME_LOOPS) // loop until 20
 	while (finished >= 2 && finished < 5) // CA2 - Loop until game over condition has been triggered
 	{

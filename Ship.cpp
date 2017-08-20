@@ -4,7 +4,7 @@ Added asdw keyboard movement
 */
 #include "Ship.h"
 #include "Game.h"
-#include <math.h> // 2017-08-11 sqrt() error
+#include <math.h>
 
 #define DIAGONAL_VEL SHIP_VEL / (sqrt(2))
 

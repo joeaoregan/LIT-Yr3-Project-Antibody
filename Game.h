@@ -10,7 +10,6 @@
 #ifndef GAME_H
 #define GAME_H
 
-#include <SDL.h>
 #include <cstdlib>		// For Random Numbers
 #include <ctime>		// For Random Numbers
 #include <list>
@@ -35,11 +34,11 @@ public:
 	void spawnLaser();
 	void spawnLaser(int x, int y, int player, int v = 20);	// 2017/01/16 spawn a laser at coords, with velocitys
 	void spawnEnemyLaser(int x, int y);			// 2017/01/10
-	void spawnNinjaStar(int x, int y, int player);	// 2017/01/09 JOE: added function to create ninja star weapons - 2017/01/17 added player decision - player to spawn for and their coords
+	void spawnNinjaStar(int x, int y, int player);			// 2017/01/09 JOE: added function to create ninja star weapons - 2017/01/17 added player decision - player to spawn for and their coords
 	void spawnSaw(int x, int y, int player);		// 2017/01/17: Saw Weapon for player
 	void spawnPowerUp();
 
-	void gamepadInfo(SDL_Event& e);				// 2017/01/17: Separate gamepad information
+	void gamepadInfo();							// 2017/01/17: Separate gamepad information
 	void displayText();							// 2017/01/17: Display game text
 
 	bool playerInput(bool quit);				// 2017/01/09 JOE: Handle input from player
@@ -47,6 +46,8 @@ public:
 	void moveGameObjects();						// 2017-01-09 JOE: Move the game objects on the screen
 	void destroyGameObjects();					// 2017-01-09 JOE: Destroy the game objects when finished on the screen
 	void flashGameObject(int &alpha, bool &flash, int rate = 10, int times = 0);
+
+	void pressButtonToContinue();
 };
 
 #endif

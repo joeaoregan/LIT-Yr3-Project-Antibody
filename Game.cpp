@@ -1,6 +1,9 @@
 // 09/01 Edited background to be 800 x 600 instead of 600 * 480
+
+//#define SDL_MAIN_HANDLED
+
 /*
-    Separated P1 & P2 Scores, Added Saw Weapon, Added Splash Screens
+    Animation
 
     2017-08-11:
         Joe: Change window title
@@ -9,16 +12,16 @@
         Joe: Add relative path for asset files in "Music" and "SoundFX" directories
 */
 
-#include "Game.h"
-//#include <SDL.h>
+#include <SDL.h>
 #include <SDL_image.h>
 
 #include <SDL_ttf.h>
 #include <sstream>				// For timer
+#include <string.h>
 
 #include <SDL_mixer.h>			// 2017/01/09 JOE: SOUND - library we use to make audio playing easier
-//#include <cmath>
-//#include "Game.h"
+#include <cmath>
+#include "Game.h"
 #include "LTexture.h"
 #include "Ship.h"
 #include "EnemyShip.h"
@@ -31,6 +34,13 @@
 #include "WhiteBloodCell.h"
 #include "PowerUp.h"			// 2017/01/10 SEAN: Added Power Up
 #include "LaserEnemy.h"
+
+const int ANIMATION_FRAMES = 4;
+SDL_Rect gSpriteClips[ANIMATION_FRAMES];
+SDL_Rect gEnemySpriteClips[ANIMATION_FRAMES];
+LTexture gSpriteSheetTexture;
+LTexture gEnemySpriteSheetTexture;
+
 
 static const int NUMBER_OF_SONGS = 3;
 
@@ -55,7 +65,7 @@ SDL_Joystick* gController2 = NULL;	// Game Controller 1 handler - Data type for 
 Mix_Music *gMusic1 = NULL;		// Mix_Music: Data type for music
 Mix_Music *gMusic2 = NULL;
 Mix_Music *gMusic3 = NULL;
-unsigned int currentSong;					// Play a random song when the game starts
+unsigned int currentSong;		// Play a random song when the game starts
 
 //The sound effects that will be used (pointers)
 Mix_Chunk *gNinjaFX1 = NULL;	// 2017/01/09 JOE: SOUND - Mix_Chunk: Data type for short sounds
@@ -103,8 +113,12 @@ LTexture gBloodCellTexture;		// Texture for Blood Cell obstacle (classed as enem
 LTexture gBloodCellSmallTexture;// Texture for Smaller Blood Cell
 LTexture gWhiteBloodCellTexture;// Texture for White Blood Cell
 LTexture gPowerUpTexture;		// Texture for Health Box Power Up
-LTexture gLogo1;		// Texture for Health Box Power Up
-LTexture gLogo2;		// Texture for Health Box Power Up
+LTexture gLogo1;				// 2017/01/18 Texture for game Splash Screen 1
+LTexture gLogo2;				// 2017/01/18 Texture for game Splash Screen 2
+LTexture gLevel1;				// 2017/01/18 Texture for level Splash Screen 1
+LTexture gLevel2;				// 2017/01/18 Texture for level Splash Screen 2
+LTexture gLevel3;				// 2017/01/18 Texture for level Splash Screen 3
+//LTexture gContinueTexture;	// 2017/01/18 Texture for "Press Enter To Continue" Message
 
 LTexture gTimeTextTexture;
 LTexture gCreatedByTextTexture;
@@ -113,6 +127,8 @@ LTexture gP1ScoreTextTexture;
 LTexture gP2ScoreTextTexture;
 LTexture gFinalScoreTextTexture;
 LTexture gGameWinnerTextTexture;
+LTexture gLevel1ObjectiveTextTexture;
+std::string l1Objective = "Destroy enemy virus and ships\nThe player with the highest score\nIs the winner";
 
 #define TIMER 15				// Time to start counting down from in seconds
 Uint32 startTime = 6000;		// Unsigned integer 32-bits
@@ -130,28 +146,28 @@ EnemyShip* enemy2 = new EnemyShip();
 EnemyVirus* virus1 = new EnemyVirus();
 
 std::vector<Mix_Music*> listOfMusic;
-std::vector<EnemyShip*> listOfEnemyShips;			// 2017/01/09 JOE: List to store laser objects
+std::vector<EnemyShip*> listOfEnemyShips;		// 2017/01/09 JOE: List to store laser objects
 //std::list<EnemyShip*>::const_iterator iterES;	// 2017/01/09 JOE: Make them read only
 std::vector<EnemyVirus*> listOfEnemyVirus;		// 2017/01/09 JOE: List to store laser objects
-//std::list<EnemyVirus*>::const_iterator iterEV;	// 2017/01/09 JOE: Make them read only
+//std::list<EnemyVirus*>::const_iterator iterEV;// 2017/01/09 JOE: Make them read only
 std::list<BloodCell*> listOfBloodCells;			// 2017/01/10 JOE: List to store laser objects
 std::list<BloodCell*>::const_iterator iterBC;	// 2017/01/10 JOE: Make them read only
-std::list<BloodCellSmall*> listOfSmallBloodCells;			// 2017/01/10 JOE: List to store laser objects
+std::list<BloodCellSmall*> listOfSmallBloodCells;	// 2017/01/10 JOE: List to store laser objects
 std::list<BloodCellSmall*>::const_iterator iterSBC;	// 2017/01/10 JOE: Make them read only
 std::list<WhiteBloodCell*> listOfWhiteBloodCells;
 std::list<WhiteBloodCell*>::const_iterator iterWBC;
 std::vector<PowerUp*> listOfPowerUps;
-std::list<LaserEnemy*> listOfEnemyLaserObjects;		// 2017/01/10
-std::list<LaserEnemy*>::const_iterator iterEL;		// 2017/01/10
+std::list<LaserEnemy*> listOfEnemyLaserObjects;	// 2017/01/10
+std::list<LaserEnemy*>::const_iterator iterEL;	// 2017/01/10
 //std::list<PowerUp*>::const_iterator iterPU;
 // SEAN : Created list and iterator for laser objects
 std::vector<Laser*> listOfLaserObjects;			// List to store laser objects
-//std::list<Laser*>::const_iterator iter;			// Make them read only
+//std::list<Laser*>::const_iterator iter;		// Make them read only
 
 std::list<NinjaStar*> listOfNinjaStarObjects;	// 2017/01/09 JOE: List to store Ninja Star objects
 std::list<NinjaStar*>::const_iterator iterNS;	// 2017/01/09 JOE: Create global iterators to cycle through laser objects - Make them read only
-std::list<Saw*> listOfSawObjects;	// 2017/01/17: List to store Saw objects
-std::list<Saw*>::const_iterator iterSaw;	// 2017/01/17: Create global iterators to cycle through Saw objects - Make them read only
+std::list<Saw*> listOfSawObjects;	            // 2017/01/17: List to store Saw objects
+std::list<Saw*>::const_iterator iterSaw;	    // 2017/01/17: Create global iterators to cycle through Saw objects - Make them read only
 
 
 /*gRenderer*/
@@ -219,9 +235,17 @@ bool init() {
 
 			// NEEDS TO BE 0 FOR XBOX CONTROLLER, NEEDS A CHECK FOR NVIDIA CONTROLLER, AS ITS TAKING UP TWO CONTROLLER SLOTS
 
-			gController1 = SDL_JoystickOpen(1);			// open the joystick at index 0
-			if(SDL_NumJoysticks() > 2)
+			//if (strcmp(SDL_JoystickName(gController1), "NVIDIA Shield") == 0) {
+				gController1 = SDL_JoystickOpen(0);			// open the joystick at index 1
+			//}
+			//else
+			//	gController1 = SDL_JoystickOpen(0);
+
+			if (SDL_NumJoysticks() == 2)
+				gController2 = SDL_JoystickOpen(1);
+			else if(SDL_NumJoysticks() > 2)
 				gController2 = SDL_JoystickOpen(2);			// open the joystick at index 0
+
 			printf("Joystick connected\n");				// DETECTS JOYSTICK
 			if (gController1 == NULL) {
 				printf("Warning: Unable to open game controller! SDL Error: %s\n", SDL_GetError());
@@ -229,7 +253,7 @@ bool init() {
 		}
 
 		// Create window
-		gWindow = SDL_CreateWindow("JOURNEY TO THE CENTER OF MY HEADACHE v1.21 by Joe O'Regan & Se\u00E1n Horgan - Scores, Saw, Splash Screens", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);	/* Window name */
+		gWindow = SDL_CreateWindow("JOURNEY TO THE CENTER OF MY HEADACHE v1.22 by Joe O'Regan & Se\u00E1n Horgan - Animation", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);	/* Window name */
 		if (gWindow == NULL) {
 			printf("Window could not be created! SDL Error: %s\n", SDL_GetError());
 			success = false;
@@ -298,20 +322,21 @@ bool loadMedia() {
 		success = false;
 	}
 	else {
-		//SDL_Color textColor = { 0, 100, 200, 255 };
-		TTF_SetFontStyle(gFont2, TTF_STYLE_BOLD);							    // Use bold font
+//		SDL_Color textColor = { 0, 100, 200, 255 };
+		TTF_SetFontStyle(gFont2, TTF_STYLE_BOLD);							// Use bold font
+
 	}
 
 	// Load Textures
-	if (!gPlayer1Texture.loadFromFile(".\\Art\\Player1Ship.png")) {				// Ship Texture
+	if (!gPlayer1Texture.loadFromFile(".\\Art\\Player1Ship.png")) {					// Ship Texture
 		printf("Failed to load Player 1 texture!\n");
 		success = false;
 	}
-	if (!gPlayer2Texture.loadFromFile(".\\Art\\Player2Ship.png")) {				// Ship Texture
+	if (!gPlayer2Texture.loadFromFile(".\\Art\\Player2Ship.png")) {					// Ship Texture
 		printf("Failed to load Player 2 texture!\n");
 		success = false;
 	}
-	if (!gEnemyShipTexture.loadFromFile(".\\Art\\NanobotOld.png")) {			// Enemy Ship Texture 2017-08-11 Replaced with Nanobot
+	if (!gEnemyShipTexture.loadFromFile(".\\Art\\NanobotOld.png")) {				// Enemy Ship Texture
 		printf("Failed to load Enemy Ship texture!\n");
 		success = false;
 	}
@@ -376,28 +401,106 @@ bool loadMedia() {
 		success = false;
 	}
 	if (!gLogo1.loadFromFile(".\\Art\\Logo1.png")) {						// 10/01 Added Power Up - Load Power Up texture
-		printf("Failed to load Health Box texture!\n");
+		printf("Failed to load Logo 1 texture!\n");
 		success = false;
 	}
 	if (!gLogo2.loadFromFile(".\\Art\\Logo2.png")) {						// 10/01 Added Power Up - Load Power Up texture
-		printf("Failed to load Health Box texture!\n");
+		printf("Failed to load Logo 2 texture!\n");
 		success = false;
+	}
+	if (!gLevel1.loadFromFile(".\\Art\\Level1.png")) {						// 10/01 Added Power Up - Load Power Up texture
+		printf("Failed to load Level 1 texture!\n");
+		success = false;
+	}
+	if (!gLevel2.loadFromFile(".\\Art\\Level2.png")) {						// 10/01 Added Power Up - Load Power Up texture
+		printf("Failed to load Level 2 texture!\n");
+		success = false;
+	}
+	if (!gLevel3.loadFromFile(".\\Art\\Level3.png")) {						// 10/01 Added Power Up - Load Power Up texture
+		printf("Failed to load Level 3 texture!\n");
+		success = false;
+	}
+
+
+	//Load sprite sheet texture
+	if (!gSpriteSheetTexture.loadFromFile(".\\Animation\\PressEnterSpriteSheet.png")) {
+		printf("Failed to load walking animation texture!\n");
+		success = false;
+	}
+	else {
+		//Set sprite clips
+		gSpriteClips[0].x = 0;
+		gSpriteClips[0].y = 0;
+		gSpriteClips[0].w = 718;
+		gSpriteClips[0].h = 94;
+
+		gSpriteClips[1].x = 0;
+		gSpriteClips[1].y = 94;
+		gSpriteClips[1].w = 718;
+		gSpriteClips[1].h = 94;
+
+		gSpriteClips[2].x = 0;
+		gSpriteClips[2].y = 188;
+		gSpriteClips[2].w = 718;
+		gSpriteClips[2].h = 94;
+
+		gSpriteClips[3].x = 0;
+		gSpriteClips[3].y = 282;
+		gSpriteClips[3].w = 718;
+		gSpriteClips[3].h = 94;
+
+		gSpriteClips[5].x = 0;
+		gSpriteClips[5].y = 188;
+		gSpriteClips[5].w = 718;
+		gSpriteClips[5].h = 94;
+
+		gSpriteClips[6].x = 0;
+		gSpriteClips[6].y = 94;
+		gSpriteClips[6].w = 718;
+		gSpriteClips[6].h = 94;
+	}
+
+	if (!gEnemySpriteSheetTexture.loadFromFile(".\\Animation\\EnemySpriteSheet2.png")) {
+		printf("Failed to load Enemy Ship animation texture!\n");
+		success = false;
+	}
+	else {
+		//Set sprite clips
+		gEnemySpriteClips[0].x = 0;
+		gEnemySpriteClips[0].y = 0;
+		gEnemySpriteClips[0].w = 120;
+		gEnemySpriteClips[0].h = 50;
+
+		gEnemySpriteClips[1].x = 0;
+		gEnemySpriteClips[1].y = 50;
+		gEnemySpriteClips[1].w = 120;
+		gEnemySpriteClips[1].h = 50;
+
+		gEnemySpriteClips[2].x = 0;
+		gEnemySpriteClips[2].y = 100;
+		gEnemySpriteClips[2].w = 120;
+		gEnemySpriteClips[2].h = 50;
+
+		gEnemySpriteClips[3].x = 0;
+		gEnemySpriteClips[3].y = 150;
+		gEnemySpriteClips[3].w = 120;
+		gEnemySpriteClips[3].h = 50;
 	}
 
 	//Load music
 	gMusic1 = Mix_LoadMUS(".\\Music\\GameSong1.wav");	// Load music
 	if (gMusic1 == NULL) {
-		printf("Failed to load rage music! SDL_mixer Error: %s\n", Mix_GetError());
+		printf("Failed to load Song 1 music! SDL_mixer Error: %s\n", Mix_GetError());
 		success = false;
 	}
 	gMusic2 = Mix_LoadMUS(".\\Music\\GameSong2.mp3");	// Load music
 	if (gMusic2 == NULL) {
-		printf("Failed to load rage music! SDL_mixer Error: %s\n", Mix_GetError());
+		printf("Failed to load Song 2 music! SDL_mixer Error: %s\n", Mix_GetError());
 		success = false;
 	}
 	gMusic3 = Mix_LoadMUS(".\\Music\\GameSong3.mp3");	// Load music
 	if (gMusic3 == NULL) {
-		printf("Failed to load rage music! SDL_mixer Error: %s\n", Mix_GetError());
+		printf("Failed to load Song 3 music! SDL_mixer Error: %s\n", Mix_GetError());
 		success = false;
 	}
 
@@ -473,6 +576,13 @@ void Game::close() {
 	gPowerUpTexture.free();
 	gLogo1.free();
 	gLogo2.free();
+	gLevel1.free();
+	gLevel2.free();
+	gLevel3.free();
+	// free animations
+	gSpriteSheetTexture.free();
+	gEnemyShipTexture.free();
+
 
 	gTimeTextTexture.free();
 	gCreatedByTextTexture.free();
@@ -480,7 +590,8 @@ void Game::close() {
 	gP1ScoreTextTexture.free();
 	gP2ScoreTextTexture.free();
 	gFinalScoreTextTexture.free();
-	gGameWinnerTextTexture.free();
+	gGameWinnerTextTexture.free(); // gLevel1ObjectiveTextTexture
+	gLevel1ObjectiveTextTexture.free();
 
 	//Free global font
 	TTF_CloseFont(gFont);
@@ -539,13 +650,15 @@ void Game::update(){
 		} else {
 			bool quit = false;							// Main loop flag
 
-			gamepadInfo(e);								// Display gamepad information
-
-			// While application is running
+			if (SDL_PollEvent(&e) != 0) {
+				gamepadInfo();							// Display gamepad information
+			}
+			// MAIN GAME LOOP:  While application is running
 			while (!quit) {								// While application is running
+				quit = playerInput(quit);				// 2017/01/09 JOE: Handle input from player
+
 				if (displayLogo) displayGameLogos();	// 2017/01/18 Splash screens at start of game
 
-				quit = playerInput(quit);				// 2017/01/09 JOE: Handle input from player
 
 				if(!gameOver) spawnEnemies();			// 2017/01/10 JOE: Spawn enemies and obstacles at random coords and distances apart
 
@@ -559,19 +672,74 @@ void Game::update(){
 	}
 }
 
+int frame = 0, frameUp = 0, frameDown = 0;											// Current animation frame
+
+void Game::pressButtonToContinue() {
+	bool continueGame = false;
+	//std::cout << "Press Button To Continue" << std::endl;
+
+	SDL_Rect* currentClip = &gSpriteClips[frame / 6];	// Render current frame
+	gSpriteSheetTexture.render((SCREEN_WIDTH - currentClip->w) / 2, (SCREEN_HEIGHT - currentClip->h) / 2 + 200, currentClip);
+
+
+	SDL_RenderPresent(gRenderer);			// Update screen
+	++frame;	// Go to next frame
+
+	if (frame / 6 >= ANIMATION_FRAMES) {	// Cycle animation
+		frame = 0;
+	}
+	/*
+	if (frameUp < 3) {
+		++frameUp;
+		std::cout << "Frame: " << frame << std::endl;
+		++frame;
+		if (frameUp == 3)  frameDown = 3;
+	}
+	if (frameDown >= 0) {
+		--frameDown;
+		std::cout << "Frame: " << frame << std::endl;
+		--frame;
+		if (frameDown <= 0 ) frameUp = 0;
+	}
+	*/
+	//SDL_RenderPresent(gRenderer);			// Update screen SDL_PollEvent
+
+	//while (SDL_WaitEvent(&e)) {
+	while (SDL_PollEvent(&e)) {
+		//std::cout << "test 1" << std::endl;
+
+		switch (e.type) {
+			std::cout << "test 2" << std::endl;
+			/* Keyboard event */
+			/* Pass the event data onto PrintKeyInfo() */
+		case SDL_KEYDOWN:
+			printf("Key press detected\n");
+			continueGame = true;
+			std::cout << "test 3" << std::endl;
+			break;
+			//if (e.type == SDL_JOYBUTTONDOWN) {
+		}
+		//std::cout << "test 4" << std::endl;
+		break;
+	}
+
+	if (!continueGame) pressButtonToContinue();
+}
+
 int scrollingOffsetLogo = 600;
+
 
 void Game::displayGameLogos() {
 	// Clear screen
-	if (scrollingOffsetLogo == 600) {
+	//if (scrollingOffsetLogo == 600) {
 		SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
 		SDL_RenderClear(gRenderer);
 
 		gLogo1.render(0, 0);
 
 		SDL_RenderPresent(gRenderer);			// Update screen
-		SDL_Delay(3000);						// Pause with image on screen
-	}
+		SDL_Delay(1000);						// Pause with image on screen
+	//}
 
 	while (scrollingOffsetLogo >= 0) {
 		gLogo2.render(0, scrollingOffsetLogo);
@@ -580,30 +748,94 @@ void Game::displayGameLogos() {
 		SDL_RenderPresent(gRenderer);			// Update screen
 	}
 
-		SDL_Delay(3000);						// Pause with image on screen
-		displayLogo = false;
+	SDL_Delay(1000);						// Pause with image on screen
+
+	scrollingOffsetLogo = -600;				// Logo will start above window
+
+	while (scrollingOffsetLogo <= 0) {
+		gLevel1.render(0, scrollingOffsetLogo);
+		scrollingOffsetLogo += 5;
+
+		SDL_RenderPresent(gRenderer);			// Update screen
+	}
+
+
+	// CAN'T SCROLL TEXT PROPERLY, NEEDS TO ERASE PREVIOUSLY DRAWN TEXT
+	//scrollingOffsetLogo = 600;				// Texture will start below window
+
+	textColor = { 255, 255, 255, 255 };
+
+	if (!gLevel1ObjectiveTextTexture.loadFromRenderedText(l1Objective, textColor, 3)) { // gLevel1ObjectiveTextTexture
+		printf("Unable to render level 1 game objective texture!\n");
+	}
+
+	//while (scrollingOffsetLogo >= 300) {
+		//SDL_RenderClear(gRenderer);
+
+		//scrollingOffsetLogo -= 5;
+		gLevel1ObjectiveTextTexture.render(100, 300); // FOR TESTING
+
+		SDL_RenderPresent(gRenderer);			// Update screen
+	//}
+
+	/*
+	for (int i = 0; i < 500; i++) {
+		textColor = { 255, 255, 255, 255 };
+
+		if (!gLevel1ObjectiveTextTexture.loadFromRenderedText(l1Objective, textColor, 3)) { // gLevel1ObjectiveTextTexture
+			printf("Unable to render level 1 game objective texture!\n");
+		}
+
+		gLevel1ObjectiveTextTexture.render((SCREEN_WIDTH - gLevel1ObjectiveTextTexture.getWidth()) / 2, (SCREEN_HEIGHT - gLevel1ObjectiveTextTexture.getHeight()) / 2); // FOR TESTING
+
+		SDL_RenderPresent(gRenderer);			// Update screen
+	}
+	*/
+
+	//SDL_Delay(2000);						// Pause with image on screen
+
+	pressButtonToContinue();
+
+	displayLogo = false;
+
+	//LTexture gLevel1ObjectiveTextTexture;
+	//std::string l1Objective = "Destroy enemy virus and ships\nThe player with the highest score\nIs the winner";
 }
 
-void Game::gamepadInfo(SDL_Event& e) {
-	if (SDL_PollEvent(&e) != 0) {
+void Game::gamepadInfo() {
+	if (SDL_NumJoysticks() > 0) {
+		if (strcmp(SDL_JoystickName(gController1), "NVIDIA Shield") == 0) {
+			std::cout << "nv test" << std::endl;
+			// put test here to make NVIDIA Shield controller as 2 controllers
+		}
 
-		if (SDL_NumJoysticks() > 0) {
-			printf("Joystick connected %d\n", e.jaxis.which);												// DETECTS JOYSTICK
-			std::cout << "Number of joystics: " << SDL_NumJoysticks() << std::endl;
+		std::cout << "joystick instance id: " << SDL_JoystickInstanceID(gController1) << std::endl;
 
-			std::cout << "Controller Name: " << SDL_JoystickName(gController1) << std::endl;				// Name of joystick
-			std::cout << "Number of buttons: " << SDL_JoystickNumButtons(gController1) << std::endl;		// Number of useable buttons
-			std::cout << "Number of axes: " << SDL_JoystickNumAxes(gController1) << std::endl;				// Number of axes on the controller, includes sticks and triggers.
-			std::cout << "Number of trackballs: " << SDL_JoystickNumBalls(gController1) << std::endl;		// No trackballs on NVidia Shield Controller
-			std::cout << "Number of hats: " << SDL_JoystickNumHats(gController1) << std::endl << std::endl;	// Hats = d-pad on NVidia Shield Controller
-
-			if (SDL_NumJoysticks() > 2) {
-				std::cout << "Controller Name: " << SDL_JoystickName(gController2) << std::endl;				// Name of joystick
-				std::cout << "Number of buttons: " << SDL_JoystickNumButtons(gController2) << std::endl;		// Number of useable buttons
-				std::cout << "Number of axes: " << SDL_JoystickNumAxes(gController2) << std::endl;				// Number of axes on the controller, includes sticks and triggers.
-				std::cout << "Number of trackballs: " << SDL_JoystickNumBalls(gController2) << std::endl;		// No trackballs on NVidia Shield Controller
-				std::cout << "Number of hats: " << SDL_JoystickNumHats(gController2) << std::endl << std::endl;	// Hats = d-pad on NVidia Shield Controller
+		for (int i = 0; i < SDL_NumJoysticks(); ++i) {
+			const char *name = SDL_GameControllerNameForIndex(i);
+			if (name) {
+				printf("Joystick %i has game controller name '%s'\n", i, name);
 			}
+			else {
+				printf("Joystick %i has no game controller name.\n", i);
+			}
+		}
+
+		printf("Joystick connected %d\n", e.jaxis.which);												// DETECTS JOYSTICK
+		std::cout << "Number of joystics: " << SDL_NumJoysticks() << std::endl;
+
+		std::cout << "Controller Name: " << SDL_JoystickName(gController1) << std::endl;				// Name of joystick
+		std::cout << "Number of buttons: " << SDL_JoystickNumButtons(gController1) << std::endl;		// Number of useable buttons
+		std::cout << "Number of axes: " << SDL_JoystickNumAxes(gController1) << std::endl;				// Number of axes on the controller, includes sticks and triggers.
+		std::cout << "Number of trackballs: " << SDL_JoystickNumBalls(gController1) << std::endl;		// No trackballs on NVidia Shield Controller
+		std::cout << "Number of hats: " << SDL_JoystickNumHats(gController1) << std::endl << std::endl;	// Hats = d-pad on NVidia Shield Controller
+
+		if (SDL_NumJoysticks() > 2) {
+			std::cout << "Controller Name: " << SDL_JoystickName(gController2) << std::endl;				// Name of joystick
+			std::cout << "Number of buttons: " << SDL_JoystickNumButtons(gController2) << std::endl;		// Number of useable buttons
+			std::cout << "Number of axes: " << SDL_JoystickNumAxes(gController2) << std::endl;				// Number of axes on the controller, includes sticks and triggers.
+			std::cout << "Number of trackballs: " << SDL_JoystickNumBalls(gController2) << std::endl;		// No trackballs on NVidia Shield Controller
+			std::cout << "Number of hats: " << SDL_JoystickNumHats(gController2) << std::endl << std::endl;	// Hats = d-pad on NVidia Shield Controller
 		}
 	}
 }
@@ -684,6 +916,9 @@ void Game::displayText() {
 	if (!gGameWinnerTextTexture.loadFromRenderedText(gameWinner, textColor, 2)) {
 		printf("Unable to render game winner texture!\n");
 	}
+	if (!gLevel1ObjectiveTextTexture.loadFromRenderedText(l1Objective, textColor, 2)) { // gLevel1ObjectiveTextTexture
+		printf("Unable to render level 1 game objective texture!\n");
+	}
 }
 
 bool Game::playerInput(bool quit = false) {
@@ -691,19 +926,18 @@ bool Game::playerInput(bool quit = false) {
 
 	// In memory text stream
 	// string streams - function like iostreams only instead of reading or writing to the console, they allow you to read and write to a string in memory
-	//std::stringstream timeText;		// string stream
 	while (SDL_PollEvent(&e) != 0) {
 		// User requests quit	EXIT - CLOSE WINDOW
 		if (e.type == SDL_QUIT) {
 			quit = true;
-		}// Reset start time on return keypress
+		}	// Reset start time on return keypress
 		else if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_RETURN) {
 			startTime = SDL_GetTicks();		// time since the program started in milliseconds
 		}
 		// Play / Pause music
 		else if (e.type == SDL_KEYDOWN) {
 			switch (e.key.keysym.sym) {
-				// Play/Pause music on a m key press, stop music on 0
+			// Play/Pause music on a m key press, stop music on 0
 			case SDLK_m:
 				if (Mix_PlayingMusic() == 0) {						// If there is no music playing
 					Mix_PlayMusic(listOfMusic[currentSong], -1);	// Play the music
@@ -746,6 +980,7 @@ bool Game::playerInput(bool quit = false) {
 }
 
 int backgroundLoopCounter = 0;
+
 #define BACKGROUND_TIMES 4
 
 void Game::renderGameObjects() {
@@ -774,14 +1009,6 @@ void Game::renderGameObjects() {
 	SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
 	SDL_RenderClear(gRenderer);
 
-
-
-
-	//if (displayLogo) displayGameLogos();	// 2017/01/18 Splash screens at start of game
-
-
-
-
 	// Render background
 	if (backgroundLoopCounter < 1)
 		gBGStartTexture.render(scrollingOffset, 0);			// 1st
@@ -798,7 +1025,7 @@ void Game::renderGameObjects() {
 
 	if (gameOver == false) {
 		SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
-		//SDL_RenderDrawRect(gRenderer, &player1.getCollider());
+//		SDL_RenderDrawRect(gRenderer, &player1.getCollider());
 
 		// Cycle through list of small Blood Cells obstacles and render to screen
 		for (iterSBC = listOfSmallBloodCells.begin(); iterSBC != listOfSmallBloodCells.end();) {
@@ -827,7 +1054,7 @@ void Game::renderGameObjects() {
 		// Cycle through list of power up objects and render them to screen
 		for (unsigned int index = 0; index != listOfPowerUps.size(); ++index) {
 			listOfPowerUps[index]->render();
-			//SDL_RenderDrawRect(gRenderer, &listOfPowerUps[index]->getCollider());
+//			SDL_RenderDrawRect(gRenderer, &listOfPowerUps[index]->getCollider());
 		}
 
 		// Cycle through list of laser objects and render them to screen
@@ -852,9 +1079,7 @@ void Game::renderGameObjects() {
 		gLevelTextTexture.render((SCREEN_WIDTH - gLevelTextTexture.getWidth()) / 2, 8);
 		gTimeTextTexture.setAlpha(timerAlpha);	// Flash the timer
 		gTimeTextTexture.render(600, 8);
-		//gP1ScoreTextTexture.render((SCREEN_WIDTH - gP1ScoreTextTexture.getWidth() - gP2ScoreTextTexture.getWidth()) / 2, 8);
 		gP1ScoreTextTexture.render(10, 8);
-		//gP2ScoreTextTexture.render((SCREEN_WIDTH - gP2ScoreTextTexture.getWidth()) / 2, 8);
 		gP2ScoreTextTexture.render(150, 8);
 
 		// Set the Alpha value for player when flashing
@@ -1339,8 +1564,20 @@ void Saw::render() {
 		gSawTexture.render(getX(), getY(), NULL, degrees, NULL, SDL_FLIP_NONE);
 }
 // Enemies and Obstacles
+int enemyframe = 0;
+
 void EnemyShip::render() {
-	gEnemyShipTexture.render(getX(), getY());
+	//gEnemyShipTexture.render(getX(), getY());
+
+	SDL_Rect* currentClip = &gEnemySpriteClips[enemyframe / 10];	// Render current frame
+	std::cout << enemyframe / 10 << std::endl;
+	gEnemySpriteSheetTexture.render(getX(), getY(), currentClip);
+
+	++enemyframe;	// Go to next frame
+
+	if (enemyframe >= ANIMATION_FRAMES * 10) {	// Cycle animation
+		enemyframe = 0;
+	}
 }
 void EnemyVirus::render() {
 	gEnemyVirusTexture.render(getX(), getY());
@@ -1418,6 +1655,8 @@ bool LTexture::loadFromRenderedText(std::string textureText, SDL_Color textColor
 		textSurface = TTF_RenderText_Solid(gFont, textureText.c_str(), textColor);	//Render text surface
 	if (font == 2)
 		textSurface = TTF_RenderText_Solid(gFont2, textureText.c_str(), textColor);	//Render text surface
+	if (font == 3)
+		textSurface = TTF_RenderText_Blended_Wrapped(gFont, textureText.c_str(), textColor, 600);
 
 
 	if (textSurface != NULL) {
