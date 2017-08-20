@@ -17,9 +17,8 @@ public:
 		
 	bool loadFromFile(std::string path);				// Loads image at specified path
 
-#ifdef _SDL_TTF_H
-	//Creates image from font string
-	bool loadFromRenderedText(std::string textureText, SDL_Color textColor);
+#ifdef _SDL_TTF_H	
+	bool loadFromRenderedText(std::string textureText, SDL_Color textColor);	//Creates image from font string
 #endif
 	
 	void free();										// Deallocates texture

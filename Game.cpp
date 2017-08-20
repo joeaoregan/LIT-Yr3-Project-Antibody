@@ -1,7 +1,7 @@
 // 09/01 Edited background to be 800 x 600 instead of 600 * 480
 
 /*
-    Enemy Ships fires laser
+    Add Timer and Text, and fonts are needed to show numbers
 
     2017-08-11:
         Joe: Change window title
@@ -13,6 +13,12 @@
 #include <SDL.h>
 #include <SDL_image.h>
 #include <SDL_mixer.h>			// 2017/01/09 JOE: SOUND - library we use to make audio playing easier
+
+#include <SDL_ttf.h>
+#include <stdio.h>
+#include <string>
+#include <sstream>				// For timer
+
 #include "Game.h"
 #include "LTexture.h"
 #include "Ship.h"
@@ -26,13 +32,12 @@
 
 //The music that will be played
 Mix_Music *gMusic = NULL;		// Mix_Music: Data type for music
-//Mix_Music *gEngineFX = NULL;	// 2017/01/10 JOE: Change Engine effect to music, turn off when no enemy ship on screen
 
 //The sound effects that will be used (pointers)
 Mix_Chunk *gNinjaFX = NULL;		// 2017/01/09 JOE: SOUND - Mix_Chunk: Data type for short sounds
 Mix_Chunk *gLaserFX = NULL;		// 2017/01/09 JOE: SOUND - Mix_Chunk: Data type for short sounds
 Mix_Chunk *gLaserEFX = NULL;	// 2017/01/09 JOE: SOUND - Mix_Chunk: Data type for short sounds
-Mix_Chunk *gEngineFX = NULL;	// 2017/01/09 JOE: SOUND - Mix_Chunk: Data type for short sounds
+//Mix_Chunk *gEngineFX = NULL;	// 2017/01/09 JOE: SOUND - Mix_Chunk: Data type for short sounds
 
 bool init();					// Starts up SDL and creates window
 bool loadMedia();				// Loads media//void close();
@@ -58,7 +63,12 @@ LTexture gLaserBlueTexture;		// Texture for Laser weapon
 LTexture gNinjaStarTexture;		// Texture for Ninja Star weapon
 LTexture gBloodCellTexture;		// Texture for Blood Cell obstacle (classed as enemy as it causes damage on impact)
 LTexture gBloodCellSmallTexture;// Texture for Smaller Blood Cell
-//LTexture gGO;
+
+//LTexture gTimeTextTexture;	// Texture for timer text
+LTexture gPromptTextTexture;
+
+TTF_Font *gFont = NULL;			//Globally used font
+Uint32 startTime = 0;			// Current start time - Unsigned integer 32-bits
 
 // SEAN: Move ship object outside of main so spawnLaser funtion can use it
 Ship player;					// Declare a ship object that will be moving around on the screen
@@ -141,7 +151,8 @@ bool init() {
 		}
 
 		// Create window
-		gWindow = SDL_CreateWindow("JOURNEY TO THE CENTER OF MY HEADACHE v1.10 by Joe O'Regan & Se\u00E1n Horgan - Enemy Laser", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);	/* Window name */
+		gWindow = SDL_CreateWindow("JOURNEY TO THE CENTER OF MY HEADACHE v1.11 by Joe O'Regan & Se\u00E1n Horgan - Text (Fonts) Added", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);	/* Window name */
+
 		if (gWindow == NULL) {
 			printf("Window could not be created! SDL Error: %s\n", SDL_GetError());
 			success = false;
@@ -159,21 +170,20 @@ bool init() {
 					success = false;
 				}
 
+				//Initialize SDL_ttf
+				if (TTF_Init() == -1) {
+					printf("SDL_ttf could not initialize! SDL_ttf Error: %s\n", TTF_GetError());
+					success = false;
+				}
+
 				//call Mix_oopenAudio to Initialize SDL_mixer
-				if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0)	// sound frequencey, sample format, hardware channels, sample size
+				if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0)										// sound frequencey, sample format, hardware channels, sample size
 				{
-					printf("SDL_mixer could not initialize! SDL_mixer Error: %s\n", Mix_GetError());	// report errors with SDL_mixer
+					printf("SDL_mixer could not initialize! SDL_mixer Error: %s\n", Mix_GetError());			// report errors with SDL_mixer
 					success = false;
 				}
 
 				Mix_Volume(-1, MIX_MAX_VOLUME);	// sets the volume for all channels MIX_MAX_VOLUME = 128 BALANCES OUT THE VOLUMES A BIT BETTER - LEAVE IN
-
-				//If there is no music playing
-				//if (Mix_PlayingMusic() == 0)
-				//{
-				//Play the music
-				//	Mix_PlayMusic(gMusic, -1);	// start if not playing
-				//}
 			}
 		}
 	}
@@ -184,30 +194,46 @@ bool init() {
 bool loadMedia() {
 	bool success = true;			// Loading success flag
 
-	// Load Ship texture
-	if (!gShipTexture.loadFromFile(".\\Art\\Player1Ship.png")) {        // 2017/08/10 Was PlayerShip
+	//Open the font
+	//gFont = TTF_OpenFont("22_timing/lazy.ttf", 28);
+	gFont = TTF_OpenFont(".\\Font\\lazy.ttf", 28);
+	if (gFont == NULL) {
+		printf("Failed to load lazy font! SDL_ttf Error: %s\n", TTF_GetError());
+		success = false;
+	}
+	else {
+		SDL_Color textColor = { 0, 0, 0, 255 };	//Set text color as green
+
+		//Load prompt texture
+		if (!gPromptTextTexture.loadFromRenderedText("Timer: .", textColor)) {
+			printf("Unable to render prompt texture!\n");
+			success = false;
+		}
+	}
+
+	// Load Textures
+	if (!gShipTexture.loadFromFile(".\\Art\\Player1Ship.png")) {             // Ship Texture 2017/08/10 Was PlayerShip
 		printf("Failed to load Player texture!\n");
 		success = false;
 	}
 	// Load Enemy Ship texture
-	//if (!gEnemyShipTexture.loadFromFile("EnemyShip.png")) {
-	if (!gEnemyShipTexture.loadFromFile(".\\Art\\EnemyShip.png")) {  // 2017/08/10 Was EnemyShip
+	if (!gEnemyShipTexture.loadFromFile(".\\Art\\EnemyShip.png")) {             // Enemy Ship Texture
 		printf("Failed to load Enemy Ship texture!\n");
 		success = false;
 	}
 	// Load Enemy Virus texture
-	//if (!gEnemyVirusTexture.loadFromFile("EnemyVirus.png")) {
+	//if (!gEnemyVirusTexture.loadFromFile("EnemyVirus.png")) {			        // Enemy Virus Texture
 	if (!gEnemyVirusTexture.loadFromFile(".\\Art\\EnemyVirus.png")) {
 		printf("Failed to load Enemy Virus texture!\n");
 		success = false;
 	}
 	// Load Blood Cell texture
-	if (!gBloodCellTexture.loadFromFile(".\\Art\\BloodCell.png")) {			    // 10/01 Added Blood Cell
+	if (!gBloodCellTexture.loadFromFile(".\\Art\\BloodCell.png")) {		        // 10/01 Added Blood Cell
 		printf("Failed to load Blood Cell texture!\n");
 		success = false;
 	}
 	// Load Blood Cell texture
-	if (!gBloodCellSmallTexture.loadFromFile(".\\Art\\BloodCellSmall.png")) {		// 10/01 Added Blood Cell
+	if (!gBloodCellSmallTexture.loadFromFile(".\\Art\\BloodCellSmall.png")) {	// 10/01 Added Blood Cell
 		printf("Failed to load Small Blood Cell texture!\n");
 		success = false;
 	}
@@ -218,37 +244,33 @@ bool loadMedia() {
 	}
 
 	// Load Green Laser texture
-	if (!gLaserGreenTexture.loadFromFile(".\\Art\\LaserGreen.png")) {
+	if (!gLaserGreenTexture.loadFromFile(".\\Art\\LaserGreen.png")) {          	// Green Laser Texture
 		printf("Failed to load Green Laser texture!\n");
 		success = false;
 	}
 
 	// Load Blue Laser texture
-	if (!gLaserBlueTexture.loadFromFile(".\\Art\\LaserBlue.png")) {
+	if (!gLaserBlueTexture.loadFromFile(".\\Art\\LaserBlue.png")) {			    // Blue Laser Texture
 		printf("Failed to load Blue Laser texture!\n");
 		success = false;
 	}
 
 	// Load Ninja Star texture
-	if (!gNinjaStarTexture.loadFromFile(".\\Art\\NinjaStar.png")) {
+	if (!gNinjaStarTexture.loadFromFile(".\\Art\\NinjaStar.png")) {				// Ninja Star Texture
 		printf("Failed to load Ninja Star texture!\n");
 		success = false;
 	}
 
 	//Load music
-	//gMusic = Mix_LoadMUS(".\\Music\\SleepNow.wav");	// Load music
+	//gMusic = Mix_LoadMUS("SleepNow.wav");	// Load music
 	gMusic = Mix_LoadMUS(".\\Music\\SleepNow2.wav");	// Load music
 	if (gMusic == NULL) {
 		printf("Failed to load rage music! SDL_mixer Error: %s\n", Mix_GetError());
 		success = false;
 	}
-	/*
-	gEngineFX = Mix_LoadMUS("Engine1.wav");	// Load music
-	if (gEngineFX == NULL) {
-		printf("Failed to load engine effect! SDL_mixer Error: %s\n", Mix_GetError());
-		success = false;
-	} */
+
 	//Load sound effects
+	//gNinjaFX = Mix_LoadWAV("Swoosh.wav");				// Load sound effects
 	gNinjaFX = Mix_LoadWAV(".\\SoundFx\\Swoosh1.wav");	// Load sound effects
 	if (gNinjaFX == NULL) {
 		printf("Failed to load ninja star sound effect! SDL_mixer Error: %s\n", Mix_GetError());
@@ -266,14 +288,15 @@ bool loadMedia() {
 		success = false;
 	}
 
-	//gEngineFX = Mix_LoadWAV("Engine4.wav");	// Load sound effects
-	//if (gEngineFX == NULL) {
-	//	printf("Failed to load engine sound effect! SDL_mixer Error: %s\n", Mix_GetError());
-	//	success = false;
-	//}
+	/*
+	gEngineFX = Mix_LoadWAV("Engine.wav");	// Load sound effects
+	if (gNinjaFX == NULL) {
+		printf("Failed to load engine sound effect! SDL_mixer Error: %s\n", Mix_GetError());
+		success = false;
+	}
+	*/
 
-	//Mix_PlayMusic(gMusic, -1);
-	//Mix_PlayMusic(gEngineFX, -1);	// can only play one music track at a time
+	Mix_PlayMusic(gMusic, -1);
 
 	return success;
 }
@@ -289,19 +312,23 @@ void Game::close() {
 	gNinjaStarTexture.free();
 	gBloodCellTexture.free();
 	gBloodCellSmallTexture.free();
-	//gGO.free();
+
+	//gTimeTextTexture.free();
+	gPromptTextTexture.free();
+
+	//Free global font
+	TTF_CloseFont(gFont);
+	gFont = NULL;
 
 	//Free the sound effects
 	Mix_FreeChunk(gNinjaFX);	// Free a sound effect
 	Mix_FreeChunk(gLaserFX);	// Free a sound effect
 	Mix_FreeChunk(gLaserEFX);	// Free a sound effect
-	Mix_FreeChunk(gEngineFX);	// Free a sound effect
+	//Mix_FreeChunk(gEngineFX);	// Free a sound effect
 
 	//Free the music
 	Mix_FreeMusic(gMusic);	// Free music
 	gMusic = NULL;
-	//Mix_FreeMusic(gEngineFX);	// Free music
-	//gEngineFX = NULL;
 
 	// Destroy window
 	SDL_DestroyRenderer(gRenderer);
@@ -310,6 +337,7 @@ void Game::close() {
 	gRenderer = NULL;
 
 	// Quit SDL subsystems
+	TTF_Quit();
 	IMG_Quit();
 	SDL_Quit();
 }
@@ -326,6 +354,7 @@ void Game::update(){
 		} else {
 			bool quit = false;							// Main loop flag
 
+
 			// While application is running
 			while (!quit) {
 				// Handle events on queue
@@ -341,44 +370,42 @@ void Game::update(){
 
 				destroyGameObjects();					// 2017-01-09 JOE: Destroy the game objects when finished on the screen
 
-				//audio();								// 2017-01-10 JOE: Handle the audio for game objects
-
 				spawnEnemies();							// 2017/01/10 JOE: Spawn enemies and obstacles at random coords and distances apart
 			}
 		}
 	}
 }
-/*
-void Game::audio() {
-	// Cycle through list of Enemy ships and play engine sound
-	if (listOfEnemyShips.size() > 0){
-	//for (iterES = listOfEnemyShips.begin(); iterES != listOfEnemyShips.end();) {
-		//if ((*iterES++)->getX() < 800 && (*iterES++)->getX() > 0 - (*iterES)->getESwidth())
-		//if ((*iterES++)->getX() == 800) {
 
-
-			//Mix_PlayChannel(-1, gEngineFX, 0);
-			//Mix_FadeInChannel(-1, gEngineFX, 0, 1000);			// TOO LOUD
-
-
-			//std::cout << "test audio" << std::endl;
-		//}
-	}
-	if (listOfEnemyShips.size() == 1 && (*listOfEnemyShips.begin())->getX() < 0)
-		Mix_FadeOutChannel(-1, 300);
-}
-*/
 bool Game::playerInput(bool quit = false) {
 	SDL_Event e;								// Event handler
+
+	SDL_Color textColor = { 0, 0, 0, 255 };	//Set text color as green
+
+	//In memory text stream
+	// string streams - function like iostreams only instead of reading or writing to the console, they allow you to read and write to a string in memory
+	std::stringstream timeText;		// string stream
 
 	while (SDL_PollEvent(&e) != 0) {
 		// User requests quit	EXIT - CLOSE WINDOW
 		if (e.type == SDL_QUIT) {
 			quit = true;
 		}
-
+		//Reset start time on return keypress
+		else if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_RETURN) {
+			startTime = SDL_GetTicks();		// time since the program started in milliseconds
+		}
 		player.handleEvent(e);				// Handle input for the ship
 	}
+
+	//Set text to be rendered - string stream - print the time since timer last started
+	timeText.str("");			// initialise empty
+	timeText << "Milliseconds since start time " << SDL_GetTicks() - startTime; // current time - relative start time
+
+	//Render text
+	// Get a string from it and use it to render the current time to a texture
+	//if (!gTimeTextTexture.loadFromRenderedText(timeText.str().c_str(), textColor)) {
+	//	printf("Unable to render time texture!\n");
+	//}
 	return quit;
 }
 
@@ -400,6 +427,7 @@ void Game::renderGameObjects() {
 	// Clear screen
 	SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
 	SDL_RenderClear(gRenderer);
+
 
 	// Render background
 	gBGTexture.render(scrollingOffset, 0);
@@ -433,13 +461,16 @@ void Game::renderGameObjects() {
 		(*iterNS++)->render();	// Render the ninja star
 	}
 
+	//Render textures
+	// Render prompt texture and time texture to the screen
+	gPromptTextTexture.render((SCREEN_WIDTH - gPromptTextTexture.getWidth()) / 2, 0);
+	//gTimeTextTexture.render((SCREEN_WIDTH - gPromptTextTexture.getWidth()) / 2, (SCREEN_HEIGHT - gPromptTextTexture.getHeight()) / 2);
+
 	/* Set the Alpha value for Enemy */
-	//gEnemyShipTexture.setAlpha(a);			// will flash for all enemies NO GOOD
 	gShipTexture.setAlpha(a);
 	player.render();							// render the ship over the background
 }
 
-// Move the game objects on screen
 void Game::moveGameObjects() {
 	player.movement();						// Update ship movement
 
@@ -587,7 +618,6 @@ void Game::spawnEnemyShip() {
 
 	//int y = SCREEN_HEIGHT / 2;
 	EnemyShip* p_Enemy = new EnemyShip();
-	//p_Enemy->spawn(800, y, -5);
 	p_Enemy->spawn(x, y, -randomSpeed);
 	listOfEnemyShips.push_back(p_Enemy);
 }
@@ -600,9 +630,7 @@ void Game::spawnEnemyVirus() {
 	x = SCREEN_WIDTH + (randomX * 50);
 	y = (randomY * 120) - 80;
 
-	//int y = SCREEN_HEIGHT / 2;
 	EnemyVirus* p_Virus = new EnemyVirus();
-	//p_Virus->spawn(800, y, -2);
 	p_Virus->spawn(x, y, -2);
 	listOfEnemyVirus.push_back(p_Virus);
 }
@@ -634,10 +662,6 @@ void Game::spawnSmallBloodCell() {
 	listOfSmallBloodCells.push_back(p_SmallBloodCell);
 }
 
-//void Game::engineFX() {
-//	Mix_PlayChannel(-1, gEngineFX, 0);
-//}
-
 // Spawn Weapon at ships location
 void Game::spawnLaser() {
 	Laser* p_Laser = new Laser();
@@ -645,38 +669,27 @@ void Game::spawnLaser() {
 	listOfLaserObjects.push_back(p_Laser);
 	Mix_PlayChannel(-1, gLaserFX, 0);
 }
+
+void Game::spawnEnemyLaser(int shipX, int shipY) {
+	LaserEnemy* p_LaserE = new LaserEnemy();
+
+	if (shipX % 100 == 0) {
+		p_LaserE->spawn(shipX, shipY);
+		listOfEnemyLaserObjects.push_back(p_LaserE);
+		Mix_PlayChannel(-1, gLaserEFX, 0);
+	}
+}
+
 void Game::spawnNinjaStar() {
 	NinjaStar* p_NinjaStar = new NinjaStar();
 	p_NinjaStar->spawn(player.getX(), player.getY());
 	listOfNinjaStarObjects.push_back(p_NinjaStar);
 	Mix_PlayChannel(-1, gNinjaFX, 0);
 }
-void Game::spawnEnemyLaser(int shipX, int shipY) {
-	LaserEnemy* p_LaserE = new LaserEnemy();
-
-	//for (iterEL = listOfEnemyLaserObjects.begin(); iterEL != listOfEnemyLaserObjects.end();) {
-		//if ((*iterEL++)->getX() % 100 == 0) {
-	//		p_LaserE->spawn((*iterEL)->getX(), (*iterEL)->getY());
-	//		listOfEnemyLaserObjects.push_back(p_LaserE);
-			//Mix_PlayChannel(-1, gLaserFX, 0);
-		//}
-		//else continue;
-	//}
-	if (shipX % 100 == 0) {
-		p_LaserE->spawn(shipX, shipY);
-		listOfEnemyLaserObjects.push_back(p_LaserE);
-		Mix_PlayChannel(-1, gLaserEFX, 0);
-	}
-
-	//p_LaserE->spawn(ship.getX(), EnemyShip.getY());
-	//listOfEnemyLaserObjects.push_back(p_LaserE);
-}
 
 void Ship::render() {
 	gShipTexture.render(player.getX(), player.getY());				// Show the ship
 }
-
-
 
 // Render the laser objects to the screen
 void Laser::render() {
@@ -685,6 +698,7 @@ void Laser::render() {
 void LaserEnemy::render() {
 	gLaserBlueTexture.render(getX(), getY());
 }
+
 /* Render the ninja star objects to the screen*/
 void NinjaStar::render() {
 	gNinjaStarTexture.render(getX(), getY(), NULL, degrees, NULL, SDL_FLIP_NONE);
@@ -704,11 +718,34 @@ void BloodCell::render() {
 void BloodCellSmall::render() {
 	gBloodCellSmallTexture.render(getX(), getY(), NULL, -degreesBCS, NULL, SDL_FLIP_NONE);
 }
-//void GameObject::render() {
-//	gGO.render(getX(), getY());
-//}
-/*
-void GameObject::renderTexture(LTexture x) {
-	x.render(getX(), getY());
+
+
+
+
+
+#ifdef _SDL_TTF_H
+bool LTexture::loadFromRenderedText(std::string textureText, SDL_Color textColor) {
+	free();	//Get rid of preexisting texture
+
+	SDL_Surface* textSurface = TTF_RenderText_Solid(gFont, textureText.c_str(), textColor);	//Render text surface
+	if (textSurface != NULL) {
+		//Create texture from surface pixels
+		mTexture = SDL_CreateTextureFromSurface(gRenderer, textSurface);
+		if (mTexture == NULL) {
+			printf("Unable to create texture from rendered text! SDL Error: %s\n", SDL_GetError());
+		}
+		else {
+			//Get image dimensions
+			mWidth = textSurface->w;
+			mHeight = textSurface->h;
+		}
+
+		SDL_FreeSurface(textSurface);	//Get rid of old surface
+	}
+	else {
+		printf("Unable to render text surface! SDL_ttf Error: %s\n", TTF_GetError());
+	}
+
+	return mTexture != NULL;	// Return success
 }
-*/
+#endif

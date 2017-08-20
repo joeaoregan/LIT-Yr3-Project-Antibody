@@ -34,8 +34,6 @@ public:
 	void moveGameObjects();			// 2017-01-09 JOE: Move the game objects on the screen
 	void destroyGameObjects();		// 2017-01-09 JOE: Destroy the game objects when finished on the screen
 	void playerFlashOnCollide();	// 2017-01-09 JOE: The player texture flashes on collision with other Game Objects
-	//void audio();					// 2017-01-10 JOE: Handle the audio for game objects
-	//void engineFX();				// 2017-01-09 JOE: Engine Sound FX for ship
 };
 
 #endif
