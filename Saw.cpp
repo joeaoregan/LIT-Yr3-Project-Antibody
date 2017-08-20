@@ -28,9 +28,8 @@ void Saw::spawn(int x, int y) {
 	setY(y + 15);
 }
 
-
-//void Saw::render(LTexture &texture, SDL_Renderer *rend, int degrees) {
-//	texture.render(getX(), getY(), rend, degrees, NULL, NULL, SDL_FLIP_NONE);
+void Saw::render(LTexture &texture, SDL_Renderer *rend, int degrees) {
+	texture.render(getX(), getY(), rend, NULL, degrees, NULL, SDL_FLIP_NONE);
 
 	//gSawTexture.render(getX(), getY(), gRenderer, NULL, degrees, NULL, SDL_FLIP_NONE);
-//}
+}

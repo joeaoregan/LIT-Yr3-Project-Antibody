@@ -44,11 +44,10 @@ void LaserEnemy::spawn(int x, int y, SDL_Rect collider) {
 	setCollider(collider);
 }
 
+void LaserEnemy::render(LTexture &texture, SDL_Renderer *rend) { // 2017/01/22 Moved from game.cpp
+	texture.render(getX(), getY(), rend);
+}
+
 //SDL_Rect LaserEnemy::getELaserCollider(){
 //	return mELaserCollider;
-//}
-
-
-//void LaserEnemy::render(LTexture &texture, SDL_Renderer *rend) { // 2017/01/22 Moved from game.cpp
-//	texture.render(getX(), getY(), rend);
 //}

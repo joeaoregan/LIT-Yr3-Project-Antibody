@@ -22,11 +22,12 @@ public:
 	Player();							// Initializes the variables
 	Player(LTexture &dark, LTexture &medium, LTexture &light);				// 2017/01/20 Particles
 
+	SDL_Rect mCollider;				// Players Hit Box
 
 	//void handleEvent(SDL_Event& e);
-	void handleEvent(SDL_Event& e, int player, bool playerAlive);	// Takes key presses and adjusts the ship's velocity
+	void handleEvent(SDL_Event& e, int player);	// Takes key presses and adjusts the ship's velocity
 	virtual void movement();		// Moves the ship	
-	//void render();					// Shows the ship on the screen
+	void render();					// Shows the ship on the screen
 	void gameControllerDPad(SDL_Event& e);
 	void gameControllerButton(SDL_Event& e);
 	void resetPreviousDirection();
@@ -43,19 +44,24 @@ public:
 	void moveRight();
 	int moveDiagonal();
 
-	// Saw Weapon
+	SDL_Rect getCollider();
+	void setShipColX(int x);					// get the ships X position
+	void setShipColY(int y);					// get the ships Y position
+
+
 	bool getSawActive();
 	void setSawActive(bool active);
+	bool sawActive;
 
-	// Render & Particles
 	void render(LTexture &player, LTexture &dark, LTexture &medium, LTexture &light, LTexture &shimmer, LTexture &lives, SDL_Renderer *rend);
+	//void render(LTexture &texture, LTexture &one, LTexture &two, LTexture &three, LTexture &four, SDL_Renderer *rend);	// Shows the ship with particles on the screen
 	bool getDrawParticle();
 	void setDrawParticle(bool p);
 private:
 	bool mSpeedBoost;
 	unsigned int mBoostStartTime;
 
-	bool sawActive;
+
 
 	Particle* particles[TOTAL_PARTICLES];	// The particles
 

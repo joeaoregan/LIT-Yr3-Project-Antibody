@@ -1,6 +1,5 @@
 #include "Game.h"
 #include "EnemyShip.h"
-#include <math.h>
 
 EnemyShip::EnemyShip() {					// Constructor
 	setScore(25);							// Value for killing object
@@ -39,8 +38,7 @@ void EnemyShip::movement() {
 }
 
 // Enemies render function with sprite animation
-void EnemyShip::render(LTexture &texture,  SDL_Renderer *rend, SDL_Rect *currentClip, int &enemyframe) {	// 2017/01/22 Moved from game.cpp
-	//texture.render(getX(), getY(), rend, 0, currentClip);
+void EnemyShip::render(LTexture &texture, SDL_Renderer *rend, SDL_Rect *currentClip, int &enemyframe) {	// 2017/01/22 Moved from game.cpp
 	texture.render(getX(), getY(), rend, currentClip);
 
 	++enemyframe;								// Go to next frame

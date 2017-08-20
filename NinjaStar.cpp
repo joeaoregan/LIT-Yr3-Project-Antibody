@@ -45,11 +45,11 @@ void NinjaStar::spawn(int x, int y, SDL_Rect collider) {
 	setCollider(collider);
 }
 
+// Render the Ninja Star objects to the screen
+void NinjaStar::render(int degrees, LTexture &texture, SDL_Renderer *rend) {
+	texture.render(getX(), getY(), rend, NULL, degrees, NULL, SDL_FLIP_NONE);
+}
+
 //SDL_Rect NinjaStar::getNinjaStarCollider(){
 //	return mNinjaStarCollider;
 //}
-
-// Render the Ninja Star objects to the screen
-void NinjaStar::render(int degrees, LTexture &texture, SDL_Renderer *rend) {
-	texture.render(getX(), getY(), rend, NULL, degrees);
-}

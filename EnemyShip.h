@@ -8,12 +8,10 @@ public:
 	EnemyShip();							// Initializes the variables
 	~EnemyShip();
 
-	//SDL_Rect gEnemySpriteClips[ANIMATION_FRAMES];
-	int enemyframe = 0;
-
 	const int ANIMATION_FRAMES = 4;
 
 	virtual void movement();
+	//void render();							// Shows the Enemy on the screen
 	void render(LTexture &texture, SDL_Renderer *rend, SDL_Rect *currentClip, int &enemyframey);							// Shows the Enemy on the screen
 };
 

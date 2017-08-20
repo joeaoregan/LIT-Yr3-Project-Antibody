@@ -9,7 +9,8 @@ public:
 	~BloodCell();
 	
 	virtual void movement();
-	//void render(LTexture &texture, SDL_Renderer *rend, int degrees);							// Shows the Blood Cell on the screen
+	//void render();							// Shows the Blood Cell on the screen
+	void render(LTexture &texture, SDL_Renderer *rend, int degrees);
 };
 
 #endif

@@ -10,7 +10,8 @@ public:
 	~EnemyVirus();							// Destructor
 
 	virtual void movement(int playerX, int playerY);
-	//void render(LTexture &texture, SDL_Renderer *rend);							// Shows the Enemy on the screen
+	//void render();							// Shows the Enemy on the screen
+	void render(LTexture &texture, SDL_Renderer *rend);							// Shows the Enemy on the screen
 };
 
 #endif

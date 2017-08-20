@@ -9,7 +9,8 @@ public:
 	~BloodCellSmall();				// Destructor
 
 	virtual void movement();		// Move the small blood cell
-	//void render(LTexture &texture, SDL_Renderer *rend, int degrees);					// Shows the Blood Cell on the screen
+	//void render();					// Shows the Blood Cell on the screen
+	void render(LTexture &texture, SDL_Renderer *rend, int degrees);					// Shows the Blood Cell on the screen
 };
 
 #endif

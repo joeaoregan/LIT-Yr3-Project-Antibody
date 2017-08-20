@@ -37,7 +37,6 @@ void BloodCell::movement() {
 	else setAlive(true);
 }
 
-
-//void BloodCell::render(LTexture &texture, SDL_Renderer *rend, int degrees) {
-//	texture.render(getX(), getY(), rend, degrees, NULL, NULL, SDL_FLIP_NONE);
-//}
+void BloodCell::render(LTexture &texture, SDL_Renderer *rend, int degrees) {
+	texture.render(getX(), getY(), rend, NULL, degrees, NULL, SDL_FLIP_NONE);
+}

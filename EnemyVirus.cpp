@@ -37,6 +37,6 @@ void EnemyVirus::movement(int shipX, int shipY) {
 	else setAlive(true);
 }
 
-//void EnemyVirus::render(LTexture &texture, SDL_Renderer *rend) {	// 2017/01/22 Moved from game.cpp
-//	texture.render(getX(), getY(), rend);
-//}
+void EnemyVirus::render(LTexture &texture, SDL_Renderer *rend) {	// 2017/01/22 Moved from game.cpp
+	texture.render(getX(), getY(), rend);
+}
