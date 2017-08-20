@@ -49,7 +49,7 @@ public:
 	void moveGameObjects();						// 2017-01-09 JOE: Move the game objects on the screen
 	void destroyGameObjects();					// 2017-01-09 JOE: Destroy the game objects when finished on the screen
 	void flashGameObject(int &alpha, bool &flash, int rate = 10, int times = 0);
-
+	
 	// Music
 	void musicForward();
 	void musicBack();

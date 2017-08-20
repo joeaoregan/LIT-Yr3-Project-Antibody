@@ -8,7 +8,7 @@ class WhiteBloodCell : public Enemy {
 public:
 	WhiteBloodCell();							// Initializes the variables
 	~WhiteBloodCell();
-
+	
 	virtual void movement();
 	void render();							// Shows the Blood Cell on the screen
 };

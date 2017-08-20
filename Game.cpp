@@ -1,21 +1,11 @@
 // 09/01 Edited background to be 800 x 600 instead of 600 * 480
 
-/*
-    Combined Version
-
-    2017-08-11:
-        Joe: Change window title
-        Joe: Add relative path for asset files in "Art" directory
-        Joe: Changed getCollision() for ship and enemyship
-        Joe: Add relative path for asset files in "Music" and "SoundFX" directories
-*/
-
 #include <SDL.h>
 #include <SDL_image.h>
-#include <string.h>
 
 #include <SDL_ttf.h>
 #include <sstream>				// For timer
+#include <string.h>
 
 #include <SDL_mixer.h>			// 2017/01/09 JOE: SOUND - library we use to make audio playing easier
 #include <cmath>
@@ -261,7 +251,7 @@ bool init() {
 			if (gController1 == NULL) {
 				printf("Warning: Unable to open game controller! SDL Error: %s\n", SDL_GetError());
 			}
-			else {
+			else{
 				//Get controller haptic device
 				gControllerHaptic = SDL_HapticOpenFromJoystick(gController1);
 				if (gControllerHaptic == NULL) {
@@ -277,7 +267,7 @@ bool init() {
 		}
 
 		// Create window
-		gWindow = SDL_CreateWindow("JOURNEY TO THE CENTER OF MY HEADACHE v1.25 by Joe O'Regan & Se\u00E1n Horgan: Combined Version", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);	/* Window name */
+		gWindow = SDL_CreateWindow("JOURNEY TO THE CENTER OF MY HEADACHE v1.26 by Joe O'Regan & Se\u00E1n Horgan: Combined Version Fix Boost", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);	/* Window name */
 		if (gWindow == NULL) {
 			printf("Window could not be created! SDL Error: %s\n", SDL_GetError());
 			success = false;
@@ -869,7 +859,7 @@ void Game::displayText() {
 	std::string gameWinner;
 	std::stringstream framesPerSec;
 
-	timeText.str("");									// Set text to be rendered - string stream - print the time since timer last started - initialise empty
+	timeText.str("");				// Set text to be rendered - string stream - print the time since timer last started - initialise empty
 	score1Text.str("");
 	score2Text.str("");
 	framesPerSec.str("");
@@ -1093,7 +1083,7 @@ void Game::renderGameObjects() {
 		// Cycle through list of power up objects and render them to screen
 		for (int index = 0; index != listOfPowerUps.size(); ++index) {
 			listOfPowerUps[index]->render();
-//			SDL_RenderDrawRect(gRenderer, &listOfPowerUps[index]->getCollider());
+	//		SDL_RenderDrawRect(gRenderer, &listOfPowerUps[index]->getCollider());
 		}
 
 		// Cycle through list of laser objects and render them to screen
@@ -1109,12 +1099,12 @@ void Game::renderGameObjects() {
 			listOfNinjaStarObjects[index]->render(listOfNinjaStarObjects[index]->getPlayer());
 			//SDL_RenderDrawRect(gRenderer, &listOfNinjaStarObjects[index]->getNinjaStarCollider());
 		}/*
-		for (iterEL = listOfEnemyLaserObjects.begin(); iterEL != listOfEnemyLaserObjects.end();) {
-			(*iterEL++)->render();	// Render the laser
-		}
-		for (iterNS = listOfNinjaStarObjects.begin(); iterNS != listOfNinjaStarObjects.end();) {
-			(*iterNS++)->render((*iterNS)->getPlayer());	// Render the ninja star
-		}*/
+		 for (iterEL = listOfEnemyLaserObjects.begin(); iterEL != listOfEnemyLaserObjects.end();) {
+		 (*iterEL++)->render();	// Render the laser
+		 }
+		 for (iterNS = listOfNinjaStarObjects.begin(); iterNS != listOfNinjaStarObjects.end();) {
+		 (*iterNS++)->render((*iterNS)->getPlayer());	// Render the ninja star
+		 }*/
 		for (iterSaw = listOfSawObjects.begin(); iterSaw != listOfSawObjects.end();) {
 			//(*iterSaw++)->render((*iterSaw)->getPlayer());	// Render the ninja star
 			(*iterSaw++)->render();	// Render the ninja star
@@ -1229,21 +1219,21 @@ void Game::destroyGameObjects() {
 	for (int index = 0; index != listOfEnemyShips.size(); ++index) {
 		if (!listOfEnemyShips[index]->getAlive()) {
 			listOfEnemyShips.erase(listOfEnemyShips.begin() + index);
-			std::cout << "Enemy Ship Destroyed." << std::endl;
+			//std::cout << "Enemy Ship Destroyed." << std::endl;
 			index--;
 		}
 	}// end for
 	for (int index = 0; index != listOfEnemyVirus.size(); ++index) {
 		if (!listOfEnemyVirus[index]->getAlive()) {
 			listOfEnemyVirus.erase(listOfEnemyVirus.begin() + index);
-			std::cout << "Enemy Virus Destroyed." << std::endl;
+			//std::cout << "Enemy Virus Destroyed." << std::endl;
 			index--;
 		}
 	}// end for
 	for (iterBC = listOfBloodCells.begin(); iterBC != listOfBloodCells.end();) {
 		if (!(*iterBC)->getAlive()) {
 			iterBC = listOfBloodCells.erase(iterBC);
-			std::cout << "destroy blood cell" << std::endl;
+			//std::cout << "destroy blood cell" << std::endl;
 		}
 		else {
 			iterBC++;
@@ -1252,7 +1242,7 @@ void Game::destroyGameObjects() {
 	for (iterSBC = listOfSmallBloodCells.begin(); iterSBC != listOfSmallBloodCells.end();) {
 		if (!(*iterSBC)->getAlive()) {
 			iterSBC = listOfSmallBloodCells.erase(iterSBC);
-			std::cout << "destroy small blood cell" << std::endl;
+			//std::cout << "destroy small blood cell" << std::endl;
 		}
 		else {
 			iterSBC++;
@@ -1261,7 +1251,7 @@ void Game::destroyGameObjects() {
 	for (iterWBC = listOfWhiteBloodCells.begin(); iterWBC != listOfWhiteBloodCells.end();) {
 		if (!(*iterWBC)->getAlive()) {
 			iterWBC = listOfWhiteBloodCells.erase(iterWBC);
-			std::cout << "destroy blood cell" << std::endl;
+			//std::cout << "destroy blood cell" << std::endl;
 		}
 		else {
 			iterWBC++;
@@ -1270,7 +1260,7 @@ void Game::destroyGameObjects() {
 	for (int index = 0; index != listOfLaserObjects.size(); ++index) {
 		if (!listOfLaserObjects[index]->getAlive()) {
 			listOfLaserObjects.erase(listOfLaserObjects.begin() + index);
-			std::cout << "Laser Destroyed." << std::endl;
+			//std::cout << "Laser Destroyed." << std::endl;
 			index--;
 		}
 	}// end for
@@ -1291,7 +1281,7 @@ void Game::destroyGameObjects() {
 	for (iterSaw = listOfSawObjects.begin(); iterSaw != listOfSawObjects.end();) {
 		if (!(*iterSaw)->getAlive()) {
 			iterSaw = listOfSawObjects.erase(iterSaw);
-			std::cout << "destroy saw" << std::endl;
+			//std::cout << "destroy saw" << std::endl;
 		}
 		else {
 			iterSaw++;
@@ -1300,7 +1290,7 @@ void Game::destroyGameObjects() {
 	for (int index = 0; index != listOfPowerUps.size(); ++index) {
 		if (!listOfPowerUps[index]->getAlive()) {
 			listOfPowerUps.erase(listOfPowerUps.begin() + index);
-			std::cout << "Power Up Destroyed." << std::endl;
+			//std::cout << "Power Up Destroyed." << std::endl;
 			index--;
 		}
 	}// end for
@@ -1602,7 +1592,7 @@ int enemyframe = 0;
 
 void EnemyShip::render() {
 	SDL_Rect* currentClip = &gEnemySpriteClips[enemyframe / 10];	// Render current frame
-	std::cout << enemyframe / 10 << std::endl;
+	//std::cout << enemyframe / 10 << std::endl;
 	gEnemySpriteSheetTexture.render(getX(), getY(), currentClip);
 
 	++enemyframe;	// Go to next frame
@@ -1739,12 +1729,12 @@ void fpsthink() {
 
 	framecount++;	// increment the frame count
 
-	// Work out the current framerate
+					// Work out the current framerate
 
-	// The code below could be moved into another function if you don't need the value every frame.
+					// The code below could be moved into another function if you don't need the value every frame.
 
-	// I've included a test to see if the whole array has been written to or not. This will stop
-	// strange values on the first few (FRAME_VALUES) frames.
+					// I've included a test to see if the whole array has been written to or not. This will stop
+					// strange values on the first few (FRAME_VALUES) frames.
 	if (framecount < FRAME_VALUES) {
 		count = framecount;
 	}

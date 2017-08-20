@@ -44,7 +44,7 @@ void Ship::handleEvent(SDL_Event& e, int player) {
 			case SDLK_a: moveLeft(); break;
 			case SDLK_d: moveRight(); break;
 
-				// FIRE WEAPON
+			// FIRE WEAPON
 			case SDLK_SPACE: game1.spawnLaser(getX(), getY(), 1); break;
 			case SDLK_n: game1.spawnNinjaStar(getX(), getY(), 1); break;
 			case SDLK_e: game1.spawnSaw(getX(), getY(), 1); break;			// 2017/01/17 Saw Weapon added, check saw is active with if statement in spawn Saw, and activate/deactivate the weapon
@@ -69,8 +69,8 @@ void Ship::handleEvent(SDL_Event& e, int player) {
 			case SDLK_LEFT: moveLeft(); break;
 			case SDLK_RIGHT: moveRight(); break;
 
-				// FIRE WEAPON SDLK_RCTRL
-				//case SDLK_e: game1.spawnLaser(getX(), getY()); break; // SEAN: Press space bar to spawn a new laser
+			// FIRE WEAPON SDLK_RCTRL
+			//case SDLK_e: game1.spawnLaser(getX(), getY()); break; // SEAN: Press space bar to spawn a new laser
 			case SDLK_RCTRL: game1.spawnLaser(getX(), getY(), 2); break;
 			case SDLK_RSHIFT: game1.spawnNinjaStar(getX(), getY(), 2); break;
 			case SDLK_r: game1.spawnSaw(getX(), getY(), 2); break;			// 2017/01/17 Separate saw for player 2
@@ -183,14 +183,14 @@ void Ship::movement() {
 
 	setX(getX() + getVelX());											// Velocity is 0 if not moving
 
-																		// If the ship went too far to the left or right
+	// If the ship went too far to the left or right
 	if ((getX() < 0) || ((getX() + getWidth()) > SCREEN_WIDTH)) {
 		setX(getX() - getVelX());										// Move back
 	}
 
 	setY(getY() + getVelY());											// Move the ship up or down
 
-																		// If the ship went too far up or down
+	// If the ship went too far up or down
 	if ((getY() < 40) || ((getY() + getHeight()) > SCREEN_HEIGHT - 40)) {
 		setY(getY() - getVelY());										// Move back
 	}
@@ -322,7 +322,7 @@ void Ship::setShipColY(int y)
 	mCollider.y = y;
 }// end setY
 
- // Speed Boost
+// Speed Boost
 bool Ship::getSpeedBoost() {
 	return mSpeedBoost;
 }

@@ -14,7 +14,7 @@ JOE: Moved functionality common to game objects to GameObjects class reducing th
 */
 
 class Ship : public GameObject {
-public:
+public:				
 	Ship();							// Initializes the variables
 
 	SDL_Rect mCollider;				// Players Hit Box
