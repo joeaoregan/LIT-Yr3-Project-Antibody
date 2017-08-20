@@ -14,10 +14,7 @@ JOE: Moved functionality common to game objects to GameObjects class reducing th
 */
 
 class Ship : public GameObject {
-public:
-			
-	static const int SHIP_VEL = 10;	// Maximum axis velocity of the ship
-	
+public:				
 	Ship();							// Initializes the variables
 
 	//void handleEvent(SDL_Event& e);
@@ -27,15 +24,20 @@ public:
 	void gameControllerDPad(SDL_Event& e);
 	void gameControllerButton(SDL_Event& e);
 	void resetPreviousDirection();
-	SDL_Rect getCollider();
-	void setShipColX(int x);					// get the ships X position
-	void setShipColY(int y);					// get the ships Y position
+	//void speedBoost(bool speedBoostActive);
+	bool getSpeedBoost();
+	unsigned int getBoostStartTime();
+	void setSpeedBoost(bool boost);
 
-protected:
-	// The dimensions of the ship (dimensions of sprite image)
-	static const int SHIP_WIDTH = 100;
-	static const int SHIP_HEIGHT = 47;
-	SDL_Rect mCollider;				// Players Hit Box
+	void moveUp();
+	void moveDown();
+	void moveLeft();
+	void moveRight();
+	int moveDiagonal();
+
+private:
+	bool mSpeedBoost;
+	unsigned int mBoostStartTime;
 };
 
 #endif

@@ -21,8 +21,6 @@ public:
 	void spawn(int x, int y, int vx, SDL_Rect collider);
 	void spawn(int x, int y, int vx, int vy, SDL_Rect collider);
 	virtual void movement();
-	//void render();
-	//void renderTexture(LTexture renderThis);
 
 	int getX();					// Get GameObject X coord
 	int getY();					// Get GameObject Y coord
