@@ -38,6 +38,8 @@ Player::Player() {
 
 	setSawActive(false);
 	setScore(0);
+	setAlive(false);
+	setNumLives(3);							// works, game is over when both players lives are <= 0
 }
 
 void Player::handleEvent(SDL_Event& e, int player) {

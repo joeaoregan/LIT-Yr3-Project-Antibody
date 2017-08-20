@@ -34,6 +34,7 @@ public:
 	std::string getName();
 	int getHealth();
 	int getMaxHealth();
+	int getNumLives();
 
 	void setX(int x);			// Set GameObject X coord
 	void setY(int y);			// Set GameObject Y coord
@@ -46,6 +47,7 @@ public:
 	void setScore(int s);
 	void setName(std::string name);
 	void setHealth(int health);			// set the health
+	void setNumLives(int n);
 
 	SDL_Rect getCollider();
 	void setCollider(SDL_Rect collider);	// 2017/01/19 Added as Sean keeps doing dumb things with the colliders
@@ -65,6 +67,7 @@ private:
 	bool m_Alive;					// Is the GameObject active on screen, return true if its health is greater than 0
 	SDL_Rect mCollider;
 	int m_Score;					// Score value for killing or collecting an object
+	int m_NumLives;
 };
 
 #endif

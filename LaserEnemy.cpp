@@ -17,6 +17,7 @@ LaserEnemy::LaserEnemy() {
 	setVelocity(15);
 	setColliderWidth(getWidth());
 	setColliderHeight(getHeight());
+	setScore(5);						// 2017/01/20 Points to deduct from player after collision with this object
 }
 
 // LaserEnemy Destructor

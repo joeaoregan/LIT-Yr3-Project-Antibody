@@ -16,6 +16,7 @@
 #include <ctime>		// For Random Numbers
 #include <list>
 #include <vector>
+#include <string>
 
 class Game {
 public:
@@ -33,7 +34,8 @@ public:
 
 	void displayGameLogos();					// Display Logos at start of game
 
-	void spawnEnemies();
+	void spawnMovingObjects();
+	void spawnPlayer(int player);
 	void spawnEnemyShip();						// 2017/01/09 JOE: added function to create enemy ships at random times and random y coord
 	void spawnEnemyVirus();						// 2017/01/10 JOE: added function to create enemy virus at random times and random y coord
 	void spawnBloodCell();						// 2017/01/10 JOE: add function to create blood cells
@@ -57,12 +59,18 @@ public:
 	void moveGameObjects();						// 2017-01-09 JOE: Move the game objects on the screen
 	void destroyGameObjects();					// 2017-01-09 JOE: Destroy the game objects when finished on the screen
 	void flashGameObject(int &alpha, bool &flash, int rate = 10, int times = 0);
-	
+
 	// Music
 	void musicForward();
 	void musicBack();
 
-	void spawnRandom(int &x, int &y, int &randomSpeed, int xMuliplier, int speed = 1);
+	void spawnRandom(int &x, int &y, int &randomSpeed, int xMuliplier = 0, int speed = 1);
+
+	int getNumPlayers();
+	void setNumPlayers(int n);
+	void managePlayerHealth(int player, int score, std::string name = "Game Object");
+private:
+	int mNumPlayers;
 };
 
 #endif

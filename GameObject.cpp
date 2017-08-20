@@ -105,6 +105,9 @@ int GameObject::getHealth() {
 int GameObject::getMaxHealth() {
 	return MAX_HEALTH;
 }
+int GameObject::getNumLives() {
+	return m_NumLives;
+}
 
 void GameObject::setX(int x) {
 	m_x = x;
@@ -144,6 +147,9 @@ void GameObject::setHealth(int h) {
 		m_Health = 100;
 	else
 		m_Health = h;
+}
+void GameObject::setNumLives(int n) {
+	m_NumLives = n;
 }
 
 SDL_Rect GameObject::getCollider(){

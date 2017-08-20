@@ -48,7 +48,6 @@ public:
 	void setSawActive(bool active);
 
 	bool sawActive;
-
 private:
 	bool mSpeedBoost;
 	unsigned int mBoostStartTime;
