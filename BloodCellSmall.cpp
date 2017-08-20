@@ -6,13 +6,13 @@ BloodCellSmall::BloodCellSmall() {
 	setWidth(59);
 	setHeight(66);
 	setVelocity(1);
+	setScore(5);
 }
 
 BloodCellSmall::~BloodCellSmall() {
 
 }
 
-//void EnemyVirus::movement(Ship ship) {	// No need for full ship object, just ship y coord will do
 void BloodCellSmall::movement() {
 	GameObject::movement();
 
@@ -28,6 +28,6 @@ void BloodCellSmall::movement() {
 	}
 
 	// destroy blood cell once it is offscreen
-	if (getX() < -100) setAlive(false);
+	if (getX() < -getWidth()) setAlive(false);
 	else setAlive(true);
 }

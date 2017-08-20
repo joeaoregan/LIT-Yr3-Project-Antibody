@@ -1,5 +1,4 @@
 #include "Game.h"
-//#include <iostream>
 
 //#define GAME_LOOPS 20		// Number of times to loop the game
 
@@ -12,14 +11,6 @@ int main()
 	game.update();
 
 	game.close();			// Free resources and close SDL
-
-
-
-
-
-	system("PAUSE");
-
-
 	/*
 	//srand(static_cast<unsigned int>(time(0)));	// Seed random number
 
@@ -54,5 +45,8 @@ int main()
 
 	game.info();			// Print Game Object details one more time
 	*/
+
+	system("pause");
+
 	return 0;
 }

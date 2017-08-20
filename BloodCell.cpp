@@ -3,9 +3,11 @@
 int up = 0, down = MOVEMENT;
 
 BloodCell::BloodCell() {
-	setColliderR(getWidth() / 2);		// Set circular collider
+	//setColliderR(getWidth() / 2);		// Set circular collider
 
-	shiftColliders();
+	setScore(5);
+
+	//shiftColliders();
 	setWidth(100);
 	setHeight(55);
 	setVelocity(1);
@@ -21,18 +23,18 @@ void BloodCell::movement() {
 
 	if (up < MOVEMENT) {
 		setY(getY() - getVelocity());
-		up+=1;
+		up += 1;
 		if (up >= MOVEMENT) down = 0;
-	}	
+	}
 	if (down < MOVEMENT) {
 		setY(getY() + getVelocity());
-		down+=1;
+		down += 1;
 		if (down >= MOVEMENT) up = 0;
 	}
 
 	//std::cout << "test blood cell floating movement" << std::endl;
 
 	// destroy blood cell once it is offscreen
-	if (getX() < - getWidth()) setAlive(false);
+	if (getX() < -getWidth()) setAlive(false);
 	else setAlive(true);
 }

@@ -27,10 +27,12 @@ EnemyShip::~EnemyShip() {					// Destructor
 void EnemyShip::movement() {
 	GameObject::movement();
 
+	setScore(25);
+
 	setColliderX(getX());
 	setColliderY(getY());
 
 	// destroy enemy ship once it is offscreen
-	if (getX() < - getWidth()) setAlive(false);
+	if (getX() < -getWidth()) setAlive(false);
 	else setAlive(true);
 }

@@ -6,9 +6,6 @@ Ninja Star Weapon
 
 // Ninja Star Constructor
 NinjaStar::NinjaStar() {
-	setWidth(25);
-	setWidth(25);
-	setVelocity(10);	// Maximum axis velocity of the Ninja Star
 	std::cout << "NinjaStar constuctor called.\n";
 }
 
@@ -28,6 +25,6 @@ void NinjaStar::movement() {
 void NinjaStar::spawn(int x, int y) {
 	setX(x + 65);
 	setY(y + 25);
-	setVelX(getVelocity());
+	setVelX(NINJA_VEL);
 	setVelY(0);
 }

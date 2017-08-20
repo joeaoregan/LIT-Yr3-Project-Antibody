@@ -7,7 +7,7 @@ class EnemyShip : public Enemy {
 public:
 	EnemyShip();							// Initializes the variables
 	~EnemyShip();
-	
+
 	virtual void movement();
 	void render();							// Shows the Enemy on the screen
 };

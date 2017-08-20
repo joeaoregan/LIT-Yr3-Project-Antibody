@@ -5,11 +5,11 @@
 
 class BloodCell : public Enemy {
 public:
-	BloodCell();				// Initializes the variables
-	~BloodCell();				// Destructor
+	BloodCell();							// Initializes the variables
+	~BloodCell();
 	
-	virtual void movement();	// Move the Blood Cell
-	void render();				// Shows the Blood Cell on the screen
+	virtual void movement();
+	void render();							// Shows the Blood Cell on the screen
 };
 
 #endif

@@ -16,13 +16,13 @@ JOE: Moved functionality common to game objects to GameObjects class reducing th
 
 class Laser : public Weapon {
 public:
-	Laser();							// Initializes the variables
-	~Laser();							// Destructor
-		
-	virtual void movement();			// Moves the laser	
-	void render();						// Shows the laser on the screen
-	virtual void spawn(int x, int y);	// Spawn the object at the dimensions provided
-	virtual void spawn(int x, int y, SDL_Rect collider);
+	Laser();												// Initializes the variables
+	~Laser();												// Destructor
+
+	virtual void movement();								// Moves the laser	
+	void render();											// Shows the laser on the screen
+	//virtual void spawn(int x, int y);	
+	virtual void spawn(int x, int y, SDL_Rect collider);	// Spawn the object at the dimensions provided
 	SDL_Rect getLaserCollider();
 
 private:

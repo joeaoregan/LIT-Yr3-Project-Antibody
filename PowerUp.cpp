@@ -1,7 +1,7 @@
 #include "PowerUp.h"
 
 PowerUp::PowerUp() {
-	//setScore(50);
+	setScore(50);
 
 	setWidth(60);
 	setHeight(60);

@@ -1,6 +1,8 @@
 #include "EnemyVirus.h"
 
 EnemyVirus::EnemyVirus() {
+	setScore(15);
+
 	setWidth(75);
 	setHeight(75);
 
@@ -14,9 +16,11 @@ EnemyVirus::~EnemyVirus() {
 
 }
 
+
+//void EnemyVirus::movement(Ship ship) {	// No need for full ship object, just ship y coord will do
 void EnemyVirus::movement(int shipX, int shipY) {
 	GameObject::movement();
-	
+
 	if (getX() > shipX) {
 		if (getY() - shipY >= 0) {
 			if (getY() - shipY >= getVelocity())

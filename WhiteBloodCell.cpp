@@ -1,9 +1,7 @@
 #include "WhiteBloodCell.h"
 
 WhiteBloodCell::WhiteBloodCell() {
-	setWidth(70);
-	setHeight(70);
-	setVelocity(1);
+
 }
 
 WhiteBloodCell::~WhiteBloodCell() {
@@ -18,17 +16,19 @@ void WhiteBloodCell::movement() {
 	GameObject::movement();
 
 	if (WBCUp < MOVEMENT) {
-		setY(getY() - getVelocity());
+		setY(getY() - WBLOOD_VEL);
 		WBCUp += 1;
 		if (WBCUp >= MOVEMENT) WBCDown = 0;
 	}
 	if (WBCDown < MOVEMENT) {
-		setY(getY() + getVelocity());
+		setY(getY() + WBLOOD_VEL);
 		WBCDown += 1;
 		if (WBCDown >= MOVEMENT) WBCUp = 0;
 	}
-	
+
+	//std::cout << "test white blood cell floating movement" << std::endl;
+
 	// destroy blood cell once it is offscreen
-	if (getX() < - getWidth()) setAlive(false);
+	if (getX() < -100) setAlive(false);
 	else setAlive(true);
 }

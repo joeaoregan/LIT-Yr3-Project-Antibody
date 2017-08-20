@@ -29,24 +29,21 @@ Laser::Laser() {
 	mLaserCollider.h = getHeight();
 }
 
+
 // Laser Destructor
-Laser::~Laser() {
+Laser::~Laser()
+{
 	std::cout << "Laser destructor called.\n";
 }
 
 void Laser::movement() {
 	GameObject::movement();
 
+	mLaserCollider.x = getX();
+	mLaserCollider.y = getY();
 	// destroy laser beam once it is offscreen
 	if (getX() > SCREEN_WIDTH) setAlive(false);
 	else setAlive(true);
-}
-
-void Laser::spawn(int x, int y) {
-	setX(x + 65);
-	setY(y + 30);
-	setVelX(getVelocity());
-	setVelY(0);
 }
 
 void Laser::spawn(int x, int y, SDL_Rect collider) {

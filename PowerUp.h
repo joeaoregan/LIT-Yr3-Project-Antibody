@@ -7,7 +7,7 @@ class PowerUp : public GameObject {
 public:
 	PowerUp();
 	~PowerUp();
-	
+
 	virtual void movement();
 	void render();							// Shows the Power Up on the screen
 };

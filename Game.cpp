@@ -1,8 +1,7 @@
-// 10/01 Sean Move ship object outside of main so spawnLaser funtion can use it
 // 09/01 Edited background to be 800 x 600 instead of 600 * 480
 
 /*
-    Add Timer and Text, and fonts are needed to show numbers
+    Game Up To Now - Combined
 
     2017-08-11:
         Joe: Change window title
@@ -15,33 +14,23 @@
 #include <SDL_image.h>
 
 #include <SDL_ttf.h>
-//#include <sstream>		// For timer
+#include <sstream>				// For timer
 
+#include <SDL_mixer.h>			// 2017/01/09 JOE: SOUND - library we use to make audio playing easier
 #include "Game.h"
 #include "LTexture.h"
 #include "Ship.h"
 #include "EnemyShip.h"
 #include "EnemyVirus.h"			// 2017/01/10 JOE: Added Seans virus enemy
 #include "Laser.h"
-#include "LaserEnemy.h"			// 2017/01/10
 #include "NinjaStar.h"
 #include "BloodCell.h"			// 2017/01/10 JOE: Added Blood Cell
 #include "BloodCellSmall.h"		// 2017/01/10 JOE: Added Small Blood Cell
 #include "WhiteBloodCell.h"
-#include "PowerUp.h"
-#include <vector>
+#include "PowerUp.h"			// 2017/01/10 SEAN: Added Power Up
+#include "LaserEnemy.h"
 
-
-
-// Testing
-EnemyShip enemy;
-
-bool checkCollision(SDL_Rect a, SDL_Rect b);
-
-
-
-
-int playerAlpha = 255;					// Modulation component for flashing objects
+int playerAlpha = 255;			// Modulation component for flashing objects
 int gameOverAlpha = 255;
 int timerAlpha = 255;
 bool playerFlash = false;
@@ -49,12 +38,26 @@ bool gameOverFlash = true;
 bool timerFlash = false;
 bool gameOver = false;
 
+int score = 0;
+
+SDL_Event e;					// Event handler
+
+SDL_Joystick* gGameController = NULL;	// Game Controller 1 handler - Data type for a game controller is SDL_Joystick
+
+//The music that will be played
+Mix_Music *gMusic = NULL;		// Mix_Music: Data type for music
+//Mix_Music *gEngineFX = NULL;	// 2017/01/10 JOE: Change Engine effect to music, turn off when no enemy ship on screen
+
 //The sound effects that will be used (pointers)
 Mix_Chunk *gNinjaFX = NULL;		// 2017/01/09 JOE: SOUND - Mix_Chunk: Data type for short sounds
 Mix_Chunk *gLaserFX = NULL;		// 2017/01/09 JOE: SOUND - Mix_Chunk: Data type for short sounds
 Mix_Chunk *gLaserEFX = NULL;	// 2017/01/09 JOE: SOUND - Mix_Chunk: Data type for short sounds
+//Mix_Chunk *gEngineFX = NULL;	// 2017/01/09 JOE: SOUND - Mix_Chunk: Data type for short sounds
 Mix_Chunk *gExplosionFX = NULL;
 
+bool init();					// Starts up SDL and creates window
+bool loadMedia();				// Loads media//void close();
+bool checkCollision(SDL_Rect a, SDL_Rect b);
 
 SDL_Window* gWindow = NULL;		// The window we'll be rendering to
 SDL_Renderer* gRenderer = NULL;	// The window renderer
@@ -65,6 +68,7 @@ int scrollingOffset = 0;		// 2017/01/10 JOE: Declare the background scrolling of
 int degrees = 0;
 int degreesBC = 0;				// 2017/01/10 JOE: Added degrees for blood cell rotation
 int degreesBCS = 0;
+int alphaUp = 5, alphaDown = 5;
 
 // Scene textures
 LTexture gBGTexture;			// Background
@@ -80,44 +84,49 @@ LTexture gLaserBlueTexture;		// Texture for Laser weapon
 LTexture gNinjaStarTexture;		// Texture for Ninja Star weapon
 LTexture gBloodCellTexture;		// Texture for Blood Cell obstacle (classed as enemy as it causes damage on impact)
 LTexture gBloodCellSmallTexture;// Texture for Smaller Blood Cell
-LTexture gWhiteBloodCellTexture;		// Texture for White Blood Cell
-LTexture gPowerUpTexture;				// Texture for Health Box Power Up
+LTexture gWhiteBloodCellTexture;// Texture for White Blood Cell
+LTexture gPowerUpTexture;		// Texture for Health Box Power Up
 
 LTexture gTimeTextTexture;
 LTexture gPromptTextTexture;
 LTexture gLevelTextTexture;
+LTexture gScoreTextTexture;
+LTexture gFinalScoreTextTexture;
 
 #define TIMER 15				// Time to start counting down from in seconds
-Uint32 startTime = 6000;			// Unsigned integer 32-bits
+Uint32 startTime = 6000;		// Unsigned integer 32-bits
 
 TTF_Font *gFont = NULL;			//Globally used font
-//Uint32 startTime = 0;						// Current start time - Unsigned integer 32-bits
+TTF_Font *gFont2 = NULL;
+int font = 0;
+//Uint32 startTime = 0;			// Current start time - Unsigned integer 32-bits
 
+// SEAN: Move ship object outside of main so spawnLaser funtion can use it
 Ship player;					// Declare a ship object that will be moving around on the screen
-//EnemyShip* enemy1 = new EnemyShip();
-//EnemyShip* enemy2 = new EnemyShip();
-//EnemyVirus* virus1 = new EnemyVirus();
+EnemyShip* enemy1 = new EnemyShip();
+EnemyShip* enemy2 = new EnemyShip();
+EnemyVirus* virus1 = new EnemyVirus();
 
-// Lists and iterators
-std::list<EnemyShip*> listOfEnemyShips;				// 2017/01/09 JOE: List to store laser objects
-std::list<EnemyShip*>::const_iterator iterES;		// 2017/01/09 JOE: Make them read only
-std::list<EnemyVirus*> listOfEnemyVirus;			// 2017/01/09 JOE: List to store laser objects
-std::list<EnemyVirus*>::const_iterator iterEV;		// 2017/01/09 JOE: Make them read only
-std::list<BloodCell*> listOfBloodCells;				// 2017/01/10 JOE: List to store laser objects
-std::list<BloodCell*>::const_iterator iterBC;		// 2017/01/10 JOE: Make them read only
-std::list<BloodCellSmall*> listOfSmallBloodCells;	// 2017/01/10 JOE: List to store laser objects
+std::vector<EnemyShip*> listOfEnemyShips;			// 2017/01/09 JOE: List to store laser objects
+//std::list<EnemyShip*>::const_iterator iterES;	    // 2017/01/09 JOE: Make them read only
+std::vector<EnemyVirus*> listOfEnemyVirus;		    // 2017/01/09 JOE: List to store laser objects
+//std::list<EnemyVirus*>::const_iterator iterEV;	// 2017/01/09 JOE: Make them read only
+std::list<BloodCell*> listOfBloodCells;			    // 2017/01/10 JOE: List to store laser objects
+std::list<BloodCell*>::const_iterator iterBC;	    // 2017/01/10 JOE: Make them read only
+std::list<BloodCellSmall*> listOfSmallBloodCells;			// 2017/01/10 JOE: List to store laser objects
 std::list<BloodCellSmall*>::const_iterator iterSBC;	// 2017/01/10 JOE: Make them read only
-std::list<Laser*> listOfLaserObjects;				// List to store laser objects
-std::list<Laser*>::const_iterator iter;				// Make them read only
-std::list<LaserEnemy*> listOfEnemyLaserObjects;		// 2017/01/10
-std::list<LaserEnemy*>::const_iterator iterEL;		// 2017/01/10
-std::list<NinjaStar*> listOfNinjaStarObjects;		// 2017/01/09 JOE: List to store Ninja Star objects
-std::list<NinjaStar*>::const_iterator iterNS;		// 2017/01/09 JOE: Create global iterators to cycle through laser objects - Make them read only
 std::list<WhiteBloodCell*> listOfWhiteBloodCells;
 std::list<WhiteBloodCell*>::const_iterator iterWBC;
-
-// Vectors
 std::vector<PowerUp*> listOfPowerUps;
+std::list<LaserEnemy*> listOfEnemyLaserObjects;		// 2017/01/10
+std::list<LaserEnemy*>::const_iterator iterEL;		// 2017/01/10
+//std::list<PowerUp*>::const_iterator iterPU;
+// SEAN : Created list and iterator for laser objects
+std::vector<Laser*> listOfLaserObjects;			    // List to store laser objects
+//std::list<Laser*>::const_iterator iter;			// Make them read only
+
+std::list<NinjaStar*> listOfNinjaStarObjects;	    // 2017/01/09 JOE: List to store Ninja Star objects
+std::list<NinjaStar*>::const_iterator iterNS;	    // 2017/01/09 JOE: Create global iterators to cycle through laser objects - Make them read only
 
 
 /*gRenderer*/
@@ -161,15 +170,13 @@ void LTexture::render(int x, int y, SDL_Rect* clip, double angle, SDL_Point* cen
 	SDL_RenderCopyEx(gRenderer, mTexture, clip, &renderQuad, angle, center, flip);	// Render to screen
 }
 
-bool Game::init() {
-	bool success = true;							// Initialization flag
+bool init() {
+	bool success = true;						// Initialization flag
 
-	enemy.spawn(100, 100);
-
-	srand(static_cast<unsigned int>(time(0)));		// Seed the random number
+	srand(static_cast<unsigned int>(time(0)));	// Seed the random number
 
 	// Initialize SDL
-	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0) {	// 2017/01/09 JOE: SOUND - Neet do initialise audio with video
+	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_JOYSTICK) < 0) {	// 2017/01/09 JOE: SOUND - Neet do initialise audio with video
 		printf("SDL could not initialize! SDL Error: %s\n", SDL_GetError());
 		success = false;
 	} else {
@@ -178,8 +185,23 @@ bool Game::init() {
 			printf("Warning: Linear texture filtering not enabled!");
 		}
 
+		//Check for joysticks
+		if (SDL_NumJoysticks() < 1)							// check if there is at least one joystick connected.
+		{
+			printf("Warning: No joysticks connected!\n");
+		}
+		else {
+			//Load joystick
+			gGameController = SDL_JoystickOpen(0);			// open the joystick at index 0
+			printf("Joystick connected\n");						// DETECTS JOYSTICK
+			if (gGameController == NULL)
+			{
+				printf("Warning: Unable to open game controller! SDL Error: %s\n", SDL_GetError());
+			}
+		}
+
 		// Create window
-		gWindow = SDL_CreateWindow("JOURNEY TO THE CENTER OF MY HEADACHE v1.16 by Joe O'Regan & Se\u00E1n Horgan - Timer, Collisions, and Background", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);	/* Window name */
+		gWindow = SDL_CreateWindow("JOURNEY TO THE CENTER OF MY HEADACHE v1.17 by Joe O'Regan & Se\u00E1n Horgan - Combined Game Features", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);	/* Window name */
 		if (gWindow == NULL) {
 			printf("Window could not be created! SDL Error: %s\n", SDL_GetError());
 			success = false;
@@ -204,8 +226,9 @@ bool Game::init() {
 				}
 
 				//call Mix_oopenAudio to Initialize SDL_mixer
-				if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {									// sound frequencey, sample format, hardware channels, sample size
-					printf("SDL_mixer could not initialize! SDL_mixer Error: %s\n", Mix_GetError());			// report errors with SDL_mixer
+				if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0)	// sound frequencey, sample format, hardware channels, sample size
+				{
+					printf("SDL_mixer could not initialize! SDL_mixer Error: %s\n", Mix_GetError());	// report errors with SDL_mixer
 					success = false;
 				}
 
@@ -217,12 +240,13 @@ bool Game::init() {
 	return success;
 }
 
-bool Game::loadMedia() {
+bool loadMedia() {
 	bool success = true;			// Loading success flag
 
-	//Open the font
+	// Open the font
 	//gFont = TTF_OpenFont("22_timing/lazy.ttf", 28);
 	gFont = TTF_OpenFont(".\\Font\\lazy.ttf", 28);
+	//gFont2 = TTF_OpenFont("KunstlerScript.ttf", 72);
 	if (gFont == NULL) {
 		printf("Failed to load lazy font! SDL_ttf Error: %s\n", TTF_GetError());
 		success = false;
@@ -231,14 +255,25 @@ bool Game::loadMedia() {
 		SDL_Color textColor = { 0, 100, 200, 255 };								// Set text color as blue
 		TTF_SetFontStyle(gFont, TTF_STYLE_BOLD);								// Use bold font
 
-		if (!gPromptTextTexture.loadFromRenderedText("A Game By Sean Horgan And Joe O'Regan", textColor)) {
+		if (!gPromptTextTexture.loadFromRenderedText("A Game By Sean Horgan And Joe O'Regan", textColor, 1)) {
 			printf("Unable to render prompt text texture!\n");
 			success = false;
 		}
-		if (!gLevelTextTexture.loadFromRenderedText("Level 1", textColor)) {
+		if (!gLevelTextTexture.loadFromRenderedText("Level 1", textColor, 1)) {
 			printf("Unable to render level text texture!\n");
 			success = false;
 		}
+	}
+
+	gFont2 = TTF_OpenFont("Font/KunstlerScript.ttf", 72);
+
+	if (gFont2 == NULL) {
+		printf("Failed to load kunstler font! SDL_ttf Error: %s\n", TTF_GetError());
+		success = false;
+	}
+	else {
+		//SDL_Color textColor = { 0, 100, 200, 255 };
+		TTF_SetFontStyle(gFont2, TTF_STYLE_BOLD);								// Use bold font
 	}
 
 	// Load Textures
@@ -248,7 +283,7 @@ bool Game::loadMedia() {
 		success = false;
 	}
 	//if (!gEnemyShipTexture.loadFromFile("EnemyShip.png")) {				// Enemy Ship Texture
-	if (!gEnemyShipTexture.loadFromFile(".\\Art\\EnemyShip.png")) {             // Enemy Ship Texture
+	if (!gEnemyShipTexture.loadFromFile(".\\Art\\NanobotOld.png")) {             // Enemy Ship Texture
 		printf("Failed to load Enemy Ship texture!\n");
 		success = false;
 	}
@@ -289,7 +324,7 @@ bool Game::loadMedia() {
 		printf("Failed to load Ninja Star texture!\n");
 		success = false;
 	}
-	if (!gGameOverTextTexture.loadFromFile(".\\Art\\GameOverTEST.png")) {		// Game Over Text
+	if (!gGameOverTextTexture.loadFromFile(".\\Art\\GameOver.png")) {		// Game Over Text
 		printf("Failed to load Game Over texture!\n");
 		success = false;
 	}
@@ -303,20 +338,19 @@ bool Game::loadMedia() {
 	}
 
 	//Load music
-	//gMusic = Mix_LoadMUS("SleepNow.wav");	// Load music
-	gMusic = Mix_LoadMUS(".\\Music\\SleepNow2.wav");	// Load music
+	gMusic = Mix_LoadMUS(".\\Music\\GameSong2.mp3");	// Load music
 	if (gMusic == NULL) {
 		printf("Failed to load rage music! SDL_mixer Error: %s\n", Mix_GetError());
 		success = false;
 	}
-
 	//Load sound effects
-	//gNinjaFX = Mix_LoadWAV("Swoosh.wav");				// Load sound effects
 	gNinjaFX = Mix_LoadWAV(".\\SoundFx\\Swoosh1.wav");	// Load sound effects
 	if (gNinjaFX == NULL) {
 		printf("Failed to load ninja star sound effect! SDL_mixer Error: %s\n", Mix_GetError());
 		success = false;
 	}
+
+	//gLaserFX = Mix_LoadWAV("Audio/Laser1.wav");	// Load sound effects
 	gLaserFX = Mix_LoadWAV(".\\SoundFx\\LaserPlayer.wav");	// Load sound effects
 	if (gLaserFX == NULL) {
 		printf("Failed to load laser beam sound effect! SDL_mixer Error: %s\n", Mix_GetError());
@@ -327,8 +361,13 @@ bool Game::loadMedia() {
 		printf("Failed to load enemy laser beam sound effect! SDL_mixer Error: %s\n", Mix_GetError());
 		success = false;
 	}
+	gExplosionFX = Mix_LoadWAV(".\\SoundFx\\explosion.wav");	// Load sound effects
+	if (gExplosionFX == NULL) {
+		printf("Failed to load explosion sound effect! SDL_mixer Error: %s\n", Mix_GetError());
+		success = false;
+	}
 
-	//Mix_PlayMusic(gMusic, -1);	// START THE MUSIC WHEN GAME STARTS
+	Mix_PlayMusic(gMusic, -1);
 
 	return success;
 }
@@ -348,27 +387,34 @@ void Game::close() {
 	gNinjaStarTexture.free();
 	gBloodCellTexture.free();
 	gBloodCellSmallTexture.free();
+	gWhiteBloodCellTexture.free();
+	gPowerUpTexture.free();
 
 	gTimeTextTexture.free();
 	gPromptTextTexture.free();
 	gLevelTextTexture.free();
-
-	// 2017-01-15 new stuff
-	gWhiteBloodCellTexture.free();
-	gPowerUpTexture.free();
+	gScoreTextTexture.free();
+	gFinalScoreTextTexture.free();
 
 	//Free global font
 	TTF_CloseFont(gFont);
 	gFont = NULL;
+	TTF_CloseFont(gFont2);
+	gFont2 = NULL;
 
 	//Free the sound effects
-	Mix_FreeChunk(gNinjaFX);	// Ninja Star sound effect
-	Mix_FreeChunk(gLaserFX);	// Laser sound effect
-	Mix_FreeChunk(gLaserEFX);	// Enemy Laser sound effect
+	Mix_FreeChunk(gNinjaFX);	// Free a sound effect
+	Mix_FreeChunk(gLaserFX);	// Free a sound effect
+	Mix_FreeChunk(gExplosionFX);	// Free a sound effect
 
 	//Free the music
-	Mix_FreeMusic(gMusic);		// Free music
+	Mix_FreeMusic(gMusic);	// Free music
 	gMusic = NULL;
+
+
+	//Close game controller
+	SDL_JoystickClose(gGameController); // After we're done with the joystick, we close it with SDL_JoystickClose.
+	gGameController = NULL;
 
 	// Destroy window
 	SDL_DestroyRenderer(gRenderer);
@@ -377,8 +423,8 @@ void Game::close() {
 	gRenderer = NULL;
 
 	// Quit SDL subsystems
-	TTF_Quit();
 	IMG_Quit();
+	SDL_Quit();
 	SDL_Quit();
 }
 
@@ -398,10 +444,22 @@ void Game::update(){
 
 			unsigned int lastTime = 0, currentTime, countdownTimer = TIMER;	// TEST TIMING
 
+			if (SDL_PollEvent(&e) != 0) {
+				printf("Joystick connected %d\n", e.jaxis.which);						// DETECTS JOYSTICK
+				//printf("Number of buttons %d", SDL_JoystickNumButtons);
+				//std::cout << "Number of buttons: " << SDL_JoystickNumButtons;
+				std::cout << "Number of buttons: " << SDL_JoystickNumButtons(gGameController) << std::endl;			// Number of useable buttons
+				std::cout << "Number of axes: " << SDL_JoystickNumAxes(gGameController) << std::endl;				// Number of axes on the controller, includes sticks and triggers.
+				std::cout << "Number of trackballs: " << SDL_JoystickNumBalls(gGameController) << std::endl;		// No trackballs on NVidia Shield Controller
+				std::cout << "Number of hats: " << SDL_JoystickNumHats(gGameController) << std::endl;				// Hats = d-pad on NVidia Shield Controller
+				std::cout << "Controller Name: " << SDL_JoystickName(gGameController) << std::endl;					// Name of joystick
+			}
+
 			//In memory text stream
 			// string streams - function like iostreams only instead of reading or writing to the console, they allow you to read and write to a string in memory
 			std::stringstream timeText;		// string stream
-
+			std::stringstream scoreText;	// string stream
+			// While application is running
 			while (!quit) {								// While application is running
 
 				flashGameObject(playerAlpha, playerFlash, 10, 4);	// Flash player ship when it has a collision, flash at faster rate, flash 4 times
@@ -411,10 +469,10 @@ void Game::update(){
 				quit = playerInput(quit);				// 2017/01/09 JOE: Handle input from player
 
 
-
-
-
 				timeText.str("");									// Set text to be rendered - string stream - print the time since timer last started - initialise empty
+				scoreText.str("");
+
+				scoreText << "Score: " << score;
 
 				currentTime = SDL_GetTicks();
 
@@ -452,14 +510,17 @@ void Game::update(){
 				}
 
 				//Render text - Get a string from it and use it to render the current time to a texture
-				if (!gTimeTextTexture.loadFromRenderedText(timeText.str().c_str(), textColor)) {
+				if (!gTimeTextTexture.loadFromRenderedText(timeText.str().c_str(), textColor, 1)) {
 					printf("Unable to render time texture!\n");
 				}
-
-
-
-
-
+				textColor = { 0, 100, 200, 255 };
+				if (!gScoreTextTexture.loadFromRenderedText(scoreText.str().c_str(), textColor, 1)) {
+					printf("Unable to render score texture!\n");
+				}
+				textColor = { 72, 0, 255, 255 };
+				if (!gFinalScoreTextTexture.loadFromRenderedText(scoreText.str().c_str(), textColor, 2)) {
+					printf("Unable to render score texture!\n");
+				}
 
 				playerFlashOnCollide();					// 2017-01-09 JOE: The player texture flashes on collision with other Game Objects
 
@@ -476,21 +537,16 @@ void Game::update(){
 }
 
 bool Game::playerInput(bool quit = false) {
-	// Handle events on queue
-	SDL_Event e;							// Event handler
-
 	//SDL_Color textColor = { 0, 0, 0, 255 };	//Set text color as green
 
 	// In memory text stream
 	// string streams - function like iostreams only instead of reading or writing to the console, they allow you to read and write to a string in memory
-	std::stringstream timeText;		// string stream
-
+	//std::stringstream timeText;		// string stream
 	while (SDL_PollEvent(&e) != 0) {
 		// User requests quit	EXIT - CLOSE WINDOW
 		if (e.type == SDL_QUIT) {
 			quit = true;
-		}
-		// Reset start time on return keypress
+		}// Reset start time on return keypress
 		else if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_RETURN) {
 			startTime = SDL_GetTicks();		// time since the program started in milliseconds
 		}
@@ -508,8 +564,7 @@ bool Game::playerInput(bool quit = false) {
 				//If music is being played
 				else {
 					//If the music is paused
-					if (Mix_PausedMusic() == 1)	// check if the music is paused
-					{
+					if (Mix_PausedMusic() == 1) {	// check if the music is paused
 						//Resume the music
 						Mix_ResumeMusic();			// resume music
 					}
@@ -529,10 +584,6 @@ bool Game::playerInput(bool quit = false) {
 		player.handleEvent(e);				// Handle input for the ship
 	}
 
-	//Set text to be rendered - string stream - print the time since timer last started
-	timeText.str("");			// initialise empty
-	timeText << "Milliseconds since start time " << SDL_GetTicks() - startTime; // current time - relative start time
-
 	return quit;
 }
 
@@ -544,8 +595,9 @@ void Game::renderGameObjects() {
 	degrees %= 360;
 	degreesBC += 1;								// Number of degrees to rotate spinning objects
 	degreesBC %= 360;
-	degreesBCS += 2;							// Number of degrees to rotate spinning objects
+	degreesBCS += 2;								// Number of degrees to rotate spinning objects
 	degreesBCS %= 360;
+
 
 	if (backgroundLoopCounter <= BACKGROUND_TIMES) scrollingOffset -= 5;
 	if (scrollingOffset < -gBGTexture.getWidth()) {
@@ -570,27 +622,31 @@ void Game::renderGameObjects() {
 	if (backgroundLoopCounter < BACKGROUND_TIMES)
 		gBGTexture.render(scrollingOffset + gBGTexture.getWidth(), 0);		// 2nd background (and every even number)
 	else
-		gBGEndTexture.render(scrollingOffset + gBGTexture.getWidth(), 0);		// end background
+		gBGEndTexture.render(scrollingOffset + gBGTexture.getWidth(), 0);	// end background
+
 
 	if (gameOver == false) {
 		SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
-		//SDL_RenderDrawRect(gRenderer, &player.getCollider());
+		//SDL_RenderDrawRect(gRenderer, &player.getCollider()); ////////////////////////////////////////////////////////////////////////////////
 
 		// Cycle through list of small Blood Cells obstacles and render to screen
 		for (iterSBC = listOfSmallBloodCells.begin(); iterSBC != listOfSmallBloodCells.end();) {
 			(*iterSBC++)->render();	// Render the blood cell
 		}
+
 		// Cycle through list of small Blood Cells obstacles and render to screen
 		for (iterWBC = listOfWhiteBloodCells.begin(); iterWBC != listOfWhiteBloodCells.end();) {
 			(*iterWBC++)->render();	// Render the blood cell
 		}
 		// Cycle through list of Enemy ships and render to screen
-		for (iterES = listOfEnemyShips.begin(); iterES != listOfEnemyShips.end();) {
-			(*iterES++)->render();	// Render the enemy ship
+		for (unsigned int index = 0; index != listOfEnemyShips.size(); ++index) {
+			listOfEnemyShips[index]->render();
+			//SDL_RenderDrawRect(gRenderer, &listOfEnemyShips[index]->getCollider());
 		}
 		// Cycle through list of Enemy Virus and render to screen
-		for (iterEV = listOfEnemyVirus.begin(); iterEV != listOfEnemyVirus.end();) {
-			(*iterEV++)->render();	// Render the enemy virus
+		for (unsigned int index = 0; index != listOfEnemyVirus.size(); ++index) {
+			listOfEnemyVirus[index]->render();
+			//SDL_RenderDrawRect(gRenderer, &listOfEnemyVirus[index]->getCollider());
 		}
 		// Cycle through list of Blood Cells obstacles and render to screen
 		for (iterBC = listOfBloodCells.begin(); iterBC != listOfBloodCells.end();) {
@@ -600,12 +656,13 @@ void Game::renderGameObjects() {
 		// Cycle through list of power up objects and render them to screen
 		for (unsigned int index = 0; index != listOfPowerUps.size(); ++index) {
 			listOfPowerUps[index]->render();
-			//SDL_RenderDrawRect(gRenderer, &listOfPowerUps[index]->getCollider());
+			//SDL_RenderDrawRect(gRenderer, &listOfPowerUps[index]->getCollider());         ///////////////////////////////////////////////////////////////
 		}
 
 		// Cycle through list of laser objects and render them to screen
-		for (iter = listOfLaserObjects.begin(); iter != listOfLaserObjects.end();) {
-			(*iter++)->render();	// Render the laser
+		for (unsigned int index = 0; index != listOfLaserObjects.size(); ++index) {
+			listOfLaserObjects[index]->render();
+			//SDL_RenderDrawRect(gRenderer, &listOfLaserObjects[index]->getLaserCollider());
 		}
 		for (iterEL = listOfEnemyLaserObjects.begin(); iterEL != listOfEnemyLaserObjects.end();) {
 			(*iterEL++)->render();	// Render the laser
@@ -619,38 +676,38 @@ void Game::renderGameObjects() {
 		gLevelTextTexture.render(10, 8);
 		gTimeTextTexture.setAlpha(timerAlpha);	// Flash the timer
 		gTimeTextTexture.render(600, 8);
+		gScoreTextTexture.render((SCREEN_WIDTH - gScoreTextTexture.getWidth()) / 2, 8);
 
 		// Set the Alpha value for player when flashing
 		gShipTexture.setAlpha(playerAlpha);
 		player.render();							// render the ship over the background
-		//player.renderTexture(gShipTexture, player.getX(), player.getY());
-
 	}
 	else if (gameOver == true) {
 		gGameOverTextTexture.setAlpha(gameOverAlpha);
-		gGameOverTextTexture.render((SCREEN_WIDTH - gGameOverTextTexture.getWidth()) / 2, (SCREEN_HEIGHT - gGameOverTextTexture.getHeight() + 250) / 2); // FOR TESTING
+		gGameOverTextTexture.render((SCREEN_WIDTH - gGameOverTextTexture.getWidth()) / 2, (SCREEN_HEIGHT - gGameOverTextTexture.getHeight() - 300) / 2); // FOR TESTING
+		gFinalScoreTextTexture.setAlpha(gameOverAlpha);
+		gFinalScoreTextTexture.render((SCREEN_WIDTH - gFinalScoreTextTexture.getWidth()) / 2, (SCREEN_HEIGHT - gFinalScoreTextTexture.getHeight() + 300) / 2); // FOR TESTING
 	}
 
 	SDL_RenderPresent(gRenderer);				// Update screen
 }
 
 void Game::moveGameObjects() {
-	player.movement();							// Update ship movement
-	checkCollision(player.getCollider(), enemy.getCollider());
+	player.movement();						// Update ship movement
 
-	player.setColliderX(player.getX());
-	player.setColliderY(player.getY());
 
 	// Cycle through lists of Enemys and move them
-	for (iterES = listOfEnemyShips.begin(); iterES != listOfEnemyShips.end();) {
-		(*iterES)->movement();	// Move the enemy ship
-		spawnEnemyLaser((*iterES++)->getX(), (*iterES)->getY());
+	for (unsigned int index = 0; index != listOfEnemyShips.size(); ++index) {
+		listOfEnemyShips[index]->movement();
+		spawnEnemyLaser(listOfEnemyShips[index]->getX(), listOfEnemyShips[index]->getY());
+		//SDL_RenderDrawRect(gRenderer, &listOfLaserObjects[index]->getLaserCollider());
 	}
 	// Cycle through list of Enemy virus and move them
-	for (iterEV = listOfEnemyVirus.begin(); iterEV != listOfEnemyVirus.end();) {
-		(*iterEV++)->movement(player.getX(), player.getY());	// 2017/01/10 JOE: Move the enemy virus towards the player ship (change from player object to just player coords)
+	for (unsigned int index = 0; index != listOfEnemyVirus.size(); ++index) {
+		listOfEnemyVirus[index]->movement(player.getX(), player.getY());
 	}
 	// Cycle through list of Blood Cells and move them
+
 	for (iterBC = listOfBloodCells.begin(); iterBC != listOfBloodCells.end();) {
 		(*iterBC++)->movement();	// 2017/01/10 JOE: Move the blood cells in a wavey line
 	}
@@ -658,19 +715,45 @@ void Game::moveGameObjects() {
 	for (iterSBC = listOfSmallBloodCells.begin(); iterSBC != listOfSmallBloodCells.end();) {
 		(*iterSBC++)->movement();	// 2017/01/10 JOE: Move the blood cells in a wavey line
 	}
-
 	for (iterWBC = listOfWhiteBloodCells.begin(); iterWBC != listOfWhiteBloodCells.end();) {
 		(*iterWBC++)->movement();	// Render the blood cell
 	}
+
 	// Cycle through list of Power Ups and move them
 	for (unsigned int index = 0; index != listOfPowerUps.size(); ++index) {
 		listOfPowerUps[index]->movement();
 	}
+	for (unsigned int index = 0; index != listOfPowerUps.size(); ++index) {
+		if (checkCollision(player.getCollider(), listOfPowerUps[index]->getCollider()) == true) {
+			score += listOfPowerUps[index]->getScore();
+			listOfPowerUps[index]->setAlive(false);
+			std::cout << "Power Up Picked Up by Player!\n";
+		}
+	}
 
 	// Cycle through lists of weapons and move them
-	for (iter = listOfLaserObjects.begin(); iter != listOfLaserObjects.end();) {
-		(*iter++)->movement();		// Move the laser
+	for (unsigned int index = 0; index != listOfLaserObjects.size(); ++index) {
+		listOfLaserObjects[index]->movement();
+		for (unsigned int index1 = 0; index1 != listOfEnemyVirus.size(); ++index1) {
+			if (checkCollision(listOfLaserObjects[index]->getLaserCollider(), listOfEnemyVirus[index1]->getCollider()) == true) {
+				score += listOfEnemyVirus[index1]->getScore();	// Add score to total
+				listOfEnemyVirus[index1]->setAlive(false);
+				listOfLaserObjects[index]->setAlive(false);
+				std::cout << "Enemy Virus Killed by Player!\n";
+				Mix_PlayChannel(-1, gExplosionFX, 0);
+			}
+		}
+		for (unsigned int index2 = 0; index2 != listOfEnemyShips.size(); ++index2) {
+			if (checkCollision(listOfLaserObjects[index]->getLaserCollider(), listOfEnemyShips[index2]->getCollider()) == true) {
+				score += listOfEnemyShips[index2]->getScore();	// Add score to total
+				listOfEnemyShips[index2]->setAlive(false);
+				listOfLaserObjects[index]->setAlive(false);
+				std::cout << "Enemy Ship Killed by Player!\n";
+				Mix_PlayChannel(-1, gExplosionFX, 0);
+			}
+		}
 	}
+
 	for (iterEL = listOfEnemyLaserObjects.begin(); iterEL != listOfEnemyLaserObjects.end();) {
 		(*iterEL++)->movement();	// Move the enemy laser
 	}
@@ -680,24 +763,20 @@ void Game::moveGameObjects() {
 }
 // Destroy Game Objects
 void Game::destroyGameObjects() {
-	for (iterES = listOfEnemyShips.begin(); iterES != listOfEnemyShips.end();) {
-		if (!(*iterES)->getAlive()) {
-			iterES = listOfEnemyShips.erase(iterES);
-			std::cout << "destroy enemy ship" << std::endl;
+	for (unsigned int index = 0; index != listOfEnemyShips.size(); ++index) {
+		if (!listOfEnemyShips[index]->getAlive()) {
+			listOfEnemyShips.erase(listOfEnemyShips.begin() + index);
+			std::cout << "Enemy Ship Destroyed." << std::endl;
+			index--;
 		}
-		else {
-			iterES++;
+	}// end for
+	for (unsigned int index = 0; index != listOfEnemyVirus.size(); ++index) {
+		if (!listOfEnemyVirus[index]->getAlive()) {
+			listOfEnemyVirus.erase(listOfEnemyVirus.begin() + index);
+			std::cout << "Enemy Virus Destroyed." << std::endl;
+			index--;
 		}
-	}
-	for (iterEV = listOfEnemyVirus.begin(); iterEV != listOfEnemyVirus.end();) {
-		if (!(*iterEV)->getAlive()) {
-			iterEV = listOfEnemyVirus.erase(iterEV);
-			std::cout << "destroy enemy virus" << std::endl;
-		}
-		else {
-			iterEV++;
-		}
-	}
+	}// end for
 	for (iterBC = listOfBloodCells.begin(); iterBC != listOfBloodCells.end();) {
 		if (!(*iterBC)->getAlive()) {
 			iterBC = listOfBloodCells.erase(iterBC);
@@ -719,21 +798,19 @@ void Game::destroyGameObjects() {
 	for (iterWBC = listOfWhiteBloodCells.begin(); iterWBC != listOfWhiteBloodCells.end();) {
 		if (!(*iterWBC)->getAlive()) {
 			iterWBC = listOfWhiteBloodCells.erase(iterWBC);
-			std::cout << "destroy white blood cell" << std::endl;
+			std::cout << "destroy blood cell" << std::endl;
 		}
 		else {
 			iterWBC++;
 		}
 	}
-	for (iter = listOfLaserObjects.begin(); iter != listOfLaserObjects.end();) {
-		if (!(*iter)->getAlive()) {
-			iter = listOfLaserObjects.erase(iter);
-			std::cout << "destroy laser" << std::endl;
+	for (unsigned int index = 0; index != listOfLaserObjects.size(); ++index) {
+		if (!listOfLaserObjects[index]->getAlive()) {
+			listOfLaserObjects.erase(listOfLaserObjects.begin() + index);
+			std::cout << "Laser Destroyed." << std::endl;
+			index--;
 		}
-		else {
-			iter++;
-		}
-	}
+	}// end for
 	for (iterEL = listOfEnemyLaserObjects.begin(); iterEL != listOfEnemyLaserObjects.end();) {
 		if (!(*iterEL)->getAlive()) {
 			iterEL = listOfEnemyLaserObjects.erase(iterEL);
@@ -758,7 +835,7 @@ void Game::destroyGameObjects() {
 			std::cout << "Power Up Destroyed." << std::endl;
 			index--;
 		}
-	}
+	}// end for
 }
 
 void Game::playerFlashOnCollide() {
@@ -779,56 +856,6 @@ void Game::playerFlashOnCollide() {
 
 		if (alphaDown <= 5) alphaUp = 5;
 	}
-}
-
-//int counter = 0;
-
-bool checkCollision(SDL_Rect a, SDL_Rect b) {
-	//The sides of the rectangles
-	int leftA, leftB, rightA, rightB;
-	int topA, topB, bottomA, bottomB;
-
-	//Calculate the sides of rect A
-	leftA = a.x;
-	rightA = a.x + a.w;
-	topA = a.y;
-	bottomA = a.y + a.h;
-
-	//Calculate the sides of rect B
-	leftB = b.x;
-	rightB = b.x + b.w;
-	topB = b.y;
-	bottomB = b.y + b.h;
-
-	//If any of the sides from A are outside of B
-	if (bottomA <= topB) {
-		return false;
-	}
-
-	if (topA >= bottomB) {
-		return false;
-	}
-
-	if (rightA <= leftB) {
-		return false;
-	}
-
-	if (leftA >= rightB) {
-		return false;
-	}
-
-	std::cout << "Collision!" << std::endl;
-	playerFlash = true;
-
-	//enemy.mEnAlive = false;
-
-	player.setX(player.getX() - player.getVelX());
-	player.setColliderX(player.getX());
-
-	player.setY(player.getY() - player.getVelY());
-	player.setColliderY(player.getY());
-
-	return true;	//If none of the sides from A are outside B
 }
 
 void Game::flashGameObject(int &alpha, bool &flash, int rate, int times) {
@@ -856,21 +883,22 @@ void Game::flashGameObject(int &alpha, bool &flash, int rate, int times) {
 
 	counter++;
 }
+
 // Decide how many of each enemy / obstacle on screen at a given time
 void Game::spawnEnemies() {
 	if (listOfEnemyShips.size() <= 1) {
 		spawnEnemyShip();
 	}
-	if (listOfEnemyVirus.size() == 0) {
+	if (listOfEnemyVirus.size() < 2) {
 		spawnEnemyVirus();
 	}
-	if (listOfBloodCells.size() <= 8) {
+	if (listOfBloodCells.size() <= 5) {
 		spawnBloodCell();
 	}
-	if (listOfSmallBloodCells.size() <= 12) {
+	if (listOfSmallBloodCells.size() <= 8) {
 		spawnSmallBloodCell();
 	}
-	if (listOfWhiteBloodCells.size() <= 2) {
+	if(listOfWhiteBloodCells.size() <= 2) {
 		spawnWhiteBloodCell();
 	}
 	if (listOfPowerUps.size() == 0) {
@@ -881,16 +909,17 @@ void Game::spawnEnemies() {
 // List of enemy ships to spawn at random times and positions
 void Game::spawnEnemyShip() {
 	int x, y, randomX, randomY, randomSpeed;
-	randomX = rand() % 8 + 1;
-	randomY = rand() % 8 + 1;
+	randomX = rand() % 5 + 1;
+	randomY = rand() % 5 + 1;
 	randomSpeed = rand() % 3 + 3;
 
 	x = SCREEN_WIDTH + (randomX * 50);
-	y = (randomY * 60);
+	y = (randomY * 120) - 80;
 
 	//int y = SCREEN_HEIGHT / 2;
 	EnemyShip* p_Enemy = new EnemyShip();
-	p_Enemy->spawn(x, y, -randomSpeed);
+	//p_Enemy->spawn(800, y, -5);
+	p_Enemy->spawn(x, y, -randomSpeed, p_Enemy->getCollider());
 	listOfEnemyShips.push_back(p_Enemy);
 }
 
@@ -898,23 +927,22 @@ void Game::spawnEnemyVirus() {
 	int x, y, randomX, randomY;
 	randomX = rand() % 5 + 1;
 	randomY = rand() % 5 + 1;
-
 	x = SCREEN_WIDTH + (randomX * 50);
 	y = (randomY * 120) - 80;
 
 	EnemyVirus* p_Virus = new EnemyVirus();
-	p_Virus->spawn(x, y, -2);
+	p_Virus->spawn(x, y, -4, -2, p_Virus->getCollider());
 	listOfEnemyVirus.push_back(p_Virus);
 }
 
 void Game::spawnBloodCell() {
 	int x, y, randomX, randomY, randomSpeed;
 	randomX = rand() % 5 + 1;
-	randomY = rand() % 8 + 1;
+	randomY = rand() % 5 + 1;
 	randomSpeed = rand() % 3 + 1;
 
-	x = SCREEN_WIDTH + (randomX * 250);
-	y = (randomY * 60);
+	x = SCREEN_WIDTH + (randomX * 200);
+	y = (randomY * 120) - 80;
 
 	BloodCell* p_BloodCell = new BloodCell();
 	p_BloodCell->spawn(x, y, -randomSpeed);
@@ -923,16 +951,17 @@ void Game::spawnBloodCell() {
 void Game::spawnSmallBloodCell() {
 	int x, y, randomX, randomY, randomSpeed;
 	randomX = rand() % 5 + 1;
-	randomY = rand() % 8 + 1;
+	randomY = rand() % 5 + 1;
 	randomSpeed = rand() % 3 + 1;
 
 	x = SCREEN_WIDTH + (randomX * 150);
-	y = (randomY * 60);
+	y = (randomY * 120) - 80;
 
 	BloodCellSmall* p_SmallBloodCell = new BloodCellSmall();
 	p_SmallBloodCell->spawn(x, y, -randomSpeed);
 	listOfSmallBloodCells.push_back(p_SmallBloodCell);
 }
+
 void Game::spawnWhiteBloodCell() {
 	int x, y, randomX, randomY, randomSpeed;
 	randomX = rand() % 5 + 1;
@@ -950,11 +979,10 @@ void Game::spawnWhiteBloodCell() {
 // Spawn Weapon at ships location
 void Game::spawnLaser() {
 	Laser* p_Laser = new Laser();
-	p_Laser->spawn(player.getX(), player.getY());
+	p_Laser->spawn(player.getX(), player.getY(), p_Laser->getLaserCollider());
 	listOfLaserObjects.push_back(p_Laser);
-	Mix_PlayChannel(-1, gLaserFX, 0);
+	if(!gameOver) Mix_PlayChannel(-1, gLaserFX, 0);
 }
-
 void Game::spawnEnemyLaser(int shipX, int shipY) {
 	LaserEnemy* p_LaserE = new LaserEnemy();
 
@@ -964,12 +992,11 @@ void Game::spawnEnemyLaser(int shipX, int shipY) {
 		Mix_PlayChannel(-1, gLaserEFX, 0);
 	}
 }
-
 void Game::spawnNinjaStar() {
 	NinjaStar* p_NinjaStar = new NinjaStar();
 	p_NinjaStar->spawn(player.getX(), player.getY());
 	listOfNinjaStarObjects.push_back(p_NinjaStar);
-	Mix_PlayChannel(-1, gNinjaFX, 0);
+	if(!gameOver) Mix_PlayChannel(-1, gNinjaFX, 0);
 }
 
 void Game::spawnPowerUp() {
@@ -985,16 +1012,20 @@ void Game::spawnPowerUp() {
 	listOfPowerUps.push_back(p_PowerUp);
 }
 
-// Render the game objects to the screen
 void Ship::render() {
 	gShipTexture.render(player.getX(), player.getY());				// Show the ship
 }
+
 // Render the laser objects to the screen
 void Laser::render() {
 	gLaserGreenTexture.render(getX(), getY());
 }
 void LaserEnemy::render() {
 	gLaserBlueTexture.render(getX(), getY());
+}
+/* Render the laser objects to the screen*/
+void NinjaStar::render() {
+	gNinjaStarTexture.render(getX(), getY(), NULL, degrees, NULL, SDL_FLIP_NONE);
 }
 // Enemies and Obstacles
 void EnemyShip::render() {
@@ -1003,16 +1034,6 @@ void EnemyShip::render() {
 void EnemyVirus::render() {
 	gEnemyVirusTexture.render(getX(), getY());
 }
-void WhiteBloodCell::render() {
-	gWhiteBloodCellTexture.render(getX(), getY(), NULL, -degreesBCS, NULL, SDL_FLIP_NONE);
-}
-void PowerUp::render() {
-	gPowerUpTexture.render(getX(), getY());
-}
-// Rotating objects
-void NinjaStar::render() {
-	gNinjaStarTexture.render(getX(), getY(), NULL, degrees, NULL, SDL_FLIP_NONE);	// Render Ninja Star to screen
-}
 void BloodCell::render() {
 	//gBloodCell.render(getX(), getY());
 	gBloodCellTexture.render(getX(), getY(), NULL, -degreesBC, NULL, SDL_FLIP_NONE);
@@ -1020,20 +1041,73 @@ void BloodCell::render() {
 void BloodCellSmall::render() {
 	gBloodCellSmallTexture.render(getX(), getY(), NULL, -degreesBCS, NULL, SDL_FLIP_NONE);
 }
+void WhiteBloodCell::render() {
+	gWhiteBloodCellTexture.render(getX(), getY(), NULL, -degreesBCS, NULL, SDL_FLIP_NONE);
+}
+void PowerUp::render() {
+	gPowerUpTexture.render(getX(), getY());
+}
+//void GameObject::render() {
+//	gGO.render(getX(), getY());
+//}
+/*
+void GameObject::renderTexture(LTexture x) {
+	x.render(getX(), getY());
+}
+*/
 
+bool checkCollision(SDL_Rect a, SDL_Rect b)
+{
+	//The sides of the rectangles
+	int leftA, leftB;
+	int rightA, rightB;
+	int topA, topB;
+	int bottomA, bottomB;
 
-void GameObject::renderTexture(LTexture ltexture, int x, int y) {
-	ltexture.render(x, y);
+	//Calculate the sides of rect A
+	leftA = a.x;
+	rightA = a.x + a.w;
+	topA = a.y;
+	bottomA = a.y + a.h;
+
+	//Calculate the sides of rect B
+	leftB = b.x;
+	rightB = b.x + b.w;
+	topB = b.y;
+	bottomB = b.y + b.h;
+
+	//If any of the sides from A are outside of B
+	if (bottomA <= topB) { return false; }
+	if (topA >= bottomB) { return false; }
+	if (rightA <= leftB) { return false; }
+	if (leftA >= rightB) { return false; }
+
+	std::cout << "Collision!\n";
+
+	//Handle ship collision with enemy (MOVE TO SEPERATE FUNCTION)
+	/*ship.setShipX(ship.getShipX() - ship.getShipVelX());
+	ship.setShipColX(ship.getShipX());
+
+	ship.setShipY(ship.getShipY() - ship.getShipVelY());
+	ship.setShipColY(ship.getShipY());*/
+
+	//If none of the sides from A are outside B
+	return true;
 }
 
 
-
+SDL_Surface* textSurface;
 
 #ifdef _SDL_TTF_H
-bool LTexture::loadFromRenderedText(std::string textureText, SDL_Color textColor) {
+bool LTexture::loadFromRenderedText(std::string textureText, SDL_Color textColor, int font) {
 	free();	//Get rid of preexisting texture
 
-	SDL_Surface* textSurface = TTF_RenderText_Solid(gFont, textureText.c_str(), textColor);	//Render text surface
+	if (font == 1)
+		textSurface = TTF_RenderText_Solid(gFont, textureText.c_str(), textColor);	//Render text surface
+	if (font == 2)
+		textSurface = TTF_RenderText_Solid(gFont2, textureText.c_str(), textColor);	//Render text surface
+
+
 	if (textSurface != NULL) {
 		//Create texture from surface pixels
 		mTexture = SDL_CreateTextureFromSurface(gRenderer, textSurface);
