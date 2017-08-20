@@ -8,7 +8,7 @@
 #include <list>
 
 /*
-    Collision Detection
+    Flash Ship After Collision + Screen size
 
     2017-08-11:
         Joe: Change window title
@@ -16,9 +16,11 @@
         Joe: Changed getCollision() for ship and enemyship
 */
 
-bool init();					// Starts up SDL and creates window
+Uint8 a = 255;					// Modulation component for flashing objects
+bool flash = false;
+
+//bool init();					// Starts up SDL and creates window
 bool loadMedia();				// Loads media//void close();
-bool checkCollision(SDL_Rect* a, SDL_Rect* b);
 
 SDL_Window* gWindow = NULL;		// The window we'll be rendering to
 SDL_Renderer* gRenderer = NULL;	// The window renderer
@@ -33,13 +35,16 @@ LTexture gLaserTexture; // SEAN: Created Texture for Laser
 Ship ship;									// Declare a ship object that will be moving around on the screen
 EnemyShip enemy;
 
+
+int scrollingOffset = 0;					// Declare the background scrolling offset
+
+bool checkCollision(SDL_Rect* a, SDL_Rect* b);
+
 // SEAN : Created list and iterator for laser objects
 std::list<Laser*> listOfLaserObjects;		// List to store laser objects
-// Create global iterators to cycle through laser objects
-std::list<Laser*>::const_iterator iter;		// Make them read only
+std::list<Laser*>::const_iterator iter;		// Create global iterators to cycle through laser objects - Make them read only
 
 /*gRenderer*/
-
 bool LTexture::loadFromFile(std::string path) {
 	free();													// Get rid of preexisting texture
 
@@ -80,14 +85,12 @@ void LTexture::render(int x, int y, SDL_Rect* clip, double angle, SDL_Point* cen
 	SDL_RenderCopyEx(gRenderer, mTexture, clip, &renderQuad, angle, center, flip);	// Render to screen
 }
 
-bool init() {
-
+bool Game::init() {
 	enemy.spawn();
 
-//bool Game::init() {
 	bool success = true;					// Initialization flag
 
-											// Initialize SDL
+	// Initialize SDL
 	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
 		printf("SDL could not initialize! SDL Error: %s\n", SDL_GetError());
 		success = false;
@@ -97,8 +100,7 @@ bool init() {
 			printf("Warning: Linear texture filtering not enabled!");
 		}
 
-		// Create window
-		gWindow = SDL_CreateWindow("JOURNEY TO THE CENTER OF MY HEADACHE v1.05 by Joe O'Regan & Se\u00E1n Horgan", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);	/* Window name */
+		gWindow = SDL_CreateWindow("JOURNEY TO THE CENTER OF MY HEADACHE v1.06 by Joe O'Regan & Se\u00E1n Horgan - Flash On Collision", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);	/* Create Window with name */
 		if (gWindow == NULL) {
 			printf("Window could not be created! SDL Error: %s\n", SDL_GetError());
 			success = false;
@@ -123,28 +125,24 @@ bool init() {
 }
 
 bool loadMedia() {
-	bool success = true;			// Loading success flag
+	bool success = true;			                                // Loading success flag
 
-									// Load Ship texture
-	if (!gShipTexture.loadFromFile(".\\Art\\Player1Ship.png")) {
+	if (!gShipTexture.loadFromFile(".\\Art\\Player1Ship.png")) {	    // Load Ship texture
 		printf("Failed to load Player texture!\n");
 		success = false;
 	}
 
-	// Load Enemy Ship texture
-	if (!gEnemyShipTexture.loadFromFile(".\\Art\\EnemyVirus.png")) {
+	if (!gEnemyShipTexture.loadFromFile(".\\Art\\EnemyVirus.png")) {// Load Enemy Ship texture
 		printf("Failed to load Enemy texture!\n");
 		success = false;
 	}
 
-	// Load background texture
-	if (!gBGTexture.loadFromFile(".\\Art\\bg2.png")) {
+	if (!gBGTexture.loadFromFile(".\\Art\\Background800.png")) {	// Load background texture
 		printf("Failed to load background texture!\n");
 		success = false;
 	}
 
-	// SEAN: Load Laser texture
-	if (!gLaserTexture.loadFromFile(".\\Art\\LaserGreen.png")) {
+	if (!gLaserTexture.loadFromFile(".\\Art\\LaserGreen.png")) {	// SEAN: Load Laser texture
 		printf("Failed to load Laser texture!\n");
 		success = false;
 	}
@@ -170,106 +168,101 @@ void Game::close() {
 	SDL_Quit();
 }
 
-
 //int main(int argc, char* args[]) {
 void Game::update(){
-	// Start up SDL and create window
-	if (!init()) {
+	if (!init()) {									// Start up SDL and create window
 		printf("Failed to initialize!\n");
 	}
 	else {
-		// Load media
-		if (!loadMedia()) {
+		if (!loadMedia()) {							// Load media
 			printf("Failed to load media!\n");
 		}
 		else {
-			bool quit = false;							// Main loop flag
+			bool quit = false;						// Main loop flag
 
-			SDL_Event e;								// Event handler
+			while (!quit) {							// While application is running
+				playerFlashOnCollide();
 
-			int scrollingOffset = 0;					// Declare the background scrolling offset
+				quit = playerInput(quit);			// 2017/01/09 JOE: Handle input from player
 
-			// While application is running
-			while (!quit) {
-				// Handle events on queue
-				while (SDL_PollEvent(&e) != 0) {
-					// User requests quit	EXIT - CLOSE WINDOW
-					if (e.type == SDL_QUIT) {
-						quit = true;
-					}
+				renderGameObjects();
 
-					ship.handleEvent(e);				// Handle input for the ship
-				}
+				moveGameObjects();
 
-				ship.move();							// Update ship movement
-				checkCollision(ship.getCollider(), enemy.getCollider());
-				enemy.moveEnemy();
-
-				// Scroll background
-				--scrollingOffset;
-				if (scrollingOffset < -gBGTexture.getWidth()) {
-					scrollingOffset = 0;				// update the scrolling background
-				}
-
-				// Clear screen
-				SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
-				SDL_RenderClear(gRenderer);
-
-				// Render background
-				gBGTexture.render(scrollingOffset, 0);
-				gBGTexture.render(scrollingOffset + gBGTexture.getWidth(), 0);
-
-				SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
-				SDL_RenderDrawRect(gRenderer, enemy.getCollider());
-
-				SDL_RenderDrawRect(gRenderer, ship.getCollider());
-
-				ship.render();							// render the ship over the background
-				enemy.render();
-
-				// SEAN: Cycle through list of laser objects and render them to screen
-				for (iter = listOfLaserObjects.begin(); iter != listOfLaserObjects.end();) {
-
-					(*iter++)->render();	// Render the laser
-				}// end for
-
-  				SDL_RenderPresent(gRenderer);			// Update screen
-
-
-
-				// SEAN: Cycle through list of laser objects and move them
-				//if (!listOfLaserObjects.empty()) {
-				//while (listOfLaserObjects.begin() != NULL) {
-					for (iter = listOfLaserObjects.begin(); iter != listOfLaserObjects.end();) {
-						(*iter++)->move();					// Move the laser
-
-					}// end for
-				//}
-
-				destroyLaser();
+				destroyGameObjects();				// 2017-01-09 JOE: Destroy the game objects when finished on the screen
 			}
 		}
 	}
 }
 
+bool Game::playerInput(bool quit = false) {
+	SDL_Event e;										// Event handler
 
+	// Handle events on queue
+	while (SDL_PollEvent(&e) != 0) {
+		// User requests quit	EXIT - CLOSE WINDOW
+		if (e.type == SDL_QUIT) {
+			quit = true;
+		}
 
-void Game::destroyLaser() {
+		ship.handleEvent(e);							// Handle input for the ship
+	}
+
+	return quit;
+}
+
+void Game::moveGameObjects() {// SEAN: Cycle through list of laser objects and move them
+	ship.move();							// Update ship movement
+	checkCollision(ship.getCollider(), enemy.getCollider());
+	enemy.moveEnemy();
+
 	for (iter = listOfLaserObjects.begin(); iter != listOfLaserObjects.end();) {
-		//for (iter = listOfLaserObjects.begin(); iter != listOfLaserObjects.end(); iter++) {
-		//(*iter)->erase();					// Move the laser
-		//while (!listOfLaserObjects.empty()) {
+		(*iter++)->move();					// Move the laser
+	}
+}
+
+void Game::renderGameObjects() {// Scroll background
+	--scrollingOffset;
+	if (scrollingOffset < -gBGTexture.getWidth()) {
+		scrollingOffset = 0;				// update the scrolling background
+	}
+
+	// Clear screen
+	SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
+	SDL_RenderClear(gRenderer);
+
+	// Render background
+	gBGTexture.render(scrollingOffset, 0);
+	gBGTexture.render(scrollingOffset + gBGTexture.getWidth(), 0);
+
+	SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
+	//SDL_RenderDrawRect(gRenderer, &enemy.getCollider());  // 2017/08/11 Changed
+	//SDL_RenderDrawRect(gRenderer, &ship.getCollider());   // 2017/08/11 Changed
+	SDL_RenderDrawRect(gRenderer, enemy.getCollider());
+	SDL_RenderDrawRect(gRenderer, ship.getCollider());
+
+	gShipTexture.setAlpha(a);				/* Set the Alpha value for Enemy */
+	ship.render();							// render the ship over the background
+	enemy.render();
+
+	// SEAN: Cycle through list of laser objects and render them to screen
+	for (iter = listOfLaserObjects.begin(); iter != listOfLaserObjects.end();) {
+
+		(*iter++)->render();	// Render the laser
+	}
+
+	SDL_RenderPresent(gRenderer);			// Update screen
+}
+
+void Game::destroyGameObjects() {
+	for (iter = listOfLaserObjects.begin(); iter != listOfLaserObjects.end();) {
 		if (!(*iter)->getLaserAlive()) {
 			iter = listOfLaserObjects.erase(iter);
-			//iter.~iter();
 			std::cout << "Laser Destroyed." << std::endl;
-
 		}
 		else {
 			iter++;
-			//std::cout << "increment" << std::endl;
 		}
-		//}
 	}// end for
 }
 
@@ -279,10 +272,6 @@ void Game::spawnLaser() {
 	p_Laser->spawn(ship.getShipX() + 65, ship.getShipY() + 30, 20);
 	listOfLaserObjects.push_back(p_Laser);
 }// end spawnLaser
-
-
-
-
 
 void Ship::render() {
 	gShipTexture.render(mPosX, mPosY);					// Show the ship
@@ -297,13 +286,24 @@ void EnemyShip::render() {
 	gEnemyShipTexture.render(mEnPosX, mEnPosY);
 }
 
-bool checkCollision(SDL_Rect* a, SDL_Rect* b)                       // 2017-08-11 Changed
-{
+bool checkCollision(SDL_Rect* a, SDL_Rect* b){
 	//The sides of the rectangles
-	int leftA, leftB;
-	int rightA, rightB;
-	int topA, topB;
-	int bottomA, bottomB;
+	int leftA, leftB, rightA, rightB;
+	int topA, topB, bottomA, bottomB;
+    /*
+    // Old Version
+	//Calculate the sides of rect A
+	leftA = a.x;
+	rightA = a.x + a.w;
+	topA = a.y;
+	bottomA = a.y + a.h;
+
+	//Calculate the sides of rect B
+	leftB = b.x;
+	rightB = b.x + b.w;
+	topB = b.y;
+	bottomB = b.y + b.h;
+	*/
 
 	//Calculate the sides of rect A
 	leftA = (*a).x;                                                 // 2017-08-11 Changed
@@ -318,34 +318,59 @@ bool checkCollision(SDL_Rect* a, SDL_Rect* b)                       // 2017-08-1
 	bottomB = (*b).y + (*b).h;
 
 	//If any of the sides from A are outside of B
-	if (bottomA <= topB)
-	{
+	if (bottomA <= topB)	{
 		return false;
 	}
 
-	if (topA >= bottomB)
-	{
+	if (topA >= bottomB)	{
 		return false;
 	}
 
-	if (rightA <= leftB)
-	{
+	if (rightA <= leftB)	{
 		return false;
 	}
 
-	if (leftA >= rightB)
-	{
+	if (leftA >= rightB)	{
 		return false;
 	}
 
-	std::cout << "Collision!";
+	std::cout << "Collision!" << std::endl;
+	//playerFlashOnCollide();
+	flash = true;
+
 	ship.setShipX(ship.getShipX() - ship.getShipVelX());
 	ship.setShipColX(ship.getShipX());
 
 	ship.setShipY(ship.getShipY() - ship.getShipVelY());
 	ship.setShipColY(ship.getShipY());
 
-	//If none of the sides from A are outside B
-	return true;
+	return true;	//If none of the sides from A are outside B
 }
 
+
+int counter = 0;
+
+void Game::playerFlashOnCollide() {
+		if (flash) {
+			if (alphaDown > 5) {
+				alphaDown -= 10;
+				if (a < 5) a = 5;
+				else a = alphaDown;
+				if (alphaDown <= 5) alphaUp = 5;
+			}
+			if (alphaUp < 255) {
+				alphaUp += 10;
+				if (a > 255) a = 255;
+				else a = alphaUp;
+				if (alphaUp >= 255) alphaDown = 255;
+			}
+
+			if (counter > 150) {	// takes 25 decrements of 10 to set alpha to 5, and 25 increments to set alpha back to 255, 50 = 1 flash approx.
+				flash = false;
+				counter = 0;
+			}
+		}
+		//else a = 255;	// visible -> dont need changed default a value to 255
+
+		counter++;
+}

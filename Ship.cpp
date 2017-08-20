@@ -75,26 +75,26 @@ void Ship::move() {
 	mCollider.y = mPosY;
 
 	// If the ship went too far up or down
-	if ((mPosY < 0) || (mPosY + SHIP_HEIGHT > SCREEN_HEIGHT)) {
+	if ((mPosY < 32) || (mPosY + SHIP_HEIGHT > SCREEN_HEIGHT - 32)) {	// Changed to 40 to stay in boundaries
 		mPosY -= mVelY;
 		mCollider.y = mPosY;// Move back
 	}
 }
 
 // SEAN: Added get x and y function for ship to allow laser to spawn at ships location
-int Ship::getShipX() {
+int Ship::getShipX(){
 	return mPosX;
 }// end getX
 
-int Ship::getShipY() {
+int Ship::getShipY(){
 	return mPosY;
 }// end getX
 
-int Ship::getShipVelX() {
+int Ship::getShipVelX(){
 	return mVelX;
 }// end getX
 
-int Ship::getShipVelY() {
+int Ship::getShipVelY(){
 	return mVelY;
 }// end getX
 
@@ -105,20 +105,20 @@ SDL_Rect* Ship::getCollider() {
 	return &mCollider;
 }
 
-void Ship::setShipX(int x) {
+void Ship::setShipX(int x){
 	mPosX = x;
 }// end setX
 
  // set Y
-void Ship::setShipY(int y) {
+void Ship::setShipY(int y){
 	mPosY = y;
 }// end setY
 
-void Ship::setShipColX(int x) {
+void Ship::setShipColX(int x){
 	mCollider.x = x;
 }// end setX
 
  // set Y
-void Ship::setShipColY(int y) {
+void Ship::setShipColY(int y){
 	mCollider.y = y;
 }// end setY

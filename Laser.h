@@ -35,7 +35,7 @@ public:
 private:
 	int mPosX, mPosY;					// The X and Y offsets of the laser	
 	int mVelX, mVelY;					// The velocity of the laser
-	int mAlive;
+	bool mAlive;
 	SDL_Rect mLaserCollider;
 };
 

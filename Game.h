@@ -10,15 +10,26 @@
 #ifndef GAME_H
 #define GAME_H
 
+#define SCREEN_WIDTH 800
+#define SCREEN_HEIGHT 600
+
 #include <iostream>
 
 class Game {
 public:
-	//bool init();					// Starts up SDL and creates window -- ERROR window won't close
+	int alphaUp = 5, alphaDown = 255;
+
+	bool init();					// Starts up SDL and creates window -- ERROR window won't close
 	void update();
 	void close();					// Frees media and shuts down SDL
 	void spawnLaser();
-	void destroyLaser();
+
+	bool playerInput(bool quit);
+	void renderGameObjects();
+	void moveGameObjects();
+	void destroyGameObjects();
+
+	void playerFlashOnCollide();	// 2017-01-09 JOE: The player texture flashes on collision with other Game Objects
 };
 
 #endif

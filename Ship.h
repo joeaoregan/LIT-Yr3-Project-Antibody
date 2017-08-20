@@ -5,8 +5,8 @@
 // The ship that will move around on the screen
 
 /*
-    2017/08/11 Edit getCollider function
-    2017-01-04 Fixed dimensions of ship
+2017-01-04:
+Fixed dimensions of ship
 */
 
 class Ship {
