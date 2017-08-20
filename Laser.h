@@ -18,7 +18,7 @@ public:
 	static const int LASER_WIDTH = 50;
 	static const int LASER_HEIGHT = 5;
 
-	static const int LASER_VEL = 20;	// Maximum axis velocity of the laser
+	static const int LASER_VEL = 15;	// Maximum axis velocity of the laser
 
 	Laser();							// Initializes the variables
 	~Laser();
@@ -27,12 +27,13 @@ public:
 	void move();						// Moves the laser	
 	void render();						// Shows the laser on the screen
 	int getLaserX();					// Get the x coord of the laser
+	int getLaserY();					// Get the x coord of the laser
 	bool getLaserAlive();				// Check to see is laser off screen
 	
 private:
 	int mPosX, mPosY;					// The X and Y offsets of the laser	
 	int mVelX, mVelY;					// The velocity of the laser
-	int mAlive;
+	bool mAlive;
 
 };
 

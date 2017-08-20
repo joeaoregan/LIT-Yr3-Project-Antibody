@@ -46,6 +46,10 @@ int Laser::getLaserX() {
 	return mPosX;
 }
 
+int Laser::getLaserY() {
+	return mPosY;
+}
+
 bool Laser::getLaserAlive() {
 	return mAlive;
 }
