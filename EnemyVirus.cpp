@@ -1,7 +1,7 @@
 #include "EnemyVirus.h"
 
 EnemyVirus::EnemyVirus() {
-	setScore(15);
+	setScore(15);						// Value for killing object
 
 	setWidth(75);
 	setHeight(75);

@@ -15,7 +15,7 @@ JOE: Moved functionality common to game objects to GameObjects class reducing th
 */
 
 #include "Laser.h"
-#include "Ship.h"
+#include "Player.h"
 
 // Laser Constructor
 Laser::Laser() {
@@ -27,17 +27,27 @@ Laser::Laser() {
 
 	setColliderWidth(getWidth());
 	setColliderHeight(getHeight());
+	
+	setAngle(0);	// Fire straight
+	setGrade(0);	// Basic Laser = 0, Triple Laser = 1
 }
 
 
 // Laser Destructor
-Laser::~Laser()
-{
+Laser::~Laser(){
 	std::cout << "Laser destructor called.\n";
 }
 
 void Laser::movement() {
 	GameObject::movement();
+	//if (getGrade() == 1) {
+		if (getAngle() == 1) {
+			setY(getY() + 3);
+		}
+		else if (getAngle() == 2) {
+			setY(getY() - 3);
+		}
+	//}
 
 	setColliderX(getX());
 	setColliderY(getY());

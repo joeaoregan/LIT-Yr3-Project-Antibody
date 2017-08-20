@@ -2,7 +2,7 @@
 Ninja Star Weapon
 */
 #include "NinjaStar.h"
-#include "Ship.h"
+#include "Player.h"
 
 // Ninja Star Constructor
 NinjaStar::NinjaStar() {

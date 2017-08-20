@@ -2,7 +2,7 @@
 Saw Weapon
 */
 #include "Saw.h"
-#include "Ship.h"
+#include "Player.h"
 
 // Ninja Star Constructor
 Saw::Saw() {
@@ -10,6 +10,7 @@ Saw::Saw() {
 	setWidth(40);
 	setHeight(40);
 	setVelocity(0);
+	//setSawActive(false);
 }
 
 // Laser Destructor

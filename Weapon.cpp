@@ -21,3 +21,17 @@ int Weapon::getPlayer() {
 void Weapon::setPlayer(int p) {
 	mPlayer = p;
 }
+
+int Weapon::getAngle() {
+	return mAngle;
+}
+void Weapon::setAngle(int a) {
+	mAngle = a;
+}
+
+int Weapon::getGrade() {
+	return mGrade;
+}
+void Weapon::setGrade(int g) {
+	mGrade = g;
+}

@@ -1,5 +1,5 @@
-#ifndef SHIP_H
-#define SHIP_H
+#ifndef PLAYER_H
+#define PLAYER_H
 
 #include "GameObject.h"
 
@@ -13,9 +13,9 @@ Fixed dimensions of ship
 JOE: Moved functionality common to game objects to GameObjects class reducing the code
 */
 
-class Ship : public GameObject {
+class Player : public GameObject {
 public:				
-	Ship();							// Initializes the variables
+	Player();							// Initializes the variables
 
 	SDL_Rect mCollider;				// Players Hit Box
 
@@ -42,6 +42,12 @@ public:
 	SDL_Rect getCollider();
 	void setShipColX(int x);					// get the ships X position
 	void setShipColY(int y);					// get the ships Y position
+
+
+	bool getSawActive();
+	void setSawActive(bool active);
+
+	bool sawActive;
 
 private:
 	bool mSpeedBoost;

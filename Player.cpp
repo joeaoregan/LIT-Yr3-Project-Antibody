@@ -2,7 +2,7 @@
 2017-01-04:
 Added asdw keyboard movement
 */
-#include "Ship.h"
+#include "Player.h"
 #include "Game.h"
 #include <math.h>
 
@@ -20,7 +20,7 @@ unsigned int curTime;
 int VEL;
 
 Game game1;
-Ship::Ship() {
+Player::Player() {
 	// Initialize the offsets
 	setX(0);
 	setY(SCREEN_HEIGHT / 2);
@@ -35,9 +35,12 @@ Ship::Ship() {
 	setVelocity(VELOCITY);
 	mCollider.w = getWidth();
 	mCollider.h = getHeight();
+
+	setSawActive(false);
+	setScore(0);
 }
 
-void Ship::handleEvent(SDL_Event& e, int player) {
+void Player::handleEvent(SDL_Event& e, int player) {
 	if (player == 1) {
 		if (e.type == SDL_KEYDOWN && e.key.repeat == 0) {
 			switch (e.key.keysym.sym) {
@@ -47,9 +50,9 @@ void Ship::handleEvent(SDL_Event& e, int player) {
 			case SDLK_d: moveRight(); break;
 
 			// FIRE WEAPON
-			case SDLK_SPACE: game1.spawnLaser(getX(), getY(), 1); break;
+			case SDLK_SPACE: game1.spawnLaser(getX(), getY(), 1, 20, 1); break;	// TEST NEW WEAPON
 			case SDLK_n: game1.spawnNinjaStar(getX(), getY(), 1); break;
-			case SDLK_e: game1.spawnSaw(getX(), getY(), 1); break;			// 2017/01/17 Saw Weapon added, check saw is active with if statement in spawn Saw, and activate/deactivate the weapon
+			case SDLK_e: game1.spawnSaw(getX(), getY(), 1, getSawActive()); break;			// 2017/01/17 Saw Weapon added, check saw is active with if statement in spawn Saw, and activate/deactivate the weapon
 			case SDLK_f: setSpeedBoost(true); break;
 			}
 		}
@@ -75,7 +78,7 @@ void Ship::handleEvent(SDL_Event& e, int player) {
 			//case SDLK_e: game1.spawnLaser(getX(), getY()); break; // SEAN: Press space bar to spawn a new laser
 			case SDLK_RCTRL: game1.spawnLaser(getX(), getY(), 2); break;
 			case SDLK_RSHIFT: game1.spawnNinjaStar(getX(), getY(), 2); break;
-			case SDLK_r: game1.spawnSaw(getX(), getY(), 2); break;			// 2017/01/17 Separate saw for player 2
+			case SDLK_r: game1.spawnSaw(getX(), getY(), 2, getSawActive()); break;			// 2017/01/17 Separate saw for player 2
 			case SDLK_g: setSpeedBoost(true); break;
 			}
 		}
@@ -144,38 +147,38 @@ void Ship::handleEvent(SDL_Event& e, int player) {
 	} // joystick present
 	*/
 }
-void Ship::moveUp() {
+void Player::moveUp() {
 	if (getSpeedBoost() && getVelocity() != 0)			// If speedboost is active, and the player is moving
 		setVelY(getVelY() - (getVelocity() + BOOST));
 	else
 		setVelY(getVelY() - getVelocity());
 }
-void Ship::moveDown() {
+void Player::moveDown() {
 	if (getSpeedBoost() && getVelocity() != 0)
 		setVelY(getVelY() + (getVelocity() + BOOST));
 	else
 		setVelY(getVelY() + getVelocity());
 }
-void Ship::moveLeft() {
+void Player::moveLeft() {
 	if (getSpeedBoost() && getVelocity() != 0)
 		setVelX(getVelX() - (getVelocity() + BOOST));
 	else
 		setVelX(getVelX() - getVelocity());
 }
-void Ship::moveRight() {
+void Player::moveRight() {
 	if (getSpeedBoost() && getVelocity() != 0)
 		setVelX(getVelX() + (getVelocity() + BOOST));
 	else
 		setVelX(getVelX() + getVelocity());
 }
-int Ship::moveDiagonal() {
+int Player::moveDiagonal() {
 	//if (getSpeedBoost() && getVelocity() != 0)
 	//	return getVelocity() + BOOST / sqrt(2);
 
 	return getVelocity() / sqrt(2);
 }
 
-void Ship::movement() {
+void Player::movement() {
 	curTime = SDL_GetTicks();
 
 	if (getSpeedBoost() && (curTime > getBoostStartTime() + 2000)) {
@@ -201,7 +204,7 @@ void Ship::movement() {
 	mCollider.y = getY();
 }
 
-void Ship::gameControllerDPad(SDL_Event& e) {
+void Player::gameControllerDPad(SDL_Event& e) {
 	if (e.jhat.value == SDL_HAT_UP) {
 		resetPreviousDirection();
 		moveUp();
@@ -253,7 +256,7 @@ void Ship::gameControllerDPad(SDL_Event& e) {
 	}
 }
 
-void Ship::gameControllerButton(SDL_Event& e) {
+void Player::gameControllerButton(SDL_Event& e) {
 	if (e.jbutton.button == 0) {
 		game1.spawnLaser(getX(), getY(), 2);										// Fire Laser
 		std::cout << "Laser Button: " << (int)e.jbutton.button << std::endl;		// shows which button has been pressed
@@ -263,7 +266,7 @@ void Ship::gameControllerButton(SDL_Event& e) {
 		std::cout << "Ninja Star Button: " << (int)e.jbutton.button << std::endl;	// shows which button has been pressed
 	}
 	if (e.jbutton.button == 2) {
-		game1.spawnSaw(getX(), getY(), 2);											// Saw Weapon
+		game1.spawnSaw(getX(), getY(), 2, getSawActive());											// Saw Weapon
 		std::cout << "Saw Button: " << (int)e.jbutton.button << std::endl;			// shows which button has been pressed
 	}
 	if (e.jbutton.button == 3) {
@@ -280,7 +283,7 @@ void Ship::gameControllerButton(SDL_Event& e) {
 	}
 }
 
-void Ship::resetPreviousDirection() {
+void Player::resetPreviousDirection() {
 	if (previous == SDL_HAT_UP) {
 		moveDown();
 	}
@@ -313,28 +316,38 @@ void Ship::resetPreviousDirection() {
 }
 
 // Collisiona
-SDL_Rect Ship::getCollider() {
+SDL_Rect Player::getCollider() {
 	return mCollider;
 }
-void Ship::setShipColX(int x) {
+void Player::setShipColX(int x) {
 	mCollider.x = x;
 }// end setX
-void Ship::setShipColY(int y)
+void Player::setShipColY(int y)
 {
 	mCollider.y = y;
 }// end setY
 
 // Speed Boost
-bool Ship::getSpeedBoost() {
+bool Player::getSpeedBoost() {
 	return mSpeedBoost;
 }
-unsigned int Ship::getBoostStartTime() {
+unsigned int Player::getBoostStartTime() {
 	return mBoostStartTime;
 }
-void Ship::setSpeedBoost(bool boost) {
+void Player::setSpeedBoost(bool boost) {
 	mSpeedBoost = boost;
 	if (boost) {
 		mBoostStartTime = SDL_GetTicks();
 		std::cout << "SPEED BOOST START" << std::endl;
 	}
+}
+
+
+
+
+bool Player::getSawActive() {
+	return sawActive;
+}
+void Player::setSawActive(bool active) {
+	sawActive = active;
 }

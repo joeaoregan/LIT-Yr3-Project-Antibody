@@ -2,7 +2,7 @@
 #define ENEMY_VIRUS_H
 
 #include "Enemy.h"
-#include "Ship.h"
+#include "Player.h"
 
 class EnemyVirus : public Enemy {
 public:
