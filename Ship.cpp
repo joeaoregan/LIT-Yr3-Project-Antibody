@@ -4,7 +4,7 @@ Added asdw keyboard movement
 */
 #include "Ship.h"
 #include "Game.h"
-#include <math.h> // 2017-08-11 sqrt()
+#include <math.h> // 2017-08-11 sqrt() error
 
 #define DIAGONAL_VEL SHIP_VEL / (sqrt(2))
 
@@ -39,6 +39,7 @@ void Ship::handleEvent(SDL_Event& e, int player) {
 			//case SDLK_SPACE: game1.spawnLaser(); break; // SEAN: Press space bar to spawn a new laser
 			case SDLK_SPACE: game1.spawnLaser(getX(), getY(), 1); break;
 			case SDLK_n: game1.spawnNinjaStar(getX(), getY(), 1); break;
+			case SDLK_e: game1.spawnSaw(getX(), getY(), 1); break;			// 2017/01/17 Saw Weapon added, check saw is active with if statement in spawn Saw, and activate/deactivate the weapon
 			}
 		}
 		else if (e.type == SDL_KEYUP && e.key.repeat == 0) {
@@ -63,6 +64,7 @@ void Ship::handleEvent(SDL_Event& e, int player) {
 				//case SDLK_e: game1.spawnLaser(getX(), getY()); break; // SEAN: Press space bar to spawn a new laser
 			case SDLK_RCTRL: game1.spawnLaser(getX(), getY(), 2); break;
 			case SDLK_RSHIFT: game1.spawnNinjaStar(getX(), getY(), 2); break;
+			case SDLK_r: game1.spawnSaw(getX(), getY(), 2); break;			// 2017/01/17 Separate saw for player 2
 			}
 		}
 		// If a key was released
@@ -171,26 +173,26 @@ void Ship::gameControllerDPad(SDL_Event& e) {
 	}
 	else if (e.jhat.value == SDL_HAT_RIGHTUP) {
 		resetPreviousDirection();
-		setVelX(getVelX() + DIAGONAL_VEL);
-		setVelY(getVelY() - DIAGONAL_VEL);
+		setVelX(getVelX() + (int) DIAGONAL_VEL);
+		setVelY(getVelY() - (int) DIAGONAL_VEL);
 		previous = SDL_HAT_RIGHTUP;
 	}
 	else if (e.jhat.value == SDL_HAT_RIGHTDOWN) {
 		resetPreviousDirection();
-		setVelX(getVelX() + DIAGONAL_VEL);
-		setVelY(getVelY() + DIAGONAL_VEL);
+		setVelX(getVelX() + (int) DIAGONAL_VEL);
+		setVelY(getVelY() + (int) DIAGONAL_VEL);
 		previous = SDL_HAT_RIGHTDOWN;
 	}
 	else if (e.jhat.value == SDL_HAT_LEFTUP) {
 		resetPreviousDirection();
-		setVelX(getVelX() - DIAGONAL_VEL);
-		setVelY(getVelY() - DIAGONAL_VEL);
+		setVelX(getVelX() - (int) DIAGONAL_VEL);
+		setVelY(getVelY() - (int) DIAGONAL_VEL);
 		previous = SDL_HAT_LEFTUP;
 	}
 	else if (e.jhat.value == SDL_HAT_LEFTDOWN) {
 		resetPreviousDirection();
-		setVelX(getVelX() - DIAGONAL_VEL);
-		setVelY(getVelY() + DIAGONAL_VEL);
+		setVelX(getVelX() - (int) DIAGONAL_VEL);
+		setVelY(getVelY() + (int) DIAGONAL_VEL);
 		previous = SDL_HAT_LEFTDOWN;
 	}
 
@@ -201,14 +203,18 @@ void Ship::gameControllerDPad(SDL_Event& e) {
 }
 
 void Ship::gameControllerButton(SDL_Event& e) {
-		if (e.jbutton.button == 0) {
-			game1.spawnLaser(getX(), getY(), 2);
-			std::cout << (int)e.jbutton.button << std::endl;	// shows which button has been pressed
-		}
-		if (e.jbutton.button == 1) {
-			game1.spawnNinjaStar(getX(), getY(), 2);
-			std::cout << (int)e.jbutton.button << std::endl;	// shows which button has been pressed
-		}
+	if (e.jbutton.button == 0) {
+		game1.spawnLaser(getX(), getY(), 2);				// Fire Laser
+		std::cout << "Laser Button: " << (int)e.jbutton.button << std::endl;		// shows which button has been pressed
+	}
+	if (e.jbutton.button == 1) {
+		game1.spawnNinjaStar(getX(), getY(), 2);			// Fire Ninja Star
+		std::cout << "Ninja Star Button: " << (int)e.jbutton.button << std::endl;	// shows which button has been pressed
+	}
+	if (e.jbutton.button == 2) {
+		game1.spawnSaw(getX(), getY(), 2);					// Saw Weapon
+		std::cout << "Saw Button: " << (int)e.jbutton.button << std::endl;			// shows which button has been pressed
+	}
 }
 
 void Ship::resetPreviousDirection() {

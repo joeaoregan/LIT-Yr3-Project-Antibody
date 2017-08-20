@@ -7,11 +7,9 @@ Ninja Star Weapon
 // Ninja Star Constructor
 NinjaStar::NinjaStar() {
 	std::cout << "NinjaStar constuctor called.\n";
-	// Initialise Collider
-	setWidth(30);
-	setHeight(30);
-	mNinjaStarCollider.w = getWidth();
-	mNinjaStarCollider.h = getHeight();
+	setWidth(25);
+	setHeight(25);
+	setVelocity(10);
 }
 
 // Laser Destructor
@@ -22,23 +20,14 @@ NinjaStar::~NinjaStar() {
 void NinjaStar::movement() {
 	GameObject::movement();											// Move the NinjaStar
 
-	mNinjaStarCollider.x = getX();
-	mNinjaStarCollider.y = getY();
-
 	// destroy NinjaStar once it is offscreen
 	if (getX() > SCREEN_WIDTH) setAlive(false);
 	else  setAlive(true);
 }
 
-void NinjaStar::spawn(int x, int y, SDL_Rect collider) {
+void NinjaStar::spawn(int x, int y) {
 	setX(x + 65);
 	setY(y + 25);
-	setVelX(NINJA_VEL);
+	setVelX(getVelocity());
 	setVelY(0);
-	mNinjaStarCollider = collider;
-}
-
-SDL_Rect NinjaStar::getNinjaStarCollider()
-{
-	return mNinjaStarCollider;
 }
