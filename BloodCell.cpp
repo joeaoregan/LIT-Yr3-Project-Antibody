@@ -32,8 +32,6 @@ void BloodCell::movement() {
 		if (down >= MOVEMENT) up = 0;
 	}
 
-	//std::cout << "test blood cell floating movement" << std::endl;
-
 	// destroy blood cell once it is offscreen
 	if (getX() < -getWidth()) setAlive(false);
 	else setAlive(true);

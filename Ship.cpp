@@ -6,10 +6,6 @@ Added asdw keyboard movement
 #include "Game.h"
 #include <math.h>
 
-//#define	BOOST 1
-//#define DIAGONAL_VEL SHIP_VEL / (sqrt(2))
-//int SHIP_VEL = getVelocity() / sqrt(2);
-
 #define VELOCITY 10
 #define BOOST 2
 
@@ -19,7 +15,7 @@ const int JOYSTICK_DEAD_ZONE = 8000;	// Create a deadzone where input from the c
 int previous = 0;
 int previousStick = 0;
 
-unsigned int previousTime = 0, curTime;
+unsigned int curTime;
 int VEL;
 
 Game game1;
@@ -35,6 +31,8 @@ Ship::Ship() {
 	setVelX(0);
 	setVelY(0);
 	setVelocity(VELOCITY);
+	mCollider.w = getWidth();
+	mCollider.h = getHeight();
 }
 
 void Ship::handleEvent(SDL_Event& e, int player) {
@@ -46,7 +44,7 @@ void Ship::handleEvent(SDL_Event& e, int player) {
 			case SDLK_a: moveLeft(); break;
 			case SDLK_d: moveRight(); break;
 
-			// FIRE WEAPON
+				// FIRE WEAPON
 			case SDLK_SPACE: game1.spawnLaser(getX(), getY(), 1); break;
 			case SDLK_n: game1.spawnNinjaStar(getX(), getY(), 1); break;
 			case SDLK_e: game1.spawnSaw(getX(), getY(), 1); break;			// 2017/01/17 Saw Weapon added, check saw is active with if statement in spawn Saw, and activate/deactivate the weapon
@@ -71,8 +69,8 @@ void Ship::handleEvent(SDL_Event& e, int player) {
 			case SDLK_LEFT: moveLeft(); break;
 			case SDLK_RIGHT: moveRight(); break;
 
-			// FIRE WEAPON SDLK_RCTRL
-			//case SDLK_e: game1.spawnLaser(getX(), getY()); break; // SEAN: Press space bar to spawn a new laser
+				// FIRE WEAPON SDLK_RCTRL
+				//case SDLK_e: game1.spawnLaser(getX(), getY()); break; // SEAN: Press space bar to spawn a new laser
 			case SDLK_RCTRL: game1.spawnLaser(getX(), getY(), 2); break;
 			case SDLK_RSHIFT: game1.spawnNinjaStar(getX(), getY(), 2); break;
 			case SDLK_r: game1.spawnSaw(getX(), getY(), 2); break;			// 2017/01/17 Separate saw for player 2
@@ -96,11 +94,9 @@ void Ship::handleEvent(SDL_Event& e, int player) {
 				gameControllerDPad(e);
 			}
 		} // joystick present
-
 	}
 
 	/*
-
 	if (e.type == SDL_KEYDOWN && e.key.repeat == 0) {
 		// MOVEMENT
 		switch (e.key.keysym.sym) {			// Adjust the velocity with keyboard
@@ -187,17 +183,20 @@ void Ship::movement() {
 
 	setX(getX() + getVelX());											// Velocity is 0 if not moving
 
-	// If the ship went too far to the left or right
+																		// If the ship went too far to the left or right
 	if ((getX() < 0) || ((getX() + getWidth()) > SCREEN_WIDTH)) {
 		setX(getX() - getVelX());										// Move back
 	}
 
 	setY(getY() + getVelY());											// Move the ship up or down
 
-	// If the ship went too far up or down
+																		// If the ship went too far up or down
 	if ((getY() < 40) || ((getY() + getHeight()) > SCREEN_HEIGHT - 40)) {
 		setY(getY() - getVelY());										// Move back
 	}
+
+	mCollider.x = getX();												// Only needed once if you check after movement
+	mCollider.y = getY();
 }
 
 void Ship::gameControllerDPad(SDL_Event& e) {
@@ -311,22 +310,19 @@ void Ship::resetPreviousDirection() {
 	}
 }
 
-//bool speedBoostActive = false;
-
-/*
-void Ship::speedBoost(bool speedBoostActive) {
-	std::cout << "SPEED BOOST!!!" << std::endl;
-
-	if (speedBoostActive) {
-		std::cout << "SPEED BOOST!!!" << std::endl;
-		curTime = SDL_GetTicks();
-		if (curTime > previousTime + 2000)	// wait 2 seconds
-			std::cout << "END SPEED BOOST" << std::endsl;
-		//	previousTime = 0;
-	}
+// Collisiona
+SDL_Rect Ship::getCollider() {
+	return mCollider;
 }
-*/
+void Ship::setShipColX(int x) {
+	mCollider.x = x;
+}// end setX
+void Ship::setShipColY(int y)
+{
+	mCollider.y = y;
+}// end setY
 
+ // Speed Boost
 bool Ship::getSpeedBoost() {
 	return mSpeedBoost;
 }

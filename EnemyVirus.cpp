@@ -16,8 +16,6 @@ EnemyVirus::~EnemyVirus() {
 
 }
 
-
-//void EnemyVirus::movement(Ship ship) {	// No need for full ship object, just ship y coord will do
 void EnemyVirus::movement(int shipX, int shipY) {
 	GameObject::movement();
 

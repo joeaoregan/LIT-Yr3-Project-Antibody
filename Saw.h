@@ -9,13 +9,13 @@ Add Circular Saw weapon class
 
 class Saw : public Weapon {
 public:
-	Saw();									// Initializes the variables
-	~Saw();									// Deconstructor
+	Saw();							// Initializes the variables
+	~Saw();
 
-	virtual void movement(int x, int y);	// Moves the Saw	
+	virtual void movement(int x, int y);				// Moves the Saw	
 
-	void render();							// Render the saw
-	virtual void spawn(int x, int y);		// Spawn the saw
+	void render();
+	virtual void spawn(int x, int y);
 };
 
 #endif

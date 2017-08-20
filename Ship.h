@@ -14,8 +14,10 @@ JOE: Moved functionality common to game objects to GameObjects class reducing th
 */
 
 class Ship : public GameObject {
-public:				
+public:
 	Ship();							// Initializes the variables
+
+	SDL_Rect mCollider;				// Players Hit Box
 
 	//void handleEvent(SDL_Event& e);
 	void handleEvent(SDL_Event& e, int player);	// Takes key presses and adjusts the ship's velocity
@@ -24,16 +26,22 @@ public:
 	void gameControllerDPad(SDL_Event& e);
 	void gameControllerButton(SDL_Event& e);
 	void resetPreviousDirection();
-	//void speedBoost(bool speedBoostActive);
+
+	// Speed boost
 	bool getSpeedBoost();
 	unsigned int getBoostStartTime();
 	void setSpeedBoost(bool boost);
 
+	// Movement
 	void moveUp();
 	void moveDown();
 	void moveLeft();
 	void moveRight();
 	int moveDiagonal();
+
+	SDL_Rect getCollider();
+	void setShipColX(int x);					// get the ships X position
+	void setShipColY(int y);					// get the ships Y position
 
 private:
 	bool mSpeedBoost;

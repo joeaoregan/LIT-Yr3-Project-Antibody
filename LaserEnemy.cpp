@@ -43,7 +43,6 @@ void LaserEnemy::spawn(int x, int y, SDL_Rect collider) {
 	mELaserCollider = collider;
 }
 
-SDL_Rect LaserEnemy::getELaserCollider()
-{
+SDL_Rect LaserEnemy::getELaserCollider(){
 	return mELaserCollider;
 }
