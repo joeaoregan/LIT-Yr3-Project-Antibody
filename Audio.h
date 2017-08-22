@@ -19,7 +19,7 @@ public:
 	Mix_Music *gMusic3 = NULL;
 	Mix_Music *gMusic4 = NULL;				// 2017/02/17 - The First Step - Jimmy O'Regan
 	Mix_Music *gMusic5 = NULL;				// 2017/02/22 - Virus - Joe O'Regan
-	unsigned int currentSong;				// Play a random song when the game starts
+	int currentSong;						// Play a random song when the game starts
 
 	std::vector<Mix_Music*> listOfMusic;	// List of Music tracks
 

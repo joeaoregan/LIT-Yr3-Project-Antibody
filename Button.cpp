@@ -5,7 +5,7 @@
 
 Game game;
 
-enum { NEW_GAME, SETTINGS, HIGH_SCORES, QUIT };
+enum { GAME_1PLAYER, GAME_2PLAYER, SETTINGS, HIGH_SCORES, QUIT };
 
 //SDL_Rect gSpriteClipsMenu[BUTTON_SPRITE_TOTAL];
 
@@ -66,8 +66,17 @@ void Button::handleEvent(SDL_Event* e, int buttonSelected) {
 				std::cout << "Mouse Button Down" << std::endl;
 				//std::cout << "Level: " << game.getCurrentLevel() << std::endl;
 
-				if (buttonSelected == NEW_GAME) {
-					std::cout << "Selected: Start A New Game!" << std::endl;
+				if (buttonSelected == GAME_1PLAYER) {
+					std::cout << "Selected: 1 Player Game!" << std::endl;
+					game.setCurrentLevel(1);
+					std::cout << "Level: " << game.getCurrentLevel() << std::endl;
+					game.twoPlayer = false;
+					game.update();
+					// Call a function in Game.cpp in the Main Project
+				}
+				else if (buttonSelected == GAME_2PLAYER) {
+					game.twoPlayer = true;
+					std::cout << "Selected: 2 Player Game!" << std::endl;
 					game.setCurrentLevel(1);
 					std::cout << "Level: " << game.getCurrentLevel() << std::endl;
 					game.update();

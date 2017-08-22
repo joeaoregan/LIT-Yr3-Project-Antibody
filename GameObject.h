@@ -129,7 +129,7 @@ public:
 	int rotateCounter;	// degrees the satellite object has rotated
 	//int rotateCenter;
 	bool satelliteObjectOrbiting;
-	unsigned int whichVirusAssignedTo;
+	int whichVirusAssignedTo;
 
 	bool getRocketBarActive() { return m_RocketBarActive; }
 	void setRocketBarActive(bool rocket) { m_RocketBarActive = rocket; }

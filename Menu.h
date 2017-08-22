@@ -14,10 +14,11 @@ public:
 	Texture gMenuTextTexture3;
 	Texture gMenuTextTexture4;
 	Texture gMenuTextTexture5;
+	Texture gMenuTextTexture6;
 
 	//Buttons objects
 	Button gButtons[TOTAL_BUTTONS];
-	Button gMenuButtons[4];
+	Button gMenuButtons[TOTAL_BUTTONS];
 
 	SDL_Rect gSpriteClipsMenu[BUTTON_SPRITE_TOTAL];
 	Texture gButtonSpriteSheetTexture;

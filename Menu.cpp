@@ -16,19 +16,23 @@ bool Menu::loadMediaMenu(SDL_Renderer *rend) {
 			printf("Failed to render text texture!\n");
 			success = false;
 		}
-		if (!gMenuTextTexture2.loadFromRenderedText("New Game", textColour, gFont, rend)) {	// can take out the new textColor objects
+		if (!gMenuTextTexture2.loadFromRenderedText("1 Player", textColour, gFont, rend)) {	// can take out the new textColor objects
 			printf("Failed to render text texture!\n");
 			success = false;
 		}
-		if (!gMenuTextTexture3.loadFromRenderedText("Settings", textColour, gFont, rend)) {
+		if (!gMenuTextTexture3.loadFromRenderedText("2 Player", textColour, gFont, rend)) {
 			printf("Failed to render text texture!\n");
 			success = false;
 		}
-		if (!gMenuTextTexture4.loadFromRenderedText("High Scores", textColour, gFont, rend)) {
+		if (!gMenuTextTexture4.loadFromRenderedText("Settings", textColour, gFont, rend)) {
 			printf("Failed to render text texture!\n");
 			success = false;
 		}
-		if (!gMenuTextTexture5.loadFromRenderedText("Quit", textColour, gFont, rend)) {
+		if (!gMenuTextTexture5.loadFromRenderedText("High Scores", textColour, gFont, rend)) {
+			printf("Failed to render text texture!\n");
+			success = false;
+		}
+		if (!gMenuTextTexture6.loadFromRenderedText("Quit", textColour, gFont, rend)) {
 			printf("Failed to render text texture!\n");
 			success = false;
 		}
@@ -37,11 +41,13 @@ bool Menu::loadMediaMenu(SDL_Renderer *rend) {
 		gMenuTextTexture3.setX((SCREEN_WIDTH - gMenuTextTexture3.getWidth()) / 2);
 		gMenuTextTexture4.setX((SCREEN_WIDTH - gMenuTextTexture4.getWidth()) / 2);
 		gMenuTextTexture5.setX((SCREEN_WIDTH - gMenuTextTexture5.getWidth()) / 2);
+		gMenuTextTexture6.setX((SCREEN_WIDTH - gMenuTextTexture6.getWidth()) / 2);
 
-		gMenuTextTexture2.setY((SCREEN_HEIGHT - gMenuTextTexture2.getHeight()) / 2.5);
-		gMenuTextTexture3.setY((SCREEN_HEIGHT - gMenuTextTexture3.getHeight()) / 2.0);
-		gMenuTextTexture4.setY((SCREEN_HEIGHT - gMenuTextTexture4.getHeight()) / 1.7);
-		gMenuTextTexture5.setY((SCREEN_HEIGHT - gMenuTextTexture5.getHeight()) / 1.5);
+		gMenuTextTexture2.setY(200);
+		gMenuTextTexture3.setY(250);
+		gMenuTextTexture4.setY(300);
+		gMenuTextTexture5.setY(350);
+		gMenuTextTexture6.setY(400);
 	}
 
 	//Load sprites
@@ -62,6 +68,7 @@ bool Menu::loadMediaMenu(SDL_Renderer *rend) {
 		gMenuButtons[1].setPosition((SCREEN_WIDTH - BUTTON_WIDTH) / 2, gMenuTextTexture3.getY());
 		gMenuButtons[2].setPosition((SCREEN_WIDTH - BUTTON_WIDTH) / 2, gMenuTextTexture4.getY());
 		gMenuButtons[3].setPosition((SCREEN_WIDTH - BUTTON_WIDTH) / 2, gMenuTextTexture5.getY());
+		gMenuButtons[4].setPosition((SCREEN_WIDTH - BUTTON_WIDTH) / 2, gMenuTextTexture6.getY());
 	}
 
 	return success;
@@ -84,6 +91,7 @@ void Menu::closeMenu() {
 	gMenuTextTexture3.free();
 	gMenuTextTexture4.free();
 	gMenuTextTexture5.free();
+	gMenuTextTexture6.free();
 }
 
 void Menu::draw(SDL_Renderer *rend) {
@@ -99,6 +107,7 @@ void Menu::draw(SDL_Renderer *rend) {
 	gMenuTextTexture3.render(gMenuTextTexture3.getX(), gMenuTextTexture3.getY(), rend);
 	gMenuTextTexture4.render(gMenuTextTexture4.getX(), gMenuTextTexture4.getY(), rend);
 	gMenuTextTexture5.render(gMenuTextTexture5.getX(), gMenuTextTexture5.getY(), rend);
+	gMenuTextTexture6.render(gMenuTextTexture6.getX(), gMenuTextTexture6.getY(), rend);
 
 	SDL_RenderPresent(rend);			// Update screen
 }

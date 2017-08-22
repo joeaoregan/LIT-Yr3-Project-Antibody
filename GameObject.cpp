@@ -45,7 +45,7 @@ void GameObject::spawn(int x, int y, int vx, SDL_Rect* collider) {
 	m_xVel = vx;
 	m_yVel = vx;	// 2017-01-10 JOE: use same velocity for x and y
 //	m_Collider = collider;
-	setCollider((*collider));
+    setCollider((*collider));
 }
 
 void GameObject::spawn(int x, int y, int vx, int vy, SDL_Rect* collider, int subType) {
@@ -54,11 +54,10 @@ void GameObject::spawn(int x, int y, int vx, int vy, SDL_Rect* collider, int sub
 	m_xVel = vx;
 	m_yVel = vy;	// 2017-01-10 JOE: use same velocity for x and y
 //	m_Collider = collider;
-	setCollider((*collider));
+    setCollider((*collider));
 	m_SubType = subType;
 	setAlive(true);
 }
-
 
 void GameObject::movement() {
 	m_x += m_xVel;
@@ -115,7 +114,7 @@ void GameObject::spawn(int x, int y, SDL_Rect* collider, int player, int type) {
 	setVelX(getVelocity());
 	setVelY(0);
 //	m_Collider = collider;
-	setCollider((*collider));
+    setCollider((*collider));
 	setPlayer(player);
 	setSubType(type);
 }

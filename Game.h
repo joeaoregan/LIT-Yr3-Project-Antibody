@@ -29,6 +29,10 @@ const int BLOOD_EXP_ANIMATION_FRAMES = 12;
 
 class Game {
 public:
+
+	bool twoPlayer;
+
+
 	int gamerOverMessageDisplayCounter;	// Length of time to display game over message
 	int frames;							// Frame count for speed of Enemy animation
 

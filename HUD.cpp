@@ -72,15 +72,17 @@ void HUD::gameTime(int currentTime, SDL_Renderer *rend) {
 
 	Display the score for each player
 */
-void HUD::playerScore(int scoreP1, int scoreP2, SDL_Renderer *rend) {
+void HUD::playerScore(SDL_Renderer *rend, bool twoPlayer, int scoreP1, int scoreP2) {
 	std::stringstream score1Text, score2Text;
 
 	score1Text << "P1: " << scoreP1;															// Player 1 score
-	score2Text << "P2: " << scoreP2;															// Player 2 score
 	gP1ScoreTextTexture.UIText(score1Text.str().c_str(), rend);									// Render text - Use a string to render the current P1 Score to a texture
-	gP2ScoreTextTexture.UIText(score2Text.str().c_str(), rend);									// Render text - Use a string to render the current P2 Score to a texture
 	gP1ScoreTextTexture.render(10, 55, rend);													// Score for Player 1
-	gP2ScoreTextTexture.render(SCREEN_WIDTH - gP2ScoreTextTexture.getWidth() - 10, 55, rend);	// Score for Player 2
+	if (twoPlayer) {
+		score2Text << "P2: " << scoreP2;															// Player 2 score
+		gP2ScoreTextTexture.UIText(score2Text.str().c_str(), rend);									// Render text - Use a string to render the current P2 Score to a texture
+		gP2ScoreTextTexture.render(SCREEN_WIDTH - gP2ScoreTextTexture.getWidth() - 10, 55, rend);	// Score for Player 2
+	}
 }
 
 /*	2017/02/21: Moved from Game.cpp
@@ -132,7 +134,7 @@ void HUD::createdByText(SDL_Renderer *rend) {
 
 	Render the players lives to the player dashboard
 */
-void HUD::rendPlayerLives(int livesP1, int livesP2, SDL_Renderer *rend) {
+void HUD::rendPlayerLives(SDL_Renderer *rend, int livesP1, int livesP2) {
 		if (livesP1 > 0)
 			gP1LivesTexture.render(10, 120 - gP1LivesTexture.getHeight() - 10, rend);
 		if (livesP1 > 1)

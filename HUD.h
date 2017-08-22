@@ -21,12 +21,12 @@ public:
 	void resetHUD();
 	void closeLevelStuff();
 
-	void rendPlayerLives(int livesP1, int livesP2, SDL_Renderer *rend);
+	void rendPlayerLives(SDL_Renderer *rend, int livesP1, int livesP2 = 0);
 	void createdByText(SDL_Renderer *rend);
 
 	void rocketIndicator(int numRockets, int player, bool alive, SDL_Renderer *rend);
 	void speedBoostIndicator(bool boost, SDL_Renderer *rend);
-	void playerScore(int scoreP1, int scoreP2, SDL_Renderer *rend);
+	void playerScore(SDL_Renderer *rend, bool twoPlayer, int scoreP1, int scoreP2 = 0);		// 2017-02-23 Player 2 score initialised to 0 to allow reusing the function for single player game
 	//void gameTime(int time, SDL_Renderer *rend);
 	void displayLevelNum(int levelNum, SDL_Renderer *rend);
 };
