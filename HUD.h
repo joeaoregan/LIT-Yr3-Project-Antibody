@@ -12,7 +12,9 @@ public:
 	Texture gPowerUpRocketTexture;		// Texture for Rocket power up
 	Texture gNumRocketsTextTexture1;	// Indicate the number of rockets for player 1
 	Texture gNumRocketsTextTexture2;	// Indicate the number of rockets for player 2
-	Texture gCreatedByTextTexture;		// Created by message at bottom of screen for demo
+	Texture gCreatedByTextTexture1;		// Created by message at bottom of screen for demo
+	Texture gCreatedByTextTexture2;		// Created by message at bottom of screen for demo
+	Texture gCreatedByTextTexture3;		// Created by message at bottom of screen for demo
 	Texture gP1LivesTexture;			// Player 1 Small ship for number of lives
 	Texture gP2LivesTexture;			// Player 2 Small Ship for number of lives
 	Texture gP1ScoreTextTexture;		// Player 1 current score

@@ -33,6 +33,7 @@ WeaponPlRocket::WeaponPlRocket(int player) {
 	//std::cout << "Rocket constuctor called.\n";
 	setType(PLAYER_WEAPON);
 	setPlayer(player);
+	setTextureID("rocketID");		// 2018/03/18 Added Texture ID
 
 	if (player == PLAYER1) setSubType(ROCKET_P1);
 	else if (player == PLAYER2) setSubType(ROCKET_P2);
@@ -72,7 +73,22 @@ void WeaponPlRocket::move() {
 	destroy();
 }
 
+/*
+2017/03/18 Render Ninja Stars
 
+The Ninja Stars texture is loaded from the texture map using the stored ID
+Ninja Stars rotate similar to Blood Cells but in only one direction
+*/
+/*
+void WeaponPlRocket::render() {
+	SDL_Rect renderQuad = { getX(), getY(), getWidth(), getHeight() };	// Set rendering space and render to screen
+																		// Similar to Blood Cell rotation but rotating in only one direction
+	SDL_RenderCopyEx(Game::Instance()->getRenderer(), Texture::Instance()->getTexture(getTextureID()), NULL, &renderQuad, getAngle(), NULL, SDL_FLIP_NONE);	// Render to screen
+
+	renderRocketParticles();
+}
+*/
+/*
 void WeaponPlRocket::render(Texture &texture, int degrees) {
 
 	GameObject::render(texture, degrees);
@@ -81,7 +97,7 @@ void WeaponPlRocket::render(Texture &texture, int degrees) {
 	//std::cout << "Rocket Render" << std::endl;
 	//texture.render(getX(), getY(), NULL, degrees, NULL, SDL_FLIP_NONE);
 }
-
+*/
 void WeaponPlRocket::renderRocketParticles() {
 	//Go through particles
 	for (int i = 0; i < TOTAL_PARTICLES_R; ++i) {

@@ -58,7 +58,7 @@ const int ANIMATION_FRAMES = 4;				// Number of frames of animation for Enemy Sh
 const int EXPLOSION_ANIMATION_FRAMES = 12;	// Number of frames of animation for Explosions
 const int BLOOD_EXP_ANIMATION_FRAMES = 12;
 
-enum gameStates { MENU, LEVEL_1, LEVEL_2, LEVEL_3, PAUSE, SETTINGS, HIGH_SCORES, ENTER_NAME };
+enum gameStates {  MENU, LEVEL_1, LEVEL_2, LEVEL_3, PAUSE, SETTINGS, HIGH_SCORES, GAME_INTRO, LEVEL_INFO, ENTER_NAME };
 
 class Game {
 public:
@@ -167,7 +167,7 @@ public:
 	void spawnPlayer(int player);
 	void spawnEnemyBoss();													// 2017/03/02 JOE: Added function to create Enemy Boss objects at random times and coords
 	void spawnEnemyShip();													// 2017/01/09 JOE: added function to create enemy ships at random times and random y coord
-	void spawnEnemyVirus(int x = 0, int y = 0, int type = 0);				// 2017/01/10 JOE: added function to create enemy virus at random times and random y coord
+	void spawnEnemyVirus(int type = 0, int x = 0, int y = 0);				// 2017/01/10 JOE: added function to create enemy virus at random times and random y coord
 	void spawnBloodCell(int type = 0);										// 2017/01/10 JOE: add function to create blood cells
 	void spawnLaser(int x, int y, int player, int grade = 0, int v = 20);	// 2017/01/16 spawn a laser at coords, with velocitys 2017/01/20 added Weapons grade
 	void spawnEnemyLaser(int x, int y, int type = 0, int whichVirus = 0);	// 2017/01/10
@@ -226,7 +226,8 @@ private:
 	Game() {};						// 2017/02/27 Constructor private for singleton
 	
 	int mNumPlayers;
-	int mCurrentLevel = MENU;		// The current level of the game, 0 = menu, 1 = level 1 etc.
+	//int mCurrentLevel = GAME_INTRO;		// 2017/03/18 The current level of the game, 0 = menu, 1 = level 1 etc.
+	int mCurrentLevel =	MENU;		// The current level of the game, 0 = menu, 1 = level 1 etc.
 
 	static Game* s_pInstance;
 };

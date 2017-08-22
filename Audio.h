@@ -68,7 +68,7 @@ private:
 	Audio();											// Constructor is private for use as a Singleton. Initializes the variables
 	~Audio();											// Private destructor shuts down and cleans up the mixer API
 
-	unsigned int currentSong;							// Play a random song when the game starts, 2017/03/17 Changed to Private
+	unsigned int currentSong;									// Play a random song when the game starts, 2017/03/17 Changed to Private
 
 	std::vector<Mix_Music*> listOfMusic;				// List of Music tracks, 2017/03/17 Changed to Private
 	std::map<std::string, Mix_Chunk*> m_sfxs;			// Sound effects are stored in a map can be accessed using the unique ID for each effect
@@ -78,6 +78,7 @@ private:
 };
 
 #endif
+
 /*
 	//void music();						// Load the music files and add them to the listOfMusic array (2017/03/17 combined with loadMediaAudio() function)
 

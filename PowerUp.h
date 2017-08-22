@@ -1,4 +1,5 @@
 /*
+	2017/03/18 Added render function to class to render from texture map using texture ID
 	2017/03/04 Moved smaller class files functionality into their headers
 				Set a game object texture ID variable for Power Ups, now render based on their unique texture ID
 	2017/02/21 POWER UPS: Added gold coloured lives power up to increase the number of player lives
@@ -76,7 +77,14 @@ public:
 	virtual void move() {
 		GameObject::move();
 	};
+
 	virtual void destroy() {};
+
+	virtual void render() {
+		SDL_Rect renderQuad = { getX(), getY(), getWidth(), getHeight() };	// Set rendering space and render to screen
+
+		SDL_RenderCopyEx(Game::Instance()->getRenderer(), Texture::Instance()->getTexture(getTextureID()), NULL, &renderQuad, getAngle(), NULL, SDL_FLIP_NONE);	// Render to screen
+	};
 };
 
 #endif

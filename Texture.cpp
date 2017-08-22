@@ -1,4 +1,6 @@
 /*
+	2017/03/18 Added the Ninja Stars and Saw texture to the texture map in Texture class
+	2017/03/17 Added the Blood Cell texture to the texture map in Texture class
 	2017/02/28 Moved background texture loading to texture map
 	2017/02/26 Added singletons for Game and Texture
 	2017/02/09 Set a display time for textures such as information messages
@@ -431,17 +433,17 @@ void Texture::clearMedia() {
 
 }
 
-const int NUM_TEXTURES2 = 26;
+const int NUM_TEXTURES2 = 30;
 
 // 2D Array of textures, with path to file, texture ID, and description for error messages
 std::string textures2[NUM_TEXTURES2][3] = {
 	// Game
-	{ "Art/Prof.png", "profID", "Professor" },					// Map texture to show the players current position inside the professor
+	{ "Art/Prof.png", "profID", "Professor" },										// Map texture to show the players current position inside the professor
 
 	// Blood Cells
-	{ "Art/BloodCell.png", "bcID", "Large Blood Cell" },		// Texture for Large Blood Cell
-	{ "Art/BloodCellSmall.png", "bcsID", "Small Blood Cell" },	// Texture for Small Blood Cell
-	{ "Art/WhiteCell.png", "bcwID", "White Blood Cell" },		// Texture for White Blood Cell
+	{ "Art/BloodCell.png", "bcID", "Large Blood Cell" },							// 2017/03/17 Added texture for Large Blood Cell to map
+	{ "Art/BloodCellSmall.png", "bcsID", "Small Blood Cell" },						// 2017/03/17 Texture for Small Blood Cell to map
+	{ "Art/WhiteCell.png", "bcwID", "White Blood Cell" },							// 2017/03/17 Texture for White Blood Cell to map
 
 	// Background images
 	{ "Art/bgBegin720a.png", "startBG", "Starting Background" },
@@ -455,6 +457,9 @@ std::string textures2[NUM_TEXTURES2][3] = {
 	{ "Art/VirusBlue.png", "blueVirusID", "Blue Virus Info" },
 
 	// Weapons
+	{ "Art/SawBlue.png", "sawID", "Saw" },											// 2017/03/18 Added Saw texture to map
+	{ "Art/NinjaStarYellow.png", "nsP1ID", "Ninja Star Player 1" },					// 2017/03/18 Added Ninja Star for Player 1 to map
+	{ "Art/NinjaStarBlue.png", "nsP2ID", "Ninja Star Player 2" },					// 2017/03/18 Added Ninja Star for Player 2 to map
 	{ "Art/VirusFireball.png", "fireballID", "Fire Ball Weapon" },
 	{ "Art/EnemyVirusSatellite.png", "satelliteID", "Virus Satellite Projectile" },
 	{ "Art/LaserGreen.png", "greenLaserID", "Green Laser" },
@@ -462,6 +467,7 @@ std::string textures2[NUM_TEXTURES2][3] = {
 	{ "Art/LaserBlue.png", "blueLaserID", "Blue Laser" },
 	{ "Art/Shield1.png", "shieldP1ID", "Player 1 Shield" },
 	{ "Art/Shield2.png", "shieldP2ID", "Player 2 Shield" },
+	{ "Art/Rocket.png", "rocketID", "Rocket Weapon" },								// 2017/03/18 Added Rocket texture to map
 
 	// Power Ups
 	{ "Art/PowerUpLife.png", "lifePowerUpID", "New Life Power Up" },

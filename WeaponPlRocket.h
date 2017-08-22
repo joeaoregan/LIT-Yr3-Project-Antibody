@@ -14,8 +14,19 @@ public:
 	bool getDrawParticle() const { return drawRocketParticle; }	// Return the rockets particles
 	void setDrawParticle(bool p) { drawRocketParticle = p; }	// Set the rockets particles
 	void renderRocketParticles();								// Draw the rockets particles
+	
+	/*
+		2017/03/18 Rockets render from texture map using texture ID
+	*/
+	virtual void render() {
+		SDL_Rect renderQuad = { getX(), getY(), getWidth(), getHeight() };	// Set rendering space and render to screen
+																			// Similar to Blood Cell rotation but rotating in only one direction
+		SDL_RenderCopyEx(Game::Instance()->getRenderer(), Texture::Instance()->getTexture(getTextureID()), NULL, &renderQuad, getAngle(), NULL, SDL_FLIP_NONE);	// Render to screen
 
-	virtual void render(Texture &texture, int degrees = 0);		// Render the rocket, with degrees for upward and downward angle
+		renderRocketParticles();
+	};
+	
+	//virtual void render(Texture &texture, int degrees = 0);		// Render the rocket, with degrees for upward and downward angle
 
 	virtual void move();										// Moves the Rocket	
 	virtual void destroy() {									// Destroy the object when it moves off screen

@@ -85,7 +85,17 @@ public:
 	virtual void move() {
 		GameObject::move();
 	};
+
 	virtual void destroy() {};
+
+	/*
+		2017/03/18 Render function
+	*/
+	virtual void render() {
+		SDL_Rect renderQuad = { getX(), getY(), getWidth(), getHeight() };	// Set rendering space and render to screen
+
+		SDL_RenderCopyEx(Game::Instance()->getRenderer(), Texture::Instance()->getTexture(getTextureID()), NULL, &renderQuad, getAngle(), NULL, SDL_FLIP_NONE);	// Render to screen
+	};
 
 	int centerX, centerY;		// center for rotation
 };

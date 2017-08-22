@@ -1,36 +1,39 @@
 /*
-2017/03/06 Added function for randomly selecting the scrolling direction for level background logos
-Added function for choosing the level background ID based on the level
-Added array for loading textures
-2017/02/09 Added separate function for text and logos to Game class
-2017/02/08 Added separate splash screen class SplashScreen.h for displaying splash screens
-Moved press enter to continue for splash screens instead of delay before progressing to level
-2017/02/02 Added storyline at intro to game
-2017/01/20 Added game over message
-2017/01/18 Added splash screens at start of game, Game Title & Game Creators
-Added pressButtonToContinue() function for splash screens at start of game, so player can read writing at own pace
-2017/01/17 Added scrolling text to intro screens
-Added wrapped text to add new line character for level intro splash screens
-2017/01/11 Added flashing game over texture
+	2017/03/06 Added function for randomly selecting the scrolling direction for level background logos
+				Added function for choosing the level background ID based on the level
+				Added array for loading textures
+	2017/02/09 Added separate function for text and logos to Game class
+	2017/02/08 Added separate splash screen class SplashScreen.h for displaying splash screens
+				Moved press enter to continue for splash screens instead of delay before progressing to level
+	2017/02/02 Added storyline at intro to game
+	2017/01/20 Added game over message
+	2017/01/18 Added splash screens at start of game, Game Title & Game Creators
+				Added pressButtonToContinue() function for splash screens at start of game, so player can read writing at own pace
+	2017/01/17 Added scrolling text to intro screens
+				Added wrapped text to add new line character for level intro splash screens
+	2017/01/11 Added flashing game over texture
 */
 /*
-SPLASH SCREEN:
+	SPLASH SCREEN:
 
-Handles game intro screens and information screens at start of game, and transition screens between level with scores and level objectives.
-Displays final score and game winner at end of game.
+	Handles game intro screens and information screens at start of game, 
+	and transition screens between level with scores and level objectives.
+	Displays final score and game winner at end of game.
+
+	Backgrounds have random scrolling, up / down / left / right to give a
+	transition affect between title, logo, and information screens
 */
 
 #include "SplashScreen.h"
 #include "Game.h"
 
-//enum levels { MENU, LEVEL_1, LEVEL_2, LEVEL_3 };
-
 int frame1 = 0;
-
 int scrollOffset = SCREEN_HEIGHT;	// Scrolling offset for splash screens
-
 const int NUM_TEXTURES = 5;
 
+/*
+	2D Array containing the path, ID, and identification to display for error / information messages
+*/
 std::string textures[NUM_TEXTURES][3] = {
 	{ "Art/Logo1720.png", "gameTitleID", "Game Title" },
 	{ "Art/Logo2720.png", "createdByID", "Created By" },
@@ -39,7 +42,9 @@ std::string textures[NUM_TEXTURES][3] = {
 	{ "Art/Level3720.png", "level3ID", "Level 3 Backdrop" }
 };
 
-/*	Initialise the images used for splash screens and logos */
+/*	
+	Initialise the images used for splash screens and logos 
+*/
 bool SplashScreen::initSplashScreens() {
 	bool success = true;
 
@@ -80,25 +85,45 @@ bool SplashScreen::initSplashScreens() {
 	return success;
 }
 
-/* free the textures from memory when the game is finished */
+/* 
+	Free the textures from memory when the game is finished 
+	or when the textures are not being used
+*/
 void SplashScreen::closeSplashScreens() {
-	// Free splash screen textures
-	gFinalScoreTextTexture.free();
-	gGameWinnerTextTexture.free();
-	gGameOverTextTexture.free();
-	gPressEnterSpriteSheetTexture.free();
-	gObjectiveTextTexture.free();
-	gStoryA.free();
-	gStoryB.free();
-	gStoryC.free();
+	// Clear Game title texture
+	if (Game::Instance()->getCurrentLevel() == GAME_INTRO) {
+		Texture::Instance()->clearFromTextureMap("gameTitleID");
+		Texture::Instance()->clearFromTextureMap("createdByID");
 
-	//Free global font
-	TTF_CloseFont(gFont);
-	gFont = NULL;
+		std::cout << "GAME_INTRO media removed" << std::endl;
+	}
+	else {
+		// Free splash screen textures
+		gFinalScoreTextTexture.free();
+		gGameWinnerTextTexture.free();
+		gGameOverTextTexture.free();
+		gPressEnterSpriteSheetTexture.free();
+		gObjectiveTextTexture.free();
+		gStoryA.free();
+		gStoryB.free();
+		gStoryC.free();
+
+		// 2017/03/18 Clear textures from texture map
+		if (Game::Instance()->getCurrentLevel() != GAME_INTRO) {
+			for (int i = 0; i < NUM_TEXTURES; i++) {
+				Texture::Instance()->clearFromTextureMap(textures[i][1]);
+			}
+		}
+
+		//Free global font
+		TTF_CloseFont(gFont);
+		gFont = NULL;
+	}
 }
 
-/*	Press button to continue message - pauses the screen until a button is pressed
-This is rendered onto whatever background is already in place
+/*	
+	Press button to continue message - pauses the screen until a button is pressed
+	This is rendered onto whatever background is already in place
 */
 void SplashScreen::pressButtonToContinue(SDL_Event e) {
 	bool continueGame = false;
@@ -127,8 +152,8 @@ void SplashScreen::pressButtonToContinue(SDL_Event e) {
 }
 
 /*
-2017/02/26 changed to texture instance
-Display intro screens at start of game before menu
+	Display intro screens at start of game before menu
+	2017/02/26 changed to texture instance
 */
 bool SplashScreen::displayGameTitleScreens() {
 	// Set up the renderer
@@ -142,11 +167,16 @@ bool SplashScreen::displayGameTitleScreens() {
 
 	scrollRandomBackground("createdByID", 20, 1);										// Scroll the created by texture in randomly
 
+	// After GAME_INTRO title screens, clear game info media and go to the menu
+	closeSplashScreens();
+	Game::Instance()->setCurrentLevel(MENU);
+
 	return false;
 }
 
-/*	2017/03/06 Choose a random Level Number Background scrolling sequence
-Scroll Up, down, left, or right
+/*	
+	Scroll Up, down, left, or right
+	2017/03/06 Choose a random Level Number Background scrolling sequence
 */
 void SplashScreen::scrollRandomBackground(std::string textureID, int rate, int seconds) {
 	int scrollFrom = rand() % 4;
@@ -264,7 +294,7 @@ void SplashScreen::infoScreenEnemies(int level, int seconds, int startAt) {
 	}
 
 	while (startAt >= 300) {																		// First Part of story
-		SDL_RenderClear(Game::Instance()->getRenderer());								// Clear the screen		NEED TO CLEAR THE SCREEN EACH TIME OR GET STREAKY TEXT
+		SDL_RenderClear(Game::Instance()->getRenderer());											// Clear the screen		NEED TO CLEAR THE SCREEN EACH TIME OR GET STREAKY TEXT
 		Texture::Instance()->renderMap(chooseBackground(level), 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);	// Static background	AND THE BACKGROUND NEEDS TO BE BEHIND THE TEXT EACH TIME
 
 		SDL_RenderClear(Game::Instance()->getRenderer());											// Clear the screen		NEED TO CLEAR THE SCREEN EACH TIME OR GET STREAKY TEXT
@@ -374,27 +404,29 @@ void SplashScreen::infoScreenStory(int level, int seconds, int startAt) {
 	SDL_Delay(seconds * 1000);									// Pause with image on screen
 }
 
-/*	2017/02/26: Edited to take an ID string to search texture map in texture class
-Scroll text up the screen from the startAt point to the stopAt point, and show for a number of seconds before progressing
+/*
+	Scroll text up the screen from the startAt point to the stopAt point, and show for a number of seconds before progressing
+
+	2017/02/26: Edited to take an ID string to search texture map in texture class
 */
 void SplashScreen::scrollUpText(std::string backgroundID, Texture &text, int seconds, int rate, int startAt, int stopAt) {
-	while (startAt >= stopAt) {								// While the text hasn't reached the stopping point
-		SDL_RenderClear(Game::Instance()->getRenderer());	// Clear the screen
+	while (startAt >= stopAt) {															// While the text hasn't reached the stopping point
+		SDL_RenderClear(Game::Instance()->getRenderer());								// Clear the screen
 
-		Texture::Instance()->renderMap(backgroundID, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);	// Static background	AND THE BACKGROUND NEEDS TO BE BEHIND THE TEXT EACH TIME
+		Texture::Instance()->renderMap(backgroundID, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);// Static background	AND THE BACKGROUND NEEDS TO BE BEHIND THE TEXT EACH TIME
 
-		startAt -= rate;									// Decrement the scrolling offset move the texture up the screen
-		text.render((SCREEN_WIDTH - text.getWidth()) / 2, startAt); // FOR TESTING
+		startAt -= rate;																// Decrement the scrolling offset move the texture up the screen
+		text.render((SCREEN_WIDTH - text.getWidth()) / 2, startAt);						// FOR TESTING
 
-		SDL_RenderPresent(Game::Instance()->getRenderer());	// Update screen
+		SDL_RenderPresent(Game::Instance()->getRenderer());								// Update screen
 	}
 
 	SDL_RenderClear(Game::Instance()->getRenderer());
 	Texture::Instance()->renderMap(backgroundID, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);	// Static background	AND THE BACKGROUND NEEDS TO BE BEHIND THE TEXT EACH TIME									// Clear the screen		NEED TO CLEAR THE SCREEN EACH TIME OR GET STREAKY TEXT
-	text.render((SCREEN_WIDTH - text.getWidth()) / 2, startAt); // FOR TESTING
-	SDL_RenderPresent(Game::Instance()->getRenderer());			// Update screen
+	text.render((SCREEN_WIDTH - text.getWidth()) / 2, startAt);							// FOR TESTING
+	SDL_RenderPresent(Game::Instance()->getRenderer());									// Update screen
 
-	SDL_Delay(seconds * 1000);									// Pause with image on screen
+	SDL_Delay(seconds * 1000);															// Pause with image on screen
 }
 
 std::string SplashScreen::chooseBackground(int level) {

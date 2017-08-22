@@ -84,7 +84,7 @@ public:
 	int getSubType() const { return m_SubType; }						// 2017/01/25 Return the objects type
 	int getAngle() const { return m_Angle; }							// 2017/02/07 Return the objects angle
 	std::string getTextureID() const { return m_TextureID; }			// return the texture ID
-	SDL_Rect* getCollider() { return &m_Collider; }					// Get the collider for an object
+	SDL_Rect* getCollider() { return &m_Collider; }					    // Get the collider for an object
 	int getFrames() const { return m_Frames; }							// 2017/02/09 Animation frames
 	// Timers
 	unsigned int getLastTime() const { return lastTime; }				// Get the previous time for counter
@@ -129,7 +129,7 @@ public:
 	// Blue Virus Satellite object
 	int rotateCounter;													// degrees the satellite object has rotated
 	bool satelliteObjectOrbiting;										// Check is satellite object orbiting Blue Virus
-	unsigned int whichVirusAssignedTo;											// The Blue virus the satellite is assigned to
+	unsigned int whichVirusAssignedTo;									// The Blue virus the satellite is assigned to
 
 	// Rockets
 	bool getRocketBarActive() const { return m_RocketBarActive; }		// Is the rocket status bar active

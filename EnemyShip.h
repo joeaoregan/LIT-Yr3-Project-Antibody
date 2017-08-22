@@ -47,7 +47,7 @@ public:
 		setColliderWidth(getWidth());
 		setColliderHeight(getHeight());
 
-		setFrames(0);
+		setFrames(0);					// Frames needed for animation
 
 		setName("Enemy Ship");
 	}
@@ -57,6 +57,11 @@ public:
 		std::cout << "Enemy Ship destroyed" << std::endl;
 	}
 
+	/* 
+		The Enemy Ship / Nano-bot movement function inherits the game objects move() function
+		Moved call to Nano-bot fire laser function to move() from Game class
+		The enemy ship fires lasers based on its X coordinate position
+	*/
 	virtual void move(int x = 0, int y = 0) {									// Needs to have X and Y values to override base class function
 		Game::Instance()->spawnEnemyLaser(getX(), getY(), ENEMY_SHIP_LASER);	// 2017/03/17 Moved from Game class
 		GameObject::move();
