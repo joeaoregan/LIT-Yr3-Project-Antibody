@@ -18,7 +18,7 @@
 	2017/01/17 Added displayText() function to render text used in the game
 				Added gamepadInfo() function to separate gamepad information into its own function
 				Added player decision to spawnNinjaStar() function - determines player to spawn for and their coords
-	2017/01/16 Added spawnLaser() function to spawn a laser at coords, with velocitys
+	2017/01/16 Added spawnLaser() function to spawn a laser at coords, with velocitys 
 	2017/01/10 Added spawnEnemyVirus() function to create enemy virus at random times and random y coord
 				Added spawnEnemyLaser() function, to spawn bullet objects for enemy ships
 				Added spawnBloodCell() function to create blood cells
@@ -44,10 +44,10 @@
 
 #define SDL_MAIN_HANDLED	// Handling SDL main definition ourselves
 #include <SDL.h>
+#include "GameStateMachine.h"
 #include <cstdlib>			// For Random Numbers
 #include <ctime>			// For Random Numbers
 #include <list>
-#include <string>
 
 // Other Symbolic Constants
 #define PLAYER_1 1
@@ -75,12 +75,14 @@ public:
 	}
 
 	bool checkCollision(SDL_Rect *a, SDL_Rect *b);
-
+	
 	//SDL_Renderer* getRenderer() const { return m_pRenderer; }
 	SDL_Renderer* getRenderer() const { return gRenderer; }
 
 	int player1Score, player2Score;		// need variables to store score in case player dies
 
+	GameStateMachine* getStateMachine() { return m_pGameStateMachine; }
+	
 	bool nameEntered;
 	bool enterName();
 	//void enterName();
@@ -133,7 +135,7 @@ public:
 	//int counter = 0;		// counter for changing alpha for flashing
 	bool gameOver = false;
 	bool levelOver = false;
-
+	
 	bool init();								// Starts up SDL and creates window -- ERROR window won't close
 	void update();
 	void close();								// Frees media and shuts down SDL
@@ -205,11 +207,12 @@ public:
 
 
 private:
+	GameStateMachine* m_pGameStateMachine;
 
 	SDL_Renderer* gRenderer;		// P65 2017/02/27 Renderer
 
 	Game() {};						// 2017/02/27 Constructor private for singleton
-
+	
 	int mNumPlayers;
 	int mCurrentLevel = MENU;		// The current level of the game, 0 = menu, 1 = level 1 etc.
 

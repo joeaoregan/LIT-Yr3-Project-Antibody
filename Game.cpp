@@ -1,5 +1,4 @@
 /*
-	2017/03/06 Moved texture information to array for loading
 	2017/03/04 Moved smaller class files functionality into their headers
 				Set a game object texture ID variable, Player and Enemy lasers now render based on their unique texture ID
 				Added a function to display a random message at the start of each level
@@ -179,12 +178,17 @@
 #include "Audio.h"					// 2017/02/09 JOE: Class for handling music and sound effects
 #include "HUD.h"					// 2017/02/21 JOE: Class for handling displaying objects on heads up display
 #include "EnemyBoss.h"				// 2017/02/03 JOE: Class for handling Enemy Boss objects
+#include "GameStateMachine.h"		// 2017/02/03 JOE: Class for handling Game State Machine (Finite State Machine)
+#include "StateMainMenu.h"			// 2017/02/03 JOE: Class for handling the main menu state
 #include "Blockage.h"
+#include "randomMessageGenerator.h"	// 2017/02/04 JOE: Class for randomising messages
 #include <math.h>
 
 Game* Game::s_pInstance = 0;
+GameStateMachine* m_pGameStateMachine;	// P109 Add GameStateMachine as a member of the Game class
 
 std::stringstream framesPerSec;	// In memory text stream - string streams - function like iostreams only instead of reading or writing to the console, they allow you to read and write to a string in memory
+
 
 Texture gLevel;
 
@@ -304,8 +308,8 @@ Player* player1 = new Player();
 Player* player2 = new Player();
 
 bool Game::init() {
-	//m_pGameStateMachine = new GameStateMachine();			// Create the state machine
-	//m_pGameStateMachine->changeState(new Menu());	// Add a state
+	m_pGameStateMachine = new GameStateMachine();			// Create the state machine
+	m_pGameStateMachine->changeState(new StateMainMenu());	// Add a state
 	nameEntered = false;
 
 	//twoPlayer = true;
@@ -431,14 +435,13 @@ bool Game::init() {
 }
 
 bool Game::loadMedia() {
-	//Texture::Instance()->loadFromRenderedTextID("Level " + std::to_string(getCurrentLevel()), "levelID", { 0, 255, 0, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 20));
+	Texture::Instance()->loadFromRenderedTextID("Level " + std::to_string(getCurrentLevel()), "levelID", { 0, 255, 0, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 20));
 
 	bool success = true;			// Loading success flag
 
 	Texture::Instance()->loadTextureMedia();
 
-	//Menu::Instance()->init();
-	menu1.init();						// Load buttons etc
+	menu1.loadMenuMedia();						// Load buttons etc
 
 	//success = player1->loadMediaPlayer();		// Load particles for each player
 	//success = player2->loadMediaPlayer();		// Load particles for each player
@@ -704,8 +707,7 @@ void Game::close() {
 
 	//fps.fpsclose();
 	splash.closeSplashScreens();	// Close splash screen stuff
-	//Menu::Instance()->clean();				// Close menu stuff
-	menu1.clean();				// Close menu stuff
+	menu1.closeMenuMedia();				// Close menu stuff
 	Audio::Instance()->destroy();
 	headsUpDisplay.closeLevelStuff();
 	particle.closeParticle();
@@ -739,11 +741,9 @@ void Game::update(){
 
 				quit = playerInput(quit);									// 2017/01/09 JOE: Handle input from player
 
-				if (getCurrentLevel() == 0 && displayGameIntro) displayGameIntro = splash.displayGameTitleScreens();	// 2017/01/18 Splash screens at start of game, Game Title & Game Creators
+				if (getCurrentLevel() == 0 && displayGameIntro) displayGameIntro = splash.displayGameIntroSplashScreens();	// 2017/01/18 Splash screens at start of game, Game Title & Game Creators
 
-				//if (getCurrentLevel() == MENU) Menu::Instance()->draw();				// New
-				//else if (getCurrentLevel() == PAUSE) Menu::Instance()->drawPause();		// New
-				if (getCurrentLevel() == MENU) menu1.update();				// New
+				if (getCurrentLevel() == MENU) menu1.draw();				// New
 				else if (getCurrentLevel() == PAUSE) menu1.drawPause();		// New
 				else if (getCurrentLevel() != MENU && getCurrentLevel() != PAUSE) playLevel(getCurrentLevel());
 				//if (!nameEntered) enterName();
@@ -838,15 +838,9 @@ void Game::playLevel(int levelNum) {
 		displayLevelIntroScreens(levelNum);	// Set true or false in _test.cpp
 
 	if (!gameOver) {
-		if (getCurrentLevel() == 1 && countdownTimer == GAME_TIMER) {
-			int randomMessage = rand() % 6;
-			if (randomMessage == 0) infoMessage("Looks like we are starting at the start", 3);
-			else if (randomMessage == 1) infoMessage("I'm going to call this 'Level 1' ...try and get through 3 of these", 3);
-			else if (randomMessage == 2) infoMessage("This is the start, keep going until the finish ...obviously", 3);
-			else if (randomMessage == 3) infoMessage("You have picked a great place to begin ...the beginning", 3);
-			else if (randomMessage == 4) infoMessage("We are off to a good start ...I've no idea where this is!!", 3);
-			else if (randomMessage == 5) infoMessage("The bad guys are this way >>>", 3);
-		}
+		// 2017/03/04 Display a message at the start of each level
+		if (countdownTimer == GAME_TIMER) infoMessage(randomLevelMessageGenerator(getCurrentLevel()), 3);
+
 		spawnMovingObjects();				// 2017/01/10 JOE: Spawn enemies and obstacles at random coords & distances apart
 		moveGameObjects();					// 2017-01-09 JOE: Move the game objects on the screen
 		collisionCheck();					// Check collisions between 2 objects
@@ -905,7 +899,7 @@ void Game::gameProgress() {
 
 void Game::displayLevelIntroScreens(int level) {
 	// STORY - INSTRUCTIONS - OBJECTIVES - INFORMATION screens, pass in all the textures to give information about for each level
-	displayLevelIntro = splash.levelIntroScreens(getCurrentLevel());	// Display level story and info screens
+	displayLevelIntro = splash.level1IntroScreens(getCurrentLevel());	// Display level story and info screens
 
 	if (level <= MAX_NUM_LEVELS) splash.pressButtonToContinue(e);
 }
@@ -947,7 +941,8 @@ void Game::displayText() {
 		finalScores = "Player 1: " + std::to_string(player1Score) + " Player 2: " + std::to_string(player2Score);	// End of game Player 1 and Player 2 scores
 
 	//std::stringstream timeText;
-	//timeText.str("");																// Set text to be rendered - string stream - print the time since timer last started - initialise empty
+	//timeText.str("");
+	// Set text to be rendered - string stream - print the time since timer last started - initialise empty
 
 	if (!levelOver && !gameOver) {
 		if (countdownTimer > 0 && countdownTimer <= GAME_TIMER) {
@@ -1095,9 +1090,7 @@ bool Game::playerInput(bool quit = false) {
 			}
 		}
 
-		//Menu::Instance()->handleMenuEvents(e);
 		menu1.handleMenuEvents(e);
-
 		if (getCurrentLevel() != 0) {												// If not in menu state
 			if(player1->getAlive()) player1->handleEvent(e, 1);						// Handle input for Player 1
 			if (player2->getAlive()) player2->handleEvent(e, 2);					// Handle input for Player 2
@@ -1834,12 +1827,14 @@ void Game::spawnMovingObjects() {
 
 	// Start the blockages halfway through the level
 	if (numBlockages < SPAWN_NUM_BLOCKAGES && backgroundLoopCounter > BACKGROUND_SCROLL_TIMES / 2) {
+	//if (numBlockages < SPAWN_NUM_BLOCKAGES) {
 	//if (numBlockages < SPAWN_NUM_BLOCKAGES && (getCurrentLevel() == 2 || getCurrentLevel() == 3)) {
 		std::cout << "blockage check: " << numBlockages << std::endl;
 		spawnBlockage();
 	}
 
-	if (activeEnemyBoss < 1 && backgroundLoopCounter == BACKGROUND_SCROLL_TIMES) spawnEnemyBoss();
+	//if (activeEnemyBoss < 1 && backgroundLoopCounter == BACKGROUND_SCROLL_TIMES) spawnEnemyBoss();
+	if (activeEnemyBoss < 1) spawnEnemyBoss();
 }
 
 // Blockage Spawn Function
@@ -1862,12 +1857,8 @@ void Game::spawnBlockage() {
 	listOfGameObjects.push_back(p_Blockage3);
 
 	//std::cout << "Blockage Spawned!\n";
-	int randomMessage = rand() % 5;
-	if (randomMessage == 0) infoMessage("Something appears to be blocking the way ahead!!", 3);
-	else if (randomMessage == 1) infoMessage("It looks like we are going to have to cut our way through here", 3);
-	else if (randomMessage == 2) infoMessage("Looks like we will have to find a way past this!!", 3);
-	else if (randomMessage == 3) infoMessage("Something big and yellow is coming. Giant Custard?", 3);
-	else if (randomMessage == 4) infoMessage("I should have brought my Sword. Gonna have to hack my way through!", 3);
+
+	infoMessage(randomBlockageMessage(), 3);							// 2017/03/04 Display a random spawning message for blockages
 
 	numBlockages += 4;
 }
@@ -1888,8 +1879,9 @@ void Game::spawnPlayer(int player) {
 		gPlayer2Texture.flashGameObject(10, 4);
 		//std::cout << "player1.getY() " << player1.getY() << " player2.getY() " << player2.getY() << std::endl;
 	}
+
+	infoMessage(randomPlayerMessage(player), player);					// 2017/03/04 Random player spawning messagess
 }
-// List of enemy ships to spawn at random times and positions
 void Game::spawnEnemyBoss() {
 	int x, y, randomSpeed;
 
@@ -1901,14 +1893,9 @@ void Game::spawnEnemyBoss() {
 	p_EnemyBoss->spawn(x, y, -randomSpeed);
 	listOfGameObjects.push_back(p_EnemyBoss);
 
-	int randomMessage = rand() % 6;
-	if (randomMessage == 0) infoMessage("It looks like theres something big coming", 3);
-	else if (randomMessage == 1) infoMessage("Is it a bird? Is it a plane? ...Eh no, a giant beard?", 3);
-	else if (randomMessage == 2) infoMessage("A Head? Seems to be all kinds of crap coming our way", 3);
-	else if (randomMessage == 3) infoMessage("Look at the big flappy mouth on this lad!!!", 3);
-	else if (randomMessage == 4) infoMessage("I can see right up this guys nose!!!", 3);
-	else if (randomMessage == 5) infoMessage("Looks its a Boss Enemy approaching ...Points for originality!!", 3);
+	infoMessage(randomBossMessage(), 3);								// 2017/03/04 Display a random message when a boss is spawned
 }
+// List of enemy ships to spawn at random times and positions
 void Game::spawnEnemyShip() {
 	int x, y, randomSpeed;
 

@@ -9,8 +9,6 @@
 */
 #include "Button.h"
 #include "Game.h"
-#include "Menu.h"
-#include <iostream>
 
 enum { STORY, GAME_1PLAYER, GAME_2PLAYER, SETTINGS, HIGH_SCORES, QUIT };
 
@@ -75,27 +73,40 @@ void Button::handleEvent(SDL_Event* e, int buttonSelected) {
 
 				if (buttonSelected == STORY) {
 					std::cout << "Selected: 1 Player Game!" << std::endl;
+					//game.setCurrentLevel(1);
 					//std::cout << "Level: " << game.getCurrentLevel() << std::endl;
-
+					//game.twoPlayer = false;
+					//game.update();
 					Game::Instance()->setCurrentLevel(1);
+					std::cout << "Level: " << Game::Instance()->getCurrentLevel() << std::endl;
 					Game::Instance()->twoPlayer = false;
 					Game::Instance()->displayLevelIntro = true;
+					//Game::Instance()->update();
+					// Call a function in Game.cpp in the Main Project
 				}
 				else if (buttonSelected == GAME_1PLAYER) {
 					std::cout << "Selected: 1 Player Game!" << std::endl;
+					//game.setCurrentLevel(1);
 					//std::cout << "Level: " << game.getCurrentLevel() << std::endl;
-
+					//game.twoPlayer = false;
+					//game.update();
 					Game::Instance()->setCurrentLevel(1);
+					std::cout << "Level: " << Game::Instance()->getCurrentLevel() << std::endl;
 					Game::Instance()->twoPlayer = false;
-					//Game::Instance()->displayLevelIntro = false;
-
+					Game::Instance()->displayLevelIntro = false;
+					//Game::Instance()->update();
+					// Call a function in Game.cpp in the Main Project
 				}
 				else if (buttonSelected == GAME_2PLAYER) {
 					std::cout << "Selected: 2 Player Game!" << std::endl;
+					//game.twoPlayer = true;
+					//game.setCurrentLevel(1);
+					//game.update();
 					//std::cout << "Level: " << game.getCurrentLevel() << std::endl;
-
 					Game::Instance()->twoPlayer = true;
 					Game::Instance()->setCurrentLevel(1);
+					//Game::Instance()->update();
+					std::cout << "Level: " << Game::Instance()->getCurrentLevel() << std::endl;
 
 					// Call a function in Game.cpp in the Main Project
 				}

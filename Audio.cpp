@@ -122,7 +122,7 @@ int Audio::musicForwardSongName() {						// Pick next track on the list
 	if (currentSong == 0) std::cout << "current song 1" << std::endl;
 	else if (currentSong == 1) std::cout << "current song 2" << std::endl;
 	else if (currentSong == 2) std::cout << "current song 3" << std::endl;
-	else if (currentSong == 3) std::cout << "Current Song: The First Step" << std::endl;
+	else if (currentSong == 3) std::cout << "Current Song: The Last Step" << std::endl;
 	else if (currentSong == 4) std::cout << "Current Song: Virus" << std::endl;
 
 	return currentSong;

@@ -21,7 +21,6 @@
 */
 #include "HUD.h"
 #include <sstream>
-#include <iostream>
 
 unsigned int createdByTimer = 0, createdByLastTime = 0, changeEverySecond = 0;
 
