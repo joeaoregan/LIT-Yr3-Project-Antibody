@@ -79,7 +79,9 @@ public:
 		GameObject::move();
 	};
 
-	virtual void destroy() {};
+	virtual void destroy() {
+		GameObject::destroy();	// 2017/03/26 Use GameObjects destroy function
+	};
 
 	virtual void render() {
 		SDL_Rect renderQuad = { getX(), getY(), getWidth(), getHeight() };	// Set rendering space and render to screen

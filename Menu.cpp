@@ -34,43 +34,43 @@ bool Menu::loadMenuMedia() {
 	else {
 		SDL_Color textColour = { 0,0,0 };
 
-		if (!gMenuTextTexture1.loadFromRenderedText("ANTIBODY", textColour, TTF_OpenFont("Fonts/Retro.ttf", 100))) {
+		if (!gMenuTextTexture1.renderTextToTexture("ANTIBODY", textColour, TTF_OpenFont("Fonts/Retro.ttf", 100))) {
 			printf("Failed to render text texture!\n");
 			success = false;
 		}
-		if (!gMenuTextTexture2.loadFromRenderedText("Story", textColour, gFont)) {	// can take out the new textColor objects
+		if (!gMenuTextTexture2.renderTextToTexture("Story", textColour, gFont)) {	// can take out the new textColor objects
 			printf("Failed to render text texture!\n");
 			success = false;
 		}
-		if (!gMenuTextTexture3.loadFromRenderedText("1 Player", textColour, gFont)) {
+		if (!gMenuTextTexture3.renderTextToTexture("1 Player", textColour, gFont)) {
 			printf("Failed to render text texture!\n");
 			success = false;
 		}
-		if (!gMenuTextTexture4.loadFromRenderedText("2 Player", textColour, gFont)) {
+		if (!gMenuTextTexture4.renderTextToTexture("2 Player", textColour, gFont)) {
 			printf("Failed to render text texture!\n");
 			success = false;
 		}
-		if (!gMenuTextTexture5.loadFromRenderedText("Settings", textColour, gFont)) {
+		if (!gMenuTextTexture5.renderTextToTexture("Settings", textColour, gFont)) {
 			printf("Failed to render text texture!\n");
 			success = false;
 		}
-		if (!gMenuTextTexture6.loadFromRenderedText("High Scores", textColour, gFont)) {
+		if (!gMenuTextTexture6.renderTextToTexture("High Scores", textColour, gFont)) {
 			printf("Failed to render text texture!\n");
 			success = false;
 		}
-		if (!gMenuTextTexture7.loadFromRenderedText("Quit", textColour, gFont)) {
+		if (!gMenuTextTexture7.renderTextToTexture("Quit", textColour, gFont)) {
 			printf("Failed to render Quit text texture!\n");
 			success = false;
 		}
-		if (!gMenuTextTexture8.loadFromRenderedText("PAUSE", textColour, TTF_OpenFont("Fonts/Retro.ttf", 100))) {
+		if (!gMenuTextTexture8.renderTextToTexture("PAUSE", textColour, TTF_OpenFont("Fonts/Retro.ttf", 100))) {
 			printf("Failed to render Pause text texture!\n");
 			success = false;
 		}
-		if (!gMenuTextTexture9.loadFromRenderedText("RESUME", textColour, gFont)) {
+		if (!gMenuTextTexture9.renderTextToTexture("RESUME", textColour, gFont)) {
 			printf("Failed to render Pause to Resume text texture!\n");
 			success = false;
 		}
-		if (!gMenuTextTexture10.loadFromRenderedText("MAIN MENU", textColour, gFont)) {
+		if (!gMenuTextTexture10.renderTextToTexture("MAIN MENU", textColour, gFont)) {
 			printf("Failed to render Pause to Main Menu text texture!\n");
 			success = false;
 		}
@@ -179,7 +179,7 @@ void Menu::draw() {
 	Texture::Instance()->renderMap("shipOutlineID", 0, 40, SCREEN_WIDTH, 620);						// Draw ship outline image to screen
 
 	for (int i = 0; i < TOTAL_MAIN_MENU_BUTTONS; ++i) {
-		gMenuButtons[i].render(gButtonSpriteSheetTexture, &gSpriteClipsMenu[gMenuButtons[i].mCurrentSprite]);
+		gMenuButtons[i].render(gButtonSpriteSheetTexture, &gSpriteClipsMenu[gMenuButtons[i].getButtonSprite()]);	//  2017/03/24 Use setter method
 	}
 
 	gMenuTextTexture1.render((SCREEN_WIDTH - gMenuTextTexture1.getWidth()) / 2, (SCREEN_HEIGHT - gMenuTextTexture1.getHeight()) / 12);
@@ -229,7 +229,7 @@ void Menu::drawPause() {
 
 	// Create 3 buttons
 	for (int i = 0; i < 3; ++i) {
-		gMenuButtons[i].render(gButtonSpriteSheetTexture, &gSpriteClipsMenu[gMenuButtons[i].mCurrentSprite]);
+		gMenuButtons[i].render(gButtonSpriteSheetTexture, &gSpriteClipsMenu[gMenuButtons[i].getButtonSprite()]);	// 2017/03/24 Use setter method
 	}
 
 	gMenuTextTexture8.setX((SCREEN_WIDTH - gMenuTextTexture8.getWidth()) / 2);
@@ -281,3 +281,48 @@ void Menu::randomBackgroundColour() {
 		changeMenuBGColour = false;
 	}
 }
+
+/*
+// 2017/03/26 Created single text rendering function
+
+if (!gMenuTextTexture1.loadFromRenderedText("ANTIBODY", textColour, TTF_OpenFont("Fonts/Retro.ttf", 100))) {
+printf("Failed to render text texture!\n");
+success = false;
+}
+if (!gMenuTextTexture2.loadFromRenderedText("Story", textColour, gFont)) {	// can take out the new textColor objects
+printf("Failed to render text texture!\n");
+success = false;
+}
+if (!gMenuTextTexture3.loadFromRenderedText("1 Player", textColour, gFont)) {
+printf("Failed to render text texture!\n");
+success = false;
+}
+if (!gMenuTextTexture4.loadFromRenderedText("2 Player", textColour, gFont)) {
+printf("Failed to render text texture!\n");
+success = false;
+}
+if (!gMenuTextTexture5.loadFromRenderedText("Settings", textColour, gFont)) {
+printf("Failed to render text texture!\n");
+success = false;
+}
+if (!gMenuTextTexture6.loadFromRenderedText("High Scores", textColour, gFont)) {
+printf("Failed to render text texture!\n");
+success = false;
+}
+if (!gMenuTextTexture7.loadFromRenderedText("Quit", textColour, gFont)) {
+printf("Failed to render Quit text texture!\n");
+success = false;
+}
+if (!gMenuTextTexture8.loadFromRenderedText("PAUSE", textColour, TTF_OpenFont("Fonts/Retro.ttf", 100))) {
+printf("Failed to render Pause text texture!\n");
+success = false;
+}
+if (!gMenuTextTexture9.loadFromRenderedText("RESUME", textColour, gFont)) {
+printf("Failed to render Pause to Resume text texture!\n");
+success = false;
+}
+if (!gMenuTextTexture10.loadFromRenderedText("MAIN MENU", textColour, gFont)) {
+printf("Failed to render Pause to Main Menu text texture!\n");
+success = false;
+}
+*/

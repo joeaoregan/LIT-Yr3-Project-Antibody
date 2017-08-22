@@ -1,7 +1,7 @@
 /*	---------------------------------------------------------------------------------------------------------------------
 	- Name:					GameObject.cpp
 	- Description:			cpp file for the gameobject class.
-	- Information:			This class contains all the information relavent to the player dashboard, including lives, scores, and weapon indicators
+	- Information:			This class contains all the information relevant to the player dashboard, including lives, scores, and weapon indicators
 							for each player. Weapon indicators include, current laser grade, number of rockets, and an indicator for when the player
 							speed boost is active, displaying a status bar for when the boost timer runs out.
 
@@ -36,7 +36,7 @@ void setViewport2(SDL_Rect &rect, int x, int y, int w, int h) {
 
 unsigned int createdByTimer = 0, createdByLastTime = 0, changeEverySecond = 0;
 
-bool HUD::loadLevelStuff() {
+bool HUD::loadHUDMedia() {
 	miniMap = true;													// 2017/03/20 Set display mini version of map true
 
 	// View ports
@@ -56,18 +56,22 @@ bool HUD::loadLevelStuff() {
 	//Texture::Instance()->loadFromRenderedTextID("Level " + std::to_string(Game::Instance()->getCurrentLevel()), "levelID", { 0, 255, 0, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 20)); // 2017/03/18 Moved from Game class
 
 	// 2017/03/03 Moved to init as text only needs to be loaded once because it never changed, will consider changing to image
-	if (!gSpeedBoostTextTexture.loadFromRenderedText("Speed\nBoost", { 0, 255, 0, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 13), true)) {		// Green Text
+	//if (!gSpeedBoostTextTexture.loadFromRenderedText("Speed\nBoost", { 0, 255, 0, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 13), true)) {		// Green Text
+	if (!gSpeedBoostTextTexture.renderTextToTexture("Speed\nBoost", { 0, 255, 0, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 13), "", true)) {		// Green Text
 		printf("speedBoostText(): Unable to render Speed Boost User Interface Text Texture!\n");
 	}
 
 	// Created by text at the bottom of the heads up display
-	if (!gCreatedByTextTexture1.loadFromRenderedText("ANTIBODY", { 50, 200, 255, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 16), true)) {			// Green Text
+	//if (!gCreatedByTextTexture1.loadFromRenderedText("ANTIBODY", { 50, 200, 255, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 16), true)) {			// Green Text
+	if (!gCreatedByTextTexture1.renderTextToTexture("ANTIBODY", { 50, 200, 255, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 16), "", true)) {			// Green Text
 		printf("createdByText(): Unable to render Created By Text Texture!\n");
 	}
-	if (!gCreatedByTextTexture2.loadFromRenderedText("A GAME BY", { 0, 255, 0, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 16), true)) {				// Green Text
+	//if (!gCreatedByTextTexture2.loadFromRenderedText("A GAME BY", { 0, 255, 0, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 16), true)) {				// Green Text
+	if (!gCreatedByTextTexture2.renderTextToTexture("A GAME BY", { 0, 255, 0, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 16), "", true)) {				// Green Text
 		printf("createdByText(): Unable to render Created By Text Texture!\n");
 	}
-	if (!gCreatedByTextTexture3.loadFromRenderedText("Seán Horgan and Joe O'Regan", { 0, 255, 0, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 16), true)) {				// Green Text
+	//if (!gCreatedByTextTexture3.loadFromRenderedText("Seán Horgan and Joe O'Regan", { 0, 255, 0, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 16), true)) {				// Green Text
+	if (!gCreatedByTextTexture3.renderTextToTexture("Seán Horgan and Joe O'Regan", { 0, 255, 0, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 16), "", true)) {				// Green Text
 		printf("createdByText(): Unable to render Created By Text Texture!\n");
 	}
 
@@ -130,7 +134,7 @@ void HUD::closeLevelStuff() {
 void HUD::render() {
 	if (weaponScrolling > 0) weaponScrolling--;
 
-//	bool numPlayers2 = Game::Instance()->twoPlayer;
+	bool numPlayers2 = Game::Instance()->twoPlayer;
 	scoreP1 = Game::Instance()->player1Score;
 	scoreP2 = Game::Instance()->player2Score;
 
@@ -270,7 +274,8 @@ int previousLevelNum = 100;
 
 void HUD::displayLevelNum(int levelNum) {
 	if (previousLevelNum != levelNum)		// Try and only render a new one when it's needed870
-		Texture::Instance()->loadFromRenderedTextID("Level " + std::to_string(levelNum), "levelID", { 0, 255, 0, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 20));
+		Texture::Instance()->renderTextToTexture("Level " + std::to_string(levelNum), { 0, 255, 0, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 20), "levelID");
+		//Texture::Instance()->loadFromRenderedTextID("Level " + std::to_string(levelNum), "levelID", { 0, 255, 0, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 20));
 
 	previousLevelNum = levelNum;			// 2017/03/19 STOPS MEMORY LEAK
 

@@ -67,6 +67,10 @@ public:
 		//else setAlive(true);
 	};
 
-	virtual void destroy() {};
+	virtual void destroy() {
+		//GameObject::destroy();	// 2017/03/24 
+		// 2017/03/26
+		if (getX() <= 0 - getWidth()) setAlive(false);	// 2017/03/26 Destroy if off screen to the left
+	};
 };
 #endif

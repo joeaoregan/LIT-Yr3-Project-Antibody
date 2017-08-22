@@ -1,19 +1,19 @@
-/*
-	2017/03/04 Moved smaller class files functionality into their headers
-	2017/02/19 Added rocket icon to viewoport displaying information on the number of rockets in the players inventory
-	2017/02/18 Fixed explosions for weapon collisions, so they only occur when the objects collided with are on screen
-	2017/02/08 Added control for rocket movement in Weapon class, can possible be inherited by other weapons later
-	2017/01/30 Combined player weapons to one list instead of lists for each type
-	2017/01/19 Added 3 beam laser weapon
-	2017/01/17 Added class for saw weapon Saw.h (renamed WeaponPlSaw.h)
-	2017/01/09 Weapons will inherit from weapon
-*/
-/*
-	WEAPON:
-
-	This is the base class for all the weapons in the game. It inherits from the Game Object class.
-	It also handles the rocket movement, which can be inherited by any future weapons that are created.
-*/
+/*	---------------------------------------------------------------------------------------------------------------------
+	- Name:					Weapon.h
+	- Description:			Header file for the Weapon class.
+	- Information:			Contains all function definitions and variables for the Weapon class.
+							This is the base class for all the weapons in the game. It inherits from the Game Object class.
+							It also handles the rocket movement, which can be inherited by any future weapons that are created.
+	- Log:
+		2017/03/04		Moved smaller class files functionality into their headers
+		2017/02/19		Added rocket icon to viewoport displaying information on the number of rockets in the players inventory
+		2017/02/18		Fixed explosions for weapon collisions, so they only occur when the objects collided with are on screen
+		2017/02/08		Added control for rocket movement in Weapon class, can possible be inherited by other weapons later
+		2017/01/30		Combined player weapons to one list instead of lists for each type
+		2017/01/19		Added 3 beam laser weapon
+		2017/01/17		Added class for saw weapon Saw.h (renamed WeaponPlSaw.h)
+		2017/01/09		Weapons will inherit from weapon
+	----------------------------------------------------------------------------------------------------------------------*/
 
 #ifndef WEAPON_H
 #define WEAPON_H
@@ -28,9 +28,10 @@ public:
 	Weapon() {};
 	~Weapon() {};
 	
-	int getGrade() { return mGrade; }
-	void setGrade(int g) { mGrade = g; }
+	int getGrade() { return m_Grade; }		// Get laser grade
+	void setGrade(int g) { m_Grade = g; }	// Set laser grade
 
+	// Handle events for rocket
 	virtual void handleEvent(SDL_Event& e, int player) {
 		if (player == 1) {
 			if (e.type == SDL_KEYDOWN && e.key.repeat == 0) {
@@ -80,8 +81,8 @@ public:
 	};
 
 private:
-	int mAngle;
-	int mGrade;
+	int m_Angle;	// Angle of rotation
+	int m_Grade;	// Grade of the weapon
 };
 
 #endif

@@ -33,8 +33,6 @@ ScoreValueText::ScoreValueText(int x, int y, int score, int player) {
 
 	if (player == PLAYER1) setSubType(PLAYER1_SCORE);		// set teh sub-type based on the player its assigned to
 	else if (player == PLAYER2) setSubType(PLAYER2_SCORE);	// NEEDS TO BE ADJUSTED FOR ROCKETS
-
-	setLineAlgCalculated(false);							// The line algorithm is not calculated
 }
 
 ScoreValueText::~ScoreValueText() {}

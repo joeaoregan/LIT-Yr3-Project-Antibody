@@ -17,28 +17,27 @@
 
 class SettingsMenu {
 public:
-	TTF_Font *gFont = NULL;
+	TTF_Font *gFont = NULL;				// Font used to render text
 
 	// Menu Text
-	Texture gSettingsMenuTextTexture1;
-	Texture gSettingsMenuTextTexture2;
-	Texture gSettingsMenuTextTexture3;
-	Texture gSettingsMenuTextTexture4;
-	Texture gSettingsMenuTextTexture5;
-	Texture gSettingsMenuTextTexture6;
-	Texture gSettingsMenuTextTexture7;	// Full Screen On / Off
+	Texture gSettingsMenuTextTexture1;	// Settings Menu title text
+	Texture gSettingsMenuTextTexture2;	// Music On button text
+	Texture gSettingsMenuTextTexture3;	// Music Off button text
+	Texture gSettingsMenuTextTexture4;	// Full Screen On / Off button text
+	Texture gSettingsMenuTextTexture5;	// Main Menu button text
+	Texture gSettingsMenuTextTexture6;	// Quit button text
+	//Texture gSettingsMenuTextTexture7;// Unused
 
 	//Buttons objects
-	//Button gButtons[TOTAL_MAIN_MENU_BUTTONS];
-	Button gSettingsMenuButtons[TOTAL_SETTINGS_MENU_BUTTONS];
+	Button gSettingsMenuButtons[TOTAL_SETTINGS_MENU_BUTTONS];			// Array of buttons
 
-	SDL_Rect gSpriteClipsSettingsMenu[TOTAL_SETTINGS_MENU_BUTTONS];
-	Texture gButtonSpriteSheetTexture2;
+	SDL_Rect gSpriteClipsSettingsMenu[TOTAL_SETTINGS_MENU_BUTTONS];		// Animation frames
+	Texture gButtonSpriteSheetTexture2;									// Sprite sheet for buttons
 
-	bool loadSettingsMedia();
-	void closeSettingsMedia();
-	void handleSettingsEvents(SDL_Event& e);
-	void draw();
+	bool loadSettingsMedia();					// Load media for Settings Menu
+	void closeSettingsMedia();					// Close media for Settings Menu
+	void handleSettingsEvents(SDL_Event& e);	// Handle button events
+	void draw();								// Render textures to screen
 };
 
 #endif

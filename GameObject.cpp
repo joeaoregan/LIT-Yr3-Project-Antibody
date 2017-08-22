@@ -155,7 +155,7 @@ void GameObject::destroy() {
 	else setAlive(true);
 
 	// Destroy Game Object moving off screen on X axis
-	if ((getX() > SCREEN_WIDTH && getVelX() > 0)) setAlive(false);	// 2017/02/08 Need to check if velocity is negative, or power ups & blood cells don't appear on screen
+	if ((getX() + 10 > SCREEN_WIDTH && getVelX() > 0)) setAlive(false);	// 2017/02/08 Need to check if velocity is negative, or power ups & blood cells don't appear on screen
 	else if (getX() < -getWidth() - 10) setAlive(false);			// If the object if off screen to the left
 	else setAlive(true);
 }
@@ -173,19 +173,19 @@ void GameObject::setHealth(int h) {
 
 // 2017-02-21 Moved from Player.cpp
 void GameObject::setSpeedBoost(bool boost) {
-	mSpeedBoost = boost;
+	m_SpeedBoost = boost;
 
 	if (boost) {
 		setBoostStartTime(SDL_GetTicks());
 		std::cout << "SPEED BOOST START" << std::endl;
 	}
 	else
-		boostPercent = 3.0;
+		m_BoostPercent = 3.0;
 }
 
 void GameObject::setLaserGrade(int grade) {
 	if (grade > LASER_TRIPLE) grade = LASER_TRIPLE;					// 2017/03/01 Triple laser is the highest grade of laser
-		mLaserGrade = grade;
+		m_LaserGrade = grade;
 }
 
 /*

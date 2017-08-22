@@ -21,22 +21,22 @@
 
 class FPS {
 public:
-	Texture gFPSTextTexture;			// Frames Per Second displayed at top of screen
+	Texture gFPSTextTexture;							// Frames Per Second displayed at top of screen
 
-	Uint32 frametimes[FRAME_VALUES];	// An array to store frame times
-	Uint32 frametimelast;				// Last calculated SDL_GetTicks
-	Uint32 framecount;					// Total frames rendered
+	Uint32 frameTimes[FRAME_VALUES];					// An array to store frame times
+	Uint32 frameTimeLast;								// Last calculated SDL_GetTicks
+	Uint32 frameCount;									// Total frames rendered
 
-	float framespersecond;				// The value that will display the FPS the game is running at
+	float framesPerSecond;								// The value that will display the FPS the game is running at
 
-	void fpsinit();						// Sets all frame times to 0ms
-	void fpsthink();				
-	void fpsclose();
+	void initFPS();										// Sets all frame times to 0ms
+	void updateFPS();									// Update the frames per second
+	void closeFPS();									// Free the media associated with the FPS class
 
-	float getFPS();
-	void setFPS(float fps);
+	float getFPS() { return framesPerSecond; }			// Get the frames per second
+	void setFPS(float fps) { framesPerSecond = fps; }	// Set the frames per second
 
-	void rendFPS(std::string fpsText);
+	void renderFPS(std::string fpsText);				// Render the frames per second to screen
 	//void rendFPS(std::string fpsText, SDL_Renderer *rend);
 };
 

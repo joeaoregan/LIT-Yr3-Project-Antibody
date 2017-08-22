@@ -1,31 +1,23 @@
-/*
-	2017/03/04 Moved smaller class files functionality into their headers
-				Set a game object texture ID variable, Player and Enemy lasers now render based on their unique texture ID
-	2017/01/23 Added power up to change laser grade
-	2017/01/22 Added separate textures to renderer, each player has a different colour laser
-	2017/01/19 Added 3 beam laser
-	2017/01/16 Spawn laser function added to game class to create laser with coords and velocity
-	2017/01/09 Moved functionality common to game objects to GameObjects class reducing the code
-	2017/01/06 Added player lasers
-*/
-/*
-*-------------------------------------------------
-*		Laser.h
-*		Sean Horgan - K00196030
-*		Date Started - 06/01/2017 - 18:13pm
-*		Date Complete - 06/01/2017 - 19:47pm
-*-------------------------------------------------
-*/
-/*
-	LASER (Renamed WeaponPLLaser):
+/*	---------------------------------------------------------------------------------------------------------------------
+	- Name:					WeaponPlLaser.h
+	- Description:			Header file for the Weapon Player Laser class.
+	- Information:			Contains all function definitions and variables for the Player Weapon Laser class.
+							This class contains the functions for spawning, rendering, and moving player laser objects.
+							The player has two grades of laser, a single beam laser, and upon collecting a laser power
+							up, a three beam laser. The three beam laser fires 3 laser beams at a time, at 3 different
+							angles. The player can fire an unlimited amount of laser beams.
 
-	This class contains the functions for spawning, rendering, and moving player laser objects.
-	The player has two grades of laser, a single beam laser, and upon collecting a laser power
-	up, a three beam laser. The three beam laser fires 3 laser beams at a time, at 3 different
-	angles. The player can fire an unlimited amount of laser beams.
-
-	Laser.cpp is where all the implementations of the function definitions in Laser.h reside.
-*/
+							Laser.cpp is where all the implementations of the function definitions in Laser.h reside.
+	- Log:
+		2017/03/04		Moved smaller class files functionality into their headers
+						Set a game object texture ID variable, Player and Enemy lasers now render based on their unique texture ID
+		2017/01/23		Added power up to change laser grade
+		2017/01/22		Added separate textures to renderer, each player has a different colour laser
+		2017/01/19		Added 3 beam laser
+		2017/01/16		Spawn laser function added to game class to create laser with coords and velocity
+		2017/01/09		Moved functionality common to game objects to GameObjects class reducing the code
+		2017/01/06		Added player lasers
+----------------------------------------------------------------------------------------------------------------------*/
 
 #ifndef LASER_H
 #define LASER_H
@@ -98,17 +90,19 @@ public:
 		SDL_RenderCopyEx(Game::Instance()->getRenderer(), Texture::Instance()->getTexture(getTextureID()), NULL, &renderQuad, getAngle(), NULL, SDL_FLIP_NONE);	// Render to screen
 	};
 
-	/*
-	// 2017/01/22 Added separate textures to renderer, each player has a different colour laser 
-	void render(int player, Texture &orange, Texture &green) {
-		if (getPlayer() == PLAYER1)
-			orange.render(getX(), getY());
-	else if (getPlayer() == PLAYER2)
-			green.render(getX(), getY());
-	};
-
-	//virtual void spawn(int x, int y, int velocity, int player, int type = 0);
-	*/
 };
 
 #endif
+
+
+/*
+// 2017/01/22 Added separate textures to renderer, each player has a different colour laser
+void render(int player, Texture &orange, Texture &green) {
+if (getPlayer() == PLAYER1)
+orange.render(getX(), getY());
+else if (getPlayer() == PLAYER2)
+green.render(getX(), getY());
+};
+
+//virtual void spawn(int x, int y, int velocity, int player, int type = 0);
+*/

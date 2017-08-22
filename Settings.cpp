@@ -26,27 +26,33 @@ bool SettingsMenu::loadSettingsMedia() {
 	else {
 		SDL_Color textColour = { 0,0,0 };
 
-		if (!gSettingsMenuTextTexture1.loadFromRenderedText("SETTINGS", textColour, TTF_OpenFont("Fonts/Retro.ttf", 100))) {
+		//if (!gSettingsMenuTextTexture1.loadFromRenderedText("SETTINGS", textColour, TTF_OpenFont("Fonts/Retro.ttf", 100))) {
+		if (!gSettingsMenuTextTexture1.renderTextToTexture("SETTINGS", textColour, TTF_OpenFont("Fonts/Retro.ttf", 100))) {
 			printf("Failed to render SETTINGS text texture!\n");
 			success = false;
 		}
-		if (!gSettingsMenuTextTexture2.loadFromRenderedText("Music On", textColour, gFont)) {		// can take out the new textColor objects
+		//if (!gSettingsMenuTextTexture2.loadFromRenderedText("Music On", textColour, gFont)) {		// can take out the new textColor objects
+		if (!gSettingsMenuTextTexture2.renderTextToTexture("Music On", textColour, gFont)) {		// can take out the new textColor objects
 			printf("Failed to render Music On text texture!\n");
 			success = false;
 		}
-		if (!gSettingsMenuTextTexture3.loadFromRenderedText("Music Off", textColour, gFont)) {
+		//if (!gSettingsMenuTextTexture3.loadFromRenderedText("Music Off", textColour, gFont)) {
+		if (!gSettingsMenuTextTexture3.renderTextToTexture("Music Off", textColour, gFont)) {
 			printf("Failed to render Music Off text texture!\n");
 			success = false;
 		}
-		if (!gSettingsMenuTextTexture4.loadFromRenderedText("Full Screen On/Off", textColour, gFont)) {
+		//if (!gSettingsMenuTextTexture4.loadFromRenderedText("Full Screen On/Off", textColour, gFont)) {
+		if (!gSettingsMenuTextTexture4.renderTextToTexture("Full Screen On/Off", textColour, gFont)) {
 			printf("Failed to render Full Screen text texture!\n");
 			success = false;
 		}
-		if (!gSettingsMenuTextTexture5.loadFromRenderedText("Main Menu", textColour, gFont)) {
+		//if (!gSettingsMenuTextTexture5.loadFromRenderedText("Main Menu", textColour, gFont)) {
+		if (!gSettingsMenuTextTexture5.renderTextToTexture("Main Menu", textColour, gFont)) {
 			printf("Failed to render Main Menu text texture!\n");
 			success = false;
 		}
-		if (!gSettingsMenuTextTexture6.loadFromRenderedText("Quit", textColour, gFont)) {
+		//if (!gSettingsMenuTextTexture6.loadFromRenderedText("Quit", textColour, gFont)) {
+		if (!gSettingsMenuTextTexture6.renderTextToTexture("Quit", textColour, gFont)) {
 			printf("Failed to render Quit text texture!\n");
 			success = false;
 		}
@@ -134,7 +140,7 @@ void SettingsMenu::draw() {
 	Texture::Instance()->renderMap("shipOutlineID", 0, 50, SCREEN_WIDTH, 620);
 
 	for (int i = 0; i < TOTAL_SETTINGS_MENU_BUTTONS; ++i) {
-		gSettingsMenuButtons[i].render(gButtonSpriteSheetTexture2, &gSpriteClipsSettingsMenu[gSettingsMenuButtons[i].mCurrentSprite]);
+		gSettingsMenuButtons[i].render(gButtonSpriteSheetTexture2, &gSpriteClipsSettingsMenu[gSettingsMenuButtons[i].getButtonSprite()]);	//  2017/03/24 Use setter method
 	}
 
 	gSettingsMenuTextTexture1.render((SCREEN_WIDTH - gSettingsMenuTextTexture1.getWidth()) / 2, (SCREEN_HEIGHT - gSettingsMenuTextTexture1.getHeight()) / 12);

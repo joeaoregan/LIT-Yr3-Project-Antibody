@@ -32,8 +32,12 @@ public:
 		setDamage(15);
 
 		// Initialise Dimensions
-		setWidth(100);
-		setHeight(47);
+		setWidth(120);
+		setHeight(50);
+
+		// Initialise Collider
+		setColliderWidth(100);
+		setColliderHeight(47);
 
 		// Initialize the offsets
 		setX(0);
@@ -44,13 +48,13 @@ public:
 		setVelY(0);
 		setVelocity(20);
 
-		// Initialise Collider
-		setColliderWidth(getWidth());
-		setColliderHeight(getHeight());
-
-		setFrames(0);					// Frames needed for animation
-
-		setName("Enemy Ship");
+		// Animation Stuff
+		setFrames(4);					// Frames needed for animation
+		setAnimCount(0);
+		setCurrentFrame(0);				// Start at 1st frame of animation
+		setAlpha(255);
+		setName("Nano-Bot Enemy Ship");
+		setTextureID("nanoBotID");		// 2017/03/22 Move texture to Texture Map
 	}
 
 	// Name: ~EnemyShip()
@@ -66,11 +70,30 @@ public:
 		Moved call to Nano-bot fire laser function to move() from Game class
 		The enemy ship fires lasers based on its X coordinate position
 	*/
-	virtual void move(int x = 0, int y = 0) {									// Needs to have X and Y values to override base class function
-		Game::Instance()->spawnEnemyLaser(getX(), getY(), ENEMY_SHIP_LASER);	// 2017/03/17 Moved from Game class
+	virtual void move(int x = 0, int y = 0) {										// Needs to have X and Y values to override base class function
+		// FIRE THE WEAPON
+		int distanceBetweenShots = ((rand() % 3 + 1) * 50) + 60;					// 2017/01/20 More random shooting from enemies 2017/03/26 Moved checks from Game class
+
+		if (getX() < SCREEN_WIDTH && getX() % distanceBetweenShots < 2) {			// 2017/03/26 Moved checks from Game class
+			Game::Instance()->spawnEnemyLaser(getX(), getY(), ENEMY_SHIP_LASER);	// 2017/03/17 Moved from Game class
+		}
 		GameObject::move();
+
+		// Increment Animation Frame
+		setAnimCount(getAnimCount() + 1);
+		setCurrentFrame((getAnimCount() / 10) % 4);
+		if (getCurrentFrame() == getNumFrames()) setAnimCount(0);
+
+		//destroy();																// 2017/03/24 destroy when off screen
 	};
-	virtual void destroy() {};
+
+	virtual void destroy() {
+		GameObject::destroy();		// Destroy function from Game Object base class
+	};
+
+	virtual void render() {
+		GameObject::renderAnimation();
+	};
 };
 
 #endif

@@ -32,9 +32,9 @@ public:
 	~ScrollingBackground() {};
 
 	int scrollingOffset = 0;
-	//int backgroundLoopCounter;
+	//int numberOfDestroyedBackgrounds = 0;	// 2017/03/26 test backgrounds clearing from game
 
-	void loadBackgroundStuff() {};
+	/* FUNCTIONS */
 
 	/*
 		Move the Background image depending on the scroll speed set in _TestData.h BACKGROUND_SCROLL_SPEED
@@ -43,7 +43,7 @@ public:
 		The Enemy boss spawns once the background (or distance on map) has looped the required times
 	*/
 	virtual void move(int x = 0, int y = 0) {
-//		int bgCounter = Game::Instance()->backgroundLoopCounter;
+	//	int bgCounter = Game::Instance()->backgroundLoopCounter;
 
 		if (Game::Instance()->backgroundLoopCounter <= BACKGROUND_SCROLL_TIMES) scrollingOffset -= BACKGROUND_SCROLL_SPEED;	// Scroll for a fixed number of times
 		if (scrollingOffset < -SCREEN_WIDTH) {
@@ -52,23 +52,34 @@ public:
 			Game::Instance()->backgroundLoopCounter++;								// count the number of times the background has looped
 			std::cout << "Background has looped " << Game::Instance()->backgroundLoopCounter << " times" << std::endl;
 		}
-
 	};
 
 	/*
 		Clear media for ScrollingBackground from memory
 	*/
 	virtual void destroy() {
-		scrollingOffset = 0;	// Reset scrollingOffset
+		//if (getX() <= -getWidth()) {
+		if (getX() <= -100) {
+			std::cout << "ASDF;LAKSDF;LAKSJDFA;LSDKJFASLKDJFHALSKDJFHASKLDFJGASKDJFASDFASDFASDFASDF" << std::endl;	// 2017/03/26
+			std::cout << "Scrolling background destroy function called" << std::endl;
+			//std::cout << "Backgrounds destroyed: " << numberOfDestroyedBackgrounds++ << std::endl;				// 2017/03/26 Test backgrounds clearing from game
+			setAlive(false);
+		}
 
 		// Background images to free when not in level state
 
 		//{ "Art/bgBegin720a.png", "startBG", "Starting Background" },
 		//{ "Art/Background720.png", "middleBG", "Middle Background" },
 		//{ "Art/bgEnd720a.png", "endBG", "End Background" },
-		Texture::Instance()->clearFromTextureMap("startBG");	// Clear start background
-		Texture::Instance()->clearFromTextureMap("middleBG");	// Clear middle background
-		Texture::Instance()->clearFromTextureMap("endBG");		// Clear end background
+		/*
+		if (Game::Instance()->getCurrentLevel() != LEVEL_1 && Game::Instance()->getCurrentLevel() != LEVEL_2 && Game::Instance()->getCurrentLevel() != LEVEL_2) {
+			Texture::Instance()->clearFromTextureMap("startBG");	// Clear start background
+			Texture::Instance()->clearFromTextureMap("middleBG");	// Clear middle background
+			Texture::Instance()->clearFromTextureMap("endBG");		// Clear end background
+
+			scrollingOffset = 0;									// Reset scrollingOffset
+		}
+		*/
 	};
 
 	/*
@@ -78,7 +89,7 @@ public:
 	*/
 	virtual void render() {
 		//GameObject::render();
-		std::cout << "background render " << std::endl;
+		//std::cout << "background render " << std::endl;
 
 		// Render background
 		if (Game::Instance()->backgroundLoopCounter < 1) Texture::Instance()->renderMap("startBG", scrollingOffset, 0, SCREEN_WIDTH, SCREEN_HEIGHT_GAME);											// 1st background (and every odd number)
@@ -88,6 +99,10 @@ public:
 		if (Game::Instance()->backgroundLoopCounter < BACKGROUND_SCROLL_TIMES) Texture::Instance()->renderMap("middleBG", scrollingOffset + SCREEN_WIDTH, 0, SCREEN_WIDTH, SCREEN_HEIGHT_GAME);	// 2nd background (and every even number)
 		else Texture::Instance()->renderMap("endBG", scrollingOffset + SCREEN_WIDTH, 0, SCREEN_WIDTH, SCREEN_HEIGHT_GAME);
 	};
+
+	void loadBackgroundStuff() {};
 };
 
 #endif
+
+//int backgroundLoopCounter;

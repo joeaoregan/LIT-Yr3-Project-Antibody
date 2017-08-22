@@ -2,7 +2,7 @@
 	- Name:					Particle.cpp
 	- Description:			cpp file for the particle class.
 	- Information:			The particle class handles the functionality for displaying the engine particles
-							for the players ships. A random number of aparticles is drawn to the screen each
+							for the player's ships. A random number of particles are drawn to the screen each
 							frame. A random number pool is used to create the effect of the particles.
 	- Log:
 		2017/01/30		Added particle texture alpha modify functionality

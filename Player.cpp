@@ -303,7 +303,6 @@ void Player::moveUp() {
 	else
 		setVelY(getVelY() - getVelocity());
 }
-
 void Player::moveDown() {
 	if (getVelY() > 0 && getVelY() < getVelocity()) setVelY(0);
 	if (getVelY() < 0 && getVelY() > -getVelocity()) setVelY(0);
@@ -461,10 +460,9 @@ void Player::gameControllerButton(SDL_Event& e) {
 	}
 }
 
-
 //void Player::initialiseRocket(bool active, bool barActive, int timer, int numRockets) {
 bool Player::initialiseRocket() {
-	setProjectileActive(true);					// Set the rocket active, ready to render to screen
+	setProjectileActive(true);				// Set the rocket active, ready to render to screen
 	setRocketBarActive(false);				// Set the rocket power bar inactive
 	setTimer(ROCKET_TIMER);					// Reset the rocket timer
 	setNumRockets(getNumRockets() - 1);		// decrement the number of rockets

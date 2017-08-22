@@ -58,14 +58,6 @@ enum gameStates {  MENU, LEVEL_1, LEVEL_2, LEVEL_3, PAUSE, SETTINGS, HIGH_SCORES
 
 class Game {
 public:
-	bool settingsMenuLoaded = false;
-	bool highScoresLoaded = false;
-	bool enterNameLoaded = false;
-
-	SDL_Window* gWindow = NULL;				// The window we'll be rendering to
-	int windowFlag;							// Show the game in full screen or windowed
-	void fullScreenOrWindowed();
-
 	// 27/02/2017 Game Singleton
 	static Game* Instance() {
 		if (s_pInstance == 0) {
@@ -76,163 +68,160 @@ public:
 		return s_pInstance;
 	}
 
+	/* MAIN GAME FUNCTIONS */
+
+	bool init();							// Starts up SDL and creates window -- ERROR window won't close
+	bool loadMedia();						// Loads media for the game
+	void update();							// Update the game. This is the main loop for the game
+	bool playerInput(bool quit);			// 2017/01/09 JOE: Handle input from player
+	void moveGameObjects();					// 2017-01-09 JOE: Move the game objects on the screen
+	void render();							// Render the game to screen
+	void destroyGameObjects();				// 2017-01-09 JOE: Destroy the game objects when finished on the screen
+	void close();							// Frees media and shuts down SDL
+	void resetGame(int level);				// Reset game to this level
+
+	/* VARIABLES */
+
+	// Game States
+	bool settingsMenuLoaded = false;		// Determines if the Settings Menu is loaded or not
+	bool highScoresLoaded = false;			// Determines if the High Scores Table is loaded or not
+	bool enterNameLoaded = false;			// Determines if the Enter Name state is loaded or not
+	bool displayGameIntro;					// False means off - set in _TestData.h
+	bool displayLevelIntro;					// Display the information splash screen at the start of a level - set in _TestData.h
+
+	// Game Window
+	SDL_Window* gWindow = NULL;				// The window we'll be rendering to
+	int windowFlag;							// Show the game in full screen or windowed	
+
 	// Viewports
-	SDL_Rect gameViewport;		// Main game screen view port
+	SDL_Rect gameViewport;					// Main game screen view port, this is the section of the window where the game is rendered
 
-	bool checkCollision(SDL_Rect *a, SDL_Rect *b);
+	// Player
+	int player1Score, player2Score;			// Need variables to store score in case player dies	
+	bool nameEntered;						// Has a name been entered for the Player
+	bool renderText;						// Render game text to screen
+	std::string inputText = "Name";			// Text to be input for Players name
+	int checkpointsSpawned = 0;				// Number of checkpoints that are spawned
+	bool twoPlayer;							// Decides if game is 2 player or 1 player
 	
-	//SDL_Renderer* getRenderer() const { return m_pRenderer; }
-	SDL_Renderer* getRenderer() const { return gRenderer; }
-
-	int player1Score, player2Score;		// need variables to store score in case player dies
-
-	GameStateMachine* getStateMachine() { return m_pGameStateMachine; }
-	
-	bool nameEntered;
-	bool enterName();
-	//void enterName();
-	bool renderText;
-	std::string inputText = "Name";
-
-	bool twoPlayer;
-	bool displayGameIntro;				// False means off - set in _TestData.h
-	bool displayLevelIntro;				// Display the information splash screen at the start of a level - set in _TestData.h
-
-
-	int gamerOverMessageDisplayCounter;	// Length of time to display game over message
-	int frames;							// Frame count for speed of Enemy animation
+	int frames;								// Frame count for speed of Enemy animation
 
 	// Time
-	unsigned int lastTime, currentTime, countdownTimer, gameOverTimer, lastTime2;	// TEST TIMING
-
-	// Game Over Messages
-	std::string finalScores, gameWinners;
-
-	// Scrolling
+	unsigned int lastTime, currentTime, countdownTimer, gameOverTimer;	// TEST TIMING
+	
+	// Background
 	int backgroundLoopCounter;							// Number of times the background image has looped
+
+	// Level
+	int levelToPause;									// Store Current Level to return to from pause
+	bool gameOver = false;								// Decide if game is over
+	bool levelOver = false;								// Decide if level is over
+	bool noTime = false;								// Decide if time has run out for the level
+	
+	// Game Messages
+	int infoMessageP1Counter, infoMessageP2Counter;		// Time to display notification messages
+	int infoMessageCounter, infoMessageMapCounter;		// Centre message, not specific to players
+	std::string infoMessageP1, infoMessageP2; 			// Player notification messages. Different colour for each player appearing in the middle of the game screen
+	std::string infoMessageGeneral, infoMessageMap;		// Additional game messages
+	int gamerOverMessageCounter;						// Length of time to display game over message
+	std::string finalScores, gameWinners;				// Game Over Messages	
+	
+	/* FUNCTIONS */
+
+	// States
+	int getCurrentLevel() { return mCurrentLevel; }		// Get the current level
+	void setCurrentLevel(int l) { mCurrentLevel = l; }	// Set the current level
+	void displayLevelIntros(int level);				// Display the intro / objective screens at the start of each level
+	bool enterName();									// Enter the name for the player before beginning the game
+	void playLevel(int levelNum);						// Play each level
+
+	// Rendering
+	void fullScreenOrWindowed();										// Decide if the game is in full screen or windowed mode
+	SDL_Renderer* getRenderer() const { return gRenderer; }				// The renderer for the game
+	void displayScoreForObject(int x, int y, int score, int player);	// Display the score the player receives for destroying an Enemy object
+	void displayText();													// 2017/01/17: Display game text
+	void infoMessage(std::string message, int type = 0, int timer = 0);	// Display an information message on screen
+	void checkMessageTimes();											// 2017/03/19 Check how long a message has been on screen
+	void renderGamePlay();												// 2017-01-09 Render the game objects to the screen
+	void renderGameOver();												// 2017/03/02 Render the game objects for Game Over state
+	void renderTimer(unsigned int &timer);								// 2017/03/02 Separate the game timer to its own function
+
+	// Spawn Game Objects
+	void spawnMovingObjects();												// Decide the amount of each object to spawn
+	void spawnRandomAttributes(int &x, int &y, int &randomSpeed, int xMuliplier = 0, int yPad = 80, int speed = 1);	// Spawn random attributes for game objects, such as speed, and distance between objects when spawning
+	void spawnPlayer(int player);											// Spawn / Respawn player at start of game, or when a life is lost
+	void spawnEnemyBoss();													// 2017/03/02 Added function to create Enemy Boss objects at random times and coords
+	void spawnEnemyShip();													// 2017/01/09 Added function to create enemy ships at random times and random y coord
+	void spawnEnemyVirus(int type = 0, int x = 0, int y = 0);				// 2017/01/10 Added function to create enemy virus at random times and random y coord
+	void spawnBloodCell(int type = 0);										// 2017/01/10 Add function to create blood cells
+	void spawnLaser(int x, int y, int player, int grade = 0, int v = 20);	// 2017/01/16 spawn a laser at coords, with velocitys 2017/01/20 added Weapons grade
+	void spawnEnemyLaser(int x, int y, int type = 0, int whichVirus = 0);	// 2017/01/10 Spawn an Enemy Laser, fireball, or projectile
+	void spawnNinjaStar(int x, int y, int player);							// 2017/01/09 Added function to create ninja star weapons - 2017/01/17 added player decision - player to spawn for and their coords
+	void spawnSaw(int x, int y, int player);								// 2017/01/20: Saw Weapon for player
+	void spawnPowerUp();													// Spawn a power up for the player to collect
+	void spawnRocket(int x, int y, int player, int type, bool launch);		// 2017-02-06 Spawn a player Rocket weapon
+	void spawnBlockage();													// Spawn a blockage obstacle
+	void spawnExplosion(int x, int y, int subType);							// 2017/01/25 Added explosions // 2017/02/19 Added blood explosions
+
+	// Movement and Updating
+	bool moveToPlayer1(int x, int y);										// 2017/03/22 Separate which Player the virus chooses to move towards to function	
+	void gameProgress();													// Decide if the game is over or not
+	
+	// Collisions
+	bool checkCollision(SDL_Rect *a, SDL_Rect *b);							// Check collision between game objects
+	void collisionCheck();													// Check collisions between game objects on the Game Objects list, and decide what happens
+	
+	int getNumPlayers() { return mNumPlayers; }								// Get the number of players in the game
+	void setNumPlayers(int n) { mNumPlayers = n; }							// Set the number of players in the game
+	void managePlayerHealth(int player, int score, std::string name = "Game Object");	// Set the health for the player if it has collided with an object, increasing if it picks up a health power up
+	void managePlayerScores(int score, int player, int type);							// Manage scores for the player destroying enemy objects
+	
+private:
+
+	Game() {};								// 2017/02/27 Constructor private for singleton
+
+	SDL_Renderer* gRenderer;				// P65 2017/02/27 Renderer
+	
+	int mNumPlayers;						// The number of players in the game
+
+	int mCurrentLevel =	MENU;				// The current level of the game, 0 = menu, 1 = level 1 etc.
+
+	static Game* s_pInstance;				// One instance of Game to be used throughout the project
+};
+
+#endif
+
+// Old public stuff
+
+//int pointsValueCounter;								// Time to display score for killing Enemy message
+//std::string pointsValue;							// Player notification messages, Yellow writing appearing in the middle of the game screen
+//std::string levelObjective;				// The objective for the start of each level
+//GameStateMachine* getStateMachine() { return m_pGameStateMachine; }
+//SDL_Renderer* getRenderer() const { return m_pRenderer; }
+//void enterName();
 	//int scrollingOffset;								// 2017/01/10 JOE: Declare the background scrolling offset (Moved as stops background scrolling when in the render function) // Moved to ScrollingBackground class
 	//int weaponScrolling;								// Scroll the image for current default laser weapon // 2017/03/20 Moved to HUD class
 	//void scrollBackground();							// 2017/02/22 Moved here. Scoll the background // 2017/03/21 Moved to ScrollingBackground class
 	//void setRotatingAngle();							// 2017/02/22 Moved here. Set the angle for rotating objects // No longer needed angle set in move() function for rotating objects
 
-	// Game Messages
-	int pointsValueCounter;								// Time to display score for killing Enemy message
-	std::string pointsValue;							// Player notification messages, Yellow writing appearing in the middle of the game screen
-	int infoMessageP1Counter, infoMessageP2Counter;		// Time to display notification messages
-	int infoMessageCounter, infoMessageMapCounter;
-	std::string infoMessageP1, infoMessageP2; 			// Player notification messages, Yellow writing appearing in the middle of the game screen
-	std::string infoMessageGeneral, infoMessageMap;
-	
-	void checkMessageTimes();							// 2017/03/19 Check how long a message has been on screen
-
-	// Number of Game Objects currently on the screen
-	int activeBloodCells;
-	int activeWhiteBloodCells;
-	int activeSmallBloodCells;
-	int activePowerUps;
-	int activeEnemyShips;
-	int activeEnemyVirus;
-	int activeEnemyVirusSmall;
-	int activeEnemyBoss;
-
-
-	int getCurrentLevel() { return mCurrentLevel; }
-	void setCurrentLevel(int l) { mCurrentLevel = l; }
-	int levelToPause;										// Store Current Level to return to from pause
-
-	//int counter = 0;		// counter for changing alpha for flashing
-	bool gameOver = false;
-	bool levelOver = false;
-	bool noTime = false;
-
-	int checkpointsSpawned = 0;
-	
-	bool init();								// Starts up SDL and creates window -- ERROR window won't close
-	void update();
-	void close();								// Frees media and shuts down SDL
-
-	//void displayLevelSplashScreen(std::string objective);
-	void displayLevelIntroScreens(int level);
-	std::string levelObjective;
-
-	void playLevel(int levelNum);
-
-	void displayScoreForObject(int x, int y, int score, int player);
-
-	void resetGame(int level);								// Reset game to this level
-
-	void spawnExplosion(int x, int y, int subType);			// 2017/01/25 Added explosions // 2017/02/19 Added blood explosions
-
-	void spawnMovingObjects();
-	void spawnPlayer(int player);
-	void spawnEnemyBoss();													// 2017/03/02 JOE: Added function to create Enemy Boss objects at random times and coords
-	void spawnEnemyShip();													// 2017/01/09 JOE: added function to create enemy ships at random times and random y coord
-	void spawnEnemyVirus(int type = 0, int x = 0, int y = 0);				// 2017/01/10 JOE: added function to create enemy virus at random times and random y coord
-	void spawnBloodCell(int type = 0);										// 2017/01/10 JOE: add function to create blood cells
-	void spawnLaser(int x, int y, int player, int grade = 0, int v = 20);	// 2017/01/16 spawn a laser at coords, with velocitys 2017/01/20 added Weapons grade
-	void spawnEnemyLaser(int x, int y, int type = 0, int whichVirus = 0);	// 2017/01/10
-	void spawnNinjaStar(int x, int y, int player);							// 2017/01/09 JOE: added function to create ninja star weapons - 2017/01/17 added player decision - player to spawn for and their coords
-	void spawnSaw(int x, int y, int player);								// 2017/01/20: Saw Weapon for player
-	void spawnPowerUp();
-	void spawnRocket(int x, int y, int player, int type, bool launch);		// 2017-02-06
-	void spawnBlockage();
-
-
-	void gameProgress();
+//int counter = 0;		// counter for changing alpha for flashing
+//void displayLevelSplashScreen(std::string objective);
 	//void gameTimer(unsigned int &timer);					// 2017-03-02
 	//void gameTimer();										// 2017-02-15
 
 	//void gamepadInfo();									// 2017/01/17: Separate gamepad information
 
-	void displayText();										// 2017/01/17: Display game text
 	//void pressButtonToContinue();							// 2017/01/18
-
-	void infoMessage(std::string message, int type = 0, int timer = 0);
-
-	void collisionCheck();
-
-	bool playerInput(bool quit);							// 2017/01/09 JOE: Handle input from player
-	void render();
-	void renderGamePlay();									// 2017-01-09 JOE: Render the game objects to the screen
-	void renderGameOver();									// 2017/03/02 JOE: Render the game objects for Game Over state
-	void renderTimer(unsigned int &timer);					// 2017/03/02 JOE: Separate the game timer to its own function
 	//void renderTimer();									// 2017/03/02 JOE: Separate the game timer to its own function
-	void moveGameObjects();									// 2017-01-09 JOE: Move the game objects on the screen
 
-	bool moveToPlayer1(int x, int y);						// 2017/03/22 Separate which Player the virus chooses to move towards to function
+//void setViewport(SDL_Rect &rect, int x, int y, int w, int h);
+//void setupAnimationClip(SDL_Rect &rect, int frames, int amount, bool type2 = false);
+// Music
+//void musicTrackForward();								// FOR SOME REASON, CONTROLLER DOESNT LIKE THE AUDIO CLASS -> SO PLAYING THROUGH GAME
+//void musicTrackBackward();
+//void identifyTrack(int songName);						// 2017/02/17 Identify the song playing
 
-	void destroyGameObjects();								// 2017-01-09 JOE: Destroy the game objects when finished on the screen
+// Old Private stuff
 
-	bool loadMedia();										// Loads media
-
-	// Music
-	//void musicTrackForward();								// FOR SOME REASON, CONTROLLER DOESNT LIKE THE AUDIO CLASS -> SO PLAYING THROUGH GAME
-	//void musicTrackBackward();
-	//void identifyTrack(int songName);						// 2017/02/17 Identify the song playing
-
-	void spawnRandomAttributes(int &x, int &y, int &randomSpeed, int xMuliplier = 0, int yPadding = 80, int speed = 1);
-
-	int getNumPlayers() { return mNumPlayers; }
-	void setNumPlayers(int n) { mNumPlayers = n; }
-	void managePlayerHealth(int player, int score, std::string name = "Game Object");
-	void managePlayerScores(int score, int player, int type);
-
-	//void setViewport(SDL_Rect &rect, int x, int y, int w, int h);
-	//void setupAnimationClip(SDL_Rect &rect, int frames, int amount, bool type2 = false);
-
-
-private:
-	GameStateMachine* m_pGameStateMachine;
-
-	SDL_Renderer* gRenderer;		// P65 2017/02/27 Renderer
-
-	Game() {};						// 2017/02/27 Constructor private for singleton
-	
-	int mNumPlayers;
-	//int mCurrentLevel = GAME_INTRO;		// 2017/03/18 The current level of the game, 0 = menu, 1 = level 1 etc.
-	int mCurrentLevel =	MENU;		// The current level of the game, 0 = menu, 1 = level 1 etc.
-
-	static Game* s_pInstance;
-};
-
-#endif
+//GameStateMachine* m_pGameStateMachine;	// Instance of the game state machine
+//int mCurrentLevel = GAME_INTRO;		// 2017/03/18 The current level of the game, 0 = menu, 1 = level 1 etc.

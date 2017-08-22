@@ -1,26 +1,24 @@
-/*
-	2017/03/04 Moved smaller class files functionality into their headers
-				Set a game object texture ID variable, Player and Enemy lasers now render based on their unique texture ID
-	2017/02/18 Added enemy laser to game objects list
-				Set types and sub-types for objects on game objects list
-	2017/01/10 Added enemy laser projectile, velocity is a minus value as it is travelling right to left
-	2017/01/09 JOE: Added Laser For Enemy ship basd on Seans Player Laser functionality
-*/
-/*
-	ENEMY LASER:
+/*	---------------------------------------------------------------------------------------------------------------------
+	- Name:					WeaponEnLaser.h
+	- Description:			Header file for the Weapon Enemy Laser class.
+	- Information:			Contains all function definitions and variables for the Enemy Weapon Laser class.
+							This class handles enemy weapon objects, first starting with Enemy Ship lasers, then adding Orange Virus projectiles,
+							and then adding the satellite projectile for the Blue Virus.
 
-	This class handles enemy weapon objects, first starting with Enemy Ship lasers, then adding Orange Virus projectiles,
-	and then adding the satellite projectile for the Blue Virus.
-
-	WeaponEnLaser (LaserEnemy.cpp) is where all the implementations of the function definitions in LaserEnemy.h reside.
-*/
+							WeaponEnLaser (LaserEnemy.cpp) is where all the implementations of the function definitions in LaserEnemy.h reside.
+	- Log:
+		2017/03/04		Moved smaller class files functionality into their headers
+						Set a game object texture ID variable, Player and Enemy lasers now render based on their unique texture ID
+		2017/02/18		Added enemy laser to game objects list
+						Set types and sub-types for objects on game objects list
+		2017/01/10		Added enemy laser projectile, velocity is a minus value as it is travelling right to left
+		2017/01/09		Added Laser For Enemy ship basd on Seans Player Laser functionality
+	----------------------------------------------------------------------------------------------------------------------*/
 
 #ifndef LASER_ENEMY_H
 #define LASER_ENEMY_H
 
 #include "Weapon.h"
-
-//enum EnemyLaserTypes { ENEMY_SHIP_LASER, VIRUS_FIREBALL, BLUE_VIRUS_BULLET };
 
 class WeaponEnLaser : public Weapon {
 public:
@@ -86,7 +84,10 @@ public:
 		GameObject::move();
 	};
 
-	virtual void destroy() {};
+	virtual void destroy() {
+		//if (getX() < -getWidth()) setAlive(false);	// 2017/03/26
+		GameObject::destroy();
+	};
 
 	/*
 		2017/03/18 Render function
@@ -96,8 +97,9 @@ public:
 
 		SDL_RenderCopyEx(Game::Instance()->getRenderer(), Texture::Instance()->getTexture(getTextureID()), NULL, &renderQuad, getAngle(), NULL, SDL_FLIP_NONE);	// Render to screen
 	};
-
-	int centerX, centerY;		// center for rotation
 };
 
 #endif
+
+//enum EnemyLaserTypes { ENEMY_SHIP_LASER, VIRUS_FIREBALL, BLUE_VIRUS_BULLET };
+//int centerX, centerY;		// center for rotation

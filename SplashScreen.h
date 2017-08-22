@@ -32,24 +32,11 @@
 
 class SplashScreen {
 public:
-	// Set up / Close Splash Screens
-	bool initSplashScreens();
-	void closeSplashScreens();
+	/* VARIABLES */
 
-	// Game Title & Created By SplashScreens
-	bool displayGameTitleScreens();
+	TTF_Font *gFont = NULL;							// The font to be used for rendered text
 
-	// Level 1 Logo & Info Screens
-	bool levelIntroScreens(int level);
-	void infoScreenEnemies(int level, int seconds, int startAt = SCREEN_HEIGHT);
-	void infoScreenPowerUps(int level, int seconds, int startAt = SCREEN_HEIGHT);
-	void infoScreenStory(int level, int seconds, int startAt = SCREEN_HEIGHT);
-	void endOfGame(int level, std::string finalScore = "", std::string winner = "");
-
-	// Scroll text up the screen, from a start point to an end point
-	void scrollUpText(std::string backgroundID, Texture & text, int seconds = 0, int rate = 15, int startAt = SCREEN_HEIGHT, int stopAt = 300); // 2017/02/26 Edited to take an ID. Change rate to increase speed, higher number = faster
-																																				// Press Any Key To Continue
-	void pressButtonToContinue(SDL_Event e);
+	SDL_Color textColour;							// The text colour for rendered text
 
 	// Splash Screens textures
 	Texture gFinalScoreTextTexture;					// Final score displayed at end of level / end of game
@@ -62,18 +49,34 @@ public:
 	std::string levelObjective;						// Objective for each level
 	std::string storyPage1, storyPage2, storyPage3;	// The story, can spread over 3 screens
 
-
 	SDL_Rect gPressButtonToContinueSpriteClips[6];	// Sprite frames for Press Button to Continue animation
+		
+	/* METHODS */
 
-	TTF_Font *gFont = NULL;							// The font to be used for rendered text
+	// Set up / Close Splash Screens
+	bool initSplashScreens();						// Load media for Splash Screens
+	void closeSplashScreens();						// Free media for Splash Screens
 
-	SDL_Color textColour;							// The text colour for rendered text
+	// Game Title & Created By SplashScreens
+	bool displayGameTitleScreens();					// Display intro screens at start of game before menu		
 
-													// Level Background Functions
+	// Level 1 Logo & Info Screens
+	bool levelIntroScreens(int level);												// Level background with scrolling text for objective
+	void infoScreenEnemies(int level, int seconds, int startAt = SCREEN_HEIGHT);	// Scroll text and image up the screen with information about the enemies in each level
+	void infoScreenPowerUps(int level, int seconds, int startAt = SCREEN_HEIGHT);	// Render information for each levels Power Ups
+	void infoScreenStory(int level, int seconds, int startAt = SCREEN_HEIGHT);		// Display each levels story, up to 3 pages
+	void endOfGame(int level, std::string finalScore = "", std::string winner = "");// Display final score, game winner, game over, level complete messages
+
+	// Scroll text up the screen, from a start point to an end point
+	void scrollUpText(std::string backgroundID, Texture & text, int seconds = 0, int rate = 15, int startAt = SCREEN_HEIGHT, int stopAt = 300); // 2017/02/26 Edited to take an ID. Change rate to increase speed, higher number = faster
+																																				
+	void pressButtonToContinue(SDL_Event e);																						// Press Any Key To Continue
+	
+	// Level Background Functions
 	std::string chooseBackground(int level);																						// 2017/03/06 Choose the level background image to display
 	void scrollRandomBackground(std::string textureID, int rate = 20, int seconds = 0);												// 2017/03/06 Random direction to scroll the background
-	void scrollLogoHorizontal(std::string textureID, int seconds = 0, int rate = 20, int startAt = -SCREEN_WIDTH, int stopAt = 0);	// Default is scroll from Left to Right
-	void scrollLogoVertical(std::string textureID, int seconds = 1, int rate = 10, int startAt = -SCREEN_HEIGHT, int stopAt = 0);	// Default is scroll down from top, -600 starts above the screen
+	void scrollLogoHorizontal(std::string textureID, int seconds = 0, int rate = 20, int startAt = -SCREEN_WIDTH, int stopAt = 0);	// Scroll message Up or Down. Default is scroll from Left to Right
+	void scrollLogoVertical(std::string textureID, int seconds = 1, int rate = 10, int startAt = -SCREEN_HEIGHT, int stopAt = 0);	// Scroll message from left or right. Default is scroll down from top, -600 starts above the screen
 };
 
 #endif

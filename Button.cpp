@@ -30,7 +30,7 @@ Button::Button() {
 	mPosition.x = 0;
 	mPosition.y = 0;
 
-	mCurrentSprite = BUTTON_SPRITE_MOUSE_OUT;
+	setButtonSprite(BUTTON_SPRITE_MOUSE_OUT);						// 2017/03/24 Use setter method
 }
 
 void Button::setPosition(int x, int y) {
@@ -56,17 +56,17 @@ void Button::handleEvent(SDL_Event* e, int buttonSelected) {
 
 		//Mouse is outside button
 		if (!inside) {
-			mCurrentSprite = BUTTON_SPRITE_MOUSE_OUT;				// Sprite 0
+			setButtonSprite(BUTTON_SPRITE_MOUSE_OUT);				// Sprite 0
 		}
 		else {
 			switch (e->type) {
 			case SDL_MOUSEMOTION:
-				mCurrentSprite = BUTTON_SPRITE_MOUSE_OVER_MOTION;	// Set sprite mouse over 1
+				setButtonSprite(BUTTON_SPRITE_MOUSE_OVER_MOTION);	// Set sprite mouse over 1 2017/03/24 Use setter method
 				//std::cout << "Mouse Motion" << std::endl;			// THIS ONE PROBABLY NOT NEEDED
 				break;
 
 			case SDL_MOUSEBUTTONDOWN:
-				mCurrentSprite = BUTTON_SPRITE_MOUSE_DOWN;			// Set sprite mouse down 2
+				setButtonSprite(BUTTON_SPRITE_MOUSE_DOWN);			// Set sprite mouse down 2 2017/03/24 Use setter method
 				std::cout << "Mouse Button Down" << std::endl;
 
 				if (Game::Instance()->getCurrentLevel() == ENTER_NAME) {
@@ -195,7 +195,7 @@ void Button::handleEvent(SDL_Event* e, int buttonSelected) {
 
 
 			case SDL_MOUSEBUTTONUP:
-				mCurrentSprite = BUTTON_SPRITE_MOUSE_UP;				// Set sprite mouse up 3
+				setButtonSprite(BUTTON_SPRITE_MOUSE_UP);				// Set sprite mouse up 3 2017/03/24 Use setter method
 				std::cout << "Mouse Button Up" << std::endl;
 
 				// GO TO MENU OPTION

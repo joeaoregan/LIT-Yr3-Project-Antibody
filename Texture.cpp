@@ -1,47 +1,49 @@
-/*
-	2017/03/22 Added animation sprite sheets to the Texture map
-	2017/03/18 Added the Ninja Stars and Saw texture to the texture map in Texture class
-	2017/03/17 Added the Blood Cell texture to the texture map in Texture class
-	2017/02/28 Moved background texture loading to texture map
-	2017/02/26 Added singletons for Game and Texture
-	2017/02/09 Set a display time for textures such as information messages
-				A separate texture is needed for each individual score text, as score value changes for all, when a new score is recorded
-	2017/01/30 Added rotation angle to constructors for Textures that rotate
-				Moved flashGameObject() functionality into Texture class
-	2017/01/24 Changed screen size from 1280 x 720 from 800 x 600
-	2017/01/11 Alter function for alpha values to handle any object and not just Players
-	2017/01/09 Changed screen size and background to be 800 x 600 instead of 600 x 480
-*/
-/*
-	TEXTURE:
-
-	This class manages all texture functionality for the game. Loading textures from, storing them to
-	a map for indexing, and then rendering to screen. There are functions to render textures from text,
-	and also to handle the alpha value of objects, to make them transparent or flash.
-*/
+/*	---------------------------------------------------------------------------------------------------------------------
+	- Name:					Texture.cpp
+	- Description:			cpp file for the Texture class.
+	- Information:			This class manages all texture functionality for the game. Loading textures from, storing them to 
+							a map for indexing, and then rendering to screen. There are functions to render textures from text, 
+							and also to handle the alpha value of objects, to make them transparent or flash.
+	- Log:
+		2017/03/22		Added animation sprite sheets to the Texture map
+		2017/03/18		Added the Ninja Stars and Saw texture to the texture map in Texture class
+		2017/03/17		Added the Blood Cell texture to the texture map in Texture class
+		2017/02/28		Moved background texture loading to texture map
+		2017/02/26		Added singletons for Game and Texture
+		2017/02/09		Set a display time for textures such as information messages
+						A separate texture is needed for each individual score text, as score value changes for all, when a new score is recorded
+		2017/01/30		Added rotation angle to constructors for Textures that rotate
+						Moved flashGameObject() functionality into Texture class
+		2017/01/24		Changed screen size from 1280 x 720 from 800 x 600
+		2017/01/11		Alter function for alpha values to handle any object and not just Players
+		2017/01/09		Changed screen size and background to be 800 x 600 instead of 600 x 480
+	----------------------------------------------------------------------------------------------------------------------*/
 #include "Texture.h"
+#include <string>
 
-Texture* Texture::s_pInstance = 0;
+Texture* Texture::s_pInstance = 0;	// Singleton, so only one instance of texture class is used throughout the game
 
 Texture::Texture() {
 	// Initialize
-	mTexture = NULL;
-	mWidth = 0;
-	mHeight = 0;
-	mAlpha = 255;				// Default alpha is fully solid colour
-	mFlash = false;
+	m_Texture = NULL;
+	m_Width = 0;
+	m_Height = 0;
+	m_Alpha = 255;				// Default alpha is fully solid colour
+	m_Flash = false;
 }
 
 Texture::~Texture() {
 	free();						// Deallocate
 }
 
+/*
+	Load an image to the texture map given its path, assigning an ID
+*/
 bool Texture::load(std::string fileName, std::string id) {
-//bool Texture::load(std::string fileName, std::string id, SDL_Renderer* rend) {
 	SDL_Surface* pTempSurface = IMG_Load(fileName.c_str());
 
 	if (pTempSurface == 0) {
-		//std::cout << IMG_GetError();
+		std::cout << IMG_GetError();
 		return false;
 	}
 
@@ -50,99 +52,92 @@ bool Texture::load(std::string fileName, std::string id) {
 	SDL_FreeSurface(pTempSurface);
 
 	if (pTexture != 0) {
-		m_textureMap[id] = pTexture;
+		m_TextureMap[id] = pTexture;
 		return true;
 	}
 
 	return false;
 }
 
-void Texture::draw(std::string id, int x, int y, int width, int height, SDL_RendererFlip flip) {
-//void Texture::draw(std::string id, int x, int y, int width, int height, SDL_Renderer* rend, SDL_RendererFlip flip) {
-//	SDL_Rect renderQuad = { x, y, mWidth, mHeight };	// Set rendering space and render to screen
-	SDL_Rect srcRect;
-	SDL_Rect destRect;
-
-	srcRect.x = 0;
-	srcRect.y = 0;
-	srcRect.w = destRect.w = width;
-	srcRect.h = destRect.h = height;
-	destRect.x = x;
-	destRect.y = y;
-
-	SDL_RenderCopyEx(Game::Instance()->getRenderer(), m_textureMap[id], &srcRect, &destRect, 0, 0, flip);
-}
-
+/*
+	Render a Texture from the map using an ID
+*/
 void Texture::renderMap(std::string id) {
 	//void Texture::renderMap(SDL_Renderer* rend) {
 	if (id == "")
-		SDL_RenderCopy(Game::Instance()->getRenderer(), mTexture, NULL, NULL);
+		SDL_RenderCopy(Game::Instance()->getRenderer(), m_Texture, NULL, NULL);
 	else
-		SDL_RenderCopy(Game::Instance()->getRenderer(), m_textureMap[id], NULL, NULL);	// render texture from map using id
+		SDL_RenderCopy(Game::Instance()->getRenderer(), m_TextureMap[id], NULL, NULL);	// render texture from map using id
 
 }
+/*
+	Render a Texture from map, with position, and dimensions
+*/
 void Texture::renderMap(std::string id, int x, int y, int width, int height) {
 	//void Texture::renderMap(std::string id, int x, int y, int width, int height, SDL_Renderer* rend) {
 	SDL_Rect renderQuad = { x, y, width, height };	// Set rendering space and render to screen
 
-	SDL_RenderCopyEx(Game::Instance()->getRenderer(), m_textureMap[id], NULL, &renderQuad, 0, NULL, SDL_FLIP_NONE);	// Render to screen
+	SDL_RenderCopyEx(Game::Instance()->getRenderer(), m_TextureMap[id], NULL, &renderQuad, 0, NULL, SDL_FLIP_NONE);	// Render to screen
 }
-
+/*
+	Render an animated or rotated Texture from the map
+*/
 void Texture::render(std::string id, int x, int y, SDL_Rect* clip, double angle, SDL_Point* center, SDL_RendererFlip flip) {
-	SDL_Rect renderQuad = { x, y, mWidth, mHeight };	// Set rendering space and render to screen
+	SDL_Rect renderQuad = { x, y, m_Width, m_Height };	// Set rendering space and render to screen
 
 	if (clip != NULL) {									// Set clip rendering dimensions
 		renderQuad.w = clip->w;
 		renderQuad.h = clip->h;
 	}
 
-	SDL_RenderCopyEx(Game::Instance()->getRenderer(), m_textureMap[id], clip, &renderQuad, angle, center, flip);	// Render to screen
+	SDL_RenderCopyEx(Game::Instance()->getRenderer(), m_TextureMap[id], clip, &renderQuad, angle, center, flip);	// Render to screen
 }
-
+/*
+	Render a texture
+*/
 void Texture::render(int x, int y, SDL_Rect* clip, double angle, SDL_Point* center, SDL_RendererFlip flip) {
-// render(int x, int y, SDL_Renderer *rend, SDL_Rect* clip = NULL, double angle = 0.0, SDL_Point* center = NULL, SDL_RendererFlip flip = SDL_FLIP_NONE);
-//void Texture::render(int x, int y, SDL_Renderer *rend, SDL_Rect* clip, double angle, SDL_Point* center, SDL_RendererFlip flip) {
-	SDL_Rect renderQuad = { x, y, mWidth, mHeight };	// Set rendering space and render to screen
+	SDL_Rect renderQuad = { x, y, m_Width, m_Height };	// Set rendering space and render to screen
 
 	if (clip != NULL) {									// Set clip rendering dimensions
 		renderQuad.w = clip->w;
 		renderQuad.h = clip->h;
 	}
 
-	SDL_RenderCopyEx(Game::Instance()->getRenderer(), mTexture, clip, &renderQuad, angle, center, flip);	// Render to screen
+	SDL_RenderCopyEx(Game::Instance()->getRenderer(), m_Texture, clip, &renderQuad, angle, center, flip);	// Render to screen
 }
-
+/*
+	Render to a point
+*/
 void Texture::renderP(int x, int y) {
-	SDL_Rect renderQuad = { x, y, mWidth, mHeight };	// Set rendering space and render to screen
+	SDL_Rect renderQuad = { x, y, m_Width, m_Height };	// Set rendering space and render to screen
 
-	SDL_RenderCopyEx(Game::Instance()->getRenderer(), mTexture, NULL, &renderQuad, 0, NULL, SDL_FLIP_NONE);	// Render to screen
+	SDL_RenderCopyEx(Game::Instance()->getRenderer(), m_Texture, NULL, &renderQuad, 0, NULL, SDL_FLIP_NONE);	// Render to screen
 }
-
-SDL_Texture* Texture::loadTexture(std::string path) {
-//SDL_Texture* Texture::loadTexture(std::string path, SDL_Renderer *rend) {
-	//The final texture
-	SDL_Texture* newTexture = NULL;
-
-	//Load image at specified path
-	SDL_Surface* loadedSurface = IMG_Load(path.c_str());
+/*
+	Load a texture give the path to the image loacation
+*/
+SDL_Texture* Texture::loadTexture(std::string path) {	
+	SDL_Texture* newTexture = NULL;																		// The final texture
+		
+	SDL_Surface* loadedSurface = IMG_Load(path.c_str());												// Load image at specified path
 	if (loadedSurface == NULL) {
 		printf("Unable to load image %s! SDL_image Error: %s\n", path.c_str(), IMG_GetError());
 	}
-	else {
-		//Create texture from surface pixels
-		newTexture = SDL_CreateTextureFromSurface(Game::Instance()->getRenderer(), loadedSurface);
+	else {		
+		newTexture = SDL_CreateTextureFromSurface(Game::Instance()->getRenderer(), loadedSurface);		// Create texture from surface pixels
 		if (newTexture == NULL) {
-			printf("Unable to create texture from %s! SDL Error: %s\n", path.c_str(), SDL_GetError());
+			printf("Unable to create texture from %s! SDL Error: %s\n", path.c_str(), SDL_GetError());	// Error message
 		}
 
-		SDL_FreeSurface(loadedSurface);	//Get rid of old loaded surface
+		SDL_FreeSurface(loadedSurface);																	// Get rid of old loaded surface
 	}
 
 	return newTexture;
 }
-
+/*
+	load Texture image from file given the path
+*/
 bool Texture::loadFromFile(std::string path) {
-//bool Texture::loadFromFile(std::string path, SDL_Renderer *rend) {
 	free();	// Get rid of preexisting texture
 
 	SDL_Texture* newTexture = NULL;							// The final texture
@@ -154,116 +149,94 @@ bool Texture::loadFromFile(std::string path) {
 	else {
 		//SDL_SetColorKey(loadedSurface, SDL_TRUE, SDL_MapRGB(loadedSurface->format, 0, 0xFF, 0xFF));	// Color key image TURNED OFF FOR BLUE VIRUS
 
-		newTexture = SDL_CreateTextureFromSurface(Game::Instance()->getRenderer(), loadedSurface);								// Create texture from surface pixels
+		newTexture = SDL_CreateTextureFromSurface(Game::Instance()->getRenderer(), loadedSurface);		// Create texture from surface pixels
 		if (newTexture == NULL) {
 			printf("Unable to create texture from %s! SDL Error: %s\n", path.c_str(), SDL_GetError());
 		}
-		else {
-			//Get image dimensions
-			mWidth = loadedSurface->w;
-			mHeight = loadedSurface->h;
+		else {			
+			m_Width = loadedSurface->w;	// Get image dimensions
+			m_Height = loadedSurface->h;
 		}
 
 		SDL_FreeSurface(loadedSurface);	// Get rid of old loaded surface
 	}
 
-	mTexture = newTexture;					// Return success
-	return mTexture != NULL;
+	m_Texture = newTexture;				// Return success
+	return m_Texture != NULL;
 }
 
-bool Texture::loadFromRenderedTextID(std::string textureText, std::string id, SDL_Color textColor, TTF_Font* font, bool textWrapped) {
-	//SDL_Texture* textXXX = 0;
-//bool Texture::loadFromRenderedTextID(SDL_Texture* text, std::string textureText, std::string id, SDL_Color textColor, TTF_Font* font, SDL_Renderer* renderer, bool textWrapped) {
+/*
+	Render text to a Texture
+*/
+bool Texture::renderTextToTexture(std::string textureText, SDL_Color textColor, TTF_Font* font, std::string id, bool textWrapped) {
 	free();	//Get rid of preexisting texture
 
 	if (!textWrapped)
-		textSurface = TTF_RenderText_Solid(font, textureText.c_str(), textColor);	//Render text surface
+ 		m_TextSurface = TTF_RenderText_Solid(font, textureText.c_str(), textColor);					// Render text surface
 	else
-		textSurface = TTF_RenderText_Blended_Wrapped(font, textureText.c_str(), textColor, 1000);
+		m_TextSurface = TTF_RenderText_Blended_Wrapped(font, textureText.c_str(), textColor, 1000);	// Render text surface with text wrapping
 
-	if (textSurface != NULL) {
-		//Create texture from surface pixels
-		mTexture = SDL_CreateTextureFromSurface(Game::Instance()->getRenderer(), textSurface);
-		if (mTexture == NULL) {
+	if (m_TextSurface != NULL) {		
+		m_Texture = SDL_CreateTextureFromSurface(Game::Instance()->getRenderer(), m_TextSurface);		// Create texture from surface pixels
+
+		if (m_Texture == NULL) {
 			printf("Unable to create texture from rendered text! SDL Error: %s\n", SDL_GetError());
 		}
-		else {
-			//Get image dimensions
-			mWidth = textSurface->w;
-			mHeight = textSurface->h;
+		else {			
+			m_Width = m_TextSurface->w;	// Get image dimensions
+			m_Height = m_TextSurface->h;
 		}
 
-		SDL_FreeSurface(textSurface);	//Get rid of old surface
+		SDL_FreeSurface(m_TextSurface);	// Get rid of old surface
 	}
 	else {
-		printf("loadFromRenderedText(): Unable to render text surface! SDL_ttf Error: %s\n", TTF_GetError());
+		printf("loadFromRenderedText(): Unable to render text surface! SDL_ttf Error: %s\n", TTF_GetError());	// Error message
 	}
 
-	//if (mTexture != 0) {
-	if (mTexture != 0) {
-		//m_textureMap[id] = mTexture;	// Add to texture map
-		m_textureMap[id] = mTexture;	// Add to texture map
-		return true;
-	}
+	if (id != "") {
+		if (m_Texture != 0) {
+			m_TextureMap[id] = m_Texture;	// Add to texture map
 
-	//std::cout << "NOT WORKING" << std::endl;
-	return false;
-}
-#ifdef _SDL_TTF_H
-bool Texture::loadFromRenderedText(std::string textureText, SDL_Color textColor, TTF_Font* font, bool textWrapped) {
-//bool Texture::loadFromRenderedText(std::string textureText, SDL_Color textColor, TTF_Font* font, SDL_Renderer* renderer, bool textWrapped) {
-	free();	//Get rid of preexisting texture
-
-	if (!textWrapped)
- 		textSurface = TTF_RenderText_Solid(font, textureText.c_str(), textColor);	//Render text surface
-	else
-		textSurface = TTF_RenderText_Blended_Wrapped(font, textureText.c_str(), textColor, 1000);
-
-	if (textSurface != NULL) {
-		//Create texture from surface pixels
-		mTexture = SDL_CreateTextureFromSurface(Game::Instance()->getRenderer(), textSurface);
-		if (mTexture == NULL) {
-			printf("Unable to create texture from rendered text! SDL Error: %s\n", SDL_GetError());
+			return true;
 		}
-		else {
-			//Get image dimensions
-			mWidth = textSurface->w;
-			mHeight = textSurface->h;
-		}
-
-		SDL_FreeSurface(textSurface);	//Get rid of old surface
-	}
-	else {
-		printf("loadFromRenderedText(): Unable to render text surface! SDL_ttf Error: %s\n", TTF_GetError());
 	}
 
-	return mTexture != NULL;	// Return success
+	return m_Texture != NULL;			// Return success
 }
-#endif
 
-
+/*
+	Free the texture from memory
+*/
 void Texture::free() {
 	// Free texture if it exists
-	if (mTexture != NULL) {
-		SDL_DestroyTexture(mTexture);
-		mTexture = NULL;
-		mWidth = 0;
-		mHeight = 0;
+	if (m_Texture != NULL) {
+		SDL_DestroyTexture(m_Texture);
+		m_Texture = NULL;
+		m_Width = 0;
+		m_Height = 0;
 	}
 }
 
+/*
+	Set texture colour
+*/
 void Texture::setColor(Uint8 red, Uint8 green, Uint8 blue) {
-	SDL_SetTextureColorMod(mTexture, red, green, blue);	// Modulate texture rgb
+	SDL_SetTextureColorMod(m_Texture, red, green, blue);	// Modulate texture rgb
 }
 
+/*
+	Set texture blend mode
+*/
 void Texture::setBlendMode(SDL_BlendMode blending) {
-	SDL_SetTextureBlendMode(mTexture, blending);		// Set blending function
+	SDL_SetTextureBlendMode(m_Texture, blending);		// Set blending function
 }
 
+/*
+	Flash the texture of an object
+	Older function before creating texture map
+*/
 int counter = 0;					// counter for changing alpha for flashing
 int alphaUp = 5, alphaDown = 5;		// turn the alpha value up or down
-
-//void LTexture::flashGameObject(int &alpha, bool &flash, int rate, int times) {
 void Texture::flashGameObject(int rate, int times) {
 	if (getFlash()) {
 		if (alphaDown > 5) {
@@ -290,11 +263,14 @@ void Texture::flashGameObject(int rate, int times) {
 	counter++;
 }
 
+/*
+	Modify the alpha of a texture
+*/
 void Texture::modifyAlpha(Uint8 alpha, std::string id) {
 	if (id == "")
-		SDL_SetTextureAlphaMod(mTexture, alpha);			// Modulate texture alpha
-	else
-		SDL_SetTextureAlphaMod(m_textureMap[id], alpha);
+		SDL_SetTextureAlphaMod(m_Texture, alpha);			// Modulate texture alpha
+	else 
+		SDL_SetTextureAlphaMod(m_TextureMap[id], alpha);
 }
 
 /*
@@ -303,55 +279,60 @@ void Texture::modifyAlpha(Uint8 alpha, std::string id) {
 */
 void Texture::speedBoostText(std::string textureText) {
 	free();
-//void Texture::speedBoostText(std::string textureText, SDL_Renderer* rend) {
-	if (!loadFromRenderedText(textureText, { 0, 255, 0, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 13), true)) {		// Green Text
+
+	//if (!loadFromRenderedText(textureText, { 0, 255, 0, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 13), true)) {		// Green Text
+	if (!renderTextToTexture(textureText, { 0, 255, 0, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 13), "", true)) {		// Green Text
 		printf("speedBoostText(): Unable to render Speed Boost User Interface Text Texture!\n");
 	}
 }
+
 /*
 	2017/02/19:
 	Function to indicate how many rockets a player has left
 */
 void Texture::numRocketsLeft(std::string textureText) {
 	free();
-//void Texture::numRocketsLeft(std::string textureText, SDL_Renderer* rend) {
-	if (!loadFromRenderedText(textureText, { 0, 255, 0, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 36))) {		// Green Text
+
+	//if (!loadFromRenderedText(textureText, { 0, 255, 0, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 36))) {		// Green Text
+	if (!renderTextToTexture(textureText, { 0, 255, 0, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 36))) {		// Green Text
 		printf("numRocketsLeft(): Unable to render Num Rockets Left User Interface Text Texture!\n");
 	}
 }
-/*
+
+/* 
 	2017-02-15:
 	Function to render the players scores, the FPS, and the current game level
 */
 void Texture::UIText(std::string textureText, int fontSize) {
 	free();
-//void Texture::UIText(std::string textureText, SDL_Renderer* rend) {
-	free();
-	if (!loadFromRenderedText(textureText, { 0, 255, 0, 255 }, TTF_OpenFont("Fonts/Retro.ttf", fontSize))) {		// Green Text
+
+	//if (!loadFromRenderedText(textureText, { 0, 255, 0, 255 }, TTF_OpenFont("Fonts/Retro.ttf", fontSize))) {		// Green Text
+	if (!renderTextToTexture(textureText, { 0, 255, 0, 255 }, TTF_OpenFont("Fonts/Retro.ttf", fontSize))) {		// Green Text
 		printf("Unable to render UIText() User Interface Text Texture!\n");
 	}
-
-	//render((SCREEN_WIDTH - 150) / 2, 8, rend);
 }
+
 /*
 	2017-02-15:
 	Like the UIText function, only it alters font colour depending on if the timer is running out or not
 */
 void Texture::UITextTimer(std::string timerText, unsigned int Timer) {
 	free();
-//void Texture::UITextTimer(std::string timerText, SDL_Renderer* rend, unsigned int Timer) {
+
 	// Time running out change colour to red
 	if (Timer >= 0 && Timer <= 5) {
 		setFlash(true);
 
-		if (!loadFromRenderedText(timerText, { 255, 0, 0, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 20))) {		// Red Text
+		//if (!loadFromRenderedText(timerText, { 255, 0, 0, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 20))) {		// Red Text
+		if (!renderTextToTexture(timerText, { 255, 0, 0, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 20))) {		// Red Text
 			printf("Unable to render UITextTimer() User Interface Timer Text Texture!\n");
 		}
 	}
 	else {
 		setFlash(false);
 
-		if (!loadFromRenderedText(timerText, { 0, 255, 0, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 20))) {		// Green Text
+		//if (!loadFromRenderedText(timerText, { 0, 255, 0, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 20))) {		// Green Text
+		if (!renderTextToTexture(timerText, { 0, 255, 0, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 20))) {		// Green Text
 			printf("Unable to render loadFromRenderedText() User Interface Timer Text Texture!\n");
 		}
 	}
@@ -364,13 +345,13 @@ void Texture::UITextTimer(std::string timerText, unsigned int Timer) {
 */
 
 //std::string previous1, previous2, previous3;
-void Texture::UITextPlayerMessage(std::string playerMessage, int type) {
-
+void Texture::UITextPlayerMessage(std::string playerMessage, int type) {	
 	free();
-//void Texture::UITextPlayerMessage(std::string playerMessage, SDL_Renderer* rend, int type) {
+
 	if (type == 0) {
 		//if (previous1 != playerMessage) {
-			if (!loadFromRenderedText(playerMessage, { 65, 210, 240, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 20))) {	// Blue Text For General Message
+		//if (!loadFromRenderedText(playerMessage, { 65, 210, 240, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 20))) {	// Blue Text For General Message
+		if (!renderTextToTexture(playerMessage, { 65, 210, 240, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 20))) {	// Blue Text For General Message
 				printf("Unable to render General Info Message text texture!\n");
 			}
 		//}
@@ -378,7 +359,8 @@ void Texture::UITextPlayerMessage(std::string playerMessage, int type) {
 	}
 	else if (type == 1) {
 		//if (previous2 != playerMessage) {
-			if (!loadFromRenderedText(playerMessage, { 240, 210, 65, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 20))) {	// Gold Text For Player 1
+		//if (!loadFromRenderedText(playerMessage, { 240, 210, 65, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 20))) {	// Gold Text For Player 1
+		if (!renderTextToTexture(playerMessage, { 240, 210, 65, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 20))) {	// Gold Text For Player 1
 				printf("Unable to render player 1 Message text texture!\n");
 			}
 		//}
@@ -386,7 +368,8 @@ void Texture::UITextPlayerMessage(std::string playerMessage, int type) {
 	}
 	else if (type == 2) {
 		//if (previous3 != playerMessage) {
-			if (!loadFromRenderedText(playerMessage, { 0, 255, 150, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 20))) {	// Green Text For Player 2
+			//if (!loadFromRenderedText(playerMessage, { 0, 255, 150, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 20))) {	// Green Text For Player 2
+			if (!renderTextToTexture(playerMessage, { 0, 255, 150, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 20))) {	// Green Text For Player 2
 				printf("Unable to render player 2 Message text texture!\n");
 			}
 		//}
@@ -394,47 +377,39 @@ void Texture::UITextPlayerMessage(std::string playerMessage, int type) {
 	}
 	//else if (type == MAP_ALERT) {
 	else if (type == 3) {
-		if (!loadFromRenderedText(playerMessage, { 0, 20, 200, 240 }, TTF_OpenFont("Fonts/Retro.ttf", 22))) {		// Blue For Map Warning
+		//if (!loadFromRenderedText(playerMessage, { 0, 20, 200, 240 }, TTF_OpenFont("Fonts/Retro.ttf", 22))) {		// Blue For Map Warning
+		if (!renderTextToTexture(playerMessage, { 0, 20, 200, 240 }, TTF_OpenFont("Fonts/Retro.ttf", 22))) {		// Blue For Map Warning
 			printf("Unable to render player 2 Message text texture!\n");
 		}
 	}
 }
 
+/*
+	Custom render function for weapon indicator in HUD
+*/
 void Texture::weaponIndicator(std::string textureID, int x) {
-	//void Texture::weaponIndicator(std::string textureID, int x, SDL_Renderer* rend) {
 	renderMap(textureID, x + 5, 5, 50, 48);
 }
-
+/*
+	Custom render function for input text
+*/
 void Texture::loadInputText(std::string input) {
-	//free();
-	//void Texture::loadInputText(std::string input, SDL_Renderer* rend) {
-	//SDL_Texture* inputTextTexture = 0;
 	Texture* inputTextTexture = 0;
-	inputTextTexture->loadFromRenderedTextID(input, "inputTextID", { 255, 255, 255, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 20), true);		// Lives in top left corner
-}
-
-void Texture::loadEnterNameText(std::string nameText) {
-	free();
-	//void Texture::loadEnterNameText(std::string nameText, SDL_Renderer* rend) {
-	//SDL_Texture enterName = 0;	// The actual hardware texture
-	Texture* enterName = 0;	// The actual hardware texture
-	enterName->loadFromRenderedTextID(nameText, "enterNameID", { 255, 255, 255, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 20), true);		// Lives in top left corner
-
+	//inputTextTexture->loadFromRenderedTextID(input, "inputTextID", { 255, 255, 255, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 20), true);		// Lives in top left corner
+	inputTextTexture->renderTextToTexture(input, { 255, 255, 255, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 20), "inputTextID", true);		// Lives in top left corner
 }
 /*
-SDL_Color Texture::getFontColour() {
-return txtColour;
-}
-void Texture::setFontColour(SDL_Color f) {
-txtColour = f;
-}
+	Custom render function for rendering text for name
 */
-void Texture::clearMedia() {
+void Texture::loadEnterNameText(std::string nameText) {
+	free();
+	Texture* enterName = 0;	// The actual hardware texture
 
+	//enterName->loadFromRenderedTextID(nameText, "enterNameID", { 255, 255, 255, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 20), true);		// Lives in top left corner
+	enterName->renderTextToTexture(nameText, { 255, 255, 255, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 20), "enterNameID", true);		// Lives in top left corner
 }
 
 const int NUM_TEXTURES2 = 48;
-
 // 2D Array of textures, with path to file, texture ID, and description for error messages
 std::string textures2[NUM_TEXTURES2][3] = {
 	// Players
@@ -444,7 +419,7 @@ std::string textures2[NUM_TEXTURES2][3] = {
 	// Game
 	{ "Art/Prof.png", "profID", "Professor" },										// Map texture to show the players current position inside the professor
 	{ "Art/Player1ShipBlue30.png", "mapShipID", "Blue Mini Map Ship" },				// Map texture to show the players current position inside the professor
-
+	
 	// Explosions
 	{ "Art/Explosion.png", "explosionID", "Explosion" },							// 2017/03/22 Added Explosion animation
 	{ "Art/ExplosionBlood.png", "eplosionBloodID", "Blood Explosion" },				// 2017/03/22 Added Blood Explosion animation
@@ -464,9 +439,9 @@ std::string textures2[NUM_TEXTURES2][3] = {
 
 	// Init the objects to give information on
 	{ "Art/EnemyShip.png", "enemyShipID", "Enemy Ship Info" },
-	{ "Art/VirusGreen.png", "greenVirusID", "Green Virus Info" },
-	{ "Art/VirusOrange.png", "orangeVirusID", "Orange Virus Info" },
-	{ "Art/VirusBlue.png", "blueVirusID", "Blue Virus Info" },
+	{ "Art/VirusGreen.png", "greenVirusInfoID", "Green Virus Info" },				// 2017/03/26 Renamed ID, same one used for sprite sheet
+	{ "Art/VirusOrange.png", "orangeVirusInfoID", "Orange Virus Info" },			// 2017/03/26 Renamed ID, same one used for sprite sheet
+	{ "Art/VirusBlue.png", "blueVirusInfoID", "Blue Virus Info" },					// 2017/03/26 Renamed ID, same one used for sprite sheet
 
 	// Weapons
 	{ "Art/SawBlue.png", "sawID", "Saw" },											// 2017/03/18 Added Saw texture to map
@@ -507,12 +482,10 @@ std::string textures2[NUM_TEXTURES2][3] = {
 	{ "Art/EnemyVirus_SpriteSheet_Orange_Small.png", "orangeVirusSmallID", "Small Orange Virus Sprite Sheet" },
 	{ "Art/EnemyVirus_SpriteSheet_Blue_Small.png", "blueVirusSmallID", "Small Blue Virus Sprite Sheet" }
 };
-
+/*
+	Load the Texture media
+*/
 bool Texture::loadTextureMedia() {
-	//bool Texture::loadTextureMedia(SDL_Renderer* rend) {
-
-	lastTime = SDL_GetTicks();
-
 	bool success = true;
 
 	// Load the textures stored in the textures array
@@ -525,4 +498,99 @@ bool Texture::loadTextureMedia() {
 
 	return success;
 }
+
+
+
+
+
+/*
+//Clear the Texture media
+
+void Texture::clearMedia() {	
+	for (int i = 0; i < NUM_TEXTURES2; i++) {
+		clearFromTextureMap(textures2[i][1]);	// 2017/03/26 Clear the ID field of texture information array
+	}	
+	//clearTextureMap();							// 2017/03/26 Clear the entire texture map
+}
+
+
+// 2017/03/26 Removed, unused
+
+void Texture::draw(std::string id, int x, int y, int width, int height, SDL_RendererFlip flip) {
+//void Texture::draw(std::string id, int x, int y, int width, int height, SDL_Renderer* rend, SDL_RendererFlip flip) {
+SDL_Rect renderQuad = { x, y, mWidth, mHeight };	// Set rendering space and render to screen
+SDL_Rect srcRect;
+SDL_Rect destRect;
+
+srcRect.x = 0;
+srcRect.y = 0;
+srcRect.w = destRect.w = width;
+srcRect.h = destRect.h = height;
+destRect.x = x;
+destRect.y = y;
+
+SDL_RenderCopyEx(Game::Instance()->getRenderer(), m_textureMap[id], &srcRect, &destRect, 0, 0, flip);
+}
+
+// Get the colour for the texture
+
+SDL_Color Texture::getFontColour() {
+return txtColour;
+}
+void Texture::setFontColour(SDL_Color f) {
+txtColour = f;
+}
+
+//SDL_Texture* textXXX = 0;
+//bool Texture::loadFromRenderedTextID(SDL_Texture* text, std::string textureText, std::string id, SDL_Color textColor, TTF_Font* font, SDL_Renderer* renderer, bool textWrapped) {
+
+//SDL_Texture* Texture::loadTexture(std::string path, SDL_Renderer *rend) {
+
+//bool Texture::loadFromFile(std::string path, SDL_Renderer *rend) {
+
+//void Texture::flashGameObject(int &alpha, bool &flash, int rate, int times) {
+
+// render(int x, int y, SDL_Renderer *rend, SDL_Rect* clip = NULL, double angle = 0.0, SDL_Point* center = NULL, SDL_RendererFlip flip = SDL_FLIP_NONE);
+//void Texture::render(int x, int y, SDL_Renderer *rend, SDL_Rect* clip, double angle, SDL_Point* center, SDL_RendererFlip flip) {
+
+//bool Texture::load(std::string fileName, std::string id, SDL_Renderer* rend) {
+
+bool Texture::loadFromRenderedText(std::string textureText, SDL_Color textColor, TTF_Font* font, bool textWrapped) {
+
+
+//	Render text to a texture in the map
+bool Texture::loadFromRenderedTextID(std::string textureText, std::string id, SDL_Color textColor, TTF_Font* font, bool textWrapped) {
+free();	//Get rid of preexisting texture
+
+if (!textWrapped)
+textSurface = TTF_RenderText_Solid(font, textureText.c_str(), textColor);					// Render text surface
+else
+textSurface = TTF_RenderText_Blended_Wrapped(font, textureText.c_str(), textColor, 1000);	// Render text surface with text wrapping
+
+if (textSurface != NULL) {
+mTexture = SDL_CreateTextureFromSurface(Game::Instance()->getRenderer(), textSurface);		// Create texture from surface pixels
+if (mTexture == NULL) {
+printf("Unable to create texture from rendered text! SDL Error: %s\n", SDL_GetError());	// Error message
+}
+else {
+mWidth = textSurface->w;	// Get image dimensions
+mHeight = textSurface->h;
+}
+
+SDL_FreeSurface(textSurface);	// Clear old surface
+}
+else {
+printf("loadFromRenderedText(): Unable to render text surface! SDL_ttf Error: %s\n", TTF_GetError());	// Error message
+}
+
+if (mTexture != 0) {
+m_textureMap[id] = mTexture;	// Add to texture map
+
+return true;
+}
+
+//std::cout << "NOT WORKING" << std::endl;
+return false;
+}
+*/
 

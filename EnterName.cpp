@@ -31,19 +31,23 @@ bool EnterName::loadNameMedia() {
 	else {
 		SDL_Color textColour = { 0,0,0 };
 
-		if (!gNameMenuTextTexture1.loadFromRenderedText("Enter Name", textColour, TTF_OpenFont("Fonts/Retro.ttf", 100))) {
+		//if (!gNameMenuTextTexture1.loadFromRenderedText("Enter Name", textColour, TTF_OpenFont("Fonts/Retro.ttf", 100))) {
+		if (!gNameMenuTextTexture1.renderTextToTexture("Enter Name", textColour, TTF_OpenFont("Fonts/Retro.ttf", 100))) {
 			printf("Failed to render Enter Name Title text texture!\n");
 			success = false;
 		}
-		if (!gNameMenuTextTexture2.loadFromRenderedText("Menu", textColour, gFont)) {	// can take out the new textColor objects
+		//if (!gNameMenuTextTexture2.loadFromRenderedText("Menu", textColour, gFont)) {	// can take out the new textColor objects
+		if (!gNameMenuTextTexture2.renderTextToTexture("Menu", textColour, gFont)) {	// can take out the new textColor objects
 			printf("Failed to render Entername to Menu text texture!\n");
 			success = false;
 		}
-		if (!gNameMenuTextTexture3.loadFromRenderedText("Reset", textColour, gFont)) {
+		//if (!gNameMenuTextTexture3.loadFromRenderedText("Reset", textColour, gFont)) {
+		if (!gNameMenuTextTexture3.renderTextToTexture("Reset", textColour, gFont)) {
 			printf("Failed to render Reset Button text texture!\n");
 			success = false;
 		}
-		if (!gNameMenuTextTexture4.loadFromRenderedText("Please Enter Your Name: ", textColour, gFont)) {
+		//if (!gNameMenuTextTexture4.loadFromRenderedText("Please Enter Your Name: ", textColour, gFont)) {
+		if (!gNameMenuTextTexture4.renderTextToTexture("Please Enter Your Name: ", textColour, gFont)) {
 			printf("Failed to render Enter Name text texture!\n");
 			success = false;
 		}
@@ -108,7 +112,7 @@ void EnterName::draw() {
 	SDL_RenderClear(Game::Instance()->getRenderer());
 
 	for (int i = 0; i < TOTAL_ENTER_NAME_BUTTONS; ++i) {
-		gNameButtons[i].render(gButtonSpriteSheetTexture4, &gSpriteClipsName[gNameButtons[i].mCurrentSprite]);
+		gNameButtons[i].render(gButtonSpriteSheetTexture4, &gSpriteClipsName[gNameButtons[i].getButtonSprite()]);	//  2017/03/24 Use setter method
 	}
 
 	gNameMenuTextTexture1.render((SCREEN_WIDTH - gNameMenuTextTexture1.getWidth()) / 2, (SCREEN_HEIGHT - gNameMenuTextTexture1.getHeight()) / 12);

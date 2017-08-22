@@ -178,5 +178,5 @@ void BloodCell::moveStalker(int targetX, int targetY) {
 void BloodCell::render() {
 	SDL_Rect renderQuad = { getX(), getY(), getWidth(), getHeight() };	// Set rendering space and render to screen
 
-	SDL_RenderCopyEx(Game::Instance()->getRenderer(), Texture::Instance()->getTexture(getTextureID()), NULL, &renderQuad, getAngle() * mRotationDirection, NULL, SDL_FLIP_NONE);	// Render to screen
+	SDL_RenderCopyEx(Game::Instance()->getRenderer(), Texture::Instance()->getTexture(getTextureID()), NULL, &renderQuad, getAngle() * m_RotationDirection, NULL, SDL_FLIP_NONE);	// Render to screen
 }

@@ -24,7 +24,9 @@ public:
 
 	virtual void move(int x, int y);	// Tracker movement, scores move towards players who earned the points
 
-	virtual void destroy() {};
+	virtual void destroy() {
+		GameObject::destroy();			// Inherit destroy from Game Object
+	};
 
 	/* 
 		2017/03/21 Updated render function with different alpha values for score for kills indicator text

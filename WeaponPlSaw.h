@@ -1,19 +1,19 @@
-/*
-	2017/02/21 Added check so only Ninja Stars and Saws split viruses
-	2017/01/23 Fixed saw spawning, now appearing/disappearing
-	2017/01/20 Added spawnSaw() function to Game class to create Saw Weapon for player
-	2017/01/17 Added separate class for saw weapon Saw.h (renamed WeaponPlSaw.h)
-	2017/01/09 Saw Weapon
-*/
-/*
-	SAW:
+/*	---------------------------------------------------------------------------------------------------------------------
+	- Name:					WeaponPlSaw.h
+	- Description:			Header file for the Weapon Player Saw class.
+	- Information:			The players saw weapon can be used to cut Enemy Virus enemies in half. The smaller virus
+							objects are then more manageable for White Blood Cells to destroy. Saws are close range
+							weapons, the player can not be damaged while using the saw, as other objects are deflected
+							with it. It is limited to close range which makes it less useful than Ninja Stars for
+							destroying Orange Virus enemies, that explode on impact.
 
-	The players saw weapon can be used to cut Enemy Virus enemies in half. The smaller virus
-	objects are then more managable for White Blood Cells to destroy. Saws are close range
-	weapons, the player can not be damaged while using the saw, as other objects are deflected
-	with it. It is limited to close range which makes it less usefull than Ninja Stars for
-	destroying Orange Virus enemies, that explode on impact.
-*/
+	- Log:
+		2017/02/21		Added check so only Ninja Stars and Saws split viruses
+		2017/01/23		Fixed saw spawning, now appearing/disappearing
+		2017/01/20		Added spawnSaw() function to Game class to create Saw Weapon for player
+		2017/01/17		Added separate class for saw weapon Saw.h (renamed WeaponPlSaw.h)
+		2017/01/09		Saw Weapon
+	---------------------------------------------------------------------------------------------------------------------*/
 
 #ifndef CIRCULAR_SAW_H
 #define CIRCULAR_SAW_H

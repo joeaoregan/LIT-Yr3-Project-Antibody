@@ -1,4 +1,4 @@
-/*	---------------------------------------------------------------------------------------------------------------------
+ /*	---------------------------------------------------------------------------------------------------------------------
 	- Name:					EnemyBoss.h
 	- Description:			Header file for the EnemyBoss object which is a sub-type of Enemy but with more functionality
 	- Information:			Contains constructor and destructor for enemy boss object and all functionality.
@@ -107,8 +107,7 @@ public:
 				countBossMoves();
 				//Game::Instance()->spawnEnemyLaser(getX() + 70, getY() + 225, BLUE_VIRUS_BULLET);
 				//Game::Instance()->spawnEnemyLaser(getX() + 180, getY() + 225, BLUE_VIRUS_BULLET);
-			}
-			
+			}			
 		}
 		if (moveUp) {
 			setY(getY() - 3);
@@ -154,7 +153,6 @@ public:
 		}
 
 		//m_x += m_xVel;
-
 		//else if (getX() <= SCREEN_WIDTH - 330 && !moveRight) {
 		//	setX(getX() - getVelX() + 5);
 		//	if (getX() <= 0) moveRight = true;

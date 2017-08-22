@@ -10,6 +10,8 @@
 
 class HUD {
 public:
+	/* VARIABLES */
+
 	// Viewports
 	//SDL_Rect gameVP;	// Main game screen view port
 	SDL_Rect UIVP;		// Menu below main game screen view port
@@ -22,15 +24,13 @@ public:
 	SDL_Rect boostVP2;	// Indicates if Player 2 speed boost is active
 
 	// Player variables to display information for
-	int scoreP1, scoreP2;
-	bool aliveP1, aliveP2;
-	int livesP1, livesP2;
-	int gradeP1, gradeP2;
-	int rocketsP1, rocketsP2;
-	bool speedP1, speedP2;
-	float timerP1, timerP2;
-
-	void getPlayerInfo(bool a1, bool a2, int l1, int l2, int g1, int g2, int r1, int r2, bool sp1, bool sp2, float t1, float t2);
+	int scoreP1, scoreP2;		// Score for Player
+	bool aliveP1, aliveP2;		// Player is alive or not
+	int livesP1, livesP2;		// Number of lives for each player
+	int gradeP1, gradeP2;		// The current grade of the laser weapon (single, double, or triple laser beams)
+	int rocketsP1, rocketsP2;	// The number of rockets for each player
+	bool speedP1, speedP2;		// Is Players speed boost active
+	float timerP1, timerP2;		// Timer for speedboost
 
 	int weaponScrolling;				// Scroll the image for current default laser weapon // 2017/03/20 Moved from Game class
 
@@ -41,9 +41,9 @@ public:
 	Texture gPowerUpRocketTexture;		// Texture for Rocket power up
 	Texture gNumRocketsTextTexture1;	// Indicate the number of rockets for player 1
 	Texture gNumRocketsTextTexture2;	// Indicate the number of rockets for player 2
-	Texture gCreatedByTextTexture1;		// Created by message at bottom of screen for demo
-	Texture gCreatedByTextTexture2;		// Created by message at bottom of screen for demo
-	Texture gCreatedByTextTexture3;		// Created by message at bottom of screen for demo
+	Texture gCreatedByTextTexture1;		// Created by message at bottom of screen for demo - ANTIBODY
+	Texture gCreatedByTextTexture2;		// Created by message at bottom of screen for demo - A GAME BY
+	Texture gCreatedByTextTexture3;		// Created by message at bottom of screen for demo - JOE O'REGAN, SEAN HORGAN, BRIAN RYAN 
 	Texture gP1LivesTexture;			// Player 1 Small ship for number of lives
 	Texture gP2LivesTexture;			// Player 2 Small Ship for number of lives
 	Texture gP1ScoreTextTexture;		// Player 1 current score
@@ -51,26 +51,30 @@ public:
 	//Texture gTimeTextTexture;			// Countdown time displayed in game screen
 	//Texture gNumRocketsTextTexture2;	// Indicate the number of rockets for player 2
 
-	bool miniMap;						// 2017/03/20 Moved from Game class, decide between full and mini map
+	/* FUNCTIONS */
 
-	void render();						// 2017/03/20 Combine all Heads Up Display rendering to one main render function
-	void shipPositionOnMap();					// 2017/03/20 Positions on mini map
+	void getPlayerInfo(bool a1, bool a2, int l1, int l2, int g1, int g2, int r1, int r2, bool sp1, bool sp2, float t1, float t2);	// Import information from Game class
 
-	bool loadLevelStuff();
-	void resetHUD();
-	void closeLevelStuff();
+	bool miniMap;															// 2017/03/20 Moved from Game class, decide between full and mini map
 
-	void rendPlayerLives(int livesP1, int livesP2 = 0);
-	void createdByText();
+	void render();															// 2017/03/20 Combine all Heads Up Display rendering to one main render function
+	void shipPositionOnMap();												// 2017/03/20 Positions on mini map
 
-	void rocketIndicator(int numRockets, int player, bool alive);
-	void speedBoostIndicator(bool boost);
+	bool loadHUDMedia();													// HUD media, Set viewports, render text textures
+	void resetHUD();														// Reset the Heads Up Display, including map viewport, and scrolling
+	void closeLevelStuff();													// Free Heads Up Display media from memory
+
+	void rendPlayerLives(int livesP1, int livesP2 = 0);						// Display the number of lives for each player
+	void createdByText();													// Display animated Game Creators text
+
+	void rocketIndicator(int numRockets, int player, bool alive);			// Display the number of rockets in each players inventory
+	void speedBoostIndicator(bool boost);									// Indicate Players speed boost is active and show timer
 	void playerScore(bool twoPlayer, int scoreP1, int scoreP2 = 0);			// 2017-02-23 Player 2 score initialised to 0 to allow reusing the function for single player game
 	//void gameTime(int time, SDL_Renderer *rend);
-	void displayLevelNum(int levelNum);
+	void displayLevelNum(int levelNum);										// Display the current level number
 
-	void percentageNinjaStarKills(bool twoPlayer, int ninja1, int ninja2); // 2017/03/01 Track a kill rate for ninja stars
-	void playerScoresCounter(bool twoPlayer, int p1, int p2);
+	void percentageNinjaStarKills(bool twoPlayer, int ninja1, int ninja2);	// 2017/03/01 Track a kill rate for ninja stars
+	void playerScoresCounter(bool twoPlayer, int p1, int p2);				// The 
 };
 
 #endif

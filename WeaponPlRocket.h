@@ -1,3 +1,8 @@
+/*	---------------------------------------------------------------------------------------------------------------------
+	- Name:					WeaponPlRocket.h
+	- Description:			Header file for the Weapon Player Rocket class.
+	- Information:			Contains all function definitions and variables for the Player Weapon Rocket class.
+----------------------------------------------------------------------------------------------------------------------*/
 #ifndef ROCKET_H
 #define ROCKET_H
 
@@ -11,6 +16,8 @@ public:
 	~WeaponPlRocket();											// Destructor
 
 	Particle* particlesR[TOTAL_PARTICLES_R];					// The particles
+
+	/* METHODS */
 	bool getDrawParticle() const { return drawRocketParticle; }	// Return the rockets particles
 	void setDrawParticle(bool p) { drawRocketParticle = p; }	// Set the rockets particles
 	void renderRocketParticles();								// Draw the rockets particles
@@ -26,8 +33,6 @@ public:
 		renderRocketParticles();
 	};
 	
-	//virtual void render(Texture &texture, int degrees = 0);		// Render the rocket, with degrees for upward and downward angle
-
 	virtual void move();										// Moves the Rocket	
 	virtual void destroy() {									// Destroy the object when it moves off screen
 		GameObject::destroy();
@@ -37,3 +42,5 @@ private:
 };
 
 #endif
+
+//virtual void render(Texture &texture, int degrees = 0);		// Render the rocket, with degrees for upward and downward angle

@@ -1,35 +1,31 @@
-/*
-	2017/03/18 Added the Ninja Stars texture to the texture map in Texture class
-				Ninja star rotations are updated in the move() function instead of setRotatingAngle() in Game class
-				A texture ID has been added for both Player 1 and Player 2 types of ninja star
-				And the angle of rotation is now assigned to the Ninja Star class instead of the Texture class
-				Destroy function is inherited from Game Object base class
-	2017/03/04 Moved smaller class files functionality into their headers
-	2017/02/10 Fixed velocity for ninja star after spawning, ninja stars are no longer static
-	2017/01/30 Added rotation angle to constructors for Textures that rotate
-	2017/01/25 Fixed Ninja Star scoring for Player 2
-	2017/01/20 Fixed problem for ninja stars only scoring for Player 1
-	2017/01/17 Added collision detection for Ninja Stars
-	2017/01/09 Ninja Star Weapon
-				Added spawnNinjaStar() function to create ninja star weapon
-*/
-/*
-	NINJA STAR (Renamed WeaponPlNinjaStar.h)
+/*	---------------------------------------------------------------------------------------------------------------------
+	- Name:					WeaponPlNinjaStar.h
+	- Description:			Header file for the Weapon Player Ninja Star class.
+	- Information:			Ninja stars are rotating objects, and they have a slower speed than Lasers but a higher
+							points value. Like lasers the player automatically has unlimited ninja stars. Ninja stars
+							can be used to cut Enemy Virus in two. Each player has a differnt colour ninja star, and
+							sound effect.
 
-	*** This class contains the functions for spawning, rendering, and moving ninja stars. *** NEED TO MOVE THIS FUNCTIONALITY BACK, my bad, Joe
-	Updated: 2017/03/18 Rendering functionality has been moved back to class
-
-	Ninja stars are rotating objects, and they have a slower speed than Lasers but a higher
-	points value. Like lasers the player automatically has unlimited ninja stars. Ninja stars
-	can be used to cut Enemy Virus in two. Each player has a differnt colour ninja star, and
-	sound effect.
-*/
-/*
-	2017/02/21 Added check so only Ninja Stars and Saws split viruses
-	2017/01/30 Added rotation angle to constructors for Textures that rotate
-	2017/01/17 Added player decision to spawnNinjaStar() function - determines player to spawn for and their coords
-	2017/01/09 Add Ninja Star weapon class
-*/
+	- Log:
+		2017/03/18		Added the Ninja Stars texture to the texture map in Texture class
+						Ninja star rotations are updated in the move() function instead of setRotatingAngle() in Game class
+						A texture ID has been added for both Player 1 and Player 2 types of ninja star
+						And the angle of rotation is now assigned to the Ninja Star class instead of the Texture class
+						Destroy function is inherited from Game Object base class
+		2017/03/04		Moved smaller class files functionality into their headers
+		2017/02/10		Fixed velocity for ninja star after spawning, ninja stars are no longer static
+		2017/01/30		Added rotation angle to constructors for Textures that rotate
+		2017/01/25		Fixed Ninja Star scoring for Player 2
+		2017/01/20		Fixed problem for ninja stars only scoring for Player 1
+		2017/01/17		Added collision detection for Ninja Stars
+		2017/01/09		Ninja Star Weapon
+						Added spawnNinjaStar() function to create ninja star weapon
+		2017/02/21		Added check so only Ninja Stars and Saws split viruses
+		2017/01/30		Added rotation angle to constructors for Textures that rotate
+		2017/01/17		Added player decision to spawnNinjaStar() function - determines player to spawn for and their coords
+		2017/01/09		Add Ninja Star weapon class
+		2017/03/18		Rendering functionality has been moved back to class
+	----------------------------------------------------------------------------------------------------------------------*/
 
 #ifndef NINJA_STAR_H
 #define NINJA_STAR_H

@@ -1,12 +1,12 @@
-/*
-	2017/03/08 Added Settings Menu class
-*/
-/*
-	SETTINGS MENU:
+/*----------------------------------------------------------------------------------------------------------------------------
+	- Name:					HighScores.cpp
 
-	This function handles the objects for the settings menu. The separate button class
-	handles the transitions.
-*/
+	- Description:			Contains functions for reading the data in the highscore.txt file and rendering this data back to the highscore window.
+							Function for loading all the media needed to render the window
+							Function for drawing all of the rendered images/text to the window
+	- Log:
+		2017/03/08			Added HighScores menu class
+------------------------------------------------------------------------------------------------------------------------------*/
 
 #include "HighScores.h"
 #include <SDL_ttf.h>
@@ -33,11 +33,13 @@ bool HighScores::loadHighScoresMedia() {
 	else {
 		SDL_Color textColour = { 0,0,0 };
 
-		if (!gScoresMenuTextTexture1.loadFromRenderedText("HIGH SCORES", textColour, TTF_OpenFont("Fonts/Retro.ttf", 100))) {
+		//if (!gScoresMenuTextTexture1.loadFromRenderedText("HIGH SCORES", textColour, TTF_OpenFont("Fonts/Retro.ttf", 100))) {
+		if (!gScoresMenuTextTexture1.renderTextToTexture("HIGH SCORES", textColour, TTF_OpenFont("Fonts/Retro.ttf", 100))) {
 			printf("Failed to render High Scores text texture!\n");
 			success = false;
 		}
-		if (!gScoresMenuTextTexture2.loadFromRenderedText("Main Menu", textColour, gFont)) {
+		//if (!gScoresMenuTextTexture2.loadFromRenderedText("Main Menu", textColour, gFont)) {
+		if (!gScoresMenuTextTexture2.renderTextToTexture("Main Menu", textColour, gFont)) {
 			printf("Failed to render Main Menu text texture!\n");
 			success = false;
 		}
@@ -68,7 +70,7 @@ bool HighScores::loadHighScoresMedia() {
 
 		//gReturnToMenu.setPosition((SCREEN_WIDTH - BUTTON_WIDTH) / 2, gScoresMenuTextTexture2.getY());
 		//gReturnToMenu.setPosition(gScoresMenuTextTexture2.getX(), gScoresMenuTextTexture2.getY());
-		gScoressMenuButtons[0].setPosition((SCREEN_WIDTH - BUTTON_WIDTH) / 2, gScoresMenuTextTexture2.getY());
+		gScoresMenuButtons[0].setPosition((SCREEN_WIDTH - BUTTON_WIDTH) / 2, gScoresMenuTextTexture2.getY());
 	}
 
 	readScoresFromTextFile();			// 2017/03/21 Read in the scores stored in external text file
@@ -132,14 +134,15 @@ void readScoresFromTextFile() {
 	if (everyScoreReadInIterator <= 0) highScores << "No scores!";
 
 	// Output the scores and names as 1 wrapped text string
-	scoreTextTexture.loadFromRenderedText(highScores.str().c_str(), { 50, 50, 255, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 20), true);
+	//scoreTextTexture.loadFromRenderedText(highScores.str().c_str(), { 50, 50, 255, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 20), true);
+	scoreTextTexture.renderTextToTexture(highScores.str().c_str(), { 50, 50, 255, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 20), "", true);
 	//scoreText.loadFromRenderedText("test", { 100, 100, 255, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 20), true);
 }
 
 void HighScores::handleHighScoresEvents(SDL_Event& e) {
 	// Handle button events
 	for (int i = 0; i < 1; ++i) {
-		gScoressMenuButtons[i].handleEvent(&e, i);
+		gScoresMenuButtons[i].handleEvent(&e, i);
 	}
 
 	//gReturnToMenu.handleEvent(&e, 0);
@@ -173,10 +176,10 @@ void HighScores::draw() {
 	Texture::Instance()->renderMap("shipOutlineID", 0, 40, SCREEN_WIDTH, 620);		// Draw ship outline image to screen
 
 	// Draw 1 button
-	//gReturnToMenu.render(gButtonSpriteSheetTexture3, &gSpriteClipsScoresMenu[gReturnToMenu.mCurrentSprite]);
+	//gReturnToMenu.render(gButtonSpriteSheetTexture3, &gSpriteClipsScoresMenu[gReturnToMenu.getButtonSprite]);		//  2017/03/24 Use setter method
 	
 	for (int i = 0; i < 1; i++) {
-		gScoressMenuButtons[i].render(gButtonSpriteSheetTexture3, &gSpriteClipsScoresMenu[gScoressMenuButtons[i].mCurrentSprite]);						// Render the buttons in the array
+		gScoresMenuButtons[i].render(gButtonSpriteSheetTexture3, &gSpriteClipsScoresMenu[gScoresMenuButtons[i].getButtonSprite()]);						// Render the buttons in the array  2017/03/24 Use setter method
 	}
 	
 	gScoresMenuTextTexture1.render((SCREEN_WIDTH - gScoresMenuTextTexture1.getWidth()) / 2, (SCREEN_HEIGHT - gScoresMenuTextTexture1.getHeight()) / 12);// High Scores Heading
