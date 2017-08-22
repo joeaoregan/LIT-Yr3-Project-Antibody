@@ -31,6 +31,8 @@ WeaponPlLaser::WeaponPlLaser(int angle, int grade) {
 	setGrade(grade);	// Basic Laser = 0, Triple Laser = 1
 
 	setAlive(true);
+
+	setSubType(PLAYER_WEAPON);
 }
 
 // Laser Destructor

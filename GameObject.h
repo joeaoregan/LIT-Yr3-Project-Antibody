@@ -12,19 +12,38 @@ JOE: Moved functionality common to game objects to GameObjects class reducing th
 #include <SDL_image.h>
 #include "Texture.h"
 #include <iostream>
+#include <string.h>
 
-enum GameObjectTypes { PLAYER1_SCORE, PLAYER2_SCORE, POWER_UP_HEALTH, POWER_UP_LASER, POWER_UP_ROCKET, EXPLOSION, SAW1, SAW2 };
+enum GameObjectTypes {
+	PLAYER1_SCORE, PLAYER2_SCORE,																		// Scores
+	POWER_UP_HEALTH, POWER_UP_LASER, POWER_UP_ROCKET, POWER_UP_CHECKPOINT,								// Power ups
+	ENEMY_SHIP_LASER, BLUE_VIRUS_BULLET, VIRUS_FIREBALL, EXPLOSION,										// Bullets
+	SAW1, SAW2,																							// Saw
+	BLOOD_CELL, SMALL_BLOOD_CELL, WHITE_BLOOD_CELL,														// Blood Cells
+	ENEMY_SHIP, VIRUS_GREEN, VIRUS_ORANGE, VIRUS_BLUE,													// Virus
+	NINJA_STAR_P1, NINJA_STAR_P2, LASER_P1, LASER_P2, LASER_V2_P1, LASER_V2_P2, ROCKET_P1, ROCKET_P2,	// Weapons
+	PLAYER_WEAPON, ENEMY_OBJECT																			// Sub-type of object
+};
 
 class GameObject {
 public:
 	GameObject();
 	~GameObject();												// Deconstructor
 
+	virtual void handleEvent(SDL_Event& e, int player) {}
+
 	void spawn(int x, int y, int vx = 0, int vy = 0);
-	void spawn(int x, int y, int vx, SDL_Rect collider);
-	void spawn(int x, int y, int vx, int vy, SDL_Rect collider, int type = 0);
+
+	virtual void spawn(int x, int y, int vx, SDL_Rect collider);
+
+	virtual void spawn(int x, int y, int velocity, int player, int type = 0) {}			// Player laser
+
+	virtual void spawn(int x, int y, SDL_Rect collider, int player = 1, int type = 9);	// Spawn the object at the dimensions provided --> Rocket
+
+	virtual void spawn(int x, int y, int vx, int vy, SDL_Rect collider, int type = 0);
 
 	virtual void movement();
+	void movement(int centerX, int centerY, float timer);
 	virtual void movement(int x, int y) {
 		//setY(getY() - 5);
 				//if (getY() <= 40) setAlive(false);
@@ -49,6 +68,7 @@ public:
 	int getMaxHealth() { return MAX_HEALTH; }
 	int getNumLives() { return m_NumLives; }
 	int getType() { return m_Type; }				// 2017/01/25 Return the objects type
+	int getSubType() { return m_SubType; }			// 2017/02/18 Return the objects sub-type
 	int getAngle() { return m_Angle; }				// 2017/02/07 Return the objects angle
 
 	void setX(int x) { m_x = x; }					// Set GameObject X coord
@@ -72,6 +92,7 @@ public:
 	void setColliderX(int x) { m_Collider.x = x; }
 	void setColliderY(int y) { m_Collider.y = y; }
 	void setType(int t) { m_Type = t; }				// 2017/01/25 Set the objects type
+	void setSubType(int t) { m_SubType = t; }		// 2017/02/18 Set the objects sub-type
 	void setAngle(int a) { m_Angle = a; }
 
 	//SDL_Color getFontColour();
@@ -97,7 +118,7 @@ public:
 	int rotateCounter;	// degrees the satellite object has rotated
 	//int rotateCenter;
 	bool satelliteObjectAlive;
-	unsigned int whichVirusAssignedTo;
+	int whichVirusAssignedTo;
 
 	bool getRocketBarActive() { return m_RocketBarActive; }
 	void setRocketBarActive(bool rocket) { m_RocketBarActive = rocket; }
@@ -105,6 +126,17 @@ public:
 	void setRocketActive(bool rocket) { m_RocketActive = rocket; }
 	int getNumRockets() { return numRockets; }
 	void setNumRockets(int rocket) { numRockets = rocket; }
+
+	// Blood Cells
+	int getDistanceBetween() { return mDistanceBetween; }
+	void setDistanceBetween(int d) { mDistanceBetween = d; }
+
+	int getRotationDirection() { return mRotationDirection; }		// 2017/01/30 Added rotation direction, so Blood Cells can rotate both forwards and backwards
+	void setRotationDirection(int d) { mRotationDirection = d; }	// 2017/02/18 Moved Blood Cells to game object list
+
+	// Weapons
+	int getPlayer() { return mPlayer; }
+	void setPlayer(int p = 0) { mPlayer = p; }
 
 private:
 	// GameObject Variables
@@ -120,6 +152,7 @@ private:
 	int m_NumLives;
 
 	int m_Type;						// Integer value to indicate the type of game object POWER UP, VIRUS
+	int m_SubType;
 
 	// 31-01 Display time
 	float m_TimeTracker;			// Time to begin displaying
@@ -133,6 +166,13 @@ private:
 	bool m_RocketActive;			// If an object can fire rockets or not
 	bool m_RocketBarActive;
 	int numRockets;					// The number of rockets an object has
+
+	// 2017/02/18 Moved Blood Cells
+	int mDistanceBetween;						// Distance between Blood Cells spawning
+	int mRotationDirection;						// Direction to rotate Blood Cell (-1 = anticlockwise, 1 = clockwise)
+
+	// Weapons
+	int mPlayer;
 };
 
 #endif

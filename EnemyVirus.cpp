@@ -1,11 +1,11 @@
 #include "EnemyVirus.h"
 
 EnemyVirus::EnemyVirus(int type, float time) {
-	if(type == GREEN)
+	if(type == VIRUS_GREEN)
 		setScore(10);						// Value for killing object
-	else if (type == ORANGE)
+	else if (type == VIRUS_ORANGE)
 		setScore(15);
-	else if (type == BLUE)
+	else if (type == VIRUS_BLUE)
 		setScore(20);
 
 	setWidth(75);
@@ -22,6 +22,8 @@ EnemyVirus::EnemyVirus(int type, float time) {
 	setTimerTracker(0.0);
 
 	setFrames(0);
+
+	setSubType(ENEMY_OBJECT);
 }
 
 EnemyVirus::~EnemyVirus() {

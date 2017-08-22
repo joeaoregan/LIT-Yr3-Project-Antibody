@@ -1,4 +1,5 @@
 #include "GameObject.h"
+#include <math.h>
 
 // Constructor
 //GameObject::GameObject(int damage) :	// Constructor has default value for damage of 3
@@ -75,6 +76,20 @@ void GameObject::movement() {
 	else setAlive(true);
 }
 
+void GameObject::movement(int centerX, int centerY, float timer) {
+	if (centerX < SCREEN_WIDTH) {
+		rotateCounter %= 360;
+		if (timer != 0.5) {
+			setX(70 * cos(rotateCounter * 3.1415926f / 180.0f) + centerX);		// rotate the bullet object
+			setY(70 * sin(rotateCounter * 3.1415926f / 180.0f) + centerY);
+
+			rotateCounter += 3;
+		}
+		else
+			movement();					// Fire the satellite bullet object
+	}
+}
+
 void GameObject::setHealth(int h) {
 	if (h < 0) {
 		m_Health = 0;				// If health is less than 0 set 0
@@ -84,4 +99,15 @@ void GameObject::setHealth(int h) {
 		m_Health = 100;
 	else
 		m_Health = h;
+}
+
+
+void GameObject::spawn(int x, int y, SDL_Rect collider, int player, int type) {
+	setX(x + 57);
+	setY(y + 13);
+	setVelX(getVelocity());
+	setVelY(0);
+	setCollider(collider);
+	setPlayer(player);
+	setType(type);
 }

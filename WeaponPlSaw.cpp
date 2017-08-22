@@ -13,6 +13,7 @@ WeaponPlSaw::WeaponPlSaw(int type) {
 	setHeight(40);
 	setVelocity(0);
 	setAlive(true);
+	//setSubType(PLAYER_WEAPON);
 }
 
 // Saw Destructor

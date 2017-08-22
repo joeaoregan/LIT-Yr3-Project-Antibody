@@ -19,9 +19,8 @@
 // Other Symbolic Constants
 #define PLAYER_1 1
 #define PLAYER_2 2
-#define NUMBER_OF_SONGS = 3;			// Total number of songs in the playlist
 
-enum playerWeapons { NINJA_STAR_P1, NINJA_STAR_P2, LASER_P1, LASER_P2, SAW_P1, SAW_P2, LASER_V2_P1, LASER_V2_P2, ROCKET_P1, ROCKET_P2 };
+//enum playerWeapons { NINJA_STAR_P1, NINJA_STAR_P2, LASER_P1, LASER_P2, SAW_P1, SAW_P2, LASER_V2_P1, LASER_V2_P2, ROCKET_P1, ROCKET_P2 };
 
 class Game {
 public:
@@ -42,10 +41,13 @@ public:
 	int infoMessageP1Counter, infoMessageP2Counter, infoMessageCounter;		// Time to display notification messages
 	std::string infoMessageP1, infoMessageP2, infoMessageGeneral;			// Player notification messages, Yellow writing appearing in the middle of the game screen
 
-	// Number of Blood Cells currently on the screen
-	int BloodCellsActive;
-	int whiteBloodCellsActive;
-	int smallBloodCellsActive;
+	// Number of Game Objects currently on the screen
+	int activeBloodCells;
+	int activeWhiteBloodCells;
+	int activeSmallBloodCells;
+	int activePowerUps;
+	int activeEnemyShips;
+	int activeEnemyVirus;
 
 	enum levels { MENU, LEVEL_1, LEVEL_2, LEVEL_3 };
 
@@ -107,6 +109,7 @@ public:
 	// Music
 	void musicTrackForward();								// FOR SOME REASON, CONTROLLER DOESNT LIKE THE AUDIO CLASS -> SO PLAYING THROUGH GAME
 	void musicTrackBackward();
+	void identifyTrack(int songName);						// 2017/02/17 Identify the song playing
 
 	void spawnRandom(int &x, int &y, int &randomSpeed, int xMuliplier = 0, int yPadding = 80, int speed = 1);
 
