@@ -1,4 +1,5 @@
 #include "Game.h"
+#include <iostream>
 //#include "MainMenu.h"
 
 //#define GAME_LOOPS 20		// Number of times to loop the game
@@ -11,6 +12,7 @@ int main() {
 	//menu.update();
 
 	Game game;				// Create a game object
+//	std::cout << "test" << std::endl;
 
 	game.update();
 

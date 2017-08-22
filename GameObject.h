@@ -57,7 +57,7 @@ public:
 
 	//void render(LTexture &texture, SDL_Renderer *rend);							// Shows the Enemy on the screen
 	void render(Texture &texture, SDL_Renderer *rend, int degrees = 0);
-	void render(Texture &texture, SDL_Renderer *rend, SDL_Rect *currentClip, int &currentframe, int frames);
+	void render(Texture &texture, SDL_Renderer *rend, SDL_Rect *currentClip, unsigned int &currentframe, unsigned int frames);
 
 	int getX() { return m_x; }						// Get GameObject X coord
 	int getY() { return m_y; }						// Get GameObject Y coord
@@ -65,13 +65,13 @@ public:
 	int getVelY() { return m_yVel; }
 	int getVelocity() { return m_Velocity; }		// return the velocity
 	bool getAlive() { return m_Alive; }				// return if the object is alive
-	int getScore() { return m_Score; }				// return the objects score
+	unsigned int getScore() { return m_Score; }		// return the objects score
 	int getWidth() { return m_Width; }				// return the objects width
 	int getHeight() { return m_Height; }			// return the objects height
 	std::string getName() { return m_Name; }		// return the objects name
-	int getHealth() { return m_Health; }			// return the objects health
+	unsigned int getHealth() { return m_Health; }	// return the objects health
 	int getMaxHealth() { return MAX_HEALTH; }
-	int getNumLives() { return m_NumLives; }
+	unsigned int getNumLives() { return m_NumLives; }
 	int getSubType() { return m_SubType; }			// 2017/01/25 Return the objects type
 	int getType() { return m_Type; }				// 2017/02/18 Return the objects sub-type
 	int getAngle() { return m_Angle; }				// 2017/02/07 Return the objects angle
@@ -84,10 +84,10 @@ public:
 	void setAlive(bool alive) { m_Alive = alive; }	// Set the object alive or not
 	void setWidth(int w) { m_Width = w; }			// set the objects width
 	void setHeight(int h) { m_Height = h; }			// set the objects height
-	void setScore(int s) { m_Score = s; }			// Set the objects score
+	void setScore(unsigned int s) { m_Score = s; }	// Set the objects score
 	void setName(std::string n) { m_Name = n; }		// Set the objects name
 	void setHealth(int health);						// set the health
-	void setNumLives(int n) { m_NumLives = n; }		// Set the number of lives for the object
+	void setNumLives(unsigned int n) { m_NumLives = n; }	// Set the number of lives for the object
 
 //	SDL_Rect getCollider() { return m_Collider; }
 	SDL_Rect* getCollider() { return &m_Collider; }
@@ -123,7 +123,7 @@ public:
 	int rotateCounter;	// degrees the satellite object has rotated
 	//int rotateCenter;
 	bool satelliteObjectAlive;
-	int whichVirusAssignedTo;
+	unsigned int whichVirusAssignedTo;
 
 	bool getRocketBarActive() { return m_RocketBarActive; }
 	void setRocketBarActive(bool rocket) { m_RocketBarActive = rocket; }
@@ -159,15 +159,15 @@ public:
 private:
 	// GameObject Variables
 	std::string m_Name;				// Name of the object
-	int m_Health;					// Value between 0 and 160
+	unsigned int m_Health;			// Value between 0 and 160
 	//int m_Speed;					// Value between 1 and 4
 	int m_x, m_y;					// GameObject coords
 	int m_xVel, m_yVel, m_Velocity;	// Velocity
 	int m_Width, m_Height;			// Dimensions
 	bool m_Alive;					// Is the GameObject active on screen, return true if its health is greater than 0
 	SDL_Rect m_Collider;
-	int m_Score;					// Score value for killing or collecting an object
-	int m_NumLives;
+	unsigned int m_Score;			// Score value for killing or collecting an object
+	unsigned int m_NumLives;
 
 	int m_SubType;					// Integer value to indicate the type of game object POWER UP, VIRUS
 	int m_Type;

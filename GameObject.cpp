@@ -21,7 +21,7 @@ void GameObject::render(Texture &texture, SDL_Renderer *rend, int degrees) {
 	texture.render(getX(), getY(), rend, NULL, degrees, NULL, SDL_FLIP_NONE);
 }
 
-void GameObject::render(Texture &texture, SDL_Renderer *rend, SDL_Rect *currentClip, int &currentframe, int frames) {	// 2017/01/22 Moved from game.cpp
+void GameObject::render(Texture &texture, SDL_Renderer *rend, SDL_Rect *currentClip, unsigned int &currentframe, unsigned int frames) {	// 2017/01/22 Moved from game.cpp
 	texture.render(getX(), getY(), rend, currentClip);
 
 	++currentframe;						// Go to next frame

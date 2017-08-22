@@ -69,6 +69,9 @@ public:
 	void UITextPlayerMessage(std::string playerMessage, SDL_Renderer* rend, int type = 0);
 	void numRocketsLeft(std::string textureText, SDL_Renderer* rend);						// 2017/02/19 Indicate the number of rockets each player has left
 	void speedBoostText(std::string textureText, SDL_Renderer* rend);						// 2017/02/20 Indicates a speedboost is active
+	void createdByText(SDL_Renderer* rend);						// 2017/02/20			
+
+	unsigned int lastTime;
 
 private:	
 	// 31/01/2017 display score value of killed enemy, at enemy coords

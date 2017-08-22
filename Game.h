@@ -30,7 +30,7 @@ const int BLOOD_EXP_ANIMATION_FRAMES = 12;
 class Game {
 public:
 	int gamerOverMessageDisplayCounter;	// Length of time to display game over message
-	int frames;							// Frame count for speed of Enemy animation
+	unsigned int frames;				// Frame count for speed of Enemy animation
 
 	// Time
 	unsigned int lastTime, currentTime, countdownTimer;	// TEST TIMING
@@ -39,29 +39,29 @@ public:
 	std::string finalScores, gameWinners;
 
 	// Scrolling
-	int backgroundLoopCounter;							// Number of times the background image has looped
-	int scrollingOffset;								// 2017/01/10 JOE: Declare the background scrolling offset (Moved as stops background scrolling when in the render function)
+	unsigned int backgroundLoopCounter;					// Number of times the background image has looped
+	int scrollingOffset;								// 2017/01/10 JOE: Declare the background scrolling offset (Moved, as stops background scrolling when in the render function)
 	int weaponScrolling;								// Scroll the image for current default laser weapon
 
 	// Game Messages
-	int pointsValueCounter;								// Time to display score for killing Enemy message
-	std::string pointsValue;							// Player notification messages, Yellow writing appearing in the middle of the game screen
-	int infoMessageP1Counter, infoMessageP2Counter, infoMessageCounter;		// Time to display notification messages
-	std::string infoMessageP1, infoMessageP2, infoMessageGeneral;			// Player notification messages, Yellow writing appearing in the middle of the game screen
+	unsigned int pointsValueCounter;								            // Time to display score for killing Enemy message
+	std::string pointsValue;							                        // Player notification messages, Yellow writing appearing in the middle of the game screen
+	unsigned int infoMessageP1Counter, infoMessageP2Counter, infoMessageCounter;// Time to display notification messages
+	std::string infoMessageP1, infoMessageP2, infoMessageGeneral;			    // Player notification messages, Yellow writing appearing in the middle of the game screen
 
 	// Number of Game Objects currently on the screen
-	int activeBloodCells;
-	int activeWhiteBloodCells;
-	int activeSmallBloodCells;
-	int activePowerUps;
-	int activeEnemyShips;
-	int activeEnemyVirus;
-	int activeEnemyVirusSmall;
+	unsigned int activeBloodCells;
+	unsigned int activeWhiteBloodCells;
+	unsigned int activeSmallBloodCells;
+	unsigned int activePowerUps;
+	unsigned int activeEnemyShips;
+	unsigned int activeEnemyVirus;
+	unsigned int activeEnemyVirusSmall;
 
 	enum levels { MENU, LEVEL_1, LEVEL_2, LEVEL_3 };
 
-	int getCurrentLevel() { return mCurrentLevel; }
-	void setCurrentLevel(int l) { mCurrentLevel = l; }
+	unsigned int getCurrentLevel() { return mCurrentLevel; }
+	void setCurrentLevel(unsigned int l) { mCurrentLevel = l; }
 
 	//int counter = 0;		// counter for changing alpha for flashing
 	bool gameOver = false;
@@ -79,7 +79,7 @@ public:
 
 	void displayScoreForObject(int x, int y, int score, int player);
 
-	void resetGame(int level);								// Reset game to this level
+	void resetGame(unsigned int level);								// Reset game to this level
 
 	void spawnExplosion(int x, int y, int subType);			// 2017/01/25 Added explosions // 2017/02/19 Added blood explosions
 
@@ -125,7 +125,7 @@ public:
 	int getNumPlayers() { return mNumPlayers; }
 	void setNumPlayers(int n) { mNumPlayers = n; }
 	void managePlayerHealth(int player, int score, std::string name = "Game Object");
-	void managePlayerScores(int score, int player, int type);
+	void managePlayerScores(unsigned int score, unsigned int player, int type);
 
 	static Game* Instance() {
 		if (s_pInstance == 0) {
@@ -142,7 +142,7 @@ public:
 
 private:
 	int mNumPlayers;
-	int mCurrentLevel = MENU;							// The current level of the game, 0 = menu, 1 = level 1 etc.
+	unsigned int mCurrentLevel = MENU;					// The current level of the game, 0 = menu, 1 = level 1 etc.
 	//int mCurrentLevel = LEVEL_1;						// The current level of the game, 0 = menu, 1 = level 1 etc.
 
 	static Game* s_pInstance;

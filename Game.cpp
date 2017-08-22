@@ -38,6 +38,7 @@
 #include "Audio.h"					// 2017/02/09
 #include <math.h>
 
+
 /***************************************************************************************************************************/
 /******************************************** TURN STUFF ON AND OFF FOR TESTING ********************************************/
 
@@ -58,7 +59,7 @@ bool Laser2 = false;
 void setViewport(SDL_Rect &rect, int x, int y, int w, int h);	// These classes are giving errors when they are moved to the header file
 bool checkCollision(SDL_Rect *a, SDL_Rect *b);
 //void setupAnimationClip(SDL_Rect rect, int frames, int amount, bool type2 = false);
-void setupAnimationClip(SDL_Rect rect[], int frames, int amount, bool type2 = false);
+void setupAnimationClip(SDL_Rect rect[], unsigned int frames, int amount, bool type2 = false);
 
 // Classes
 Menu menu1;
@@ -315,10 +316,10 @@ bool Game::loadMedia() {
 		textColour = { 255, 0, 0, 255 };													// Set text color for three names RED
 		TTF_SetFontStyle(gFontRetro20, TTF_STYLE_BOLD);										// Use bold font
 
-		if (!gCreatedByTextTexture.loadFromRenderedText("A game by Seán Horgan and Joe O'Regan", textColour, gFontRetro20, gRenderer)) {
-			printf("Unable to render prompt text texture!\n");
-			success = false;
-		}
+		//if (!gCreatedByTextTexture.loadFromRenderedText("A game by Seán Horgan and Joe O'Regan", textColour, gFontRetro20, gRenderer)) {
+		//	printf("Unable to render prompt text texture!\n");
+		//	success = false;
+		//}
 	}
 
 	// Load Textures
@@ -547,7 +548,7 @@ bool Game::loadMedia() {
 	return success;
 }
 
-void setupAnimationClip(SDL_Rect rect[], int frames, int amount, bool type2) {
+void setupAnimationClip(SDL_Rect rect[], unsigned int frames, int amount, bool type2) {
 	if (!type2) {
 		for (unsigned int i = 0; i < frames; ++i) {
 			rect[i].x = i * amount;
@@ -773,7 +774,6 @@ void Game::gameProgress() {
 	}
 }
 
-
 bool Game::playerInput(bool quit = false) {
 	while (SDL_PollEvent(&e) != 0) {
 		if (e.type == SDL_QUIT) {	// User requests quit	EXIT - CLOSE WINDOW
@@ -957,13 +957,13 @@ void Game::renderGameObjects() {
 
 		//if (gameOver == false) {
 			SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
-			//SDL_RenderDrawRect(gRenderer, &player1->getCollider());
-			//SDL_RenderDrawRect(gRenderer, &player2->getCollider());
+			SDL_RenderDrawRect(gRenderer, player1->getCollider());
+			SDL_RenderDrawRect(gRenderer, player2->getCollider());
 
 			gPowerUpRocketTexture.modifyAlpha(255);											// Keep alpha values independent
 
 			for (unsigned int index = 0; index != listOfGameObjects.size(); ++index) {
-				//SDL_RenderDrawRect(gRenderer, &listOfGameObjects[index]->getCollider());
+				SDL_RenderDrawRect(gRenderer, listOfGameObjects[index]->getCollider());
 				frames = listOfGameObjects[index]->getFrames();		// 2017/02/09 Fixed the explosion animations, they are now assigned to indiviual objects with the game object frame attribute
 
 				// Render Saws
@@ -1216,6 +1216,10 @@ void Game::renderGameObjects() {
 			gP1ScoreTextTexture.render(10, 55, gRenderer);														// Score for Player 1
 			player2->rendPlayerLives(gP2LivesTexture, 2, gRenderer);											// render the ship over the background
 			gP2ScoreTextTexture.render(SCREEN_WIDTH - gP2ScoreTextTexture.getWidth() - 10, 55, gRenderer);		// Score for Player 2
+
+
+
+			gCreatedByTextTexture.createdByText(gRenderer);
 			gCreatedByTextTexture.render((SCREEN_WIDTH - gCreatedByTextTexture.getWidth()) / 2, 120 - gCreatedByTextTexture.getHeight() - 8, gRenderer);
 
 			/* Professor Mini Map */
@@ -1588,7 +1592,7 @@ void Game::spawnExplosion(int x, int y, int subType) {
 	p_Explosion->spawn(x, y - 30);								// Spawn the explosion at the given x & y coords
 	listOfGameObjects.push_back(p_Explosion);					// Add explosion to list of game objects
 
-	if (subType = EXPLOSION) audio.explosionFX();				// Play explosion sound effect
+	if (subType == EXPLOSION) audio.explosionFX();				// Play explosion sound effect
 }
 
 void Game::spawnLaser(int x, int y, int player, int velocity, int grade) {
@@ -1923,7 +1927,7 @@ void Game::collisionCheck() {
 	}
 }
 
-void Game::managePlayerScores(int score, int player, int type) {				// add get name
+void Game::managePlayerScores(unsigned int score, unsigned int player, int type) {				// add get name
 	if (player == PLAYER_1) player1->setScore(player1->getScore() + score);
 	else if (player == PLAYER_2) player2->setScore(player2->getScore() + score);
 
@@ -1995,7 +1999,7 @@ void Game::gameTimer() {
 }
 
 // Reset a level or the game
-void Game::resetGame(int currentLevel) {
+void Game::resetGame(unsigned int currentLevel) {
 	frames = 0;					// Animation Frames
 
 	// Reset the map of the professor
@@ -2021,16 +2025,34 @@ void Game::resetGame(int currentLevel) {
 	scrollingOffset = 0;
 	weaponScrolling = 60;
 
+
+	std::cout << "test1" << std::endl;
 	// Information Messages
 	infoMessageP1Counter = MESSAGE_TIME;	// Time to display player 1 notification messages
+
+	std::cout << "test2" << std::endl;
+
 	infoMessageP2Counter = MESSAGE_TIME;	// Time to display player 2 notification messages
+
+	std::cout << "test3" << std::endl;
 	infoMessageCounter = MESSAGE_TIME;		// Time to display player 2 notification messages
+
+	std::cout << "test4" << std::endl;
 	pointsValueCounter = MESSAGE_TIME;		// Time to display score for killing Enemy message
+
+	std::cout << "test5" << std::endl;
 	infoMessageP1 = "";						// Reset the player 1 notification message
+
+	std::cout << "test6" << std::endl;
 	infoMessageP2 = "";						// Reset the player 2 notification message
+
+	std::cout << "test7" << std::endl;
 	infoMessageGeneral = "";				// Reset the General notification message
+
+	std::cout << "test8" << std::endl;
 	pointsValue = "";						// Reset the points value for destroyed Enemy message
 
+	std::cout << "test9" << std::endl;
 
 	gamerOverMessageDisplayCounter = 0;
 

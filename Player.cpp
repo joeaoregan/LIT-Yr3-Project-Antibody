@@ -540,7 +540,7 @@ void Player::movement() {
 
 	setY(getY() + getVelY());											// Move the ship up or down
 
-																		// If the ship went too far up or down
+	// If the ship went too far up or down
 	if ((getY() < 40) || ((getY() + getHeight()) > SCREEN_HEIGHT_GAME - 40)) {
 		setY(getY() - getVelY());										// Move back
 	}
