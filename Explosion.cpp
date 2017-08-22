@@ -36,5 +36,3 @@ Explosion::Explosion(int x, int y, int subType) {
 Explosion::~Explosion() {
 
 }
-
-void Explosion::move() {}

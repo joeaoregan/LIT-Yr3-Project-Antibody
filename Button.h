@@ -19,8 +19,6 @@ enum ButtonSprite {
 	BUTTON_SPRITE_TOTAL = TOTAL_BUTTONS
 };
 
-enum button_state { MOUSE_OUT, MOUSE_OVER, CLICKED };
-
 //The mouse button
 class Button {
 public:

@@ -10,10 +10,11 @@ JOE: Added Laser For Enemy ship
 
 class WeaponEnLaser : public Weapon {
 public:
-	WeaponEnLaser(int type = ENEMY_SHIP_LASER, int rotateCenter = 0);	// Initializes the variables
-	~WeaponEnLaser();			// Destructor
+	WeaponEnLaser(int type = ENEMY_SHIP_LASER, int rotateCenter = 0);						// Initializes the variables
+	~WeaponEnLaser();									// Destructor
 
-	virtual void move();		// Moves the laser
+	virtual void movement();						// Moves the laser
+	//virtual void movement(int x, int y, float timer);	// Center point and timer for virus
 
 	int centerX, centerY;		// center for rotation
 };

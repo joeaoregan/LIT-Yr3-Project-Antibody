@@ -469,6 +469,18 @@ void::Player::rocketScore() {
 
 	setKillRocket(false);										// The rocket can be erased
 }
+/*
+void Player::setSpeedBoost(bool boost) {
+	mSpeedBoost = boost;
+
+	if (boost) {
+		setBoostStartTime(SDL_GetTicks());
+		std::cout << "SPEED BOOST START" << std::endl;
+	}
+	else
+		boostPercent = 3.0;
+}
+*/
 
 float Player::boostTimer() {
 	float boost = getBoostPercent();
@@ -483,7 +495,7 @@ float Player::boostTimer() {
 	return boost;
 }
 
-void Player::move() {
+void Player::movement() {
 	curTime = SDL_GetTicks();
 
 	if (getVelY() > 0 && getVelY() < getVelocity()) setVelY(0);
@@ -497,7 +509,7 @@ void Player::move() {
 		std::cout << "SPEED BOOST ENDED";
 	}
 
-	GameObject::move();
+	GameObject::movement();
 
 	// If the ship went too far to the left or right
 	if ((getX() < 0) || ((getX() + getWidth()) > SCREEN_WIDTH)) {

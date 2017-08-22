@@ -47,7 +47,3 @@ EnemyShip::EnemyShip() {					// Constructor
 EnemyShip::~EnemyShip() {					// Destructor
 	std::cout << "Enemy Ship destroyed" << std::endl;
 }
-
-void EnemyShip::move() {
-	GameObject::move();
-}

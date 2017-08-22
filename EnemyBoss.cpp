@@ -43,10 +43,10 @@ EnemyBoss::~EnemyBoss() {					// Destructor
 
 bool moveRight = true;
 
-void EnemyBoss::move() {
+void EnemyBoss::movement() {
 
 	if (getX() > SCREEN_WIDTH - 330 && getX() < SCREEN_WIDTH + 200 && moveRight) {
-		GameObject::move();
+		GameObject::movement();
 		if (getX() >= SCREEN_WIDTH - 330 && getX() <= SCREEN_WIDTH - 320) moveRight = false;
 	}
 	

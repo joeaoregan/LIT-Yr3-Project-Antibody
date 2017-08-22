@@ -14,15 +14,16 @@
 #include "Player.h"
 #include "WeaponEnLaser.h"
 
+//enum virusType { VIRUS_GREEN, VIRUS_ORANGE, VIRUS_BLUE };
+
 class EnemyVirus : public Enemy {
 public:
-	float bombTimer;									// Timer for exploding viruses
+	float bombTimer;
 
-	EnemyVirus(int type = VIRUS_GREEN, float time = 0);	// Initializes the variables
-	~EnemyVirus();										// Destructor
+	EnemyVirus(int type = VIRUS_GREEN, float time = 0);							// Initializes the variables
+	~EnemyVirus();							// Destructor
 	
-	virtual void move() {};								// This function is only here because is has to be
-	virtual void move(int playerX, int playerY);		// Tracker movement for Virus, moving towards the nearest player
+	virtual void movement(int playerX, int playerY);
 };
 
 #endif

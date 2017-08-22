@@ -33,9 +33,7 @@ WeaponPlSaw::~WeaponPlSaw() {
 	std::cout << "Saw destructor called.\n";
 }
 
-void WeaponPlSaw::move() {
-}
-void WeaponPlSaw::move(int x, int y) {
+void WeaponPlSaw::movement(int x, int y) {
 	setX(x + 65);
 	setY(y + 25);
 }

@@ -15,12 +15,12 @@ public:
 	BloodCell(int type = 0);					// Initializes the variables
 	~BloodCell();
 	
-	virtual void move();
-	virtual void move(int targetx, int targetY);
+	virtual void movement();
 
 	int getMovement() { return mMovement; }
 	void setMovement(int movement) { mMovement = movement; }
 
+	virtual void movement(int targetx, int targetY);
 
 private:
 	int mMovement;

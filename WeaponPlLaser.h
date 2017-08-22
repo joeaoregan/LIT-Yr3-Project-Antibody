@@ -17,9 +17,9 @@ JOE: Moved functionality common to game objects to GameObjects class reducing th
 class WeaponPlLaser : public Weapon {
 public:
 	WeaponPlLaser(int player, int angle = 0, int grade = 0);
-	~WeaponPlLaser();											// Destructor
+	~WeaponPlLaser();												// Destructor
 	
-	virtual void move();										// Moves the laser	
+	virtual void movement();								// Moves the laser	
 
 	void render(int player, Texture &orange, Texture &green);	// 2017/01/22 added textures to renderer
 

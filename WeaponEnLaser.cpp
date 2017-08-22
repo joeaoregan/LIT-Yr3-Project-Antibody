@@ -67,7 +67,7 @@ WeaponEnLaser::~WeaponEnLaser() {
 	std::cout << "Enemy Laser destructor called.\n";
 }
 
-void WeaponEnLaser::move() {
+void WeaponEnLaser::movement() {
 	/*
 	if (getType() == BLUE_VIRUS_BULLET) {
 		//centerX = getX();
@@ -82,7 +82,7 @@ void WeaponEnLaser::move() {
 	}
 	else {
 	*/
-		GameObject::move();
+		GameObject::movement();
 		setY(getY() + getVelY());
 	//}
 	// destroy laser beam once it is offscreen

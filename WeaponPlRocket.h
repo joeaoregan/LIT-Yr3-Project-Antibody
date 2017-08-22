@@ -17,7 +17,7 @@ public:
 
 	virtual void render(Texture &texture, int degrees = 0);
 
-	virtual void move();				// Moves the Rocket	
+	virtual void movement();				// Moves the Rocket	
 private:
 	bool drawRocketParticle;
 };

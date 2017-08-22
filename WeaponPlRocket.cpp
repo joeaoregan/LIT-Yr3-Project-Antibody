@@ -61,8 +61,8 @@ WeaponPlRocket::~WeaponPlRocket() {
 	std::cout << "Rocket destructor called.\n";
 }
 
-void WeaponPlRocket::move() {
-	GameObject::move();
+void WeaponPlRocket::movement() {
+	GameObject::movement();
 	setY(getY() + getVelY());							// Up direction	
 
 	if (getY() > SCREEN_HEIGHT_GAME - 40) setAlive(false);

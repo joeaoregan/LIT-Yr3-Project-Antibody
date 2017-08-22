@@ -37,7 +37,7 @@ ScoreValueText::ScoreValueText(int x, int y, int score, int player) {
 
 ScoreValueText::~ScoreValueText() {}
 int i = 0;
-void ScoreValueText::move(int x, int y) {
+void ScoreValueText::movement(int x, int y) {
 
 	float dx = x - getX();
 	float dy = y - getY();

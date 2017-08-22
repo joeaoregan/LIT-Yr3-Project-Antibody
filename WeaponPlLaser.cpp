@@ -55,8 +55,8 @@ WeaponPlLaser::~WeaponPlLaser(){
 	std::cout << "Laser destructor called.\n";
 }
 
-void WeaponPlLaser::move() {
-	GameObject::move();
+void WeaponPlLaser::movement() {
+	GameObject::movement();
 	setY(getY() + getVelY());		// Up direction
 	//if (getGrade() == 1) {
 	if (getAngle() == LASER2_TOP) setY(getY() - 1);

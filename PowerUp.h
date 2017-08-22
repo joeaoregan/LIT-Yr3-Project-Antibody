@@ -9,8 +9,6 @@ class PowerUp : public GameObject {
 public:
 	PowerUp(int type = 0, int score = 0);
 	~PowerUp();
-
-	virtual void move();
 };
 
 #endif
