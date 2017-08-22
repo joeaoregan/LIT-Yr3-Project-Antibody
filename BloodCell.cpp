@@ -96,7 +96,7 @@ void BloodCell::move() {
 	}
 }
 /* Tracker movement for White Blood Cells */
-void BloodCell::move(int targetX, int targetY) {
+void BloodCell::moveStalker(int targetX, int targetY) {
 	if (getSubType() == WHITE_BLOOD_CELL) {
 		if (getX() < SCREEN_WIDTH - getWidth()) {		// If the object is on the screen
 			int randomVelocity = rand() % 4 + 2;
@@ -105,7 +105,7 @@ void BloodCell::move(int targetX, int targetY) {
 				if (getX() - targetX >= randomVelocity)
 					setX(getX() - randomVelocity);		// No need to make smaller movements at the moment, as velocity is v.low anyway
 			}
-			else if (getX() - targetX < 0) {					// if the small virus is in front of the white blood cell
+			else if (getX() - targetX < 0) {			// if the small virus is in front of the white blood cell
 				setX(getX() + randomVelocity);			// Move towards X coord
 			}
 

@@ -135,6 +135,9 @@ public:
 	//int counter = 0;		// counter for changing alpha for flashing
 	bool gameOver = false;
 	bool levelOver = false;
+	bool noTime = false;
+
+	int checkpointsSpawned = 0;
 	
 	bool init();								// Starts up SDL and creates window -- ERROR window won't close
 	void update();
@@ -166,6 +169,7 @@ public:
 	void spawnRocket(int x, int y, int player, int type, bool launch);		// 2017-02-06
 	void spawnBlockage();
 
+
 	void gameProgress();
 	//void gameTimer(unsigned int &timer);					// 2017-03-02
 	//void gameTimer();										// 2017-02-15
@@ -195,7 +199,7 @@ public:
 	void musicTrackBackward();
 	void identifyTrack(int songName);						// 2017/02/17 Identify the song playing
 
-	void spawnRandom(int &x, int &y, int &randomSpeed, int xMuliplier = 0, int yPadding = 80, int speed = 1);
+	void spawnRandomAttributes(int &x, int &y, int &randomSpeed, int xMuliplier = 0, int yPadding = 80, int speed = 1);
 
 	int getNumPlayers() { return mNumPlayers; }
 	void setNumPlayers(int n) { mNumPlayers = n; }

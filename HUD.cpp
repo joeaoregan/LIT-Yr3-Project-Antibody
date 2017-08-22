@@ -50,7 +50,7 @@ bool HUD::loadLevelStuff() {
 		printf("Failed to load Player 2 Small Ship texture!\n");
 		success = false;
 	}
-	if (!gPowerUpRocketTexture2.loadFromFile("Art/PowerUpRocket.png")) {			// Rocket Power Up Texture
+	if (!gPowerUpRocketTexture.loadFromFile("Art/PowerUpRocket.png")) {			// Rocket Power Up Texture
 		printf("Failed to load Power Up - Rocket texture!\n");
 		success = false;
 	}
@@ -70,8 +70,9 @@ void HUD::resetHUD() {
 void HUD::closeLevelStuff() {
 	gLevelTextTexture.free();
 	gSpeedBoostTextTexture.free();
-	gPowerUpRocketTexture2.free();
+	gPowerUpRocketTexture.free();
 	gNumRocketsTextTexture1.free();
+	gNumRocketsTextTexture2.free();
 	gCreatedByTextTexture.free();
 	gP1LivesTexture.free();
 	gP2LivesTexture.free();
@@ -199,9 +200,9 @@ void HUD::speedBoostIndicator(bool boost) {
 int previousNumRockets1, previousNumRockets2;
 
 void HUD::rocketIndicator(int numRockets, int player, bool alive) {
-	gPowerUpRocketTexture2.free();
-	gPowerUpRocketTexture2.modifyAlpha(255);								// Keep alpha values independent, show bright if alive
-	if (numRockets <= 0 || !alive) gPowerUpRocketTexture2.modifyAlpha(50);	// Fade out the rocket image if player has no rockets
+	gPowerUpRocketTexture.modifyAlpha(255);								// Keep alpha values independent, show bright if alive
+	if (numRockets <= 0 || !alive) gPowerUpRocketTexture.modifyAlpha(50);	// Fade out the rocket image if player has no rockets
+	gPowerUpRocketTexture.render(scroll + 15, -2, NULL, 45);				// 1st //weaponScrolling = 60;
 
 	if (player == PLAYER_1) {
 		if (previousNumRockets1 != numRockets) {
@@ -209,18 +210,20 @@ void HUD::rocketIndicator(int numRockets, int player, bool alive) {
 			gNumRocketsTextTexture1.numRocketsLeft(std::to_string(numRockets));
 		}
 		previousNumRockets1 = numRockets;
+		gNumRocketsTextTexture1.modifyAlpha(150);
+		gNumRocketsTextTexture1.render((60 - gNumRocketsTextTexture1.getWidth()) / 2, (60 - gNumRocketsTextTexture1.getHeight()) / 2);
 	}
 	else if (player == PLAYER_2) {
 		if (previousNumRockets2 != numRockets) {
 			std::cout << "LOAD FROM RENDERED TEXT PLAYER 2 ROCKET" << std::endl;
-			gNumRocketsTextTexture1.numRocketsLeft(std::to_string(numRockets));
+			gNumRocketsTextTexture2.numRocketsLeft(std::to_string(numRockets));
 		}
 		previousNumRockets2 = numRockets;
+		gNumRocketsTextTexture2.modifyAlpha(150);
+		gNumRocketsTextTexture2.render((60 - gNumRocketsTextTexture2.getWidth()) / 2, (60 - gNumRocketsTextTexture2.getHeight()) / 2);
 	}
-	gNumRocketsTextTexture1.modifyAlpha(150);
 
-	gPowerUpRocketTexture2.render(scroll + 15, -2, NULL, 45);				// 1st //weaponScrolling = 60;
-	gNumRocketsTextTexture1.render((60 - gNumRocketsTextTexture1.getWidth()) / 2, (60 - gNumRocketsTextTexture1.getHeight()) / 2);
+	//gPowerUpRocketTexture2.free();
 }
 
 /*	2017/02/21: Moved from Game.cpp
@@ -239,7 +242,7 @@ void HUD::createdByText() {
 	}
 
 	if (changeEverySecond % 3 == 1) {
-		if (!gCreatedByTextTexture.loadFromRenderedText("ANTIVIRUS", { 50, 200, 255, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 16), true)) {				// Green Text
+		if (!gCreatedByTextTexture.loadFromRenderedText("ANTIBODY", { 50, 200, 255, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 16), true)) {				// Green Text
 			printf("createdByText(): Unable to render Created By Text Texture!\n");
 		}
 	}

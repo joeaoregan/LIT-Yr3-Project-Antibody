@@ -9,8 +9,9 @@ public:
 
 	Texture gLevelTextTexture;			// Current level displayed at top of game screen
 	Texture gSpeedBoostTextTexture;		// Text "SPEED BOOST"
-	Texture gPowerUpRocketTexture2;		// Texture for Rocket power up
+	Texture gPowerUpRocketTexture;		// Texture for Rocket power up
 	Texture gNumRocketsTextTexture1;	// Indicate the number of rockets for player 1
+	Texture gNumRocketsTextTexture2;	// Indicate the number of rockets for player 2
 	Texture gCreatedByTextTexture;		// Created by message at bottom of screen for demo
 	Texture gP1LivesTexture;			// Player 1 Small ship for number of lives
 	Texture gP2LivesTexture;			// Player 2 Small Ship for number of lives

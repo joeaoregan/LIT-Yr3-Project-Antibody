@@ -69,7 +69,8 @@ void GameObject::spawn(int x, int y, int vx, int vy) {
 
 void GameObject::move(int x, int y) {
 	m_x += m_xVel;
-	m_y += m_yVel;
+	//if (y != 0)
+		m_y += m_yVel;
 
 	setColliderX(getX());
 	setColliderY(getY());

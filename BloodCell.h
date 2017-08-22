@@ -16,7 +16,7 @@ public:
 	~BloodCell();
 	
 	virtual void move();
-	virtual void move(int targetx, int targetY);
+	virtual void moveStalker(int targetx, int targetY);
 
 	int getMovement() { return mMovement; }
 	void setMovement(int movement) { mMovement = movement; }

@@ -56,7 +56,30 @@ public:
 	virtual void spawn(int x, int y, int vx = 0, int vy = 0);
 
 	virtual void move(int x = 0, int y = 0);
-	virtual void moveStalker(int x, int y) {};	// 2017/03/03 Updated movement functions, for objects that move towards other objects
+	virtual void moveStalker(int targetX, int targetY) {
+		if (getX() < SCREEN_WIDTH - getWidth()) {		// If the object is on the screen
+			int randomVelocity = rand() % 4 + 2;
+
+			if (getX() - targetX >= 0) {				// If the small virus is behind the white blood cell
+				if (getX() - targetX >= randomVelocity)
+					setX(getX() - randomVelocity);		// No need to make smaller movements at the moment, as velocity is v.low anyway
+			}
+			else if (getX() - targetX < 0) {			// if the small virus is in front of the white blood cell
+				setX(getX() + randomVelocity);			// Move towards X coord
+			}
+
+			if (getY() - targetY >= 0) {				// if the small virus is below the white blood cell
+				if (getY() - targetY >= randomVelocity)
+					setY(getY() - randomVelocity);		// No need to make smaller movements at the moment, as velocity is v.low anyway
+			}
+			else if (getY() - targetY < 0) {			// if the small virus is above the white blood cell
+				setY(getY() + randomVelocity);			// Move towards Y coord
+			}
+
+			setColliderX(getX());
+			setColliderY(getY());
+		}
+	};	// 2017/03/03 Updated movement functions, for objects that move towards other objects
 	virtual void orbit(int centerX, int centerY, float timer);
 
 	void destroy();

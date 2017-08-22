@@ -1,4 +1,5 @@
 /*
+	2017/03/06 Moved texture information to array for loading
 	2017/03/04 Moved smaller class files functionality into their headers
 				Set a game object texture ID variable, Player and Enemy lasers now render based on their unique texture ID
 				Added a function to display a random message at the start of each level
@@ -741,7 +742,7 @@ void Game::update(){
 
 				quit = playerInput(quit);									// 2017/01/09 JOE: Handle input from player
 
-				if (getCurrentLevel() == 0 && displayGameIntro) displayGameIntro = splash.displayGameIntroSplashScreens();	// 2017/01/18 Splash screens at start of game, Game Title & Game Creators
+				if (getCurrentLevel() == 0 && displayGameIntro) displayGameIntro = splash.displayGameTitleScreens();	// 2017/01/18 Splash screens at start of game, Game Title & Game Creators
 
 				if (getCurrentLevel() == MENU) menu1.draw();				// New
 				else if (getCurrentLevel() == PAUSE) menu1.drawPause();		// New
@@ -899,7 +900,7 @@ void Game::gameProgress() {
 
 void Game::displayLevelIntroScreens(int level) {
 	// STORY - INSTRUCTIONS - OBJECTIVES - INFORMATION screens, pass in all the textures to give information about for each level
-	displayLevelIntro = splash.level1IntroScreens(getCurrentLevel());	// Display level story and info screens
+	displayLevelIntro = splash.levelIntroScreens(getCurrentLevel());	// Display level story and info screens
 
 	if (level <= MAX_NUM_LEVELS) splash.pressButtonToContinue(e);
 }
@@ -945,7 +946,11 @@ void Game::displayText() {
 	// Set text to be rendered - string stream - print the time since timer last started - initialise empty
 
 	if (!levelOver && !gameOver) {
-		if (countdownTimer > 0 && countdownTimer <= GAME_TIMER) {
+		if (checkpointsSpawned == 2 && countdownTimer < 2 && (player1->getAlive() || player2->getAlive())) {
+			levelOver = true;		// Level is over
+			if (getCurrentLevel() == MAX_NUM_LEVELS) gameOver = true;
+		}
+		else if (countdownTimer > 0 && countdownTimer <= GAME_TIMER) {
 			//timeText << "Time: " << countdownTimer;								// Set the game timer
 
 			renderTimer(countdownTimer);
@@ -953,9 +958,9 @@ void Game::displayText() {
 			//gFPSTextTexture.UIText(framesPerSec.str().c_str());						// Render text - Use a string to render the current FPS to a texture
 
 			levelOver = false;
-		} else
-			if (countdownTimer <= 0 || countdownTimer > GAME_TIMER + 6) {
-				levelOver = true;													// Level is over
+		}
+		else if (countdownTimer <= 0 || countdownTimer > GAME_TIMER + 5) {
+			noTime = true;		// Level is over
 			if (getCurrentLevel() == MAX_NUM_LEVELS) gameOver = true;
 		}
 
@@ -1001,6 +1006,11 @@ void Game::displayText() {
 		//gamerOverMessageDisplayCounter = 0;
 		gameProgress();
 	}// Levels
+
+	if (noTime == true) {
+		resetGame(getCurrentLevel());
+		listOfGameObjects.clear();
+	}
 }
 
 bool Game::playerInput(bool quit = false) {
@@ -1121,22 +1131,14 @@ void Game::musicTrackBackward() {
 }
 void Game::identifyTrack(int songName) {
 	if (songName == 0) {
-		infoMessage("Artist: Unknown", 1);
-		infoMessage("Track: Unknown", 2);
+		infoMessage("Artist: Sean Horgan", 1);
+		infoMessage("Song Title: Blood Stream", 2);
 	}
 	else if (songName == 1) {
-		infoMessage("Artist: Unknown", 1);
-		infoMessage("Track: Unknown", 2);
-	}
-	else if (songName == 2) {
-		infoMessage("Artist: Unknown", 1);
-		infoMessage("Track: Unknown", 2);
-	}
-	else if (songName == 3) {
 		infoMessage("Artist: Jim O'Regan", 1);
 		infoMessage("Song Title: The First Step", 2);
 	}
-	else if (songName == 4) {
+	else if (songName == 2) {
 		infoMessage("Artist: Joe O'Regan", 1);
 		infoMessage("Song Title: Virus", 2);
 	}
@@ -1649,21 +1651,26 @@ void Game::moveGameObjects() {
 			}
 		}
 		else if (listOfGameObjects[index]->getSubType() == WHITE_BLOOD_CELL && activeEnemyVirusSmall > 0) {
-			//infoMessage("Number of small blue viruses: " + std::to_string(activeEnemyVirusSmall));
+			std::cout << "small virus count " << activeEnemyVirusSmall << std::endl;
+			//if (activeEnemyVirusSmall > 0) {
+				//else if (listOfGameObjects[index]->getSubType() == WHITE_BLOOD_CELL) {
+				std::cout << "white blood cell " << index << "x " << listOfGameObjects[index]->getX() << " y " << listOfGameObjects[index]->getY() << std::endl;
+				//infoMessage("Number of small blue viruses: " + std::to_string(activeEnemyVirusSmall));
 
-			int nearestSmallBlueVirus = 1280 * 1280 + 600 * 600;	// Furthest distance objects can be apart on screen
+				int nearestSmallBlueVirus = 1280 * 1280 + 600 * 600;	// Furthest distance objects can be apart on screen
 
-			// The White blood cell can attack smaller sized virus objects
-			for (unsigned int smallVirusIndex = 0; smallVirusIndex != listOfGameObjects.size(); ++smallVirusIndex) {
-				if (listOfGameObjects[smallVirusIndex]->getType() == SMALL_VIRUS) {
-					if (abs(listOfGameObjects[smallVirusIndex]->getX() - listOfGameObjects[index]->getX()) * abs(listOfGameObjects[smallVirusIndex]->getX() - listOfGameObjects[index]->getX()) +
-						abs(listOfGameObjects[smallVirusIndex]->getY() - listOfGameObjects[index]->getY()) * abs(listOfGameObjects[smallVirusIndex]->getY() - listOfGameObjects[index]->getY()) < nearestSmallBlueVirus)
-						nearestSmallBlueVirus = abs(listOfGameObjects[smallVirusIndex]->getX() - listOfGameObjects[index]->getX()) * abs(listOfGameObjects[smallVirusIndex]->getX() - listOfGameObjects[index]->getX()) +
-						abs(listOfGameObjects[smallVirusIndex]->getY() - listOfGameObjects[index]->getY()) * abs(listOfGameObjects[smallVirusIndex]->getY() - listOfGameObjects[index]->getY()) < nearestSmallBlueVirus;
+				// The White blood cell can attack smaller sized virus objects
+				for (unsigned int smallVirusIndex = 0; smallVirusIndex != listOfGameObjects.size(); ++smallVirusIndex) {
+					if (listOfGameObjects[smallVirusIndex]->getType() == SMALL_VIRUS) {
+						if (abs(listOfGameObjects[smallVirusIndex]->getX() - listOfGameObjects[index]->getX()) * abs(listOfGameObjects[smallVirusIndex]->getX() - listOfGameObjects[index]->getX()) +
+							abs(listOfGameObjects[smallVirusIndex]->getY() - listOfGameObjects[index]->getY()) * abs(listOfGameObjects[smallVirusIndex]->getY() - listOfGameObjects[index]->getY()) < nearestSmallBlueVirus)
+							nearestSmallBlueVirus = abs(listOfGameObjects[smallVirusIndex]->getX() - listOfGameObjects[index]->getX()) * abs(listOfGameObjects[smallVirusIndex]->getX() - listOfGameObjects[index]->getX()) +
+							abs(listOfGameObjects[smallVirusIndex]->getY() - listOfGameObjects[index]->getY()) * abs(listOfGameObjects[smallVirusIndex]->getY() - listOfGameObjects[index]->getY()) < nearestSmallBlueVirus;
 
-					listOfGameObjects[index]->move(listOfGameObjects[smallVirusIndex]->getX(), listOfGameObjects[smallVirusIndex]->getY());	// move towards nearest small virus
+						listOfGameObjects[index]->moveStalker(listOfGameObjects[smallVirusIndex]->getX(), listOfGameObjects[smallVirusIndex]->getY());	// move towards nearest small virus
+					}
 				}
-			}
+			//}
 		}
 		else listOfGameObjects[index]->move();
 	}
@@ -1695,7 +1702,7 @@ void Game::destroyGameObjects() {
 	for (unsigned int index = 0; index != listOfGameObjects.size(); ++index) {
 		if (listOfGameObjects[index]->getX() <= 0 - listOfGameObjects[index]->getWidth()) {
 			if (listOfGameObjects[index]->getSubType() == BLOCKAGE) numBlockages--;
-			std::cout << "blockage check 2: " << numBlockages << std::endl;
+			//std::cout << "blockage check 2: " << numBlockages << std::endl;
 			listOfGameObjects[index]->setAlive(false);
 		}
 	}
@@ -1788,7 +1795,7 @@ void Game::spawnMovingObjects() {
 			blockageCount++;
 		}
 	}
-	std::cout << "number of blockages counted " << blockageCount << std::endl;
+	//std::cout << "number of blockages counted " << blockageCount << std::endl;
 
 	if(player1->getAlive() == false && player1->getNumLives() > 0) spawnPlayer(PLAYER_1);
 	if(player2->getAlive() == false && player2->getNumLives() > 0) spawnPlayer(PLAYER_2);
@@ -1806,6 +1813,7 @@ void Game::spawnMovingObjects() {
 	}
 	if(activeWhiteBloodCells < SPAWN_NUM_BLOOD_CELL_WHITE){
 		activeWhiteBloodCells++;							// increment white blood cell counter
+		std::cout << activeWhiteBloodCells << " white" << std::endl;
 		spawnBloodCell(WHITE_BLOOD_CELL);					// spawn a white blood cell
 	}
 
@@ -1822,19 +1830,25 @@ void Game::spawnMovingObjects() {
 	}// end for
 
 	if (activePowerUps < SPAWN_NUM_POWER_UPS) { spawnPowerUp(); }
-	if (activeEnemyShips < SPAWN_NUM_ENEMY_SHIPS) { spawnEnemyShip(); }
-	if (activeEnemyVirus < SPAWN_NUM_ENEMY_VIRUS) { spawnEnemyVirus(); }
+
+	if (getCurrentLevel() == 1 && activeEnemyShips < SPAWN_NUM_ENEMY_SHIPS_LVL1) { spawnEnemyShip(); }
+	else if (getCurrentLevel() == 2 && activeEnemyShips < SPAWN_NUM_ENEMY_SHIPS_LVL2) { spawnEnemyShip(); }
+	else if (getCurrentLevel() == 3 && activeEnemyShips < SPAWN_NUM_ENEMY_SHIPS_LVL3) { spawnEnemyShip(); }
+
+	if (getCurrentLevel() == 1 && activeEnemyVirus < SPAWN_NUM_ENEMY_VIRUS_LVL1) { spawnEnemyVirus(); }
+	else if (getCurrentLevel() == 2 && activeEnemyVirus < SPAWN_NUM_ENEMY_SHIPS_LVL2) { spawnEnemyVirus(); }
+	else if (getCurrentLevel() == 3 && activeEnemyVirus < SPAWN_NUM_ENEMY_SHIPS_LVL3) { spawnEnemyVirus(); }
 
 	// Start the blockages halfway through the level
-	if (numBlockages < SPAWN_NUM_BLOCKAGES && backgroundLoopCounter > BACKGROUND_SCROLL_TIMES / 2) {
+	//if (numBlockages < SPAWN_NUM_BLOCKAGES && backgroundLoopCounter > BACKGROUND_SCROLL_TIMES / 2) {
 	//if (numBlockages < SPAWN_NUM_BLOCKAGES) {
-	//if (numBlockages < SPAWN_NUM_BLOCKAGES && (getCurrentLevel() == 2 || getCurrentLevel() == 3)) {
-		std::cout << "blockage check: " << numBlockages << std::endl;
+	if (numBlockages < SPAWN_NUM_BLOCKAGES && (getCurrentLevel() == 2 || getCurrentLevel() == 3)) {
+		//std::cout << "blockage check: " << numBlockages << std::endl;
 		spawnBlockage();
 	}
 
 	//if (activeEnemyBoss < 1 && backgroundLoopCounter == BACKGROUND_SCROLL_TIMES) spawnEnemyBoss();
-	if (activeEnemyBoss < 1) spawnEnemyBoss();
+	//if (activeEnemyBoss < 1 && getCurrentLevel() == 3 && backgroundLoopCounter == BACKGROUND_SCROLL_TIMES) spawnEnemyBoss();
 }
 
 // Blockage Spawn Function
@@ -1858,8 +1872,9 @@ void Game::spawnBlockage() {
 
 	//std::cout << "Blockage Spawned!\n";
 
-	infoMessage(randomBlockageMessage(), 3);							// 2017/03/04 Display a random spawning message for blockages
-
+	if (twoPlayer) {
+		infoMessage(randomBlockageMessage(), 3);							// 2017/03/04 Display a random spawning message for blockages
+	}
 	numBlockages += 4;
 }
 void Game::spawnPlayer(int player) {
@@ -1880,33 +1895,37 @@ void Game::spawnPlayer(int player) {
 		//std::cout << "player1.getY() " << player1.getY() << " player2.getY() " << player2.getY() << std::endl;
 	}
 
-	infoMessage(randomPlayerMessage(player), player);					// 2017/03/04 Random player spawning messagess
+	if ((!twoPlayer && player == PLAYER_1) ||(twoPlayer)) {
+		infoMessage(randomPlayerMessage(player), player);					// 2017/03/04 Random player spawning messagess
+	}
 }
 void Game::spawnEnemyBoss() {
 	int x, y, randomSpeed;
 
 	GameObject* p_EnemyBoss = new EnemyBoss();
-	spawnRandom(x, y, randomSpeed, 50, p_EnemyBoss->getHeight(), 1);
+	spawnRandomAttributes(x, y, randomSpeed, 50, p_EnemyBoss->getHeight(), 1);
 
 	y = 100;
 
 	p_EnemyBoss->spawn(x, y, -randomSpeed);
 	listOfGameObjects.push_back(p_EnemyBoss);
 
-	infoMessage(randomBossMessage(), 3);								// 2017/03/04 Display a random message when a boss is spawned
+	if (twoPlayer) {
+		infoMessage(randomBossMessage(), 3);								// 2017/03/04 Display a random message when a boss is spawned
+	}
 }
 // List of enemy ships to spawn at random times and positions
 void Game::spawnEnemyShip() {
 	int x, y, randomSpeed;
 
 	GameObject* p_Enemy = new EnemyShip();
-	spawnRandom(x, y, randomSpeed, 50, p_Enemy->getHeight(), 1);
+	spawnRandomAttributes(x, y, randomSpeed, 50, p_Enemy->getHeight(), 1);
 	p_Enemy->spawn(x, y, -randomSpeed);
 	listOfGameObjects.push_back(p_Enemy);
 }
 void Game::spawnEnemyVirus(int x, int y, int subType) {
 	int smallX = x, smallY = y, randomSpeed;
-	spawnRandom(x, y, randomSpeed, 150);
+	spawnRandomAttributes(x, y, randomSpeed, 150);
 
 	// Spawn the small virus at a random position close to the original virus position
 	if (subType == VIRUS_SMALL_GREEN || subType == VIRUS_SMALL_ORANGE || subType == VIRUS_SMALL_BLUE) {
@@ -1924,13 +1943,13 @@ void Game::spawnEnemyVirus(int x, int y, int subType) {
 	else {
 		int randomExplodingVirus = rand() % 4 + 1;								// 1 in 4 chance of Orange Exploding Virus
 		//randomExplodingVirus = 2; // Test blue virus
-		if (randomExplodingVirus == 1) subType = VIRUS_ORANGE;
-		else if (randomExplodingVirus == 2) subType = VIRUS_BLUE;
+		if (randomExplodingVirus == 1 && (getCurrentLevel() == 2 || getCurrentLevel() == 3)) subType = VIRUS_ORANGE;
+		else if (randomExplodingVirus == 2 && getCurrentLevel() == 3) subType = VIRUS_BLUE;
 		else subType = VIRUS_GREEN;
 
 		GameObject* p_Virus = new EnemyVirus(subType, 3.0);		// Orange type = 1
 		p_Virus->setTimer(VIRUS_TIMER);
-		p_Virus->spawn(x, y, -randomSpeed, -randomSpeed);
+		p_Virus->spawn(x, y, -randomSpeed-4  , -randomSpeed);
 		listOfGameObjects.push_back(p_Virus);
 		//std::cout << "distance to virus p1: " << abs(((player1.getX() * player1.getX()) + (player1.getY() * player1.getY()))) << " p2: " << abs((player2.getX() * player2.getX()) + (player2.getY() * player2.getY())) << std::endl;
 	}
@@ -1939,7 +1958,7 @@ void Game::spawnBloodCell(int subType) {
 	int x, y, randomSpeed;
 	GameObject* p_BloodCell = new BloodCell(subType);
 
-	spawnRandom(x, y, randomSpeed, 200, p_BloodCell->getHeight());
+	spawnRandomAttributes(x, y, randomSpeed, 200, p_BloodCell->getHeight());
 	//p_BloodCell->spawn(x, y, -randomSpeed, p_BloodCell->getDistanceBetween());	// 2017/01/24 Added Y padding to keep objects within the game screen boundary
 	p_BloodCell->spawn(x, y, -randomSpeed);											// 2017/01/24 Added Y padding to keep objects within the game screen boundary
 	listOfGameObjects.push_back(p_BloodCell);
@@ -1951,8 +1970,9 @@ void Game::spawnPowerUp() {
 	int randomPowerup = rand() % 5 + 1;												// Number between 1 and 4
 	//randomPowerup = 4;
 
-	if (countdownTimer <= 10) {
+	if (countdownTimer <= 10 && checkpointsSpawned < 2) {
 		powerUpType = POWER_UP_CHECKPOINT;											// if the timer is less than or equal 10, spawn the Checkpoint power up
+		checkpointsSpawned++;
 	}
 	else {
 		if (randomPowerup == 1) powerUpType = POWER_UP_HEALTH;
@@ -1962,11 +1982,11 @@ void Game::spawnPowerUp() {
 	}
 
 	GameObject* p_PowerUp = new PowerUp(powerUpType, 50);						// Type and score
-	spawnRandom(x, y, randomSpeed, 200, p_PowerUp->getHeight());				// Spawn with random X and Y coord, and speed between 1 and 3
-	p_PowerUp->spawn(x, y, -randomSpeed);										// 2017/01/16 USES OVERLOADED FUNCTION -- CHECK
+	spawnRandomAttributes(x, y, randomSpeed, 200, p_PowerUp->getHeight());				// Spawn with random X and Y coord, and speed between 1 and 3
+	p_PowerUp->spawn(x, y, -5);										// 2017/01/16 USES OVERLOADED FUNCTION -- CHECK
 	listOfGameObjects.push_back(p_PowerUp);
 }
-void Game::spawnRandom(int &x, int &y, int &randomSpeed, int xMuliplier, int yPadding, int speed) {	// 2017-01-20 Separate out common randomness of game object spawning
+void Game::spawnRandomAttributes(int &x, int &y, int &randomSpeed, int xMuliplier, int yPadding, int speed) {	// 2017-01-20 Separate out common randomness of game object spawning
 	int randomX = rand() % 5 + 1;
 	int randomY = rand() % 8 + 1;												// A number between 1 and 8
 	randomSpeed = rand() % 4 + speed;
@@ -1974,6 +1994,7 @@ void Game::spawnRandom(int &x, int &y, int &randomSpeed, int xMuliplier, int yPa
 	x = SCREEN_WIDTH + (randomX * xMuliplier);
 	y = 40 + (randomY * ((SCREEN_HEIGHT_GAME - yPadding - 80) / 8));			// 40 top and bottom, yPadding, object height
 }
+
 // Spawn Weapon at ships location
 void Game::spawnExplosion(int x, int y, int subType) {
 	GameObject* p_Explosion = new Explosion(x, y, subType);		// Create an explosion at x and y, with given type
@@ -2222,7 +2243,7 @@ void setViewport(SDL_Rect &rect, int x, int y, int w, int h) {
 // Reset a level or the game
 void Game::resetGame(int currentLevel) {
 	frames = 0;					// Animation Frames
-
+	checkpointsSpawned = 0;		// Reset number of checkpoints spawned
 	//gLevel.free();
 
 	// Reset the map of the professor
@@ -2322,6 +2343,8 @@ void Game::resetGame(int currentLevel) {
 
 	levelOver = false;
 	gameOver = false;
+	noTime = false;
+
 }
 
 void Game::collisionCheck() {
@@ -2338,7 +2361,7 @@ void Game::collisionCheck() {
 
 			//if (listOfGameObjects[index]->getSubType() == BLOCKAGE) player1->setVelX(player1->getVelX() - player1->getVelX() -BACKGROUND_SCROLL_SPEED);
 			if (listOfGameObjects[index]->getSubType() == BLOCKAGE) {
-				player1->setVelX(-BACKGROUND_SCROLL_SPEED);
+				player1->setX((player1->getX() + listOfGameObjects[index]->getVelX()) - player1->getVelX());
 				player1->moveLeft(true);
 			}
 
@@ -2433,7 +2456,8 @@ void Game::collisionCheck() {
 
 			//if (listOfGameObjects[index]->getSubType() == BLOCKAGE) player1->setVelX(player1->getVelX() - player1->getVelX() -BACKGROUND_SCROLL_SPEED);
 			if (listOfGameObjects[index]->getSubType() == BLOCKAGE) {
-				player2->setVelX(-BACKGROUND_SCROLL_SPEED);
+				//player2->setVelX(-BACKGROUND_SCROLL_SPEED);
+				player2->setX((player2->getX() + listOfGameObjects[index]->getVelX()) - player2->getVelX());
 				player2->moveLeft(true);
 			}
 

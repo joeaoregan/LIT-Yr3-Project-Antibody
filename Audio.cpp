@@ -78,33 +78,33 @@ bool Audio::loadMediaAudio() {
 
 void Audio::music() {
 	//Load music
-	gMusic1 = Mix_LoadMUS("Audio/GameSong1.wav");												// Load music
+	/*gMusic1 = Mix_LoadMUS("Audio/GameSong1.wav");												// Load music
+	if (gMusic1 == NULL) {
+		printf("Failed to load rage music! SDL_mixer Error: %s\n", Mix_GetError());
+	}*/
+	/*gMusic2 = Mix_LoadMUS("Audio/GameSong2.mp3");												// Load music
+	if (gMusic2 == NULL) {
+		printf("Failed to load rage music! SDL_mixer Error: %s\n", Mix_GetError());
+	}*/
+	gMusic1 = Mix_LoadMUS("OriginalMusic/3BloodStream.mp3");												// Load music
 	if (gMusic1 == NULL) {
 		printf("Failed to load rage music! SDL_mixer Error: %s\n", Mix_GetError());
 	}
-	gMusic2 = Mix_LoadMUS("Audio/GameSong2.mp3");												// Load music
+	gMusic2 = Mix_LoadMUS("OriginalMusic/1TheFirstStep.mp3");									// Load music
 	if (gMusic2 == NULL) {
-		printf("Failed to load rage music! SDL_mixer Error: %s\n", Mix_GetError());
-	}
-	gMusic3 = Mix_LoadMUS("Audio/GameSong3.mp3");												// Load music
-	if (gMusic3 == NULL) {
-		printf("Failed to load rage music! SDL_mixer Error: %s\n", Mix_GetError());
-	}
-	gMusic4 = Mix_LoadMUS("OriginalMusic/1TheFirstStep.mp3");									// Load music
-	if (gMusic4 == NULL) {
 		printf("Failed to load The First Step music! SDL_mixer Error: %s\n", Mix_GetError());
 	}
-	gMusic5 = Mix_LoadMUS("OriginalMusic/2Virus.mp3");											// Load music
-	if (gMusic5 == NULL) {
+	gMusic3 = Mix_LoadMUS("OriginalMusic/2Virus.mp3");											// Load music
+	if (gMusic3 == NULL) {
 		printf("Failed to load Virus music! SDL_mixer Error: %s\n", Mix_GetError());
 	}
 
 	// Add songs to vector
-	listOfMusic.push_back(gMusic1);						// Add tracks to the music array
+	//listOfMusic.push_back(gMusic1);						// Add tracks to the music array
+	//listOfMusic.push_back(gMusic2);
+	listOfMusic.push_back(gMusic1);
 	listOfMusic.push_back(gMusic2);
 	listOfMusic.push_back(gMusic3);
-	listOfMusic.push_back(gMusic4);
-	listOfMusic.push_back(gMusic5);
 
 	currentSong = rand() % NUMBER_OF_SONGS;				// Play a random song on start up
 
@@ -119,11 +119,10 @@ int Audio::musicForwardSongName() {						// Pick next track on the list
 
 	Mix_PlayMusic(listOfMusic[currentSong], -1);
 
-	if (currentSong == 0) std::cout << "current song 1" << std::endl;
-	else if (currentSong == 1) std::cout << "current song 2" << std::endl;
-	else if (currentSong == 2) std::cout << "current song 3" << std::endl;
-	else if (currentSong == 3) std::cout << "Current Song: The Last Step" << std::endl;
-	else if (currentSong == 4) std::cout << "Current Song: Virus" << std::endl;
+
+	if (currentSong == 0) std::cout << "current song: Blood Stream" << std::endl;
+	else if (currentSong == 1) std::cout << "Current Song: The First Step" << std::endl;
+	else if (currentSong == 2) std::cout << "Current Song: Virus" << std::endl;
 
 	return currentSong;
 }
@@ -237,8 +236,8 @@ void Audio::destroy() {
 	gMusic2 = NULL;
 	Mix_FreeMusic(gMusic3);	// Free music
 	gMusic3 = NULL;
-	Mix_FreeMusic(gMusic4);	// Free music
-	gMusic4 = NULL;
-	Mix_FreeMusic(gMusic5);	// Free music
-	gMusic5 = NULL;
+	//Mix_FreeMusic(gMusic4);	// Free music
+	//gMusic4 = NULL;
+	//Mix_FreeMusic(gMusic5);	// Free music
+	//gMusic5 = NULL;
 }
