@@ -211,8 +211,6 @@
 #include "EnterName.h"
 #include <math.h>
 
-bool miniMap = true;
-
 Game* Game::s_pInstance = 0;
 GameStateMachine* m_pGameStateMachine;	// P109 Add GameStateMachine as a member of the Game class
 
@@ -245,7 +243,7 @@ Menu menu1;
 HUD headsUpDisplay;
 StatusBar bar;
 SplashScreen splash;
-FPS fps1;					// 2017/02/01 Moved FPS functionality to it's own class
+FPS fps1;							// 2017/02/01 Moved FPS functionality to it's own class
 Particle particle;
 SettingsMenu settings;
 HighScores highScore;
@@ -315,7 +313,9 @@ Texture gPlayer2Texture;			// Player 2 ship
 
 Texture gPowerUpRocketTexture;		// Texture for Rocket power up
 Texture gRocketTexture;				// Texture for Rocket weapon
-
+//Texture gNinjaStarBlueTexture(5);	// Texture for Ninja Star weapon
+//Texture gNinjaStarYellowTexture(5);	// Texture for Ninja Star weapon // 2017-01-30 with rotation angle of 5 degrees
+//Texture gSawTexture(5);				// Texture for Ninja Star weapon
 // UI
 Texture gTimeTextTexture;			// Countdown time displayed in game screen
 Texture gFPSTextTexture;			// Frames Per Second displayed at top of screen
@@ -325,7 +325,8 @@ Texture gInfoMessageP2TextTexture;	// Player notification messages for picking u
 Texture gInfoMessageTextTexture;	// Player notification messages for picking up objects etc.
 Texture gInfoMessageMapTextTexture;	// Player notification messages for picking up objects etc.
 
-// Vectors for objects that have collisions
+// Vectors for objects that have collisions - These 2 lists are the only 2 we need
+//std::vector<Texture*> listOfScoreTextures;	// The score for any object a player Kills
 std::vector<GameObject*> listOfGameObjects;		// 2017/01/31 Using to display the scores for each object killed, 2017/02/15 added Power Ups, Explosions
 
 Player* player1 = new Player();
@@ -493,6 +494,20 @@ bool Game::loadMedia() {
 	}
 
 	// Weapons
+	/*
+	if (!gNinjaStarBlueTexture.loadFromFile("Art/NinjaStarBlue.png")) {			// Ninja Star Texture
+		printf("Failed to load Blue Ninja Star texture!\n");
+		success = false;
+	}
+	if (!gNinjaStarYellowTexture.loadFromFile("Art/NinjaStarYellow.png")) {		// Ninja Star Texture
+		printf("Failed to load Yellow Ninja Star texture!\n");
+		success = false;
+	}
+	if (!gSawTexture.loadFromFile("Art/SawBlue.png")) {							// Saw Texture
+		printf("Failed to load Blue Saw texture!\n");
+		success = false;
+	}
+	*/
 	if (!gRocketTexture.loadFromFile("Art/Rocket.png")) {						// Rocket Texture
 		printf("Failed to load Rocket texture!\n");
 		success = false;
@@ -523,7 +538,13 @@ bool Game::loadMedia() {
 		success = false;
 	}
 	else {
-		setupAnimationClip(gEnemyBossEyes, 16, 25);	//2017/03/19 Edited
+		//Set sprite clips
+		for (unsigned int i = 0; i < 16; ++i) {
+			gEnemyBossEyes[i].x = i * 25;
+			gEnemyBossEyes[i].y = 0;
+			gEnemyBossEyes[i].w = 25;
+			gEnemyBossEyes[i].h = 25;
+		}
 	}
 	if (!gEnemyBossSpriteSheetTexture.loadFromFile("Art/lorcanSpriteSheet.png")) {	// Sprite sheet for Enemy Ship
 		printf("Failed to load Enemy Boss animation texture!\n");
@@ -538,6 +559,21 @@ bool Game::loadMedia() {
 			gEnemyBossSpriteClips[i].h = 460;
 		}
 	}
+	/*
+	if (!gEnemyBossSpriteSheetTexture.loadFromFile("Art/EnemyBossSpriteSheet.png")) {	// Sprite sheet for Enemy Ship
+		printf("Failed to load Enemy Boss animation texture!\n");
+		success = false;
+	}
+	else {
+		//Set sprite clips
+		for (unsigned int i = 0; i < 4; ++i) {
+			gEnemyBossSpriteClips[i].x = i * 300;
+			gEnemyBossSpriteClips[i].y = 0;
+			gEnemyBossSpriteClips[i].w = 300;
+			gEnemyBossSpriteClips[i].h = 529;
+		}
+	}
+	*/
 	if (!gGreenVirusSpriteSheetTexture.loadFromFile("Art/EnemyVirus_SpriteSheet_Green.png")) {	// Sprite sheet for Enemy Orange Virus
 		printf("Failed to load Green Virus animation texture!\n");
 		success = false;
@@ -961,19 +997,15 @@ bool Game::playerInput(bool quit = false) {
 			// Map
 			case SDLK_t:
 				//gCurrentSurface = gKeyPressSurfaces[KEY_PRESS_SURFACE_UP];
-				// Go From mini map to large transparent map
 				if (mapViewport.y == 600) {
 					setViewport(mapViewport, (SCREEN_WIDTH - 780) / 2, 40, 900, 657);
 					infoMessage("View Map");
 					Texture::Instance()->modifyAlpha(50, "profID");
-					miniMap = false;													// 2017/03/19 Show big map ship position graphics
 				}
-				// Go from large map to mini map
 				else if (mapViewport.y == 40) {
 					setViewport(mapViewport, (SCREEN_WIDTH - 120) / 2, 600, 120, 88);	// 230 was 192, 168 was 140
 					infoMessage("Hide Map");
 					Texture::Instance()->modifyAlpha(255, "profID");
-					miniMap = true;														// 2017/03/19 Show big map ship position
 				}
 				break;
 				// case SDLK_DOWN:
@@ -1002,14 +1034,14 @@ bool Game::playerInput(bool quit = false) {
 				break;
 			}
 		}
-		// Joystick button press
+		//Joystick button press
 		else if (e.type == SDL_JOYBUTTONDOWN) {
 			//Play rumble at 75% strenght for 500 milliseconds
 			if (SDL_HapticRumblePlay(gControllerHaptic, 0.5, 50) != 0) {
 				printf("Warning: Unable to play rumble! %s\n", SDL_GetError());
 			}
 		}
-		// Menu events
+
 		menu1.handleMenuEvents(e);
 		if (getCurrentLevel() != 0) {												// If not in menu state
 			if(player1->getAlive()) player1->handleEvent(e, 1);						// Handle input for Player 1
@@ -1039,6 +1071,13 @@ void Game::fullScreenOrWindowed() {
 	SDL_SetWindowFullscreen(gWindow, windowFlag);
 }
 
+void Game::setRotatingAngle() {
+	// ROTATE GAME OBJECTS - Set angle increment for rotating textures
+	//gNinjaStarBlueTexture.setDegrees(gNinjaStarBlueTexture.getDegrees() + 5);
+	//gNinjaStarYellowTexture.setDegrees(gNinjaStarYellowTexture.getDegrees() + 5);
+	//gSawTexture.setDegrees(gSawTexture.getDegrees() + 5);
+}
+
 void Game::scrollBackground() {
 	if (backgroundLoopCounter <= BACKGROUND_SCROLL_TIMES) scrollingOffset -= BACKGROUND_SCROLL_SPEED;	// Scroll for a fixed number of times
 	if (scrollingOffset < -SCREEN_WIDTH) {
@@ -1060,6 +1099,7 @@ int eyeFrame = 0;
 void Game::renderGamePlay() {
 	// Levels
 	if (weaponScrolling > 0) weaponScrolling--;
+	setRotatingAngle();	// 2017/02/22: Angle needs to be updated each time a rotating object is drawn to screen
 	displayText();		// 2017/01/17: Display the game text
 
 	if (player1->getAlive()) gPlayer1Texture.flashGameObject(10, 4);	// 2017/01/30 Moved flashGameObject() function into LTexture
@@ -1086,7 +1126,15 @@ void Game::renderGamePlay() {
 			//SDL_RenderDrawRect(getRenderer(), &listOfGameObjects[index]->getCollider());
 			frames = listOfGameObjects[index]->getFrames();		// 2017/02/09 Fixed the explosion animations, they are now assigned to indiviual objects with the game object frame attribute
 
+			// Render Saws
+			//if (listOfGameObjects[index]->getSubType() == SAW1 && player1->getAlive()) listOfGameObjects[index]->render(gSawTexture, gSawTexture.getDegrees());
+			//else if (listOfGameObjects[index]->getSubType() == SAW2 && player2->getAlive()) listOfGameObjects[index]->render(gSawTexture, gSawTexture.getDegrees());
+
+			//if (listOfGameObjects[index]->getSubType() == SAW1 && listOfGameObjects[index]->getAlive() && player1->getSawActive()) listOfGameObjects[index]->render();
+			//else if (listOfGameObjects[index]->getSubType() == SAW2 && listOfGameObjects[index]->getAlive() && player2->getSawActive()) listOfGameObjects[index]->render();
+
 			// Render Explosions
+			//else
 			if (listOfGameObjects[index]->getSubType() == EXPLOSION) {
 				listOfGameObjects[index]->render(gExplosionSpriteSheetTexture, &gExplosionClips[frames / EXPLOSION_ANIMATION_FRAMES], frames, EXPLOSION_ANIMATION_FRAMES);
 				if (frames / 8 >= EXPLOSION_ANIMATION_FRAMES) {		// If the explosion reaches the last frame
@@ -1141,23 +1189,36 @@ void Game::renderGamePlay() {
 				}
 				else listOfGameObjects[index]->setAlive(false);
 			}
+			// Render Blood Cells
+			//else if (listOfGameObjects[index]->getType() == BLOOD_CELL)
+			//	listOfGameObjects[index]->render();													// Render the Blood Cell, with random rotation direction
 			// Render Enemies
 			else if (listOfGameObjects[index]->getSubType() == ENEMY_SHIP) {																						// 2017/02/09 Fixed the Enemy Ship animations, they are now assigned to indiviual objects with the game object frame attribute
 				listOfGameObjects[index]->render(gEnemySpriteSheetTexture, &gEnemySpriteClips[frames / 10], frames, 4);												// 4 the number of frames
 			}
 			else if (listOfGameObjects[index]->getSubType() == ENEMY_BOSS) {																						// 2017/02/09 Fixed the Enemy Ship animations, they are now assigned to indiviual objects with the game object frame attribute
 				listOfGameObjects[index]->render(gEnemyBossSpriteSheetTexture, &gEnemyBossSpriteClips[frames / 10], frames, 4);										// 4 the number of frames
+				//Texture::Instance()->renderMap();
+
 				if (listOfGameObjects[index]->getX() < SCREEN_WIDTH - 400) {
+					//listOfGameObjects[index]->render(gEnemyBossEyesSpriteSheetTexture, &gEnemyBossEyes[frames / 10], frames, 4);
+					//gEnemyBossEyesSpriteSheetTexture.render(listOfGameObjects[index]->getX() + 70, listOfGameObjects[index]->getY() + 225);
+
 					gEnemyBossEyesSpriteSheetTexture.render(listOfGameObjects[index]->getX() + 57, listOfGameObjects[index]->getY() + 210, &gEnemyBossEyes[frames / 5]);
 					gEnemyBossEyesSpriteSheetTexture.render(listOfGameObjects[index]->getX() + 167, listOfGameObjects[index]->getY() + 214, &gEnemyBossEyes[frames / 5]);
 					if ((frames) % 128 == 0) {		// If the eye animation reaches the last frame
 						spawnEnemyLaser(listOfGameObjects[index]->getX() + 57, listOfGameObjects[index]->getY() + 210, BLUE_VIRUS_BULLET);
 						spawnEnemyLaser(listOfGameObjects[index]->getX() + 167, listOfGameObjects[index]->getY() + 214, BLUE_VIRUS_BULLET);
 					}
+					//listOfGameObjects[index]->render(gEnemyBossEyesSpriteSheetTexture, &gEnemyBossEyes[frames / 10], frames, 8, listOfGameObjects[index]->getX() + 57, listOfGameObjects[index]->getY() + 210);
+					//listOfGameObjects[index]->render(gEnemyBossEyesSpriteSheetTexture, &gEnemyBossEyes[frames / 10], frames, 8, listOfGameObjects[index]->getX() + 170, listOfGameObjects[index]->getY() + 214);
+					//if (eyeFrame < 8) eyeFrame++;
+					//else eyeFrame = 0;
 				}
 
 				bar.enemyBossBar(listOfGameObjects[index]->getHealth());	// Health bar for enemy boss
 				gEnemyBossStatusBarTextTexture.render((SCREEN_WIDTH - gEnemyBossStatusBarTextTexture.getWidth()) / 2, 6);
+				//gEnemyBossStatusBarTextTexture.render(100, 10);
 			}
 			else if (listOfGameObjects[index]->getSubType() == VIRUS_GREEN) listOfGameObjects[index]->render(gGreenVirusSpriteSheetTexture, &gGreenVirusSpriteClips[frames / 10], frames, 6);
 			else if (listOfGameObjects[index]->getSubType() == VIRUS_ORANGE) listOfGameObjects[index]->render(gOrangeVirusSpriteSheetTexture, &gOrangeVirusSpriteClips[frames / 10], frames, 6);				// 6 the number of frames
@@ -1166,11 +1227,35 @@ void Game::renderGamePlay() {
 			else if (listOfGameObjects[index]->getSubType() == VIRUS_SMALL_ORANGE) listOfGameObjects[index]->render(gSmallOrangeVirusSpriteSheetTexture, &gSmallOrangeVirusSpriteClips[frames / 10], frames, 6);// 6 the number of frames
 			else if (listOfGameObjects[index]->getSubType() == VIRUS_SMALL_BLUE) listOfGameObjects[index]->render(gSmallBlueVirusSpriteSheetTexture, &gSmallBlueVirusSpriteClips[frames / 10], frames, 6);		// 6 the number of frames
 
+			// Weapons
+			//else if (listOfGameObjects[index]->getSubType() == NINJA_STAR_P1) listOfGameObjects[index]->render(gNinjaStarYellowTexture, gNinjaStarYellowTexture.getDegrees());	// Yellow ninja star for player 1
+			//else if (listOfGameObjects[index]->getSubType() == NINJA_STAR_P2) listOfGameObjects[index]->render(gNinjaStarBlueTexture, gNinjaStarBlueTexture.getDegrees());		// Blue ninja star for player 2
+			//else if (listOfGameObjects[index]->getSubType() == NINJA_STAR_P1 || listOfGameObjects[index]->getSubType() == NINJA_STAR_P2)
+			//	listOfGameObjects[index]->render();	// 2017/03/18 Render Ninja Stars with rotation, with render function in Ninja Star class
+			//else if (listOfGameObjects[index]->getSubType() == ROCKET_P1) listOfGameObjects[index]->render(gRocketTexture, listOfGameObjects[index]->getAngle());
+			//else if (listOfGameObjects[index]->getSubType() == ROCKET_P2) listOfGameObjects[index]->render(gRocketTexture, listOfGameObjects[index]->getAngle());
+
+			// 2017/03/04 New renders the object based on its unique texture ID
+			//else if (listOfGameObjects[index]->getSubType()!=SAW1)  // 2017/03/16 Not deleting saws
+
+
+
 			/* 2017/03/18 Added render function to class to render from texture map using texture ID */
-			else if (listOfGameObjects[index]->getType() == POWER_UP ||
+			else if (
+
+				//listOfGameObjects[index]->getSubType() == SAW1 ||
+				//listOfGameObjects[index]->getSubType() == SAW2 ||
+				//listOfGameObjects[index]->getSubType() == NINJA_STAR_P1 ||
+				//listOfGameObjects[index]->getSubType() == NINJA_STAR_P2 ||
+				//listOfGameObjects[index]->getSubType() == ROCKET_P1 ||
+				//listOfGameObjects[index]->getSubType() == ROCKET_P2 ||
+				//listOfGameObjects[index]->getSubType() == LASER_P1 ||
+				//listOfGameObjects[index]->getSubType() == LASER_P2 ||
+				listOfGameObjects[index]->getType() == POWER_UP ||
 				listOfGameObjects[index]->getType() == BLOOD_CELL ||
 				listOfGameObjects[index]->getType() == ENEMY_WEAPON ||
 				listOfGameObjects[index]->getType() == PLAYER_WEAPON) listOfGameObjects[index]->render();
+
 
 			else Texture::Instance()->renderMap(listOfGameObjects[index]->getTextureID(), listOfGameObjects[index]->getX(), listOfGameObjects[index]->getY(), listOfGameObjects[index]->getWidth(), listOfGameObjects[index]->getHeight());
 
@@ -1182,10 +1267,30 @@ void Game::renderGamePlay() {
 		// Render Text
 		SDL_RenderSetViewport(getRenderer(), &gameViewport);
 
-		headsUpDisplay.displayLevelNum(getCurrentLevel());	// Displays the level number at the top left of game screen
-		Texture::Instance()->render("levelID", 10, 8);	// 2017/03/19 Moved to displayLevelNum() in HUD class
+		headsUpDisplay.displayLevelNum(getCurrentLevel());
 
-		checkMessageTimes();								// 2017/03/19 Function to check how loong a message has been on screen, and increment message timers
+		Texture::Instance()->render("levelID", 10, 8);
+
+		if (infoMessageP1Counter < MESSAGE_TIME) {
+			gInfoMessageP1TextTexture.render((SCREEN_WIDTH - gInfoMessageP1TextTexture.getWidth()) / 2, ((SCREEN_HEIGHT - gInfoMessageP1TextTexture.getHeight()) / 2) - 20); // Top message P1
+			infoMessageP1Counter++;
+		}
+		if (infoMessageP2Counter < MESSAGE_TIME) {
+			gInfoMessageP2TextTexture.render((SCREEN_WIDTH - gInfoMessageP2TextTexture.getWidth()) / 2, ((SCREEN_HEIGHT - gInfoMessageP2TextTexture.getHeight()) / 2) + 20);// Bottom message P2
+			infoMessageP2Counter++;
+		}
+		if (infoMessageCounter < MESSAGE_TIME) {
+			gInfoMessageTextTexture.render((SCREEN_WIDTH - gInfoMessageTextTexture.getWidth()) / 2, ((SCREEN_HEIGHT - gInfoMessageTextTexture.getHeight()) / 2));			// Middle message General
+			infoMessageCounter++;
+		}
+		if (infoMessageP1Counter < MESSAGE_TIME) {
+			gInfoMessageP1TextTexture.render((SCREEN_WIDTH - gInfoMessageP1TextTexture.getWidth()) / 2, ((SCREEN_HEIGHT - gInfoMessageP1TextTexture.getHeight()) / 2) - 20); // Top message P1
+			infoMessageP1Counter++;
+		}
+		if (infoMessageMapCounter < MESSAGE_TIME_MAP) {
+			gInfoMessageMapTextTexture.render((SCREEN_WIDTH - gInfoMessageMapTextTexture.getWidth()) / 2, SCREEN_HEIGHT_GAME - gInfoMessageMapTextTexture.getHeight() - 5); // Top message P1
+			infoMessageMapCounter++;
+		}
 
 		gTimeTextTexture.flashGameObject(8);
 		gTimeTextTexture.modifyAlpha(gTimeTextTexture.getAlpha());						// Flash the timer
@@ -1232,7 +1337,6 @@ void Game::renderGamePlay() {
 		}
 
 		for (unsigned int index = 0; index != listOfGameObjects.size(); ++index) {
-			// Orange Virus
 			if (listOfGameObjects[index]->getSubType() == VIRUS_ORANGE) {									// 2017/01/25 If the type of virus is an Orange Exploding Virus
 				// Start the timer
 				if (listOfGameObjects[index]->getX() > SCREEN_WIDTH - listOfGameObjects[index]->getWidth() - 50)
@@ -1254,7 +1358,7 @@ void Game::renderGamePlay() {
 					listOfGameObjects[index]->setAlive(false);																// When timer runs out kill the virus
 				}
 			}
-			// Blue Virus
+
 			else if (listOfGameObjects[index]->getSubType() == VIRUS_BLUE) {									// 2017/01/25 If the type of virus is an Orange Exploding Virus
 				// Start the timer
 				if (listOfGameObjects[index]->getX() > SCREEN_WIDTH - listOfGameObjects[index]->getWidth() - 50) {
@@ -1318,6 +1422,7 @@ void Game::renderGamePlay() {
 		}
 
 		// User Interface / Player Information Panel
+
 		SDL_RenderSetViewport(getRenderer(), &UIViewport);
 
 		headsUpDisplay.playerScore(twoPlayer, player1Score, player2Score);
@@ -1341,21 +1446,6 @@ void Game::renderGamePlay() {
 		/* Weapon Scrolling will work of trigger buttons, press left and right to select main weapon */
 		SDL_RenderSetViewport(getRenderer(), &mapViewport);									// UIViewport	// SDL_RenderSetViewport(getRenderer(), &gameViewport);  // UIViewport
 		if (!levelOver) Texture::Instance()->renderMap("profID");
-
-		// 2017/03/19 Minimap positions
-		if (!miniMap) {
-			// 10, 350 start coords
-			// 180, 260 end of level one coords // start of level 2
-			//gEnemyBossEyesSpriteSheetTexture.render(10, 350, &gEnemyBossEyes[frames / 5]);	// Temp image to show positions
-			//gEnemyBossEyesSpriteSheetTexture.render(210, 260, &gEnemyBossEyes[frames / 5]);	// Temp image to show positions
-			//gEnemyBossEyesSpriteSheetTexture.render(440, 300, &gEnemyBossEyes[frames / 5]);	// Temp image to show positions
-			//gEnemyBossEyesSpriteSheetTexture.render(355, 50, &gEnemyBossEyes[frames / 5]);	// Temp image to show positions
-
-			Texture::Instance()->renderMap("mapShipID", 10, 350, 30, 14);	// Start level 1
-			Texture::Instance()->renderMap("mapShipID", 210, 260, 30, 14);	// End level 1 / start level 2
-			Texture::Instance()->renderMap("mapShipID", 440, 300, 30, 14);	// End level 2 / Start level 3
-			Texture::Instance()->renderMap("mapShipID", 355, 50, 30, 14);	// End game
-		}
 
 		SDL_RenderSetViewport(getRenderer(), &weaponViewport1);								// UIViewport
 		//if (player1->getLaserGrade() == LASER_SINGLE) gPowerUpLaserTexture.render(weaponScrolling, 5);			// 1st
@@ -1389,6 +1479,7 @@ void Game::renderGamePlay() {
 		}
 		else if (twoPlayer && player2->getAlive() == false )
 			headsUpDisplay.rocketIndicator(0, false, PLAYER_2);
+
 
 		SDL_RenderSetViewport(getRenderer(), &boostViewport2);
 		if (twoPlayer && player2->getAlive()) headsUpDisplay.speedBoostIndicator(player2->getSpeedBoost());
@@ -1429,39 +1520,19 @@ void Game::renderGamePlay() {
 	SDL_RenderPresent(getRenderer());					// Update screen
 }
 
-/*
-2017/03/19 Function to check how long a message has been on screen, and increment message timers
-*/
-void Game::checkMessageTimes() {
-	if (infoMessageP1Counter < MESSAGE_TIME) {
-		gInfoMessageP1TextTexture.render((SCREEN_WIDTH - gInfoMessageP1TextTexture.getWidth()) / 2, ((SCREEN_HEIGHT - gInfoMessageP1TextTexture.getHeight()) / 2) - 20); // Top message P1
-		infoMessageP1Counter++;
-	}
-	if (infoMessageP2Counter < MESSAGE_TIME) {
-		gInfoMessageP2TextTexture.render((SCREEN_WIDTH - gInfoMessageP2TextTexture.getWidth()) / 2, ((SCREEN_HEIGHT - gInfoMessageP2TextTexture.getHeight()) / 2) + 20);// Bottom message P2
-		infoMessageP2Counter++;
-	}
-	if (infoMessageCounter < MESSAGE_TIME) {
-		gInfoMessageTextTexture.render((SCREEN_WIDTH - gInfoMessageTextTexture.getWidth()) / 2, ((SCREEN_HEIGHT - gInfoMessageTextTexture.getHeight()) / 2));			// Middle message General
-		infoMessageCounter++;
-	}
-	if (infoMessageMapCounter < MESSAGE_TIME_MAP) {
-		gInfoMessageMapTextTexture.render((SCREEN_WIDTH - gInfoMessageMapTextTexture.getWidth()) / 2, SCREEN_HEIGHT_GAME - gInfoMessageMapTextTexture.getHeight() - 5); // Top message P1
-		infoMessageMapCounter++;
-	}
-}
-
 // 2017/02/22 Check player is alive
 void Game::displayScoreForObject(int Xcoord, int Ycoord, int score, int player) {
 	GameObject* p_PointsValue = new ScoreValueText(Xcoord, Ycoord, score, player);
 
 	if (player == PLAYER_1 && player1->getAlive()) {
+		//p_PointsValue->setSubType(PLAYER1_SCORE);
 		//scoreTextP1counter++;
 		if (!p_PointsValue->m_Texture.loadFromRenderedText("+" + std::to_string(score), { 240, 210, 65, 255 }, gFontRetro20)) {	// Gold Text
 			printf("Unable to render player text texture!\n");
 		}
 	}
 	else if (player == PLAYER_2 && player2->getAlive()) {
+		//p_PointsValue->setSubType(PLAYER2_SCORE);
 		//scoreTextP2counter++;
 		if (!p_PointsValue->m_Texture.loadFromRenderedText("+" + std::to_string(score), { 0, 0, 255, 255 }, gFontRetro20)) {		// Blue Text
 			printf("Unable to render player text texture!\n");
@@ -1702,6 +1773,7 @@ void Game::destroyGameObjects() {
 	}// end for
 }
 
+
 // Decide how many of each enemy / obstacle on screen at a given time
 void Game::spawnMovingObjects() {
 	int blockageCount = 0;
@@ -1759,8 +1831,6 @@ void Game::spawnMovingObjects() {
 	// Start the blockages halfway through the level
 	//if (numBlockages < SPAWN_NUM_BLOCKAGES && backgroundLoopCounter > BACKGROUND_SCROLL_TIMES / 2) {
 	//if (numBlockages < SPAWN_NUM_BLOCKAGES) {
-
-	/* 2017/03/19 Blockages half-way through level 2, and from the start of level 3 */
 	if (numBlockages < SPAWN_NUM_BLOCKAGES && (getCurrentLevel() == 2 || getCurrentLevel() == 3)) {
 		//std::cout << "blockage check: " << numBlockages << std::endl;
 		spawnBlockage();
@@ -1770,6 +1840,7 @@ void Game::spawnMovingObjects() {
 	//if (activeEnemyBoss < 1 && getCurrentLevel() == 3 && backgroundLoopCounter == BACKGROUND_SCROLL_TIMES) spawnEnemyBoss();
 	if (backgroundLoopCounter == BACKGROUND_SCROLL_TIMES && activeEnemyBoss < 1) spawnEnemyBoss();	// Spawn the Enemy Boss at the end of the level
 	//if (activeEnemyBoss < 1) spawnEnemyBoss();	// 2017/03/18 Test: Show the boss at the start of the level
+
 }
 
 // Blockage Spawn Function
@@ -1816,7 +1887,7 @@ void Game::spawnPlayer(int player) {
 		//std::cout << "player1.getY() " << player1.getY() << " player2.getY() " << player2.getY() << std::endl;
 	}
 
-	if (!twoPlayer && player == PLAYER_1 ||(twoPlayer)) {
+	if ((!twoPlayer && player == PLAYER_1) ||(twoPlayer)) {
 		infoMessage(randomPlayerMessage(player), player);					// 2017/03/04 Random player spawning messagess
 	}
 }
@@ -2081,10 +2152,12 @@ int numSaws = 0;
 void Game::spawnSaw(int x, int y, int subType) {			// player to spawn for and their coords, turn on if inacive, off if active	// 2017-02-08 Updated and working OK
 	bool createSaw = false;									// Used to decide which player to create the saw for, so code doesn't need to be repeated
 
+
 	if (player1->getSawActive()) std::cout << "player 1 saw active" << std::endl;
 	else if (!player1->getSawActive()) std::cout << "player 1 saw NOT active" << std::endl;
 	if (player2->getSawActive()) std::cout << "player 2 saw active" << std::endl;
 	else if (!player2->getSawActive()) std::cout << "player 2 saw NOT active" << std::endl;
+
 
 	// Check which player to create a saw for
 	if (subType == SAW1 && !player1->getSawActive()) {
@@ -2092,6 +2165,7 @@ void Game::spawnSaw(int x, int y, int subType) {			// player to spawn for and th
 		player1->setSawActive(true);						// Show saw, set saw active function returns true value
 		player1->setShieldActive(false);					// Hide the shield if the saw is active
 		numSaws++;
+
 	}
 	else if (subType == SAW2 && !player2->getSawActive()) {
 		createSaw = true;
@@ -2134,6 +2208,7 @@ void Game::spawnSaw(int x, int y, int subType) {			// player to spawn for and th
 			}
 		}// end for
 	} // end else
+
 	//std::cout << "Num Saws: " << numSaws << std::endl;
 }
 
@@ -2314,14 +2389,9 @@ void Game::resetGame(int currentLevel) {
 	levelOver = false;
 	gameOver = false;
 	noTime = false;
+
 }
 
-/*
-	The collisionCheck function, checks for collisions between objects, and triggers appropriate events
-
-	Checks for: collisions between player ships and objects, player weapons and enemies, enemy weapons and player
-	player weapons and obstacles, large blood cells, power ups etc.
-*/
 void Game::collisionCheck() {
 	// Check if Player 1 or 2 has collided with another game object
 	for (unsigned int index = 0; index != listOfGameObjects.size(); ++index) {
@@ -2340,6 +2410,16 @@ void Game::collisionCheck() {
 				player1->moveLeft(true);
 			}
 
+			/*
+			// Blockage
+			if (listOfGameObjects[index]->getSubType() == BLOCKAGE) {
+				std::cout << "BLOCKAGE COLLISION PLAYER 1" << std::endl;
+				if (player1->getSawActive())
+					listOfGameObjects[index]->setAlive(false);						// If saw is active kill that enemy
+				else
+					player1->setVelX(player1->getVelX() - player1->getVelX() - BACKGROUND_SCROLL_SPEED);
+			}
+			*/
 			// Power Ups
 			if (listOfGameObjects[index]->getType() == POWER_UP) {
 				if (listOfGameObjects[index]->getSubType() == POWER_UP_HEALTH) {
