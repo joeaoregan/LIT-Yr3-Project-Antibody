@@ -6,20 +6,32 @@ enum levels {MENU, LEVEL_1, LEVEL_2, LEVEL_3};
 
 int frame1 = 0;
 
-int scrollOffset = SCREEN_HEIGHT;								// Scrolling offset for splash screens
+int scrollOffset = SCREEN_HEIGHT;															// Scrolling offset for splash screens
 
+/*	Initialise the images used for splash screens and logos */
 bool SplashScreen::initSplashScreens(SDL_Renderer *rend) {
 	bool success = true;
 
-	if (!gLevel1.loadFromFile("Art/Level1720.png", rend)) {								// 10/01 Added Power Up - Load Power Up texture
+	// Init the game title and credit screens
+	if (!gGameLogoTexture.loadFromFile("Art/Logo1720.png", rend)) {							// Load the Game Title Logo
+		printf("Failed to load Logo 1 - Game Logo texture!\n");
+		success = false;
+	}
+	if (!gGameCreatorsTexture.loadFromFile("Art/Logo2720.png", rend)) {						// Load the Game Creators Logo
+		printf("Failed to load Logo 2 - Game Creators texture!\n");
+		success = false;
+	}
+
+	// Init the level backdrops
+	if (!gLevel1.loadFromFile("Art/Level1720.png", rend)) {									// 10/01 Added Power Up - Load Power Up texture
 		printf("Failed to load Level 1 texture!\n");
 		success = false;
 	}
-	if (!gLevel2.loadFromFile("Art/Level2720.png", rend)) {								// 10/01 Added Power Up - Load Power Up texture
+	if (!gLevel2.loadFromFile("Art/Level2720.png", rend)) {									// 10/01 Added Power Up - Load Power Up texture
 		printf("Failed to load Level 2 texture!\n");
 		success = false;
 	}
-	if (!gLevel3.loadFromFile("Art/Level3720.png", rend)) {								// 10/01 Added Power Up - Load Power Up texture
+	if (!gLevel3.loadFromFile("Art/Level3720.png", rend)) {									// 10/01 Added Power Up - Load Power Up texture
 		printf("Failed to load Level 3 texture!\n");
 		success = false;
 	}
@@ -44,7 +56,7 @@ bool SplashScreen::initSplashScreens(SDL_Renderer *rend) {
 		}
 	}
 
-	if (!gGameOverTextTexture.loadFromFile("Art/GameOver1.png", rend)) {				// Game Over Text
+	if (!gGameOverTextTexture.loadFromFile("Art/GameOver1.png", rend)) {					// Game Over Text
 		printf("Failed to load Game Over texture!\n");
 		success = false;
 	}
@@ -52,6 +64,30 @@ bool SplashScreen::initSplashScreens(SDL_Renderer *rend) {
 	return success;
 }
 
+/* free the textures from memory when the game is finished */
+void SplashScreen::closeSplashScreens() {
+	gGameLogoTexture.free();				// Free the game title screen from memory
+	gGameCreatorsTexture.free();			// Free the credits image from memory
+
+	gLevel1.free();
+	gLevel2.free();
+	gLevel3.free();
+	gLevelObjectiveTextTexture.free();
+
+	gPressEnterSpriteSheetTexture.free();
+
+	// End of Level / Game Scores
+	gFinalScoreTextTexture.free();
+	gGameWinnerTextTexture.free();
+	gGameOverTextTexture.free();
+
+	//Free global font
+	TTF_CloseFont(gFont);
+	gFont = NULL;
+}
+
+/*	Press button to continue message - pauses the screen until a button is pressed
+	This is rendered onto whatever background is already in place */
 void SplashScreen::pressButtonToContinue(SDL_Renderer *rend, SDL_Event e) {
 	bool continueGame = false;
 
@@ -78,50 +114,23 @@ void SplashScreen::pressButtonToContinue(SDL_Renderer *rend, SDL_Event e) {
 	if (!continueGame) pressButtonToContinue(rend, e);
 }
 
-void SplashScreen::closeSplashScreens() {
-	gLevel1.free();
-	gLevel2.free();
-	gLevel3.free();
-	gLevelObjectiveTextTexture.free();
-
-	gPressEnterSpriteSheetTexture.free();
-
-	// End of Level / Game Scores
-	gFinalScoreTextTexture.free();
-	gGameWinnerTextTexture.free();
-	gGameOverTextTexture.free();
-
-	//Free global font
-	TTF_CloseFont(gFont);
-	gFont = NULL;
-}
-
+/* Display intro screens at start of game before menu */
 bool SplashScreen::displayGameIntroSplashScreens(SDL_Renderer *rend) {
-
-	if (!gLogo1.loadFromFile("Art/Logo1720.png", rend)) {			// Load the Game Title Logo
-		printf("Failed to load Logo 1 - Game Logo texture!\n");
-	}
-	if (!gLogo2.loadFromFile("Art/Logo2720.png", rend)) {			// Load the Game Creators Logo
-		printf("Failed to load Logo 2 - Game Creators texture!\n");
-	}
-
-	SDL_SetRenderDrawColor(rend, 0xFF, 0xFF, 0xFF, 0xFF);			// Clear the screen
+	SDL_SetRenderDrawColor(rend, 0xFF, 0xFF, 0xFF, 0xFF);						// Clear the screen
 	SDL_RenderClear(rend);
 
-	gLogo1.render(0, 0, rend);										// Game Title
+	gGameLogoTexture.render(0, 0, rend);										// Game Title
 
-	SDL_RenderPresent(rend);										// Update screen
-	SDL_Delay(1000);												// Pause with image on screen for 1 second
+	SDL_RenderPresent(rend);													// Update screen
+	SDL_Delay(1000);															// Pause with image on screen for 1 second
 
-	gLogo1.free();													// Free Logo 1 from memory
-
-	scrollVerticalLogo(rend, gLogo2, 1, 15, SCREEN_HEIGHT );		// Scroll up Logo2 and delay for 1 second
+	scrollVerticalLogo(rend, gGameCreatorsTexture, 1, 15, SCREEN_HEIGHT );		// Scroll up Logo2 and delay for 1 second
 
 	return false;
 }
 
-// Level 1 background with scrolling text
-void SplashScreen::level1IntroScreens(SDL_Renderer *rend, Texture &virus, Texture &orangeVirus, Texture &enemyShip, Texture &health, Texture &Laser, Texture &rocket) {
+//	Level 1 background with scrolling text
+bool SplashScreen::level1IntroScreens(SDL_Renderer *rend, Texture &virus, Texture &orangeVirus, Texture &enemyShip, Texture &health, Texture &Laser, Texture &rocket) {
 	gFont = TTF_OpenFont("Fonts/Retro.ttf", 20);
 	textColour = { 0, 255, 0, 255 };
 
@@ -131,7 +140,7 @@ void SplashScreen::level1IntroScreens(SDL_Renderer *rend, Texture &virus, Textur
 		printf("Unable to render level game objective texture!\n");
 	}
 
-	scrollVerticalLogo(rend, gLevel1, 0, 15, -SCREEN_HEIGHT);											// Scroll Level1 logo down the screen
+	scrollVerticalLogo(rend, gLevel1, 0, 15, -SCREEN_HEIGHT);												// Scroll Level1 logo down the screen
 
 	enemyInformationSplashScreen(rend, gLevel1, virus, orangeVirus, enemyShip, health, Laser, rocket);
 
@@ -139,10 +148,12 @@ void SplashScreen::level1IntroScreens(SDL_Renderer *rend, Texture &virus, Textur
 	scrollVerticalLogo(rend, gLevel1, 1, 10, -SCREEN_HEIGHT);
 
 	scrollUpText(rend, gLevel1, gLevelObjectiveTextTexture, 0);
+
+	return false;	// set display screens boolean to false so it stops, will continue repeating over and over if true
 }
 
 // Level 2 background, with scrolling text
-void SplashScreen::level2IntroScreens(SDL_Renderer *rend, Texture &virus, Texture &orangeVirus, Texture &enemyShip) {
+bool SplashScreen::level2IntroScreens(SDL_Renderer *rend, Texture &virus, Texture &orangeVirus, Texture &enemyShip) {
 	gFont = TTF_OpenFont("Fonts/Retro.ttf", 20);
 	textColour = { 0, 255, 0, 255 };
 
@@ -160,10 +171,12 @@ void SplashScreen::level2IntroScreens(SDL_Renderer *rend, Texture &virus, Textur
 	scrollVerticalLogo(rend, gLevel2, 1, 10, -SCREEN_HEIGHT);
 
 	scrollUpText(rend, gLevel2, gLevelObjectiveTextTexture, 0);
+
+	return false;	// set display screens boolean to false so it stops repeating over and over
 }
 
 // Level 3 background with scrolling text
-void SplashScreen::level3IntroScreens(SDL_Renderer *rend, Texture &virus, Texture &orangeVirus, Texture &enemyShip) {
+bool SplashScreen::level3IntroScreens(SDL_Renderer *rend, Texture &virus, Texture &orangeVirus, Texture &enemyShip) {
 	gFont = TTF_OpenFont("Fonts/Retro.ttf", 20);
 	textColour = { 0, 255, 0, 255 };
 
@@ -181,6 +194,8 @@ void SplashScreen::level3IntroScreens(SDL_Renderer *rend, Texture &virus, Textur
 	scrollVerticalLogo(rend, gLevel3, 1, 10, -SCREEN_HEIGHT);
 
 	scrollUpText(rend, gLevel3, gLevelObjectiveTextTexture, 0);
+
+	return false;	// set display screens boolean to false so it stops repeating over and over
 }
 
 
@@ -195,8 +210,8 @@ void SplashScreen::level3FinalScore(SDL_Renderer *rend) {
 	scrollVerticalLogo(rend, gLevel3, 1, 15, -SCREEN_HEIGHT);
 }
 void SplashScreen::endOfGame(SDL_Renderer *rend, int level, std::string finalScore, std::string winner) {
-	gFont = TTF_OpenFont("Fonts/Retro.ttf", 40);
-	textColour = {0, 255, 0, 255};
+	gFont = TTF_OpenFont("Fonts/Retro.ttf", 40);										// Retro font size 40
+	textColour = {0, 255, 0, 255};														// Green text colour
 	TTF_SetFontStyle(gFont, TTF_STYLE_BOLD);											// Use bold font
 	std::string complete = "Complete!!!";
 

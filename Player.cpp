@@ -54,36 +54,6 @@ Player::Player() {
 	drawParticle = true;
 }
 
-Player::Player(Texture &dark, Texture &medium, Texture &light) {
-	// Initialize the offsets
-	setX(0);
-	setY(SCREEN_HEIGHT / 2);
-
-	setWidth(100);
-	setHeight(47);
-	setHealth(MAX_HEALTH);
-
-	// Initialize the velocity
-	setVelX(0);
-	setVelY(0);
-	setVelocity(VELOCITY);
-
-	setColliderWidth(getWidth());
-	setColliderHeight(getHeight());
-
-	setSawActive(false);
-	setScore(0);
-	setAlive(false);
-	setNumLives(3);							// works, game is over when both players lives are <=
-
-											//Initialize particles
-	for (int i = 0; i < TOTAL_PARTICLES; ++i) {
-		particles[i] = new Particle(getX(), getY(), dark, medium, light);
-	}
-
-	drawParticle = true;
-}
-
 bool Player::loadMediaPlayer(SDL_Renderer *rend) {
 	bool success = true;
 	// Particles

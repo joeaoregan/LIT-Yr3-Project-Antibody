@@ -38,7 +38,17 @@
 #include "Audio.h"					// 2017/02/09
 #include <math.h>
 
-bool DisplayTheFuckinScreensNumbNuts = true;
+
+/***************************************************************************************************************************/
+/******************************************** TURN STUFF ON AND OFF FOR TESTING ********************************************/
+
+// Game & Level Testing
+bool quit = false;					// Main loop flag
+bool testMode = true;				// Game is in testing
+bool displayGameIntro;				// False means off - set in _TestData.h
+bool displayLevelIntro;				// Display the information splash screen at the start of a level - set in _TestData.h
+
+/***************************************************************************************************************************/
 
 std::string finalScores, gameWinners;
 
@@ -67,12 +77,6 @@ SDL_Rect weaponViewport2;			// Indicates the currently selected main weapon
 SDL_Texture *gProf = NULL;			// Background texture
 Texture gTest;						// Background texture
 //Texture gWeapon;					// Background texture
-
-// Game & Level Testing
-bool quit = false;					// Main loop flag
-bool testMode = true;				// Game is in testing
-bool displayIntro = true;			// false means off
-bool displayLevelIntro = true;		// Display the information splash screen at the start of a level
 
 // Time
 unsigned int lastTime = 0, currentTime, countdownTimer = GAME_TIMER;	// TEST TIMING
@@ -172,8 +176,6 @@ std::vector<GameObject*> listOfGameObjects;				// 2017/01/31 Using to display th
 // Lists - objects with no collisions (yet)
 std::list<BloodCell*> listOfBloodCells;					// 2017/01/10 JOE: List to store laser objects
 std::list<BloodCell*>::const_iterator iterBC;			// 2017/01/10 JOE: Make them read only
-//std::list<WeaponPlSaw*> listOfSawObjects;				// 2017/01/17: List to store Saw objects
-//std::list<WeaponPlSaw*>::const_iterator iterSaw;		// 2017/01/17: Create global iterators to cycle through Saw objects - Make them read only
 
 Player* player1 = new Player();
 Player* player2 = new Player();
@@ -194,6 +196,7 @@ bool Game::init() {
 	std::cout << "Player 1 Lives: " << player1->getNumLives() << " " << "Player 2 Lives: " << player2->getNumLives() << std::endl;
 	player1->setName("Player 1");	// Names for players
 	player2->setName("Player 2");
+
 	if (testMode) player1->setNumLives(NUM_LIVES);
 	if (testMode) player2->setNumLives(NUM_LIVES);
 
@@ -282,14 +285,6 @@ bool Game::init() {
 	}
 
 	return success;
-}
-
-//void Game::setViewport(SDL_Rect &rect, int x, int y, int w, int h) {
-void setViewport(SDL_Rect &rect, int x, int y, int w, int h) {
-	rect.x = x;
-	rect.y = y;
-	rect.w = w;
-	rect.h = h;
 }
 
 bool Game::loadMedia() {
@@ -594,123 +589,46 @@ void Game::update(){
 			printf("Failed to load media!\n");
 		} else {
 			if (SDL_PollEvent(&e) != 0) {
-				gamepadInfo(gController1, gController2, e);	// 2017/02/09 Display gamepad information, moved to separate header file
+				gamepadInfo(gController1, gController2, e);					// 2017/02/09 Display gamepad information, moved to separate header file
 			}
 			// MAIN GAME LOOP:  While application is running
 			while (!quit) {
-				quit = playerInput(quit);					// 2017/01/09 JOE: Handle input from player
+				quit = playerInput(quit);									// 2017/01/09 JOE: Handle input from player
 
-				//if (displayIntro) displayGameLogos();		// 2017/01/18 Splash screens at start of game
-				//if (getCurrentLevel() == MENU) menu();	// Old
+				if (getCurrentLevel() == 0 && displayGameIntro) displayGameIntro = splash.displayGameIntroSplashScreens(gRenderer);	// 2017/01/18 Splash screens at start of game, Game Title & Game Creators
+
 				if (getCurrentLevel() == MENU) menu1.draw(gRenderer);		// New
 
-				//if (getCurrentLevel() == 0 && displayIntro) displayIntro = splash.displayGameIntroSplashScreens(gRenderer);	// 2017/01/18 Splash screens at start of game, Game Title & Game Creators
-
 				if (getCurrentLevel() != 0) playLevel(getCurrentLevel());
-				//playLevel(3);
-				//playLevel(2);
+				//playLevel(2);	// Test start at level 2
 
-				if (getCurrentLevel() > 0) fps.fpsthink();
+				if (getCurrentLevel() > 0) fps.fpsthink();					// Update the FPS
 
-				destroyGameObjects();					// 2017-01-09 JOE: Destroy the game objects when finished on the screen
+				destroyGameObjects();										// 2017-01-09 JOE: Destroy the game objects when finished on the screen
 			}
 		}
 	}
 }
 
-void Game::resetGame(int currentLevel) {	// Reset a level or the game
-	setCurrentLevel(currentLevel);
-	p1RocketActive = false;
-	p2RocketActive = false;
-
-	BloodCellsActive = 0;
-	whiteBloodCellsActive = 0;
-	smallBloodCellsActive = 0;
-
-	if (currentLevel == MENU) displayIntro = true;
-	displayLevelIntro = true;
-	backgroundLoopCounter = 0;
-	scrollingOffset = 0;
-	player1Message = "";					// Reset the player 1 notification message
-	player2Message = "";					// Reset the player 2 notification message
-	pointsValue = "";						// Reset the points value for destroyed Enemy message
-
-	gamerOverMessageDisplayCounter = 0;
-
-	// Timer
-	countdownTimer = GAME_TIMER;			// Reset the countdown timer
-	gPlayer1Texture.setFlash(false);
-	gPlayer2Texture.setFlash(false);
-	gTimeTextTexture.setFlash(false);		// Reset the timer flash
-
-	// Scores
-	if (currentLevel <= 1) {				// If the level isn't progressing
-		player1->setScore(0);				// Reset player 1 score
-		player2->setScore(0);				// Reset player 2 score
-
-		player1->setNumLives(NUM_LIVES);
-		player1->setSawActive(false);
-		player1->setSpeedBoost(false);
-
-		player2->setNumLives(NUM_LIVES);
-		player2->setSawActive(false);
-		player2->setSpeedBoost(false);
-	}
-
-	// Reset Players
-	player1->setAlive(false);
-	player1->setHealth(player1->getMaxHealth());
-	player2->setAlive(false);
-	player2->setHealth(player2->getMaxHealth());
-
-	// Delete all objects on screen
-	if (gameOver || levelOver) {
-		listOfEnemyLaserObjects.clear();
-		listOfEnemyShips.clear();
-		listOfEnemyVirus.clear();
-		listOfPlayerWeapons.clear();
-
-		listOfBloodCells.clear();
-		//listOfSawObjects.clear();
-		listOfGameObjects.clear();		// Scores, Power Ups, Explosions
-		listOfScoreTextures.clear();
-	}
-
-	levelOver = false;
-	gameOver = false;
-}
-
 void Game::playLevel(int levelNum) {
-	if (DisplayTheFuckinScreensNumbNuts) displayLevelIntroScreens(levelNum);
+	if (displayLevelIntro) displayLevelIntroScreens(levelNum);	// Set true or false in _test.cpp
 
 	if (!gameOver) {
-		spawnMovingObjects();		// 2017/01/10 JOE: Spawn enemies and obstacles at random coords and distances apart
-		moveGameObjects();			// 2017-01-09 JOE: Move the game objects on the screen
-		collisionCheck();
+		spawnMovingObjects();	// 2017/01/10 JOE: Spawn enemies and obstacles at random coords & distances apart
+		moveGameObjects();		// 2017-01-09 JOE: Move the game objects on the screen
+		collisionCheck();		// Check collisions between 2 objects
 	}
 
-	renderGameObjects();			// 2017-01-09 JOE: Render the game objects to the screen
+	renderGameObjects();		// 2017-01-09 JOE: Render the game objects to the screen
 }
 
 void Game::displayLevelIntroScreens(int level) {
-	// STORY - INSTRUCTIONS - OBJECTIVES
-	if (displayLevelIntro) {
-		if (level == 1) splash.level1IntroScreens(gRenderer, gEnemyVirusTexture, gEnemyVirusOrangeTexture, gEnemyShipTexture, gPowerUpHealthTexture, gPowerUpLaserTexture, gPowerUpRocketTexture);		// Display level Intro screens
-		if (level == 2) splash.level2IntroScreens(gRenderer, gEnemyVirusTexture, gEnemyVirusOrangeTexture, gEnemyShipTexture);
-		if (level == 3) splash.level3IntroScreens(gRenderer, gEnemyVirusTexture, gEnemyVirusOrangeTexture, gEnemyShipTexture);
+	// STORY - INSTRUCTIONS - OBJECTIVES - INFORMATION screens, pass in all the textures to give information about for each level
+	if (level == 1) displayLevelIntro = splash.level1IntroScreens(gRenderer, gEnemyVirusTexture, gEnemyVirusOrangeTexture, gEnemyShipTexture, gPowerUpHealthTexture, gPowerUpLaserTexture, gPowerUpRocketTexture);		// Display level story and info screens
+	if (level == 2) displayLevelIntro = splash.level2IntroScreens(gRenderer, gEnemyVirusTexture, gEnemyVirusOrangeTexture, gEnemyShipTexture);
+	if (level == 3) displayLevelIntro = splash.level3IntroScreens(gRenderer, gEnemyVirusTexture, gEnemyVirusOrangeTexture, gEnemyShipTexture);
 
-		displayLevelIntro = false;
-		splash.pressButtonToContinue(gRenderer, e);
-	}
-}
-
-void Game::gameTimer() {
-	currentTime = SDL_GetTicks();
-	if (currentTime > lastTime + 1000) {		// Decrement countdown timer
-		lastTime = currentTime;
-		countdownTimer--;
-		//std::cout << "Time: " << countdownTimer << " lastTime: " << lastTime << " currentTime: " << currentTime << std::endl;
-	}
+	if (level <= MAX_NUM_LEVELS) splash.pressButtonToContinue(gRenderer, e);
 }
 
 void Game::displayText() {
@@ -1417,8 +1335,8 @@ void Game::spawnEnemyShip() {
 void Game::spawnEnemyVirus() {
 	int x, y, randomSpeed;
 	spawnRandom(x, y, randomSpeed, 150);
-	//int randomExplodingVirus = rand() % 4 + 1;							// 1 in 4 chance of Orange Exploding Virus
-	int randomExplodingVirus = 1;										// TEST Orange Virus
+	int randomExplodingVirus = rand() % 4 + 1;							// 1 in 4 chance of Orange Exploding Virus
+	///int randomExplodingVirus = 1;										// TEST Orange Virus
 
 	if (randomExplodingVirus == 2) {
 		EnemyVirus* p_OrangeVirus = new EnemyVirus(ORANGE, 3.0);		// Orange type = 1
@@ -1869,4 +1787,83 @@ void Game::managePlayerHealth(int player, int score, std::string name) {
 	//if (SDL_HapticRumblePlay(gControllerHaptic, 0.9, 500) != 0) {	// Haptic (Force Feedback) Play rumble at 75% strenght for 500 milliseconds
 	//	printf("Warning: Unable to play rumble! %s\n", SDL_GetError());
 	//}
+}
+
+//void Game::setViewport(SDL_Rect &rect, int x, int y, int w, int h) {
+void setViewport(SDL_Rect &rect, int x, int y, int w, int h) {
+	rect.x = x;
+	rect.y = y;
+	rect.w = w;
+	rect.h = h;
+}
+
+void Game::gameTimer() {
+	currentTime = SDL_GetTicks();
+	if (currentTime > lastTime + 1000) {								// Decrement countdown timer
+		lastTime = currentTime;
+		countdownTimer--;
+		//std::cout << "Time: " << countdownTimer << " lastTime: " << lastTime << " currentTime: " << currentTime << std::endl;
+	}
+}
+
+void Game::resetGame(int currentLevel) {	// Reset a level or the game
+	setCurrentLevel(currentLevel);
+	p1RocketActive = false;
+	p2RocketActive = false;
+
+	BloodCellsActive = 0;
+	whiteBloodCellsActive = 0;
+	smallBloodCellsActive = 0;
+
+	if (currentLevel == MENU) displayGameIntro = DISPLAY_GAME_INTRO_SCREENS;
+	displayLevelIntro = DISPLAY_LEVEL_INTRO_SCREENS;
+	backgroundLoopCounter = 0;
+	scrollingOffset = 0;
+	player1Message = "";					// Reset the player 1 notification message
+	player2Message = "";					// Reset the player 2 notification message
+	pointsValue = "";						// Reset the points value for destroyed Enemy message
+
+	gamerOverMessageDisplayCounter = 0;
+
+	// Timer
+	countdownTimer = GAME_TIMER;			// Reset the countdown timer
+	gPlayer1Texture.setFlash(false);
+	gPlayer2Texture.setFlash(false);
+	gTimeTextTexture.setFlash(false);		// Reset the timer flash
+
+											// Scores
+	if (currentLevel <= 1) {				// If the level isn't progressing
+		player1->setScore(0);				// Reset player 1 score
+		player2->setScore(0);				// Reset player 2 score
+
+		player1->setNumLives(NUM_LIVES);
+		player1->setSawActive(false);
+		player1->setSpeedBoost(false);
+
+		player2->setNumLives(NUM_LIVES);
+		player2->setSawActive(false);
+		player2->setSpeedBoost(false);
+	}
+
+	// Reset Players
+	player1->setAlive(false);
+	player1->setHealth(player1->getMaxHealth());
+	player2->setAlive(false);
+	player2->setHealth(player2->getMaxHealth());
+
+	// Delete all objects on screen
+	if (gameOver || levelOver) {
+		listOfEnemyLaserObjects.clear();
+		listOfEnemyShips.clear();
+		listOfEnemyVirus.clear();
+		listOfPlayerWeapons.clear();
+
+		listOfBloodCells.clear();
+		//listOfSawObjects.clear();
+		listOfGameObjects.clear();		// Scores, Power Ups, Explosions
+		listOfScoreTextures.clear();
+	}
+
+	levelOver = false;
+	gameOver = false;
 }

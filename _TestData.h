@@ -1,7 +1,7 @@
 #ifndef TEST_DATA_H
 #define TEST_DATA_H
 
-#define GAME_TIMER 10					// Time to start counting down from, in seconds
+#define GAME_TIMER 30					// Time to start counting down from, in seconds
 
 #define NUM_PLAYERS 2					// The number of players
 
@@ -21,6 +21,10 @@
 
 // Player Message
 #define MESSAGE_TIME 100				// Player Information Message, Stays on screen for a couple of seconds
+
+// Display the game splash screens
+#define DISPLAY_GAME_INTRO_SCREENS false	// needs to be true when game is complete
+#define DISPLAY_LEVEL_INTRO_SCREENS false	// needs to be true when game is complete
 
 class _TestData {
 public:
