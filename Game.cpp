@@ -29,6 +29,7 @@
 #include "Explosion.h"				// 2017/01/25 Added explosions for Player Laser colliding with Enemy Ships and Virus
 #include "FPS.h"
 #include "SplashScreen.h"			// 2017/02/08
+#include "ScoreValueText.h"			// 2017-02-09
 
 #include <string.h>
 #include <math.h>
@@ -38,6 +39,7 @@ void setViewport(SDL_Rect &rect, int x, int y, int w, int h);
 bool p1RocketActive = false;
 bool p2RocketActive = false;
 
+//bool checkCollision(SDL_Rect *a, SDL_Rect *b);
 bool checkCollision(SDL_Rect *a, SDL_Rect *b);
 
 SplashScreen splash;
@@ -107,7 +109,7 @@ SDL_Haptic*	gControllerHaptic = NULL;	// 2017/01/18 Haptic (Force Feedback) adde
 Mix_Music *gMusic1 = NULL;				// Mix_Music: Data type for music
 Mix_Music *gMusic2 = NULL;
 Mix_Music *gMusic3 = NULL;
-int currentSong;						// Play a random song when the game starts
+unsigned int currentSong;						// Play a random song when the game starts
 
 //The sound effects that will be used (pointers)
 Mix_Chunk *gNinjaFX1 = NULL;		// 2017/01/09 JOE: SOUND - Mix_Chunk: Data type for short sounds
@@ -408,7 +410,6 @@ bool Game::loadMedia() {
 		success = false;
 	}
 //	if (!gWeapon.loadFromFile("Art/LaserGun2.png", gRenderer)) {	// Load Dark Particle texture
-//	if (!gWeapon.loadFromFile("Art/PowerUpLaser.png", gRenderer)) {	// Load Dark Particle texture
 //		printf("Failed to load LaserGun texture image!\n");
 //		success = false;
 //	}
@@ -931,12 +932,11 @@ void Game::resetGame(int currentLevel) {	// Reset a level or the game
 }
 
 void Game::playLevel(int levelNum) {
-	if (displayLevelIntro && levelNum == LEVEL_1) displayLevelSplashScreen(l1Objective);	// Display splash screens
-
-	//if (displayLevelIntro && levelNum == LEVEL_1) splash.displayLevelSplashScreen(l1Objective, gRenderer, getCurrentLevel());
+	//if (displayLevelIntro && levelNum == LEVEL_1) displayLevelSplashScreen(l1Objective);	// 2017-02-09 THIS ONE WORKING - Display splash screens
 
 	//else if (displayLevelIntro && levelNum == LEVEL_2) displayLevelSplashScreen(l2Objective);
 	//else if (displayLevelIntro && levelNum == LEVEL_3) displayLevelSplashScreen(l3Objective);
+
 	displayLevelIntro = false;
 
 	if (!gameOver) {
@@ -950,11 +950,13 @@ void Game::playLevel(int levelNum) {
 	renderGameObjects();			// 2017-01-09 JOE: Render the game objects to the screen
 }
 
-std::string story1 = "The player must avoid contact with Enemy Viruses\nThe Viruses will move towards the nearest player\n\n\nThe Orange Virus moves towards the nearest player\nAnd explodes when its timer has run out\n\n\nThe Enemy Ship fires lasers\nAs it crosses the screen right to left";
-std::string story2 = "Story 2 blah blah \nFill this\nIn Later";
-std::string story3 = "Story 3 blah blah blah\nFill this\nIn Later";
+
 
 void Game::displayLevelSplashScreen(std::string objective) {
+	std::string story1 = "The player must avoid contact with Enemy Viruses\nThe Viruses will move towards the nearest player\n\n\nThe Orange Virus moves towards the nearest player\nAnd explodes when its timer has run out\n\n\nThe Enemy Ship fires lasers\nAs it crosses the screen right to left";
+	std::string story2 = "Story 2 blah blah \nFill this\nIn Later";
+	std::string story3 = "Story 3 blah blah blah\nFill this\nIn Later";
+
 	// STORY
 	textColour = {255,255,255,255};
 	if (!gStory1.loadFromRenderedText(story1, textColour, gFontRetro20, gRenderer, true)) {
@@ -967,39 +969,24 @@ void Game::displayLevelSplashScreen(std::string objective) {
 		printf("Failed to render text texture!\n");
 	}
 
-	gLevel1.render(0, scrollingOffsetLogo, gRenderer);		// Scroll up Level 1 background
-
-	scrollingOffsetLogo = 600;								// Texture will start below window
-
-	while (scrollingOffsetLogo >= 300) {														// First Part of story
-		SDL_RenderClear(gRenderer);																// Clear the screen
-		if (getCurrentLevel() == MENU) gLevel1.render(0, 0, gRenderer);							// Static background
-
-		scrollingOffsetLogo -= 5;																// Decrement the scrolling offset move the texture up the screen
-		gStory1.render((SCREEN_WIDTH - gStory1.getWidth()) / 2, scrollingOffsetLogo, gRenderer); // FOR TESTING
-		gEnemyVirusTexture.render(SCREEN_WIDTH - gEnemyVirusTexture.getWidth() - 100, scrollingOffsetLogo, gRenderer);
-		gEnemyVirusOrangeTexture.render(SCREEN_WIDTH - gEnemyVirusOrangeTexture.getWidth() - 100, scrollingOffsetLogo + 100, gRenderer);
-		gEnemyShipTexture.render(SCREEN_WIDTH - gEnemyShipTexture.getWidth() - 100, scrollingOffsetLogo + 200, gRenderer);
-
-		SDL_RenderPresent(gRenderer);															// Update screen
-	}
-
-	SDL_Delay(2000);																			// Pause with image on screen
+	// STORY - INSTRUCTIONS
+	splash.scrollVerticalLogo(gRenderer, gLevel1, 0, 15, -SCREEN_HEIGHT);						// Scroll Level1 logo down the screen
+	splash.scrollTextAndImage(gRenderer, 2, SCREEN_HEIGHT, gLevel1, gStory1, gEnemyVirusTexture, gEnemyVirusOrangeTexture, gEnemyShipTexture);	// Scroll text and 3 images, over a static background
 
 	splash.scrollUpText(gRenderer, gLevel1, gStory2, 2);										// 2nd page of text for story
 	splash.scrollUpText(gRenderer, gLevel1, gStory3, 2);										// 3rd page of text for story
 
 	// OBJECTIVES
-	splash.scrollDownLogo(gRenderer, gLevel1, 1, 10, -600);										// Background drops down from top to clear screen
+	splash.scrollVerticalLogo(gRenderer, gLevel1, 1, 10, -600);									// Background drops down from top to clear screen
 
 	if (!gLevelObjectiveTextTexture.loadFromRenderedText(objective, { 0, 255, 0, 255 }, gFontRetro20, gRenderer, true)) {	// Green text for level objectives
 		printf("Unable to render level game objective texture!\n");
 	}
 
-	if (getCurrentLevel() == MENU) splash.scrollUpText(gRenderer, gLevel1, gLevelObjectiveTextTexture, 0, 600);				// Level objective scrolls up the screen
-	if (getCurrentLevel() == LEVEL_1) splash.scrollUpText(gRenderer, gLevel1, gLevelObjectiveTextTexture, 0, 600);			// Over a static background
-	else if (getCurrentLevel() == LEVEL_2) splash.scrollUpText(gRenderer, gLevel2, gLevelObjectiveTextTexture, 0, 600);		// A different background depending on the level
-	else if (getCurrentLevel() == LEVEL_3) splash.scrollUpText(gRenderer, gLevel3, gLevelObjectiveTextTexture, 0, 600);		// Pauses for 0 seconds, and the scrolling offset is 600
+	if (getCurrentLevel() == MENU) splash.scrollUpText(gRenderer, gLevel1, gLevelObjectiveTextTexture, 0);				// Level objective scrolls up the screen
+	if (getCurrentLevel() == LEVEL_1) splash.scrollUpText(gRenderer, gLevel1, gLevelObjectiveTextTexture, 0);			// Over a static background
+	else if (getCurrentLevel() == LEVEL_2) splash.scrollUpText(gRenderer, gLevel2, gLevelObjectiveTextTexture, 0);		// A different background depending on the level
+	else if (getCurrentLevel() == LEVEL_3) splash.scrollUpText(gRenderer, gLevel3, gLevelObjectiveTextTexture, 0);		// Pauses for 0 seconds, and the scrolling offset is 600
 
 	pressButtonToContinue();
 }
@@ -1019,14 +1006,9 @@ void Game::pressButtonToContinue() {
 
 	while (SDL_PollEvent(&e)) {
 		switch (e.type) {
-			std::cout << "test 2" << std::endl;
-			/* Keyboard event */
-			/* Pass the event data onto PrintKeyInfo() */
 		case SDL_KEYDOWN:
-			//printf("Key press detected\n");
 			continueGame = true;
 			break;
-			//if (e.type == SDL_JOYBUTTONDOWN) {
 		}
 
 		break;
@@ -1216,7 +1198,7 @@ void Game::displayText() {
 }
 
 bool Game::playerInput(bool quit = false) {
-	SDL_Color textColor = { 0, 255, 0, 255 };	//Set text color as green
+//	SDL_Color textColor = { 0, 255, 0, 255 };	//Set text color as green
 
 	// In memory text stream
 	// string streams - function like iostreams only instead of reading or writing to the console, they allow you to read and write to a string in memory
@@ -1480,7 +1462,8 @@ void Game::renderGameObjects() {
 				//SDL_RenderDrawRect(gRenderer, &listOfPlayerWeapons[index]->getCollider());										// Draw the collider for each Weapon object
 			}
 
-			for (unsigned int index = 0; index != listOfGameObjects.size(); ++index) {														// Render player scores for killing Enemies
+			for (unsigned int index = 0; index != listOfGameObjects.size(); ++index) {
+				// Render player scores for killing Enemies
 				if (listOfGameObjects[index]->getType() == PLAYER_1) {
 					listOfGameObjects[index]->render(gPointsValueTextMessage1, gRenderer);
 					//listOfGameObjects[index]->render(listOfGameObjects[index]->getTexture(), gRenderer);
@@ -1489,6 +1472,8 @@ void Game::renderGameObjects() {
 					listOfGameObjects[index]->render(gPointsValueTextMessage2, gRenderer);
 					//listOfGameObjects[index]->render(listOfGameObjects[index]->getTexture(), gRenderer);
 				}
+
+				//listOfGameObjects[index]->render(listOfGameObjects[index]->getTexture(), gRenderer);
 			}
 
 			for (iterSaw = listOfSawObjects.begin(); iterSaw != listOfSawObjects.end();) {
@@ -1604,50 +1589,18 @@ void Game::renderGameObjects() {
 			gGameWinnerTextTexture.modifyAlpha(gGameOverTextTexture.getAlpha());
 			gGameWinnerTextTexture.render((SCREEN_WIDTH - gGameWinnerTextTexture.getWidth()) / 2, (SCREEN_HEIGHT - gGameWinnerTextTexture.getHeight() + 450) / 2, gRenderer); // FOR TESTING
 		}
-
-
 	//}
 
 	SDL_RenderPresent(gRenderer);											// Update screen
 }
 
 void Game::displayScoreForObject(int Xcoord, int Ycoord, int score, int player) {
-	GameObject* p_PointsValue = new GameObject();
+	Texture scoreTexture;
 
-	pointsValue = "+" + std::to_string(score);				// Change from single string that alters every time its updated
-	//p_PointsValue->setName("+" + std::to_string(score));	// Individual string
+	GameObject* p_PointsValue = new ScoreValueText(Xcoord, Ycoord, score, player);
 
-	if (pointsValue != "") {
 		if (player % 2 == 0) {
-			if (!gPointsValueTextMessage1.loadFromRenderedText(pointsValue, { 240, 210, 65, 255 }, gFontRetro20, gRenderer)) {	// Gold Text
-				printf("Unable to render player text texture!\n");
-				p_PointsValue->setTexture(gPointsValueTextMessage1);
-			}
-		}
-		else if (player % 2 == 1) {
-			if (!gPointsValueTextMessage2.loadFromRenderedText(pointsValue, { 0, 0, 255, 255 }, gFontRetro20, gRenderer)) {		// Blue Text
-				printf("Unable to render player text texture!\n");
-				p_PointsValue->setTexture(gPointsValueTextMessage2);
-			}
-		}
-	}
-
-	p_PointsValue->setX(Xcoord);
-	p_PointsValue->setY(Ycoord);
-	p_PointsValue->setStartTime(SDL_GetTicks());				// Set time the object was created
-	p_PointsValue->setScore(score);
-	p_PointsValue->setAlive(true);
-	p_PointsValue->setType(player);
-	if (player % 2 == 0) p_PointsValue->setType(PLAYER_1);
-	else if (player % 2 == 1) p_PointsValue->setType(PLAYER_2);
-	//p_PointsValue->setTexture(&gPointsValueTextMessage1);
-
-	/*
-	// Move out of this function
-	p_PointsValue->setName("+" + std::to_string(score));	// Individual string
-	if (p_PointsValue->getName() != "") {
-		if (player % 2 == 0) {
-			if (!gPointsValueTextMessage1.loadFromRenderedText(p_PointsValue->getName(), { 240, 210, 65, 255 }, gFontRetro20, gRenderer)) {	// Gold Text
+			if (!gPointsValueTextMessage1.loadFromRenderedText(p_PointsValue->getName(), { 240, 210, 65, 255 }, gFontRetro20, gRenderer)) {		// Gold Text
 				printf("Unable to render player text texture!\n");
 				p_PointsValue->setTexture(gPointsValueTextMessage1);
 			}
@@ -1658,9 +1611,9 @@ void Game::displayScoreForObject(int Xcoord, int Ycoord, int score, int player) 
 				p_PointsValue->setTexture(gPointsValueTextMessage2);
 			}
 		}
-	}
-	*/
-	listOfGameObjects.push_back(p_PointsValue);
+
+		//p_PointsValue->setTexture(gPointsValueTextMessage1);
+		listOfGameObjects.push_back(p_PointsValue);
 }
 
 void Game::moveGameObjects() {

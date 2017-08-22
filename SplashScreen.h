@@ -36,10 +36,12 @@ public:
 
 	//void displayLevelSplashScreen(std::string objective, SDL_Renderer *rend, int level);
 
-	void scrollUpLogo(SDL_Renderer *rend, Texture &texture, int seconds); 
-	void scrollDownLogo(SDL_Renderer *rend, Texture &texture, int seconds = 1, int rate = 5, int offset = -600);	// -600 starts above the screen
+	//void scrollUpLogo(SDL_Renderer *rend, Texture &texture, int seconds = 1, int rate = 5); 
+	void scrollVerticalLogo(SDL_Renderer *rend, Texture &texture, int seconds = 1, int rate = 10, int startAt = -SCREEN_HEIGHT, int stopAt = 0);	// Default is scroll down from top, -600 starts above the screen
 
-	void scrollUpText(SDL_Renderer *rend, Texture &background, Texture & text, int seconds, int offset = 600);
+	void scrollUpText(SDL_Renderer *rend, Texture &background, Texture & text, int seconds, int rate = 15, int startAt = SCREEN_HEIGHT, int stopAt = 300); // Change rate to increase speed, higher number = faster
+
+	void scrollTextAndImage(SDL_Renderer *rend, int seconds, int startAt, Texture &background, Texture &story, Texture &tx1, Texture &tx2, Texture &tx3);
 
 
 	SDL_Color textColour;
