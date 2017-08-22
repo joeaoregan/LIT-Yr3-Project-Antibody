@@ -82,7 +82,7 @@ public:
 	};	// 2017/03/03 Updated movement functions, for objects that move towards other objects
 	virtual void orbit(int centerX, int centerY, float timer);
 
-	void destroy();
+	virtual void destroy();
 
 	virtual void render();
 	virtual void render(Texture &texture, int degrees = 0);

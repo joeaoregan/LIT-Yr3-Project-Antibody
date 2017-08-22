@@ -1,4 +1,5 @@
 /*
+	2017/03/07 Moved identifyTrack() function from Game class
 	2017/02/09 Separated audio to it's own class
 				Fixed music not playing problem
 */
@@ -11,7 +12,7 @@
 #include <vector>
 #include <map>
 
-#define NUMBER_OF_SONGS 5;			// Total number of songs in the playlist
+#define NUMBER_OF_SONGS 4;			// Total number of songs in the playlist
 
 class Audio {
 public:
@@ -27,8 +28,9 @@ public:
 	//Mix_Music *gMusic1 = NULL;				// Mix_Music: Data type for music
 	//Mix_Music *gMusic2 = NULL;
 	Mix_Music *gMusic1 = NULL;				// 2017/03/04 - Blood Stream
-	Mix_Music *gMusic2 = NULL;				// 2017/02/17 - The First Step - Jimmy O'Regan
+	Mix_Music *gMusic2 = NULL;				// 2017/02/17 - The First Step - Jim O'Regan (Additional drum and bass Joe O'Regan)
 	Mix_Music *gMusic3 = NULL;				// 2017/02/22 - Virus - Joe O'Regan
+	Mix_Music *gMusic4 = NULL;				// 2017/03/07 - Blood Level - Joe O'Regan (Additional solo Jim O'Regan)
 	unsigned int currentSong;				// Play a random song when the game starts
 
 	std::vector<Mix_Music*> listOfMusic;	// List of Music tracks
@@ -61,6 +63,9 @@ public:
 	int musicForwardSongName();		// 2017/02/17 Returns an int to identify the song name and artist
 	int musicBackSongName();		// 2017/02/17 Returns an int to identify the song name and artist
 	int playMusic();
+	void stopMusic();
+
+	void identifyTrack(int songName);	// 2017/02/17 Identify the song playing 2017/03/07 Moved from game class
 
 	void destroy();
 

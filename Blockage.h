@@ -40,5 +40,7 @@ public:
 		//if (getX() < -getWidth()) setAlive(false);
 		//else setAlive(true);
 	};
+
+	virtual void destroy() {};
 };
 #endif

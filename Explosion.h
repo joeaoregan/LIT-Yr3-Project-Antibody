@@ -42,6 +42,7 @@ public:
 
 	// Inherited Movement function (Enemy ships only move right to left)
 	virtual void move() {};
+	virtual void destroy() {};
 };
 
 #endif

@@ -46,6 +46,8 @@ public:
 	void moveRight(bool blocked = false);
 	int moveDiagonal();
 
+	virtual void destroy() {};
+
 	bool initialiseRocket();	// 2017/02/19 Move rocket reset parameters here
 	void resetRocket();			// 2017/02/19 Reset the player rocket and rocket power bar
 	void rocketScore();			// 2017/02/19 set the timer and score for the rocket

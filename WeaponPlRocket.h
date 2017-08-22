@@ -18,6 +18,9 @@ public:
 	virtual void render(Texture &texture, int degrees = 0);
 
 	virtual void move();				// Moves the Rocket	
+	virtual void destroy() {
+		GameObject::destroy();
+	};
 private:
 	bool drawRocketParticle;
 };

@@ -19,6 +19,8 @@ public:
 	virtual void move() {};
 	void move(int x, int y);	// Tracker movement, scores move towards players who earned the points
 
+	virtual void destroy() {};
+
 	Texture m_Texture;
 };
 

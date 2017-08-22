@@ -84,6 +84,7 @@ public:
 
 		GameObject::move();				// Inherited movement
 	};
+	virtual void destroy() {};
 
 	/*
 	// 2017/01/22 Added separate textures to renderer, each player has a different colour laser 

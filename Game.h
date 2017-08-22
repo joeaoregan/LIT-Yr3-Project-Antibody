@@ -58,10 +58,14 @@ const int ANIMATION_FRAMES = 4;				// Number of frames of animation for Enemy Sh
 const int EXPLOSION_ANIMATION_FRAMES = 12;	// Number of frames of animation for Explosions
 const int BLOOD_EXP_ANIMATION_FRAMES = 12;
 
-//enum playerWeapons { NINJA_STAR_P1, NINJA_STAR_P2, LASER_P1, LASER_P2, SAW_P1, SAW_P2, LASER_V2_P1, LASER_V2_P2, ROCKET_P1, ROCKET_P2 };
+enum levels { MENU, LEVEL_1, LEVEL_2, LEVEL_3, PAUSE, SETTINGS, HIGH_SCORES, ENTER_NAME };
 
 class Game {
 public:
+	bool settingsMenuLoaded = false;
+	bool highScoresLoaded = false;
+	bool enterNameLoaded = false;
+
 	SDL_Window* gWindow = NULL;				// The window we'll be rendering to
 
 	// 27/02/2017 Game Singleton
@@ -86,6 +90,8 @@ public:
 	bool nameEntered;
 	bool enterName();
 	//void enterName();
+	bool renderText;
+	std::string inputText = "Name";
 
 	bool twoPlayer;
 	bool displayGameIntro;				// False means off - set in _TestData.h
@@ -124,9 +130,6 @@ public:
 	int activeEnemyVirusSmall;
 	int activeEnemyBoss;
 
-	void gameTimer();
-
-	enum levels { MENU, LEVEL_1, LEVEL_2, LEVEL_3, PAUSE };
 
 	void setRotatingAngle();	// 2017/02/22 Moved here. Set the angle for rotating objects
 	void scrollBackground();	// 2017/02/22 Moved here. Scoll the background
@@ -189,7 +192,7 @@ public:
 	void render();
 	void renderGamePlay();									// 2017-01-09 JOE: Render the game objects to the screen
 	void renderGameOver();									// 2017/03/02 JOE: Render the game objects for Game Over state
-	//void renderTimer(unsigned int &timer);					// 2017/03/02 JOE: Separate the game timer to its own function
+	void renderTimer(unsigned int &timer);					// 2017/03/02 JOE: Separate the game timer to its own function
 	//void renderTimer();					// 2017/03/02 JOE: Separate the game timer to its own function
 	void moveGameObjects();									// 2017-01-09 JOE: Move the game objects on the screen
 	void destroyGameObjects();								// 2017-01-09 JOE: Destroy the game objects when finished on the screen
@@ -197,9 +200,9 @@ public:
 	bool loadMedia();										// Loads media
 
 	// Music
-	void musicTrackForward();								// FOR SOME REASON, CONTROLLER DOESNT LIKE THE AUDIO CLASS -> SO PLAYING THROUGH GAME
-	void musicTrackBackward();
-	void identifyTrack(int songName);						// 2017/02/17 Identify the song playing
+	//void musicTrackForward();								// FOR SOME REASON, CONTROLLER DOESNT LIKE THE AUDIO CLASS -> SO PLAYING THROUGH GAME
+	//void musicTrackBackward();
+	//void identifyTrack(int songName);						// 2017/02/17 Identify the song playing
 
 	void spawnRandomAttributes(int &x, int &y, int &randomSpeed, int xMuliplier = 0, int yPadding = 80, int speed = 1);
 

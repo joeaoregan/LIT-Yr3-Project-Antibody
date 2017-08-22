@@ -183,13 +183,15 @@
 #include "StateMainMenu.h"			// 2017/02/03 JOE: Class for handling the main menu state
 #include "Blockage.h"
 #include "randomMessageGenerator.h"	// 2017/02/04 JOE: Class for randomising messages
+#include "SettingsMenu.h"
+#include "HighScores.h"
+#include "EnterName.h"
 #include <math.h>
 
 Game* Game::s_pInstance = 0;
 GameStateMachine* m_pGameStateMachine;	// P109 Add GameStateMachine as a member of the Game class
 
 std::stringstream framesPerSec;	// In memory text stream - string streams - function like iostreams only instead of reading or writing to the console, they allow you to read and write to a string in memory
-
 
 Texture gLevel;
 
@@ -225,6 +227,9 @@ StatusBar bar;
 SplashScreen splash;
 FPS fps1;							// 2017/02/01 Moved FPS functionality to it's own class
 Particle particle;
+SettingsMenu settings;
+HighScores highScore;
+EnterName enterName1;
 
 // Viewports
 SDL_Rect gameViewport;				// Main game screen view port
@@ -438,15 +443,11 @@ bool Game::init() {
 bool Game::loadMedia() {
 	Texture::Instance()->loadFromRenderedTextID("Level " + std::to_string(getCurrentLevel()), "levelID", { 0, 255, 0, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 20));
 
-	bool success = true;			// Loading success flag
+	bool success = true;						// Loading success flag
 
 	Texture::Instance()->loadTextureMedia();
 
 	menu1.loadMenuMedia();						// Load buttons etc
-
-	//success = player1->loadMediaPlayer();		// Load particles for each player
-	//success = player2->loadMediaPlayer();		// Load particles for each player
-	//if (twoPlayer) success = player2->loadMediaPlayer();		// Load particles for each player
 
 	success = Audio::Instance()->loadMediaAudio();
 	success = headsUpDisplay.loadLevelStuff();			// 2017/02/21 Separated heads up display object initialisation to the class for loading textures for player lives etc
@@ -746,7 +747,20 @@ void Game::update(){
 
 				if (getCurrentLevel() == MENU) menu1.draw();				// New
 				else if (getCurrentLevel() == PAUSE) menu1.drawPause();		// New
-				else if (getCurrentLevel() != MENU && getCurrentLevel() != PAUSE) playLevel(getCurrentLevel());
+				else if (getCurrentLevel() != MENU && getCurrentLevel() != PAUSE && getCurrentLevel() != SETTINGS && getCurrentLevel() != HIGH_SCORES && getCurrentLevel() != ENTER_NAME) playLevel(getCurrentLevel());
+				else if (getCurrentLevel() == SETTINGS && settingsMenuLoaded == false) {
+					settingsMenuLoaded = settings.loadMenuMedia();
+					settings.draw();
+				}
+				else if (getCurrentLevel() == HIGH_SCORES && highScoresLoaded == false) {
+					highScoresLoaded = highScore.loadMenuMedia();
+					highScore.draw();
+				}
+				else if (getCurrentLevel() == ENTER_NAME && enterNameLoaded == false) {
+				//else if (getCurrentLevel() == HIGH_SCORES && enterNameLoaded == false) {
+					enterNameLoaded = enterName1.loadMenuMedia();
+					enterName1.draw();
+				}
 				//if (!nameEntered) enterName();
 
 				//if(getCurrentLevel() == 1) enterName();
@@ -761,75 +775,6 @@ void Game::update(){
 	}
 }
 
-
-bool renderText;
-std::string inputText = "Name";
-/*
-//bool Game::enterName() {
-bool Game::enterName() {
-	SDL_SetRenderDrawColor(getRenderer(), 0x00, 0x00, 0x00, 0xFF);	// Clear background
-	Texture::Instance()->draw("enterNameID", 50, 100, 400, 20);		// Display enter name message
-	Texture::Instance()->loadInputText(inputText);
-	//Texture::Instance()->drawText("inputTextID", 50, 150);
-	Texture::Instance()->renderMap("inputTextID", 50, 150, 100, 100);
-
-	renderText = false;		// flag that keeps track of whether we need to update the texture
-
-	while (SDL_PollEvent(&e) != 0) {
-		//User requests quit
-		if (e.type == SDL_QUIT) {
-			quit = true;
-		}
-		//Special key input
-		else if (e.type == SDL_KEYDOWN) {
-			//Handle backspace
-			if (e.key.keysym.sym == SDLK_BACKSPACE && inputText.length() > 0) {	// backspace -> remove the last character from the string
-				//lop off character
-				inputText.pop_back();
-				renderText = true;		// Set the text update flag
-			}
-			//Handle copy
-			else if (e.key.keysym.sym == SDLK_c && SDL_GetModState() & KMOD_CTRL) {	// Ctrl + c -> copy the text to the clip board
-				SDL_SetClipboardText(inputText.c_str());
-			}
-			//Handle paste
-			else if (e.key.keysym.sym == SDLK_v && SDL_GetModState() & KMOD_CTRL) {	// Ctrl + v -> get the text from the clipboard
-				inputText = SDL_GetClipboardText();
-				renderText = true;		// Set the text update flag
-			}
-			else if (e.key.keysym.sym == SDLK_RETURN) {
-				player1->setName(inputText);
-				//Game::Instance()->setName(inputText);
-				nameEntered = true;
-			}
-		}
-		//Special text input event
-		else if (e.type == SDL_TEXTINPUT) {
-			//Not copy or pasting
-			if (!((e.text.text[0] == 'c' || e.text.text[0] == 'C') && (e.text.text[0] == 'v' || e.text.text[0] == 'V') && SDL_GetModState() & KMOD_CTRL)) {
-				//Append character
-				inputText += e.text.text;
-				renderText = true;
-			}
-		}
-	}
-
-
-	//Rerender text if needed
-	if (renderText) {
-		//Text is not empty
-		if (inputText != "") {
-			Texture::Instance()->loadInputText(inputText);
-		}
-		//Text is empty
-		else {
-			Texture::Instance()->loadInputText(" ");
-		}
-	}
-
-	return nameEntered;
-}
-*/
 
 void Game::playLevel(int levelNum) {
 	//if (!nameEntered)
@@ -870,7 +815,7 @@ void Game::renderGameOver() {
 
 	SDL_RenderSetViewport(getRenderer(), NULL);						// Clear the current viewport to render to full window / screen
 	splash.endOfGame(getCurrentLevel(), finalScores, gameWinners);	// Call end of game splash screens
-	//renderTimer(gameOverTimer);										// Render returning to menu timer
+	renderTimer(gameOverTimer);										// Render returning to menu timer
 	SDL_RenderPresent(getRenderer());								// Update screen
 }
 
@@ -905,7 +850,7 @@ void Game::displayLevelIntroScreens(int level) {
 	if (level <= MAX_NUM_LEVELS) splash.pressButtonToContinue(e);
 }
 
-/*void Game::renderTimer(unsigned int &timer) {
+void Game::renderTimer(unsigned int &timer) {
 	std::stringstream timeText;
 	timeText.str("");
 
@@ -924,15 +869,6 @@ void Game::displayLevelIntroScreens(int level) {
 	//gTimeTextTexture.flashGameObject(8);
 	//gTimeTextTexture.modifyAlpha(gTimeTextTexture.getAlpha());					// Flash the timer
 	gTimeTextTexture.render(SCREEN_WIDTH - gTimeTextTexture.getWidth() - 10, 8);	// LAZY
-}*/
-
-void Game::gameTimer() {
-	currentTime = SDL_GetTicks();
-	if (currentTime > lastTime + 1000) {								// Decrement countdown timer
-		lastTime = currentTime;
-		countdownTimer--;
-		//std::cout << "Time: " << countdownTimer << " lastTime: " << lastTime << " currentTime: " << currentTime << std::endl;
-	}
 }
 
 std::string previous1, previous2, previous3, previous4;
@@ -950,8 +886,8 @@ void Game::displayText() {
 	else if(twoPlayer)
 		finalScores = "Player 1: " + std::to_string(player1Score) + " Player 2: " + std::to_string(player2Score);	// End of game Player 1 and Player 2 scores
 
-	std::stringstream timeText;
-	timeText.str("");
+	//std::stringstream timeText;
+	//timeText.str("");
 	// Set text to be rendered - string stream - print the time since timer last started - initialise empty
 
 	if (!levelOver && !gameOver) {
@@ -960,7 +896,12 @@ void Game::displayText() {
 			if (getCurrentLevel() == MAX_NUM_LEVELS) gameOver = true;
 		}
 		else if (countdownTimer > 0 && countdownTimer <= GAME_TIMER) {
-			timeText << "Time: " << countdownTimer;								// Set the game timer
+			//timeText << "Time: " << countdownTimer;								// Set the game timer
+
+			renderTimer(countdownTimer);
+
+			//gFPSTextTexture.UIText(framesPerSec.str().c_str());						// Render text - Use a string to render the current FPS to a texture
+
 			levelOver = false;
 		}
 		else if (countdownTimer <= 0 || countdownTimer > GAME_TIMER + 5) {
@@ -968,24 +909,11 @@ void Game::displayText() {
 			if (getCurrentLevel() == MAX_NUM_LEVELS) gameOver = true;
 		}
 
-		gameTimer();	// Set the count down timer - decrement by 1 second
-
-						// Time running out change colour to red
-		if (countdownTimer >= 0 && countdownTimer <= 5) {
-			textColour = { 255, 0, 0, 255 };
-			gTimeTextTexture.setFlash(true);
-		}
-		else {
-			textColour = { 0, 255, 0, 255 };			// Green text for timer
-			gTimeTextTexture.setFlash(false);
-		}
-		if (!gTimeTextTexture.loadFromRenderedText(timeText.str().c_str(), textColour, gFontRetro20, gRenderer)) {
-			printf("Unable to render time texture!\n");
-		}
+		//gameTimer();																// Set the count down timer - decrement by 1 second
 
 		//headsUpDisplay.gameTime(countdownTimer);	// NOT WORKING
 
-		gTimeTextTexture.UITextTimer(timeText.str().c_str(), countdownTimer);	// Render Text - Use a string to render the current Game Time to a Texture
+		//gTimeTextTexture.UITextTimer(timeText.str().c_str(), countdownTimer);	// Render Text - Use a string to render the current Game Time to a Texture
 
 		//gFPSTextTexture.render((SCREEN_WIDTH - 150) / 2, 8);
 
@@ -1043,7 +971,7 @@ bool Game::playerInput(bool quit = false) {
 			case SDLK_m:
 				if (Mix_PlayingMusic() == 0) {							// If there is no music playing
 					int song = Audio::Instance()->playMusic();
-					identifyTrack(song);
+					Audio::Instance()->identifyTrack(song);
 					infoMessage("Music Play");
 				}
 				else {													// If music is being played
@@ -1058,12 +986,13 @@ bool Game::playerInput(bool quit = false) {
 				}
 				break;
 			case SDLK_l:
-				musicTrackForward(); break;								// Skip track forwards
+				Audio::Instance()->musicForwardSongName(); break;		// Skip track forwards
 			case SDLK_k:
-				musicTrackBackward(); break;							// Skip track backwards
+				Audio::Instance()->musicBackSongName(); break;			// Skip track backwards
 			case SDLK_0:
-				Mix_HaltMusic();
-				infoMessage("Music Stopped"); break;	// Stop Music
+				Audio::Instance()->stopMusic();
+				//Mix_HaltMusic();
+				infoMessage("Music Stopped"); break;					// Stop Music
 			case SDLK_ESCAPE:
 				setCurrentLevel(PAUSE);
 				break;
@@ -1112,7 +1041,7 @@ bool Game::playerInput(bool quit = false) {
 		//Joystick button press
 		else if (e.type == SDL_JOYBUTTONDOWN) {
 			//Play rumble at 75% strenght for 500 milliseconds
-			if (SDL_HapticRumblePlay(gControllerHaptic, 0.5, 200) != 0) {
+			if (SDL_HapticRumblePlay(gControllerHaptic, 0.5, 50) != 0) {
 				printf("Warning: Unable to play rumble! %s\n", SDL_GetError());
 			}
 		}
@@ -1134,31 +1063,6 @@ bool Game::playerInput(bool quit = false) {
 	}
 
 	return quit;
-}
-
-void Game::musicTrackForward() {
-	int songName = Audio::Instance()->musicForwardSongName();
-	identifyTrack(songName);
-	infoMessage("Music Track Skip Forwards");
-}
-void Game::musicTrackBackward() {
-	int songName = Audio::Instance()->musicBackSongName();
-	identifyTrack(songName);
-	infoMessage("Music Track Skip Backwards");
-}
-void Game::identifyTrack(int songName) {
-	if (songName == 0) {
-		infoMessage("Artist: Sean Horgan", 1);
-		infoMessage("Song Title: Blood Stream", 2);
-	}
-	else if (songName == 1) {
-		infoMessage("Artist: Jim O'Regan", 1);
-		infoMessage("Song Title: The First Step", 2);
-	}
-	else if (songName == 2) {
-		infoMessage("Artist: Joe O'Regan", 1);
-		infoMessage("Song Title: Virus", 2);
-	}
 }
 
 void Game::setRotatingAngle() {
@@ -1223,22 +1127,6 @@ void Game::renderGamePlay() {
 			if (listOfGameObjects[index]->getSubType() == SAW1 && player1->getAlive()) listOfGameObjects[index]->render(gSawTexture, gSawTexture.getDegrees());
 			else if (listOfGameObjects[index]->getSubType() == SAW2 && player2->getAlive()) listOfGameObjects[index]->render(gSawTexture, gSawTexture.getDegrees());
 
-
-			//else if (listOfGameObjects[index]->getSubType() == BLOCKAGE) {
-			//	Texture::Instance()->renderMap("blockageID", listOfGameObjects[index]->getX(), listOfGameObjects[index]->getY(), 56, 130);
-			//	SDL_RenderDrawRect(getRenderer(), &listOfGameObjects[index]->getCollider());
-			//}
-
-			// Render Power Ups
-			//else if (listOfGameObjects[index]->getSubType() == POWER_UP_HEALTH)		// Health Texture
-			//	Texture::Instance()->renderMap("healthPowerUpID", listOfGameObjects[index]->getX(), listOfGameObjects[index]->getY(), listOfGameObjects[index]->getWidth(), listOfGameObjects[index]->getHeight());
-			//else if (listOfGameObjects[index]->getSubType() == POWER_UP_LASER)		// Laser Texture
-			//	Texture::Instance()->renderMap("laserPowerUpID", listOfGameObjects[index]->getX(), listOfGameObjects[index]->getY(), listOfGameObjects[index]->getWidth(), listOfGameObjects[index]->getHeight());
-			//else if (listOfGameObjects[index]->getSubType() == POWER_UP_ROCKET) listOfGameObjects[index]->render(gPowerUpRocketTexture);			// Rocket Texture
-			//else if (listOfGameObjects[index]->getSubType() == POWER_UP_CHECKPOINT) // Checkpoint Texture
-			//	Texture::Instance()->renderMap("checkpointPowerUpID", listOfGameObjects[index]->getX(), listOfGameObjects[index]->getY(), listOfGameObjects[index]->getWidth(), listOfGameObjects[index]->getHeight());
-			//else if (listOfGameObjects[index]->getSubType() == POWER_UP_LIVES)		// Checkpoint Texture
-			//	Texture::Instance()->renderMap("lifePowerUpID", listOfGameObjects[index]->getX(), listOfGameObjects[index]->getY(), listOfGameObjects[index]->getWidth(), listOfGameObjects[index]->getHeight());
 			// Render Explosions
 			else if (listOfGameObjects[index]->getSubType() == EXPLOSION) {
 				listOfGameObjects[index]->render(gExplosionSpriteSheetTexture, &gExplosionClips[frames / EXPLOSION_ANIMATION_FRAMES], frames, EXPLOSION_ANIMATION_FRAMES);
@@ -1294,10 +1182,6 @@ void Game::renderGamePlay() {
 				}
 				else listOfGameObjects[index]->setAlive(false);
 			}
-			// Render Enemy Lasers
-			//else if (listOfGameObjects[index]->getSubType() == VIRUS_FIREBALL) Texture::Instance()->renderMap("fireballID", listOfGameObjects[index]->getX(), listOfGameObjects[index]->getY(), listOfGameObjects[index]->getWidth(), listOfGameObjects[index]->getHeight()); //
-			//else if (listOfGameObjects[index]->getSubType() == BLUE_VIRUS_BULLET) Texture::Instance()->renderMap("satelliteID", listOfGameObjects[index]->getX(), listOfGameObjects[index]->getY(), listOfGameObjects[index]->getWidth(), listOfGameObjects[index]->getHeight());
-			//else if (listOfGameObjects[index]->getSubType() == ENEMY_SHIP_LASER) Texture::Instance()->renderMap("blueLaserID", listOfGameObjects[index]->getX(), listOfGameObjects[index]->getY(), listOfGameObjects[index]->getWidth(), listOfGameObjects[index]->getHeight());
 			// Render Blood Cells
 			else if (listOfGameObjects[index]->getSubType() == LARGE_BLOOD_CELL)
 				listOfGameObjects[index]->render(gBloodCellTexture, -gBloodCellTexture.getDegrees() * listOfGameObjects[index]->getRotationDirection());			// Render the Blood Cell, with random rotation direction
@@ -1305,7 +1189,6 @@ void Game::renderGamePlay() {
 				listOfGameObjects[index]->render(gBloodCellSmallTexture, -gBloodCellSmallTexture.getDegrees() * listOfGameObjects[index]->getRotationDirection());	// Render the Small Blood Cell, with random rotation direction
 			else if (listOfGameObjects[index]->getSubType() == WHITE_BLOOD_CELL)
 				listOfGameObjects[index]->render(gWhiteBloodCellTexture, -gWhiteBloodCellTexture.getDegrees() * listOfGameObjects[index]->getRotationDirection());
-
 			// Render Enemies
 			else if (listOfGameObjects[index]->getSubType() == ENEMY_SHIP) {																						// 2017/02/09 Fixed the Enemy Ship animations, they are now assigned to indiviual objects with the game object frame attribute
 				listOfGameObjects[index]->render(gEnemySpriteSheetTexture, &gEnemySpriteClips[frames / 10], frames, 4);												// 4 the number of frames
@@ -1325,40 +1208,25 @@ void Game::renderGamePlay() {
 				listOfGameObjects[index]->render(gNinjaStarYellowTexture, gNinjaStarYellowTexture.getDegrees());	// Yellow ninja star for player 1
 			else if (listOfGameObjects[index]->getSubType() == NINJA_STAR_P2)
 				listOfGameObjects[index]->render(gNinjaStarBlueTexture, gNinjaStarBlueTexture.getDegrees());		// Blue ninja star for player 2
-			//else if (listOfGameObjects[index]->getSubType() == LASER_P1) Texture::Instance()->renderMap("orangeLaserID", listOfGameObjects[index]->getX(), listOfGameObjects[index]->getY(), listOfGameObjects[index]->getWidth(), listOfGameObjects[index]->getHeight());
-			//else if (listOfGameObjects[index]->getSubType() == LASER_P2) Texture::Instance()->renderMap("greenLaserID", listOfGameObjects[index]->getX(), listOfGameObjects[index]->getY(), listOfGameObjects[index]->getWidth(), listOfGameObjects[index]->getHeight());
-			//else if (listOfGameObjects[index]->getSubType() == LASER_V2_P1) Texture::Instance()->renderMap("orangeLaserID", listOfGameObjects[index]->getX(), listOfGameObjects[index]->getY(), listOfGameObjects[index]->getWidth(), listOfGameObjects[index]->getHeight());
-			//else if (listOfGameObjects[index]->getSubType() == LASER_V2_P2) Texture::Instance()->renderMap("greenLaserID", listOfGameObjects[index]->getX(), listOfGameObjects[index]->getY(), listOfGameObjects[index]->getWidth(), listOfGameObjects[index]->getHeight());
 			else if (listOfGameObjects[index]->getSubType() == ROCKET_P1)
 				listOfGameObjects[index]->render(gRocketTexture, listOfGameObjects[index]->getAngle());
 			else if (listOfGameObjects[index]->getSubType() == ROCKET_P2)
 				listOfGameObjects[index]->render(gRocketTexture, listOfGameObjects[index]->getAngle());
 
-			///else if (listOfGameObjects[index]->getSubType() == BLOCKAGE)		// Blockage Texture
-				//Texture::Instance()->renderMap("blockageID", listOfGameObjects[index]->getX(), listOfGameObjects[index]->getY(), 56, 130);
-			//	Texture::Instance()->renderMap("blockageID", 50, 50, 56, 130);
-
 			// 2017/03/04 New renders the object based on its unique texture ID
 			else Texture::Instance()->renderMap(listOfGameObjects[index]->getTextureID(), listOfGameObjects[index]->getX(), listOfGameObjects[index]->getY(), listOfGameObjects[index]->getWidth(), listOfGameObjects[index]->getHeight());
-			// Set the object alpha value
-
 
 			listOfGameObjects[index]->setFrames(frames);	// increment the frames
 
 			listOfGameObjects[index]->m_Texture.modifyAlpha(listOfGameObjects[index]->m_Texture.getAlpha());
 		}
 
-		//Texture::Instance()->renderMap("blockageID", 50, 50, 56, 130); Texture works
-
 		// Render Text
 		SDL_RenderSetViewport(getRenderer(), &gameViewport);
 
 		headsUpDisplay.displayLevelNum(getCurrentLevel());
-		//gLevel.free();
 
 		Texture::Instance()->render("levelID", 10, 8);
-		//Texture::Instance()->render("levelID", 10, 8);
-		//gLevel.render(10, 8);
 
 		if (infoMessageP1Counter < MESSAGE_TIME) {
 			gInfoMessageP1TextTexture.render((SCREEN_WIDTH - gInfoMessageP1TextTexture.getWidth()) / 2, ((SCREEN_HEIGHT - gInfoMessageP1TextTexture.getHeight()) / 2) - 20); // Top message P1
@@ -1631,13 +1499,13 @@ void Game::displayScoreForObject(int Xcoord, int Ycoord, int score, int player) 
 }
 
 void Game::moveGameObjects() {
-	if (player1->getAlive()) player1->move();											// Update ship movement
+	if (player1->getAlive()) player1->move();												// Update ship movement
 	if (player2->getAlive()) player2->move();
 
 	// Cycle through list of Game Objects and move them, Player scores, and Power Ups so far
 	for (unsigned int index = 0; index != listOfGameObjects.size(); ++index) {
 		if (listOfGameObjects[index]->getSubType() == PLAYER1_SCORE) {
-			listOfGameObjects[index]->move(player1->getX(), player1->getY());			// Move the score to Player 1 ship
+			listOfGameObjects[index]->move(player1->getX(), player1->getY());				// Move the score to Player 1 ship
 		}
 		else if (listOfGameObjects[index]->getSubType() == SAW1) {							// Move Player 1 saw
 			listOfGameObjects[index]->move(player1->getX(), player1->getY());
@@ -2004,7 +1872,7 @@ void Game::spawnPowerUp() {
 	listOfGameObjects.push_back(p_PowerUp);
 }
 void Game::spawnRandomAttributes(int &x, int &y, int &randomSpeed, int xMuliplier, int yPadding, int speed) {	// 2017-01-20 Separate out common randomness of game object spawning
-	int randomX = rand() % 2 + 1;
+	int randomX = rand() % 5 + 1;
 	int randomY = rand() % 8 + 1;												// A number between 1 and 8
 	randomSpeed = rand() % 4 + speed;
 
@@ -2018,7 +1886,7 @@ void Game::spawnExplosion(int x, int y, int subType) {
 	p_Explosion->spawn(x, y - 30);								// Spawn the explosion at the given x & y coords
 	listOfGameObjects.push_back(p_Explosion);					// Add explosion to list of game objects
 
-	if (subType == EXPLOSION) Audio::Instance()->explosionFX();				// Play explosion sound effectmusicBackSongName
+	if (subType == EXPLOSION) Audio::Instance()->explosionFX();		// Play explosion sound effect
 }
 
 void Game::spawnLaser(int x, int y, int player, int grade, int velocity) {
@@ -2027,7 +1895,7 @@ void Game::spawnLaser(int x, int y, int player, int grade, int velocity) {
 
 	p_Laser1->spawn(x + 65, y + 25, velocity);	// Spawn laser at front of ship, with set veloicty, for player 1, setting sub-type of laser
 
-	//if (player == PLAYER_1) grade = player1->getLaserGrade();								// Decide if it is a single laser, or triple laser beam
+	//if (player == PLAYER_1) grade = player1->getLaserGrade();						// Decide if it is a single laser, or triple laser beam
 	//else if (player == PLAYER_2) grade = player2->getLaserGrade();
 	//if (player == PLAYER_1) grade = 1;								// Decide if it is a single laser, or triple laser beam
 	//else if (player == PLAYER_2) grade = 1;

@@ -76,6 +76,7 @@ public:
 	virtual void move() {
 		GameObject::move();
 	};
+	virtual void destroy() {};
 };
 
 #endif

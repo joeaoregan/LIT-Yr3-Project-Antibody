@@ -47,6 +47,8 @@ public:
 		setX(x + 65);
 		setY(y + 25);
 	};
+
+	virtual void destroy() {};
 };
 
 #endif

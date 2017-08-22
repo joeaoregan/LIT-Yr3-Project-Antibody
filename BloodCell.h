@@ -18,6 +18,8 @@ public:
 	virtual void move();
 	virtual void moveStalker(int targetx, int targetY);
 
+	virtual void destroy() {};
+
 	int getMovement() { return mMovement; }
 	void setMovement(int movement) { mMovement = movement; }
 

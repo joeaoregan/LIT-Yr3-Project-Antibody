@@ -9,8 +9,13 @@
 */
 #include "Button.h"
 #include "Game.h"
+#include "Audio.h"
+//#include <SDL.h>
 
-enum { STORY, GAME_1PLAYER, GAME_2PLAYER, SETTINGS, HIGH_SCORES, QUIT };
+enum mainMenuButtons { STORY, GAME_1PLAYER, GAME_2PLAYER, GO_TO_SETTINGS, MENU_TO_HIGH_SCORES, QUIT };
+enum settingsMenuButtons { MUSIC_ON, MUSIC_OFF, MAIN_MENU, QUIT_SETTINGS };
+enum highScoresButtons { SCORES_TO_MENU };
+enum nameButtons { RESET, NAME_TO_MENU };
 
 //SDL_Rect gSpriteClipsMenu[BUTTON_SPRITE_TOTAL];
 
@@ -27,8 +32,31 @@ void Button::setPosition(int x, int y) {
 }
 
 void Button::handleEvent(SDL_Event* e, int buttonSelected) {
+	if (Game::Instance()->getCurrentLevel() == ENTER_NAME) {
+		switch (e->key.keysym.sym) {
+		case  SDLK_BACKSPACE: if (Game::Instance()->inputText.length() > 0) {	// backspace -> remove the last character from the string
+																				//lop off character
+			Game::Instance()->inputText.pop_back();
+			Game::Instance()->renderText = true;		// Set the text update flag
+		}
+							  break;
+		case SDLK_c: if (SDL_GetModState() & KMOD_CTRL) {
+			SDL_SetClipboardText(Game::Instance()->inputText.c_str());
+		}
+					 break;
+		case SDLK_v: if (SDL_GetModState() & KMOD_CTRL) {
+			Game::Instance()->inputText = SDL_GetClipboardText();
+			Game::Instance()->renderText = true;		// Set the text update flag
+		}
+		case SDLK_RETURN:
+		case SDL_KEYDOWN: Game::Instance()->nameEntered = true;
+			break;
+		}
+	}
+
 //	SDL_Color textColorOne = { 255, 255, 255 };
 	//If mouse event happened
+
 	if (e->type == SDL_MOUSEMOTION || e->type == SDL_MOUSEBUTTONDOWN || e->type == SDL_MOUSEBUTTONUP) {
 		//Get mouse position
 		//MainMenu menu;
@@ -71,64 +99,90 @@ void Button::handleEvent(SDL_Event* e, int buttonSelected) {
 				std::cout << "Mouse Button Down" << std::endl;
 				//std::cout << "Level: " << game.getCurrentLevel() << std::endl;
 
-				if (buttonSelected == STORY) {
-					std::cout << "Selected: 1 Player Game!" << std::endl;
-					//game.setCurrentLevel(1);
-					//std::cout << "Level: " << game.getCurrentLevel() << std::endl;
-					//game.twoPlayer = false;
-					//game.update();
-					Game::Instance()->setCurrentLevel(1);
-					std::cout << "Level: " << Game::Instance()->getCurrentLevel() << std::endl;
-					Game::Instance()->twoPlayer = false;
-					Game::Instance()->displayLevelIntro = true;
-					//Game::Instance()->update();
-					// Call a function in Game.cpp in the Main Project
+				if (Game::Instance()->getCurrentLevel() == MENU) {
+					if (buttonSelected == STORY) {
+						std::cout << "Selected: 1 Player Game!" << std::endl;
+						//game.setCurrentLevel(1);
+						//std::cout << "Level: " << game.getCurrentLevel() << std::endl;
+						//game.twoPlayer = false;
+						//game.update();
+						Game::Instance()->setCurrentLevel(1);
+						std::cout << "Level: " << Game::Instance()->getCurrentLevel() << std::endl;
+						Game::Instance()->twoPlayer = false;
+						Game::Instance()->displayLevelIntro = true;
+						//Game::Instance()->update();
+						// Call a function in Game.cpp in the Main Project
+					}
+					else if (buttonSelected == GAME_1PLAYER) {
+						std::cout << "Selected: 1 Player Game!" << std::endl;
+						//std::cout << "Level: " << game.getCurrentLevel() << std::endl;
+						Game::Instance()->setCurrentLevel(1);									// TEST ENTER NAME
+						//Game::Instance()->setCurrentLevel(ENTER_NAME);
+						std::cout << "Level: " << Game::Instance()->getCurrentLevel() << std::endl;
+						Game::Instance()->twoPlayer = false;
+						Game::Instance()->displayLevelIntro = false;
+					}
+					else if (buttonSelected == GAME_2PLAYER) {
+						std::cout << "Selected: 2 Player Game!" << std::endl;
+						//std::cout << "Level: " << game.getCurrentLevel() << std::endl;
+						Game::Instance()->twoPlayer = true;
+						Game::Instance()->setCurrentLevel(LEVEL_1);
+						std::cout << "Level: " << Game::Instance()->getCurrentLevel() << std::endl;
+					}
+					else if (buttonSelected == GO_TO_SETTINGS) {
+						std::cout << "Selected: Go To Settings Menu" << std::endl;
+						Game::Instance()->setCurrentLevel(SETTINGS);
+					}
+					else if (buttonSelected == MENU_TO_HIGH_SCORES) {
+						Game::Instance()->setCurrentLevel(HIGH_SCORES);
+						std::cout << "Selected: View High Scores" << std::endl;
+					}
+					else if (buttonSelected == QUIT) {
+						std::cout << "Selected: Quit The Game" << std::endl;
+						Game::Instance()->close();
+						//Game::Instance()->setCurrentLevel(ENTER_NAME);		// TEST ENTER NAME
+					}
 				}
-				else if (buttonSelected == GAME_1PLAYER) {
-					std::cout << "Selected: 1 Player Game!" << std::endl;
-					//game.setCurrentLevel(1);
-					//std::cout << "Level: " << game.getCurrentLevel() << std::endl;
-					//game.twoPlayer = false;
-					//game.update();
-					Game::Instance()->setCurrentLevel(1);
-					std::cout << "Level: " << Game::Instance()->getCurrentLevel() << std::endl;
-					Game::Instance()->twoPlayer = false;
-					Game::Instance()->displayLevelIntro = false;
-					//Game::Instance()->update();
-					// Call a function in Game.cpp in the Main Project
+				// Handle button events for settings menu
+				else if (Game::Instance()->getCurrentLevel() == SETTINGS) {
+					if (buttonSelected == MUSIC_ON) {
+						Audio::Instance()->playMusic();
+					}
+					else if (buttonSelected == MUSIC_OFF) {
+						Audio::Instance()->stopMusic();						// Stop the music
+					}
+					else if (buttonSelected == MAIN_MENU) {
+						Game::Instance()->setCurrentLevel(MENU);
+						//Game::Instance()->settingsMenuLoaded = false;		// menu media not loaded
+						std::cout << "Level: " << Game::Instance()->getCurrentLevel() << std::endl;
+					}
+					else if (buttonSelected == QUIT_SETTINGS) {
+						std::cout << "Selected: Quit The Game" << std::endl;
+						Game::Instance()->close();
+					}
 				}
-				else if (buttonSelected == GAME_2PLAYER) {
-					std::cout << "Selected: 2 Player Game!" << std::endl;
-					//game.twoPlayer = true;
-					//game.setCurrentLevel(1);
-					//game.update();
-					//std::cout << "Level: " << game.getCurrentLevel() << std::endl;
-					Game::Instance()->twoPlayer = true;
-					Game::Instance()->setCurrentLevel(1);
-					//Game::Instance()->update();
-					std::cout << "Level: " << Game::Instance()->getCurrentLevel() << std::endl;
+				// Handle button events for High Score menu
+				else if (Game::Instance()->getCurrentLevel() == HIGH_SCORES) {
+					if (buttonSelected == SCORES_TO_MENU) {
+						Game::Instance()->setCurrentLevel(MENU);
+						//Game::Instance()->highScoresLoaded = false;		// High Scores media not loaded after clearing NEED TO SET CLEAR
+						std::cout << "Level: " << Game::Instance()->getCurrentLevel() << std::endl;
+					}
+				}
 
-					// Call a function in Game.cpp in the Main Project
+				// Handle button events for Enter Name menu
+				else if (Game::Instance()->getCurrentLevel() == ENTER_NAME) {
+					if (buttonSelected == RESET) {
+						//Game::Instance()->setCurrentLevel(MENU);
+						//Game::Instance()->highScoresLoaded = false;		// High Scores media not loaded after clearing NEED TO SET CLEAR
+						std::cout << "Level: " << Game::Instance()->getCurrentLevel() << std::endl;
+					}
+					if (buttonSelected == NAME_TO_MENU) {
+						Game::Instance()->setCurrentLevel(MENU);
+						//Game::Instance()->highScoresLoaded = false;		// High Scores media not loaded after clearing NEED TO SET CLEAR
+						std::cout << "Level: " << Game::Instance()->getCurrentLevel() << std::endl;
+					}
 				}
-				else if (buttonSelected == SETTINGS) {
-					std::cout << "Selected: Go To Settings Menu" << std::endl;
-					//game.init();
-					//Game::Instance()->init();
-					// Call a function in Game.cpp in the Main Project
-				}
-				else if (buttonSelected == HIGH_SCORES) {
-					std::cout << "Selected: View High Scores" << std::endl;
-					//game.init();
-					//Game::Instance()->init();
-					// Call a function in Game.cpp in the Main Project
-				}
-				else if (buttonSelected == QUIT) {
-					std::cout << "Selected: Quit The Game" << std::endl;
-					//game.close();//closes window using funciton in main - - - void LButton::close()
-					Game::Instance()->close();
-							// Call a function in Game.cpp in the Main Project
-				}
-
 				// USE THIS ONE TO HIGHLIGHT
 				break;
 

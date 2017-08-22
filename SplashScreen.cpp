@@ -21,8 +21,9 @@ Displays final score and game winner at end of game.
 */
 
 #include "SplashScreen.h"
+#include "Game.h"
 
-enum levels { MENU, LEVEL_1, LEVEL_2, LEVEL_3 };
+//enum levels { MENU, LEVEL_1, LEVEL_2, LEVEL_3 };
 
 int frame1 = 0;
 

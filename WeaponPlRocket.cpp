@@ -68,6 +68,8 @@ void WeaponPlRocket::move() {
 
 	if (getY() > SCREEN_HEIGHT_GAME - 40) setAlive(false);
 	else if (getY() < 40) setAlive(false);
+
+	destroy();
 }
 
 

@@ -39,6 +39,7 @@
 #include "Game.h"
 #include "WeaponPlSaw.h"
 #include "WeaponPlRocket.h"
+#include "Audio.h"
 #include <math.h>
 
 #define VELOCITY 10
@@ -152,7 +153,7 @@ void Player::spawnPlayerSaw(int x, int y, int type) {
 }
 
 void Player::handleEvent(SDL_Event& e, int player) {
-	if (player == 1 && getAlive()) {
+	if (player == PLAYER1 && getAlive()) {
 		if (e.type == SDL_KEYDOWN && e.key.repeat == 0) {
 			switch (e.key.keysym.sym) {
 			case SDLK_w: moveUp(); break;
@@ -181,7 +182,7 @@ void Player::handleEvent(SDL_Event& e, int player) {
 			}
 		}
 	}
-	else if (player == 2 && getAlive()) {
+	else if (player == PLAYER2 && getAlive()) {
 		if (e.type == SDL_KEYDOWN && e.key.repeat == 0) {
 			switch (e.key.keysym.sym) {
 			case SDLK_UP: moveUp(); break;
@@ -231,7 +232,9 @@ void Player::handleEvent(SDL_Event& e, int player) {
 			}
 		} // joystick present
 	}
+	else if (player == 3) {
 
+	}
 	/*
 	if (e.type == SDL_KEYDOWN && e.key.repeat == 0) {
 		// MOVEMENT
@@ -416,33 +419,33 @@ void Player::resetPreviousDirection() {
 
 void Player::gameControllerButton(SDL_Event& e) {
 	if (e.jbutton.button == 0) {
-		Game::Instance()->spawnLaser(getX(), getY(), PLAYER2, getLaserGrade());		// Fire Laser
-		std::cout << "Laser Button: " << (int)e.jbutton.button << std::endl;		// shows which button has been pressed
+		Game::Instance()->spawnLaser(getX(), getY(), PLAYER2, getLaserGrade());			// Fire Laser
+		std::cout << "Laser Button: " << (int)e.jbutton.button << std::endl;			// shows which button has been pressed
 	}
 	if (e.jbutton.button == 1) {
-		Game::Instance()->spawnNinjaStar(getX(), getY(), 2);						// Fire Ninja Star
-		std::cout << "Ninja Star Button: " << (int)e.jbutton.button << std::endl;	// shows which button has been pressed
+		Game::Instance()->spawnNinjaStar(getX(), getY(), 2);							// Fire Ninja Star
+		std::cout << "Ninja Star Button: " << (int)e.jbutton.button << std::endl;		// shows which button has been pressed
 	}
 	if (e.jbutton.button == 2) {
-		Game::Instance()->spawnSaw(getX(), getY(), SAW2);							// Saw Weapon
-																					// spawnPlayerSaw(getX(), getY(), SAW2);
-		std::cout << "Saw Button: " << (int)e.jbutton.button << std::endl;			// shows which button has been pressed
+		Game::Instance()->spawnSaw(getX(), getY(), SAW2);								// Saw Weapon
+																						// spawnPlayerSaw(getX(), getY(), SAW2);
+		std::cout << "Saw Button: " << (int)e.jbutton.button << std::endl;				// shows which button has been pressed
 	}
 	if (e.jbutton.button == 3) {
-		setSpeedBoost(true);														// Speed Boost
-		std::cout << "Speed Boost: " << (int)e.jbutton.button << std::endl;			// shows which button has been pressed
+		setSpeedBoost(true);															// Speed Boost
+		std::cout << "Speed Boost: " << (int)e.jbutton.button << std::endl;				// shows which button has been pressed
 		Game::Instance()->infoMessage("Player 2 speed boost activated", PLAYER_2);
 	}
 	if (e.jbutton.button == 4) {
-		Game::Instance()->musicTrackBackward();										// Pick previous track on the list
-		std::cout << "Music Back: " << (int)e.jbutton.button << std::endl;			// shows which button has been pressed
+		Audio::Instance()->musicBackSongName();											// Pick previous track on the list
+		std::cout << "Music Back: " << (int)e.jbutton.button << std::endl;				// shows which button has been pressed
 	}
 	if (e.jbutton.button == 5) {
-		Game::Instance()->musicTrackForward();										// Pick next track on the list
-		std::cout << "Music Forward: " << (int)e.jbutton.button << std::endl;		// shows which button has been pressed
+		Audio::Instance()->musicForwardSongName();										// Pick next track on the list
+		std::cout << "Music Forward: " << (int)e.jbutton.button << std::endl;			// shows which button has been pressed
 	}
-	if (e.jbutton.button == 9) {															// Pick next track on the list
-		std::cout << "Enable Rocket - Button: " << (int)e.jbutton.button << std::endl;		// shows which button has been pressed
+	if (e.jbutton.button == 9) {														// Pick next track on the list
+		std::cout << "Enable Rocket - Button: " << (int)e.jbutton.button << std::endl;	// shows which button has been pressed
 		Game::Instance()->spawnRocket(getX(), getY(), PLAYER_2, ROCKET_P2, false);
 	}
 }

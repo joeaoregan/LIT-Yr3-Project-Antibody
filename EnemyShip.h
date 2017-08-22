@@ -9,6 +9,7 @@ public:
 	~EnemyShip();
 
 	virtual void move() {};
+	virtual void destroy() {};
 };
 
 #endif

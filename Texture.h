@@ -57,9 +57,10 @@ public:
 	
 	void render(int x, int y, SDL_Rect* clip = NULL, double angle = 0.0, SDL_Point* center = NULL, SDL_RendererFlip flip = SDL_FLIP_NONE);
 	void render(std::string id, int x, int y, SDL_Rect* clip = NULL, double angle = 0.0, SDL_Point* center = NULL, SDL_RendererFlip flip = SDL_FLIP_NONE);
+	
+	void loadInputText(std::string input);
+	void loadEnterNameText(std::string nameText);
 	/*
-	void loadInputText(std::string input, SDL_Renderer* rend);
-	void loadEnterNameText(std::string nameText, SDL_Renderer* rend);
 	bool loadFromRenderedTextID(SDL_Texture* text, std::string textureText, std::string id, SDL_Color textColor, TTF_Font* font, SDL_Renderer* renderer, bool textWrapped);
 	bool loadTextureMedia(SDL_Renderer* rend); // 2017/02/26
 	bool load(std::string fileName, std::string id, SDL_Renderer* pRenderer);

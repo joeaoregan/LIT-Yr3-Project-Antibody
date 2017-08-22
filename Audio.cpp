@@ -15,6 +15,7 @@
 	Sound effects are played when different objects are spawned such as Play and Enemy weapons, and explosions.
 */
 #include "Audio.h"
+#include "Game.h"
 #include <iostream>
 
 Audio* Audio::s_pInstance;
@@ -78,33 +79,28 @@ bool Audio::loadMediaAudio() {
 
 void Audio::music() {
 	//Load music
-	/*gMusic1 = Mix_LoadMUS("Audio/GameSong1.wav");												// Load music
+	gMusic1 = Mix_LoadMUS("OriginalMusic/1TheFirstStep.mp3");									// Load music
 	if (gMusic1 == NULL) {
-		printf("Failed to load rage music! SDL_mixer Error: %s\n", Mix_GetError());
-	}*/
-	/*gMusic2 = Mix_LoadMUS("Audio/GameSong2.mp3");												// Load music
-	if (gMusic2 == NULL) {
-		printf("Failed to load rage music! SDL_mixer Error: %s\n", Mix_GetError());
-	}*/
-	gMusic1 = Mix_LoadMUS("OriginalMusic/3BloodStream.mp3");												// Load music
-	if (gMusic1 == NULL) {
-		printf("Failed to load rage music! SDL_mixer Error: %s\n", Mix_GetError());
-	}
-	gMusic2 = Mix_LoadMUS("OriginalMusic/1TheFirstStep.mp3");									// Load music
-	if (gMusic2 == NULL) {
 		printf("Failed to load The First Step music! SDL_mixer Error: %s\n", Mix_GetError());
 	}
-	gMusic3 = Mix_LoadMUS("OriginalMusic/2Virus.mp3");											// Load music
-	if (gMusic3 == NULL) {
+	gMusic2 = Mix_LoadMUS("OriginalMusic/2Virus.mp3");											// Load music
+	if (gMusic2 == NULL) {
 		printf("Failed to load Virus music! SDL_mixer Error: %s\n", Mix_GetError());
+	}
+	gMusic3 = Mix_LoadMUS("OriginalMusic/3BloodStream.mp3");									// Load music
+	if (gMusic3 == NULL) {
+		printf("Failed to load Blood Stream music! SDL_mixer Error: %s\n", Mix_GetError());
+	}
+	gMusic4 = Mix_LoadMUS("OriginalMusic/4BloodLevel.mp3");										// Load music
+	if (gMusic4 == NULL) {
+		printf("Failed to load Blood Level music! SDL_mixer Error: %s\n", Mix_GetError());
 	}
 
 	// Add songs to vector
-	//listOfMusic.push_back(gMusic1);						// Add tracks to the music array
-	//listOfMusic.push_back(gMusic2);
-	listOfMusic.push_back(gMusic1);
+	listOfMusic.push_back(gMusic1);						// Add tracks to the music array
 	listOfMusic.push_back(gMusic2);
 	listOfMusic.push_back(gMusic3);
+	listOfMusic.push_back(gMusic4);
 
 	currentSong = rand() % NUMBER_OF_SONGS;				// Play a random song on start up
 
@@ -118,13 +114,33 @@ int Audio::musicForwardSongName() {						// Pick next track on the list
 		currentSong = 0;								// or else go back to start of list
 
 	Mix_PlayMusic(listOfMusic[currentSong], -1);
+	identifyTrack(currentSong);
 
-
-	if (currentSong == 0) std::cout << "current song: Blood Stream" << std::endl;
-	else if (currentSong == 1) std::cout << "Current Song: The First Step" << std::endl;
-	else if (currentSong == 2) std::cout << "Current Song: Virus" << std::endl;
+	if (currentSong == 0) std::cout << "current song: The First Step" << std::endl;
+	else if (currentSong == 1) std::cout << "Current Song: Virus" << std::endl;
+	else if (currentSong == 2) std::cout << "Current Song: Blood Stream" << std::endl;
+	else if (currentSong == 3) std::cout << "Current Song: Blood Level" << std::endl;
 
 	return currentSong;
+}
+
+void Audio::identifyTrack(int songName) {
+	if (songName == 0) {
+		Game::Instance()->infoMessage("Artist: Jim O'Regan (Additional Drums and Bass Joe O'Regan)", 1);
+		Game::Instance()->infoMessage("Song Title: The First Step", 2);
+	}
+	else if (songName == 1) {
+		Game::Instance()->infoMessage("Artist: Joe O'Regan", 1);
+		Game::Instance()->infoMessage("Song Title: Virus", 2);
+	}
+	else if (songName == 2) {
+		Game::Instance()->infoMessage("Artist: Sean Horgan", 1);
+		Game::Instance()->infoMessage("Song Title: Blood Stream", 2);
+	}
+	else if (songName == 3) {
+		Game::Instance()->infoMessage("Artist: Joe O'Regan (Additional Guitar Solo Jim O'Regan", 1);
+		Game::Instance()->infoMessage("Song Title: Blood Level", 2);
+	}
 }
 
 int Audio::musicBackSongName() {						// Pick previous track on the list
@@ -134,6 +150,7 @@ int Audio::musicBackSongName() {						// Pick previous track on the list
 		currentSong = listOfMusic.size() - 1;
 
 	Mix_PlayMusic(listOfMusic[currentSong], -1);
+	identifyTrack(currentSong);
 
 	return currentSong;
 }
@@ -157,29 +174,14 @@ void Audio::musicBack() {								// Pick previous track on the list
 
 int Audio::playMusic() {
 	Mix_PlayMusic(listOfMusic[currentSong], -1);
+	Game::Instance()->infoMessage("Music Play");
 	return currentSong;
 }
-
-/*
-int Audio::musicForward(int song, int numSongs) {		// Pick next track on the list
-	if (song + 1 < numSongs)							// If the current song number (0 number start value) is less than the number of tracks on the list
-		song++;											// go to next track on list
-	else
-		song = 0;										// or else go back to start of list
-
-	//Mix_PlayMusic(listOfMusic[song], -1);
-	return song;
+void Audio::stopMusic() {
+	Mix_HaltMusic();
+	Game::Instance()->infoMessage("Music Stopped");
 }
-int Audio::musicBack(int song, int numSongs) {			// Pick previous track on the list
-	if (song > 0)
-		song--;
-	else
-		song = numSongs - 1;
 
-	//Mix_PlayMusic(listOfMusic[song], -1);
-	return song;
-}
-*/
 
 void Audio::laserFX_P1() {
 	//if (player == 1) Mix_PlayChannel(-1, gLaserFX1, 0);		// Different sound for each player laser
@@ -236,8 +238,8 @@ void Audio::destroy() {
 	gMusic2 = NULL;
 	Mix_FreeMusic(gMusic3);	// Free music
 	gMusic3 = NULL;
-	//Mix_FreeMusic(gMusic4);	// Free music
-	//gMusic4 = NULL;
+	Mix_FreeMusic(gMusic4);	// Free music
+	gMusic4 = NULL;
 	//Mix_FreeMusic(gMusic5);	// Free music
 	//gMusic5 = NULL;
 }

@@ -19,10 +19,10 @@ public:
 	Texture gMenuTextTexture8;
 
 	//Buttons objects
-	Button gButtons[TOTAL_BUTTONS];
-	Button gMenuButtons[TOTAL_BUTTONS];
+	Button gButtons[TOTAL_MAIN_MENU_BUTTONS];
+	Button gMenuButtons[TOTAL_MAIN_MENU_BUTTONS];
 
-	SDL_Rect gSpriteClipsMenu[BUTTON_SPRITE_TOTAL];
+	SDL_Rect gSpriteClipsMenu[TOTAL_MAIN_MENU_BUTTONS];
 	Texture gButtonSpriteSheetTexture;
 	
 	void closeMenuMedia();
@@ -30,12 +30,6 @@ public:
 	bool loadMenuMedia();
 	void draw();
 	void drawPause();
-
-
-	//Menu(int x, int y);							// Initializes the variables
-	//~Menu();
-
-	//Mix_Chunk *sound = Mix_LoadWAV("Audio/explosion.wav");		// Explosion sound fx
 };
 
 #endif

@@ -9,6 +9,7 @@ public:
 	~EnemyBoss();
 
 	void move();
+	virtual void destroy() {};
 };
 
 #endif

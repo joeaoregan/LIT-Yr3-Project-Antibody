@@ -80,7 +80,7 @@ bool Menu::loadMenuMedia() {
 	}
 	else {
 		//Set sprites
-		for (int i = 0; i < BUTTON_SPRITE_TOTAL; ++i) {
+		for (int i = 0; i < TOTAL_MAIN_MENU_BUTTONS; ++i) {
 			gSpriteClipsMenu[i].x = 0;
 			gSpriteClipsMenu[i].y = i * 200;
 			gSpriteClipsMenu[i].w = BUTTON_WIDTH;
@@ -100,7 +100,7 @@ bool Menu::loadMenuMedia() {
 
 void Menu::handleMenuEvents(SDL_Event& e) {
 	// Handle button events
-	for (int i = 0; i < TOTAL_BUTTONS; ++i) {
+	for (int i = 0; i < TOTAL_MAIN_MENU_BUTTONS; ++i) {
 		gMenuButtons[i].handleEvent(&e, i);
 	}
 }
@@ -124,7 +124,7 @@ void Menu::draw() {
 	SDL_SetRenderDrawColor(Game::Instance()->getRenderer(), 117, 10, 10, 255);
 	SDL_RenderClear(Game::Instance()->getRenderer());
 
-	for (int i = 0; i < TOTAL_BUTTONS; ++i) {
+	for (int i = 0; i < TOTAL_MAIN_MENU_BUTTONS; ++i) {
 		gMenuButtons[i].render(gButtonSpriteSheetTexture, &gSpriteClipsMenu[gMenuButtons[i].mCurrentSprite]);
 		//gMenuButtons[i].render(gButtonSpriteSheetTexture, rend, &gSpriteClipsMenu[gMenuButtons[i].mCurrentSprite]);
 	}
@@ -144,7 +144,7 @@ void Menu::drawPause() {
 	SDL_SetRenderDrawColor(Game::Instance()->getRenderer(), 117, 10, 10, 255);
 	SDL_RenderClear(Game::Instance()->getRenderer());
 
-	for (int i = 0; i < TOTAL_BUTTONS; ++i) {
+	for (int i = 0; i < TOTAL_MAIN_MENU_BUTTONS; ++i) {
 		gMenuButtons[i].render(gButtonSpriteSheetTexture, &gSpriteClipsMenu[gMenuButtons[i].mCurrentSprite]);
 		//gMenuButtons[i].render(gButtonSpriteSheetTexture, rend, &gSpriteClipsMenu[gMenuButtons[i].mCurrentSprite]);
 	}
