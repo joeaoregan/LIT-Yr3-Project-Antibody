@@ -381,8 +381,7 @@ bool Game::loadMedia() {
 		printf("Failed to load New Life texture!\n");
 		success = false;
 	}
-//	if (!gPowerUpCheckpointTexture.loadFromFile("Art/PowerUpClock.png", gRenderer)) {								// 10/01 Added Power Up - Load Power Up texture
-	if (!gPowerUpCheckpointTexture.loadFromFile("Art/PowerUpClockOld.png", gRenderer)) {								// 10/01 Added Power Up - Load Power Up texture
+	if (!gPowerUpCheckpointTexture.loadFromFile("Art/PowerUpClock.png", gRenderer)) {								// 10/01 Added Power Up - Load Power Up texture
 		printf("Failed to load Checkpoint texture!\n");
 		success = false;
 	}
