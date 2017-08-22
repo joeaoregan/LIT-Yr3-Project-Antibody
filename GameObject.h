@@ -14,14 +14,15 @@ JOE: Moved functionality common to game objects to GameObjects class reducing th
 #include <iostream>
 
 enum GameObjectTypes {
+	PLAYER, PLAYER1, PLAYER2,
 	PLAYER1_SCORE, PLAYER2_SCORE,																		// Scores
 	POWER_UP_HEALTH, POWER_UP_LASER, POWER_UP_ROCKET, POWER_UP_CHECKPOINT,								// Power ups
-	ENEMY_SHIP_LASER, BLUE_VIRUS_BULLET, VIRUS_FIREBALL, EXPLOSION,										// Bullets
+	ENEMY_SHIP_LASER, BLUE_VIRUS_BULLET, VIRUS_FIREBALL, EXPLOSION, BLOOD_EXPLOSION,					// Bullets & Explosions
 	SAW1, SAW2,																							// Saw
-	BLOOD_CELL, SMALL_BLOOD_CELL, WHITE_BLOOD_CELL,														// Blood Cells
+	LARGE_BLOOD_CELL, SMALL_BLOOD_CELL, WHITE_BLOOD_CELL,												// Blood Cells
 	ENEMY_SHIP, VIRUS_GREEN, VIRUS_ORANGE, VIRUS_BLUE,													// Virus
 	NINJA_STAR_P1, NINJA_STAR_P2, LASER_P1, LASER_P2, LASER_V2_P1, LASER_V2_P2, ROCKET_P1, ROCKET_P2,	// Weapons
-	PLAYER_WEAPON, ENEMY_OBJECT																			// Sub-type of object
+	BLOOD_CELL, PLAYER_WEAPON, ENEMY_WEAPON, ENEMY_OBJECT, POWER_UP										// Main type of object
 };
 
 class GameObject {
@@ -33,13 +34,13 @@ public:
 
 	void spawn(int x, int y, int vx = 0, int vy = 0);
 
-	virtual void spawn(int x, int y, int vx, SDL_Rect* collider);
+	virtual void spawn(int x, int y, int vx, SDL_Rect collider);
 
 	virtual void spawn(int x, int y, int velocity, int player, int type = 0) {}			// Player laser
 
-	virtual void spawn(int x, int y, SDL_Rect* collider, int player = 1, int type = 9);	// Spawn the object at the dimensions provided --> Rocket
+	virtual void spawn(int x, int y, SDL_Rect collider, int player = 1, int type = 9);	// Spawn the object at the dimensions provided --> Rocket
 
-	virtual void spawn(int x, int y, int vx, int vy, SDL_Rect* collider, int type = 0);
+	virtual void spawn(int x, int y, int vx, int vy, SDL_Rect collider, int type = 0);
 
 	virtual void movement();
 	void movement(int centerX, int centerY, float timer);
@@ -66,8 +67,8 @@ public:
 	int getHealth() { return m_Health; }			// return the objects health
 	int getMaxHealth() { return MAX_HEALTH; }
 	int getNumLives() { return m_NumLives; }
-	int getType() { return m_Type; }				// 2017/01/25 Return the objects type
-	int getSubType() { return m_SubType; }			// 2017/02/18 Return the objects sub-type
+	int getSubType() { return m_SubType; }			// 2017/01/25 Return the objects type
+	int getType() { return m_Type; }				// 2017/02/18 Return the objects sub-type
 	int getAngle() { return m_Angle; }				// 2017/02/07 Return the objects angle
 
 	void setX(int x) { m_x = x; }					// Set GameObject X coord
@@ -83,14 +84,15 @@ public:
 	void setHealth(int health);						// set the health
 	void setNumLives(int n) { m_NumLives = n; }		// Set the number of lives for the object
 
+//	SDL_Rect getCollider() { return m_Collider; }
 	SDL_Rect* getCollider() { return &m_Collider; }
-	void setCollider(SDL_Rect collider) { m_Collider = collider; }			// 2017/01/19 Added as Sean keeps doing dumb things with the colliders
+	void setCollider(SDL_Rect collider) { m_Collider = collider; }	// 2017/01/19 Added as Sean keeps doing dumb things with the colliders
 	void setColliderWidth(int w) { m_Collider.w = w; }
 	void setColliderHeight(int h) { m_Collider.h = h; }
 	void setColliderX(int x) { m_Collider.x = x; }
 	void setColliderY(int y) { m_Collider.y = y; }
-	void setType(int t) { m_Type = t; }				// 2017/01/25 Set the objects type
-	void setSubType(int t) { m_SubType = t; }		// 2017/02/18 Set the objects sub-type
+	void setSubType(int t) { m_SubType = t; }		// 2017/01/25 Set the objects type
+	void setType(int t) { m_Type = t; }				// 2017/02/18 Set the objects sub-type
 	void setAngle(int a) { m_Angle = a; }
 
 	//SDL_Color getFontColour();
@@ -116,7 +118,7 @@ public:
 	int rotateCounter;	// degrees the satellite object has rotated
 	//int rotateCenter;
 	bool satelliteObjectAlive;
-	unsigned int whichVirusAssignedTo;
+	int whichVirusAssignedTo;
 
 	bool getRocketBarActive() { return m_RocketBarActive; }
 	void setRocketBarActive(bool rocket) { m_RocketBarActive = rocket; }
@@ -135,6 +137,12 @@ public:
 	// Weapons
 	int getPlayer() { return mPlayer; }
 	void setPlayer(int p = 0) { mPlayer = p; }
+	// Saw
+	bool getSawActive() { return sawActive; }
+	bool setSawActive(bool active) {
+		sawActive = active;			// Set the saw active
+		return true;				// Return true value to create the saw
+	}
 
 private:
 	// GameObject Variables
@@ -149,8 +157,8 @@ private:
 	int m_Score;					// Score value for killing or collecting an object
 	int m_NumLives;
 
-	int m_Type;						// Integer value to indicate the type of game object POWER UP, VIRUS
-	int m_SubType;
+	int m_SubType;					// Integer value to indicate the type of game object POWER UP, VIRUS
+	int m_Type;
 
 	// 31-01 Display time
 	float m_TimeTracker;			// Time to begin displaying
@@ -171,6 +179,7 @@ private:
 
 	// Weapons
 	int mPlayer;
+	bool sawActive;
 };
 
 #endif

@@ -22,7 +22,7 @@ void Button::setPosition(int x, int y) {
 }
 
 void Button::handleEvent(SDL_Event* e, int buttonSelected) {
-	SDL_Color textColorOne = { 255, 255, 255 };
+//	SDL_Color textColorOne = { 255, 255, 255 };
 	//If mouse event happened
 	if (e->type == SDL_MOUSEMOTION || e->type == SDL_MOUSEBUTTONDOWN || e->type == SDL_MOUSEBUTTONUP) {
 		//Get mouse position
@@ -104,6 +104,6 @@ void Button::handleEvent(SDL_Event* e, int buttonSelected) {
 }
 
 // Render the current button sprite at the button position
-void Button::render(Texture &texture, SDL_Renderer *rend, SDL_Rect *currentClip) {	
+void Button::render(Texture &texture, SDL_Renderer *rend, SDL_Rect *currentClip) {
 	texture.render(mPosition.x, mPosition.y, rend, currentClip);							// Show current button spriteCHANGED - RENDERER IS ADDED
 }

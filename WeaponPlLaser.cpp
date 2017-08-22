@@ -17,22 +17,27 @@ JOE: Moved functionality common to game objects to GameObjects class reducing th
 #include "WeaponPlLaser.h"
 #include "Player.h"
 
-WeaponPlLaser::WeaponPlLaser(int angle, int grade) {
+WeaponPlLaser::WeaponPlLaser(int player, int angle, int grade) {
 	//std::cout << "Laser constuctor called.\n";
+	setType(PLAYER_WEAPON);
 
-	setWidth(50);
-	setHeight(5);
-	setVelocity(15);
+	setPlayer(player);
 
-	setColliderWidth(getWidth());
-	setColliderHeight(getHeight());
+	if (player == PLAYER1) setSubType(LASER_P1);
+	else if (player == PLAYER2) setSubType(LASER_P2);
 
 	setAngle(angle);	// Fire straight
 	setGrade(grade);	// Basic Laser = 0, Triple Laser = 1
 
-	setAlive(true);
+	//setVelocity(15);
 
-	setSubType(PLAYER_WEAPON);
+	setWidth(50);
+	setHeight(5);
+
+	setColliderWidth(getWidth());
+	setColliderHeight(getHeight());
+
+	setAlive(true);
 }
 
 // Laser Destructor
@@ -59,7 +64,7 @@ void WeaponPlLaser::spawn(int x, int y, int velocity, int player, int type) {
 	//setVelocity(velocity);
 	setVelX(velocity);
 	setPlayer(player);
-	setType(type);
+	setSubType(type);
 }
 
 // Render the laser objects to the screen // 2017/01/22 Moved from game.cpp

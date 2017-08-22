@@ -5,7 +5,7 @@
 
 class WeaponPlRocket : public Weapon {
 public:
-	WeaponPlRocket();						// Initializes the variables
+	WeaponPlRocket(int player = 0);			// Initializes the variables
 	~WeaponPlRocket();						// Destructor
 
 	virtual void movement();				// Moves the Rocket	

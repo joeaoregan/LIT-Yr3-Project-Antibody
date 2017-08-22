@@ -20,10 +20,18 @@
 #define PLAYER_1 1
 #define PLAYER_2 2
 
+// Animation
+const int ANIMATION_FRAMES = 4;							// Number of frames of animation for Enemy Ship
+const int EXPLOSION_ANIMATION_FRAMES = 12;				// Number of frames of animation for Explosions
+const int BLOOD_EXP_ANIMATION_FRAMES = 12;
+
 //enum playerWeapons { NINJA_STAR_P1, NINJA_STAR_P2, LASER_P1, LASER_P2, SAW_P1, SAW_P2, LASER_V2_P1, LASER_V2_P2, ROCKET_P1, ROCKET_P2 };
 
 class Game {
 public:
+	int gamerOverMessageDisplayCounter;	// Length of time to display game over message
+	int frames;							// Frame count for speed of Enemy animation
+
 	// Time
 	unsigned int lastTime, currentTime, countdownTimer;	// TEST TIMING
 
@@ -72,7 +80,7 @@ public:
 
 	void resetGame(int level);								// Reset game to this level
 
-	void spawnExplosion(int x, int y);						// 2017/01/25 Added explosions
+	void spawnExplosion(int x, int y, int type);		// 2017/01/25 Added explosions // 2017/02/19 Added blood explosions
 
 	void spawnMovingObjects();
 	void spawnPlayer(int player);

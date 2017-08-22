@@ -9,7 +9,7 @@ Add Ninja Star weapon class
 
 class WeaponPlNinjaStar : public Weapon {
 public:
-	WeaponPlNinjaStar();							// Initializes the variables
+	WeaponPlNinjaStar(int player);							// Initializes the variables
 	~WeaponPlNinjaStar();
 };
 

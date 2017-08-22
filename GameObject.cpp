@@ -39,23 +39,21 @@ void GameObject::spawn(int x, int y, int vx, int vy) {
 	setAlive(true);
 }
 
-void GameObject::spawn(int x, int y, int vx, SDL_Rect* collider) {
+void GameObject::spawn(int x, int y, int vx, SDL_Rect collider) {
 	m_x = x;
 	m_y = y;
 	m_xVel = vx;
 	m_yVel = vx;	// 2017-01-10 JOE: use same velocity for x and y
-//	m_Collider = collider;
-	setCollider((*collider));
+	m_Collider = collider;
 }
 
-void GameObject::spawn(int x, int y, int vx, int vy, SDL_Rect* collider, int type) {
+void GameObject::spawn(int x, int y, int vx, int vy, SDL_Rect collider, int type) {
 	m_x = x;
 	m_y = y;
 	m_xVel = vx;
 	m_yVel = vy;	// 2017-01-10 JOE: use same velocity for x and y
-//	m_Collider = collider;
-	setCollider((*collider));
-	m_Type = type;
+	m_Collider = collider;
+	m_SubType = type;
 	setAlive(true);
 }
 
@@ -74,7 +72,7 @@ void GameObject::movement() {
 
 	// Destroy Game Object moving off screen on X axis
 	if ((getX() > SCREEN_WIDTH && getVelX() > 0)) setAlive(false);	// 2017/02/08 Need to check if velocity is negative, or power ups & blood cells don't appear on screen
-	else if (getX() < -getWidth()) setAlive(false);
+	else if (getX() < -getWidth() - 20) setAlive(false);			// If the object if off screen to the left
 	else setAlive(true);
 }
 
@@ -104,12 +102,12 @@ void GameObject::setHealth(int h) {
 }
 
 
-void GameObject::spawn(int x, int y, SDL_Rect* collider, int player, int type) {
+void GameObject::spawn(int x, int y, SDL_Rect collider, int player, int type) {
 	setX(x + 57);
 	setY(y + 13);
 	setVelX(getVelocity());
 	setVelY(0);
-	setCollider((*collider));
+	setCollider(collider);
 	setPlayer(player);
-	setType(type);
+	setSubType(type);
 }

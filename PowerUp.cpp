@@ -1,7 +1,7 @@
 #include "PowerUp.h"
 
 PowerUp::PowerUp(int type, int score) {
-	setType(type);
+	setSubType(type);
 	setScore(score);
 	
 	if (type == POWER_UP_HEALTH) {			// Change dimensions for different types of power ups

@@ -11,25 +11,29 @@ Added enemy laser projectile, velocity is a minus value as it is travelling righ
 #include <math.h>
 
 // LaserEnemy Constructor
-WeaponEnLaser::WeaponEnLaser(int type, int rotateCenter) {
+WeaponEnLaser::WeaponEnLaser(int subType, int rotateCenter) {
 	//std::cout << "Enemy Laser constuctor called.\n";
 	setWidth(50);
 	setHeight(5);
 	setVelocity(-15);
 	setVelX(-15);
 	//setVelY(0);
-	setType(type);
 	setAlive(true);
 
-	// Set the name
-	if (type == ENEMY_SHIP_LASER)
-		setName("Enemy Laser");
-	else if (type == VIRUS_FIREBALL)
-		setName("Virus Fireball");
-	else if (type == BLUE_VIRUS_BULLET)
-		setName("Blue Virus Bullet");
+	setType(ENEMY_WEAPON);	// Type of object (enemy weapon)
+	setSubType(subType);	// Subtype of weapon
 
-	if (getType() == 0) {
+	// Set the name
+	if (subType == ENEMY_SHIP_LASER)
+		setName("Enemy Laser");
+	else if (subType == VIRUS_FIREBALL)
+		setName("Virus Fireball");
+	else if (subType == BLUE_VIRUS_BULLET) {
+		setName("Blue Virus Bullet");
+		std::cout << "BLUE VIRUS BULLET CONSTRUCTOR" << std::endl;
+	}
+
+	if (getSubType() == 0) {
 		setColliderWidth(getWidth());
 		setColliderHeight(getHeight());
 	}

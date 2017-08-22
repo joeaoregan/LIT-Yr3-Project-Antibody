@@ -2,33 +2,15 @@
 #define PARTICLE_H
 #include "Texture.h"
 
-const int TOTAL_PARTICLES = 20;	// Particle count
-
 class Particle {
 public:
-	Particle(int x = 0, int y = 0);
 	Particle(int x, int y, Texture &one, Texture &two, Texture &three);		// Constructor: Initialize position and animation
 
-	bool loadMediaPlayer(SDL_Renderer *rend);
-	void closePlayer();
-
-	// Particles
-	Texture gDarkBlueParticleTexture;	// Dark blue engine particle
-	Texture gMediumBlueParticlTexture;	// Medium blue engine particle
-	Texture gLightBlueParticleTexture;	// Light blue engine particle
-	Texture gShimmerTexture;			// Shimmer engine particle
-
-	void initParticle(int x, int y);
 	void render(Texture &texture, SDL_Renderer *rend);						// Shows the particle
-	void renderPlayerParticles(int x, int y, SDL_Renderer *rend, bool draw);
 
 	bool isDead(bool drawParticle);											// Checks if particle is dead, 2017/01/20 Doesn't draw a trail if moving left
 
 private:
-	Particle* particles[TOTAL_PARTICLES];	// The particles
-
-	void renderParticles(int x, int y, Texture &one, Texture &two, Texture &three, Texture &four, SDL_Renderer *rend, bool draw);
-
 	int mPosX, mPosY;			// Offsets
 
 	int mFrame;					// Current frame of animation

@@ -6,10 +6,7 @@ Added asdw keyboard movement
 #include "Game.h"
 #include "WeaponPlSaw.h"
 #include "WeaponPlRocket.h"
-#include "Particle.h"
 #include <math.h>
-
-Particle p;
 
 #define VELOCITY 10
 #define BOOST 2
@@ -49,7 +46,10 @@ Player::Player() {
 	setAlive(false);
 	setNumLives(3);							// works, game is over when both players lives are <= 0
 
-	p.initParticle(getX(), getY());
+	//Initialize particles
+	for (int i = 0; i < TOTAL_PARTICLES; ++i) {
+		particles[i] = new Particle(getX(), getY(), gDarkBlueParticleTexture, gMediumBlueParticlTexture, gLightBlueParticleTexture);
+	}
 
 	drawParticle = true;
 
@@ -60,12 +60,62 @@ Player::Player() {
 	setTimerTracker(0.0);
 }
 
+bool Player::loadMediaPlayer(SDL_Renderer *rend) {
+	bool success = true;
+	// Particles
+	if (!gDarkBlueParticleTexture.loadFromFile("Art/particleDarkBlue.bmp", rend)) {	// Load Dark Particle texture
+		printf("Failed to load red texture!\n");
+		success = false;
+	}
+	if (!gMediumBlueParticlTexture.loadFromFile("Art/particleMediumBlue.bmp", rend)) {	// Load Medium Particle texture
+		printf("Failed to load green texture!\n");
+		success = false;
+	}
+	if (!gLightBlueParticleTexture.loadFromFile("Art/particleLightBlue.bmp", rend)) {	// Load Light Particle texture
+		printf("Failed to load blue texture!\n");
+		success = false;
+	}
+	if (!gShimmerTexture.loadFromFile("Art/shimmer.bmp", rend)) {						// Load shimmer texture
+		printf("Failed to load shimmer texture!\n");
+		success = false;
+	}
+
+	return success;
+}
+
+
+void Player::closePlayer() {
+	// Particles
+	gDarkBlueParticleTexture.free();
+	gMediumBlueParticlTexture.free();
+	gLightBlueParticleTexture.free();
+	gShimmerTexture.free();
+}
+
 // 2017/01/22 Separated player render() from game.cpp
 void Player::render(Texture &player, SDL_Renderer *rend) {
 	//Set texture transparency
+	gDarkBlueParticleTexture.modifyAlpha(100);	// Alpha of 192 gives particles a semi transparent look
+	gMediumBlueParticlTexture.modifyAlpha(100);
+	gLightBlueParticleTexture.modifyAlpha(100);
+	gShimmerTexture.modifyAlpha(150);
 
 	if (getAlive()) {																			// 2017/01/22 If the player is alive render the player, with particles
-		//p.renderPlayerParticles(getX(), getY(), rend, getDrawParticle());
+		renderParticles(gDarkBlueParticleTexture, gMediumBlueParticlTexture, gLightBlueParticleTexture, gShimmerTexture, rend);
+		player.render(getX(), getY(), rend);
+	}
+}
+
+// 2017/01/22 Separated player render() from game.cpp
+void Player::render(Texture &player, Texture &dark, Texture &medium, Texture &light, Texture &shimmer, SDL_Renderer *rend) {
+	//Set texture transparency
+	dark.modifyAlpha(100);	// Alpha of 192 gives particles a semi transparent look
+	medium.modifyAlpha(100);
+	light.modifyAlpha(100);
+	shimmer.modifyAlpha(150);
+
+	if (getAlive()) {																			// 2017/01/22 If the player is alive render the player, with particles
+		renderParticles(dark, medium, light, shimmer, rend);
 		player.render(getX(), getY(), rend);
 	}
 }
@@ -93,6 +143,22 @@ void Player::rendPlayerLives(Texture &lives, int player, SDL_Renderer *rend) {
 		if (getNumLives() > 2)
 			//lives.render(SCREEN_WIDTH - (lives.getWidth() * 3) - 10, SCREEN_HEIGHT - lives.getHeight() - 10, rend);
 			lives.render(SCREEN_WIDTH - (lives.getWidth() * 3) - 30, 120 - lives.getHeight() - 10, rend);
+	}
+}
+
+void Player::renderParticles(Texture &one, Texture &two, Texture &three, Texture &four, SDL_Renderer *rend) {
+	//Go through particles
+	for (int i = 0; i < TOTAL_PARTICLES; ++i) {
+		//Delete and replace dead particles
+		if (particles[i]->isDead(getDrawParticle())) {
+			delete particles[i];
+			particles[i] = new Particle(getX() + 9, getY() + 30, one, two, three);
+		}
+	}
+
+	//Show particles
+	for (int i = 0; i < TOTAL_PARTICLES; ++i) {
+		particles[i]->render(four, rend);
 	}
 }
 
@@ -408,4 +474,14 @@ void Player::setSpeedBoost(bool boost) {
 		mBoostStartTime = SDL_GetTicks();
 		std::cout << "SPEED BOOST START" << std::endl;
 	}
+}
+
+//void Player::initialiseRocket(bool active, bool barActive, int timer, int numRockets) {
+bool Player::initialiseRocket() {
+	setRocketActive(true);					// Set the rocket active, ready to render to screen
+	setRocketBarActive(false);				// Set the rocket power bar inactive
+	setTimer(ROCKET_TIMER);					// Reset the rocket timer
+	setNumRockets(getNumRockets() - 1);		// decrement the number of rockets
+
+	return true;							// Ready to create a rocket
 }
