@@ -1,7 +1,7 @@
 #ifndef TEST_DATA_H
 #define TEST_DATA_H
 
-#define GAME_TIMER 50					// Time to start counting down from, in seconds
+#define GAME_TIMER 10					// Time to start counting down from, in seconds
 
 #define NUM_PLAYERS 2					// The number of players
 
@@ -21,7 +21,7 @@
 #define MAX_NUM_LEVELS 3				// The maximum number of levels to progress through
 
 // Player Message
-#define MESSAGE_TIME 100				// Player Information Message, Stays on screen for a couple of seconds
+#define MESSAGE_TIME 150				// Player Information Message, Stays on screen for a couple of seconds
 #define MESSAGE_TIME_MAP 200			// Player Information Message, Stays on screen for a couple of seconds
 
 // Display the game splash screens

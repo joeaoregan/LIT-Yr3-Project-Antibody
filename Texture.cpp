@@ -12,8 +12,8 @@
 /*
 	TEXTURE:
 
-	This class manages all texture functionality for the game. Loading textures from, storing them to 
-	a map for indexing, and then rendering to screen. There are functions to render textures from text, 
+	This class manages all texture functionality for the game. Loading textures from, storing them to
+	a map for indexing, and then rendering to screen. There are functions to render textures from text,
 	and also to handle the alpha value of objects, to make them transparent or flash.
 */
 #include "Texture.h"
@@ -57,7 +57,7 @@ bool Texture::load(std::string fileName, std::string id) {
 
 void Texture::draw(std::string id, int x, int y, int width, int height, SDL_RendererFlip flip) {
 //void Texture::draw(std::string id, int x, int y, int width, int height, SDL_Renderer* rend, SDL_RendererFlip flip) {
-	SDL_Rect renderQuad = { x, y, mWidth, mHeight };	// Set rendering space and render to screen
+//	SDL_Rect renderQuad = { x, y, mWidth, mHeight };	// Set rendering space and render to screen
 	SDL_Rect srcRect;
 	SDL_Rect destRect;
 
@@ -310,7 +310,7 @@ void Texture::numRocketsLeft(std::string textureText) {
 		printf("numRocketsLeft(): Unable to render Num Rockets Left User Interface Text Texture!\n");
 	}
 }
-/* 
+/*
 	2017-02-15:
 	Function to render the players scores, the FPS, and the current game level
 */
@@ -356,7 +356,7 @@ void Texture::UITextTimer(std::string timerText, unsigned int Timer) {
 
 //std::string previous1, previous2, previous3;
 void Texture::UITextPlayerMessage(std::string playerMessage, int type) {
-	
+
 	free();
 //void Texture::UITextPlayerMessage(std::string playerMessage, SDL_Renderer* rend, int type) {
 	if (type == 0) {
@@ -427,7 +427,7 @@ bool Texture::loadTextureMedia() {
 //bool Texture::loadTextureMedia(SDL_Renderer* rend) {
 
 	lastTime = SDL_GetTicks();
-	
+
 	bool success = true;
 	// Particles
 
@@ -463,11 +463,11 @@ bool Texture::loadTextureMedia() {
 		printf("Failed to load Level 2 texture!\n");
 		success = false;
 	}
-	if (!Instance()->load("Art/Level3720.png", "level3ID")) {					// Level 3 backdrop	
+	if (!Instance()->load("Art/Level3720.png", "level3ID")) {					// Level 3 backdrop
 		printf("Failed to load Level 3 texture!\n");
 		success = false;
 	}
-	
+
 	// Init the objects to give information on
 	if (!Instance()->load("Art/EnemyShip.png", "enemyShipID")) {				// Enemy Ship
 		printf("Failed to load Enemy Ship texture!\n");
@@ -485,7 +485,7 @@ bool Texture::loadTextureMedia() {
 		printf("Failed to load Orange Enemy Virus texture!\n");
 		success = false;
 	}
-	
+
 	// Weapons
 	if (!Instance()->load("Art/VirusFireball.png", "fireballID")) {				// Orange Virus Projectile
 		printf("Failed to load Enemy Virus Orange Fireball texture!\n");
