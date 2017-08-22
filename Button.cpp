@@ -17,7 +17,7 @@
 
 using namespace std;
 
-//string line;
+string line;
 
 enum mainMenuButtons { STORY, GAME_1PLAYER, GAME_2PLAYER, GO_TO_SETTINGS, MENU_TO_HIGH_SCORES, QUIT };
 enum settingsMenuButtons { MUSIC_ON, MUSIC_OFF, FULL_SCREEN_TOGGLE, MAIN_MENU, QUIT_SETTINGS };
@@ -121,20 +121,17 @@ void Button::handleEvent(SDL_Event* e, int buttonSelected) {
 						Game::Instance()->setCurrentLevel(HIGH_SCORES);
 						std::cout << "Selected: View High Scores" << std::endl;
 						//checking that contents of file are correct and present when high score clicked
-						/*
 						ifstream a_file("highscore.txt");
 
 						if (a_file.is_open())
 						{
 							while (getline(a_file, line))
 							{
-								cout << "fuck off" << endl;
 								cout << line << '\n';
 							}
 							a_file.close();
 						}
 						else cout << "Unable to open file";
-						*/
 
 					}
 					else if (buttonSelected == QUIT) {

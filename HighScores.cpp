@@ -21,16 +21,16 @@
 #include "Texture.h"
 
 Texture dumbassScoresTextTexture;	//2017/03/21
-Texture assClown;
-std::string line;
+//Texture assClown;
+std::string lineHS;
 
-using namespace std;
+//using namespace std;
 
-string TOTAL_DATA; //string to store input from file
+std::string TOTAL_DATA; //string to store input from file
 
 /* 2017/03/21 Joe */
 
-string readScoresFromTextFile() //function to read from file and store values in return string
+std::string readScoresFromTextFile() //function to read from file and store values in return string
 {
 	std::string playerName;
 	std::stringstream highScores;
@@ -42,8 +42,8 @@ string readScoresFromTextFile() //function to read from file and store values in
 
 	// Structure of names and scores
 	struct PlayerScores {
-		std::string name;
-		int score;
+		std::string name = "";
+		int score = 0;
 	};
 
 	PlayerScores tempScoreDetailsStructForSorting;	// Temp name and score for sorting scores read in
@@ -99,7 +99,7 @@ string readScoresFromTextFile() //function to read from file and store values in
 	//Texture::Instance()->loadFromRenderedText(highScore, highScores.str().c_str(), "highScoresID", { 100, 100, 255, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 20), Game::Instance()->getRenderer, true);
 	dumbassScoresTextTexture.loadFromRenderedText(highScores.str().c_str(), { 100, 100, 255, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 20), true);
 
-	assClown.loadFromRenderedText("You have to call the actual function for it to work you fuckin idiot!!!\n\nYour function probably worked fine", { 0, 0, 255, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 20), true);
+	//assClown.loadFromRenderedText("You have to call the actual function for it to work you fuckin idiot!!!\n\nYour function probably worked fine", { 0, 0, 255, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 20), true);
 
 	//scores.loadFromRenderedText("fuckface", { 100, 100, 255, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 20), true);
 	/*
@@ -206,18 +206,18 @@ void HighScores::draw() {
 
 
 
-	ifstream a_file("highscore.txt");
+	std::ifstream a_file("highscore.txt");
 
 	if (a_file.is_open())
 	{
-		while (getline(a_file, line))
+		while (getline(a_file, lineHS))
 		{
-			cout << "fuck off brian" << endl;
-			cout << line << '\n';
+			std::cout << "fuck off brian" << std::endl;
+			std::cout << lineHS << '\n';
 		}
 		a_file.close();
 	}
-	else cout << "Unable to open file";
+	else std::cout << "Unable to open file";
 
 
 
@@ -244,17 +244,17 @@ void HighScores::draw() {
 
 	// Draw 1 button
 	//gReturnToMenu.render(gButtonSpriteSheetTexture3, &gSpriteClipsScoresMenu[gReturnToMenu.mCurrentSprite]);
-	
+
 	for (int i = 0; i < 1; i++) {
 		gScoressMenuButtons[i].render(gButtonSpriteSheetTexture3, &gSpriteClipsScoresMenu[gScoressMenuButtons[i].mCurrentSprite]);
 	}
-	
+
 	gScoresMenuTextTexture1.render((SCREEN_WIDTH - gScoresMenuTextTexture1.getWidth()) / 2, (SCREEN_HEIGHT - gScoresMenuTextTexture1.getHeight()) / 12);	// High Scores Heading
 	gScoresMenuTextTexture2.render(gScoresMenuTextTexture2.getX(), gScoresMenuTextTexture2.getY());	// Return to menu from scores
 	//gScoresMenuTextTexture3.render((SCREEN_WIDTH - gScoresMenuTextTexture3.getWidth()) / 2, (SCREEN_HEIGHT - gScoresMenuTextTexture3.getHeight()) / 2.5);
-	
+
 	dumbassScoresTextTexture.render((SCREEN_WIDTH - gScoresMenuTextTexture3.getWidth()) / 2, (SCREEN_HEIGHT - gScoresMenuTextTexture3.getHeight()) / 2.5);
-	assClown.render(100, 400);
+	//assClown.render(100, 400);
 
 	SDL_RenderPresent(Game::Instance()->getRenderer());			// Update screen
 }
