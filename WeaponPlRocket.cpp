@@ -39,7 +39,8 @@ WeaponPlRocket::WeaponPlRocket(int player) {
 
 	setWidth(75);
 	setHeight(20);
-	setVelocity(20);
+	setVelocity(15);
+	setVelX(15);
 
 	setColliderWidth(getWidth());
 	setColliderHeight(getHeight());
@@ -61,8 +62,8 @@ WeaponPlRocket::~WeaponPlRocket() {
 	std::cout << "Rocket destructor called.\n";
 }
 
-void WeaponPlRocket::movement() {
-	GameObject::movement();
+void WeaponPlRocket::move() {
+	GameObject::move();
 	setY(getY() + getVelY());							// Up direction	
 
 	if (getY() > SCREEN_HEIGHT_GAME - 40) setAlive(false);

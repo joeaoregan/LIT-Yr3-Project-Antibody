@@ -1,7 +1,7 @@
 #ifndef GAME_STATE_MACHINE_H
 #define GAME_STATE_MACHINE_H
 
-#include "GameState.h"
+#include "StateGameAbstract.h"
 //#include <vector>
 
 class GameStateMachine {
@@ -12,16 +12,16 @@ public:
 	void update();
 	void render();
 
-	void pushState(GameState* pState);
-	void changeState(GameState* pState);
+	void pushState(StateGameAbstract* pState);
+	void changeState(StateGameAbstract* pState);
 	void popState();
 
 	void clean();
 
-	std::vector<GameState*>& getGameStates() { return m_gameStates; }
+	std::vector<StateGameAbstract*>& getGameStates() { return m_gameStates; }
 
 private:
-	std::vector<GameState*> m_gameStates;
+	std::vector<StateGameAbstract*> m_gameStates; // P106 A place to store states
 };
 
 

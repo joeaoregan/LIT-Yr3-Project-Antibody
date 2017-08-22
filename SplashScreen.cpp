@@ -422,74 +422,6 @@ void SplashScreen::scrollUpText(std::string backgroundID, Texture &text, int sec
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-// Level 2 background, with scrolling text
-bool SplashScreen::level2IntroScreens(SDL_Renderer *rend) {
-	gFont = TTF_OpenFont("Fonts/Retro.ttf", 20);
-	textColour = { 0, 255, 0, 255 };
-
-	std::string levelObjective = "Destroy more enemy virus and ships\nThe player with the highest score\nIs the winner";
-
-	if (!gLevelObjectiveTextTexture.loadFromRenderedText(levelObjective, textColour, gFont, rend, true)) {	// Green text for level objectives
-		printf("Unable to render level game objective texture!\n");
-	}
-
-	//scrollVerticalLogo(rend, gLevel2, 0, 15, -SCREEN_HEIGHT);											// Scroll Level1 logo down the screen
-	scrollRightL2Logo(gRenderer, -SCREEN_WIDTH);
-
-	enemyInformationSplashScreen(rend, gLevel2, gVirusGreenTexture, gVirusOrangeTexture, gVirusBlueTexture, gEnemyShipTexture, gEnemyShipTexture);
-
-	// Objectives
-	//scrollVerticalLogo(rend, gLevel2, 1, 10, -SCREEN_HEIGHT);
-	scrollRightL2Logo(gRenderer, -SCREEN_WIDTH);
-
-	scrollUpText(rend, "level2ID", gLevelObjectiveTextTexture);
-
-	return false;	// set display screens boolean to false so it stops repeating over and over
-}
-
-// Level 3 background with scrolling text
-//bool SplashScreen::level3IntroScreens(SDL_Renderer *rend, Texture &virus, Texture &orangeVirus, Texture &enemyShip) {
-bool SplashScreen::level3IntroScreens(SDL_Renderer *rend) {
-	gFont = TTF_OpenFont("Fonts/Retro.ttf", 20);
-	textColour = { 0, 255, 0, 255 };
-
-	std::string levelObjective = "Destroy even more enemy virus and ships\nThe player with the highest score\nIs the winner";
-
-	if (!gLevelObjectiveTextTexture.loadFromRenderedText(levelObjective, textColour, gFont, rend, true)) {	// Green text for level objectives
-		printf("Unable to render level game objective texture!\n");
-	}
-
-	scrollVerticalLogo(rend, gLevel3, 0, 15, -SCREEN_HEIGHT);											// Scroll Level1 logo down the screen
-
-	enemyInformationSplashScreen(rend, gLevel3, gVirusGreenTexture, gVirusOrangeTexture, gVirusBlueTexture, gEnemyShipTexture, gEnemyShipTexture);
-
-	// Objectives
-	scrollVerticalLogo(rend, gLevel3, 1, 10, -SCREEN_HEIGHT);
-
-	scrollUpText(rend, "level3ID", gLevelObjectiveTextTexture);
-
-	return false;	// set display screens boolean to false so it stops repeating over and over
-}
-*/
-
 // Final Score For Level 1 to 3
 void SplashScreen::level1FinalScore() {
 	scrollDownLogo(LEVEL_1, -SCREEN_HEIGHT);
@@ -504,7 +436,10 @@ void SplashScreen::level3FinalScore() {
 void SplashScreen::endOfGame(int level, std::string finalScore, std::string winner) {
 	gFinalScoreTextTexture.free();
 	gGameWinnerTextTexture.free();
+	gGameOverTextTexture.free();
+	gStoryB.free();
 
+	// init
 	gFont = TTF_OpenFont("Fonts/Retro.ttf", 40);										// Retro font size 40
 	textColour = {0, 255, 0, 255};														// Green text colour
 	TTF_SetFontStyle(gFont, TTF_STYLE_BOLD);											// Use bold font
@@ -521,16 +456,17 @@ void SplashScreen::endOfGame(int level, std::string finalScore, std::string winn
 	else if (level == LEVEL_2) level2FinalScore();				// Scroll Level 1 background down from top of screen
 	else if (level == LEVEL_3) level3FinalScore();				// Scroll Level 1 background down from top of screen
 	
-	gGameOverTextTexture.setFlash(true);
+	gGameOverTextTexture.setFlash(true);						// Flash text
 	gGameOverTextTexture.flashGameObject(5);
 
-	SDL_SetRenderDrawColor(Game::Instance()->getRenderer(), 0x3C, 0x3C, 0x3C, 0xFF);			// Grey colour --> shows up in UI
+	// Render
+	SDL_SetRenderDrawColor(Game::Instance()->getRenderer(), 0x3C, 0x3C, 0x3C, 0xFF);	// Grey colour --> shows up in UI
 	SDL_RenderClear(Game::Instance()->getRenderer());
 
-	gLevel3.render(0, 0);										// Static background	AND THE BACKGROUND NEEDS TO BE BEHIND THE TEXT EACH TIME
+	gLevel3.render(0, 0);																// Static background	AND THE BACKGROUND NEEDS TO BE BEHIND THE TEXT EACH TIME
 
-	if (level == 1) scrollUpText("level1ID", gStoryB, 1, 15);			// 2nd page of text for story
-	else if (level == 2) scrollUpText("level2ID", gStoryB, 1, 15);		// 2nd page of text for story
+	if (level == 1) scrollUpText("level1ID", gStoryB, 1, 15);							// Set background to appear behind text depending on the level
+	else if (level == 2) scrollUpText("level2ID", gStoryB, 1, 15);
 
 	gFinalScoreTextTexture.modifyAlpha(gGameOverTextTexture.getAlpha());
 	gFinalScoreTextTexture.render((SCREEN_WIDTH - gFinalScoreTextTexture.getWidth()) / 2, (SCREEN_HEIGHT - gFinalScoreTextTexture.getHeight() + 300) / 2); // FOR TESTING
@@ -550,3 +486,56 @@ void SplashScreen::endOfGame(int level, std::string finalScore, std::string winn
 		gGameWinnerTextTexture.render((SCREEN_WIDTH - gGameWinnerTextTexture.getWidth()) / 2, (SCREEN_HEIGHT - gGameWinnerTextTexture.getHeight() + 450) / 2); // FOR TESTING
 	}
 }
+
+
+
+/*
+// Level 2 background, with scrolling text
+bool SplashScreen::level2IntroScreens(SDL_Renderer *rend) {
+gFont = TTF_OpenFont("Fonts/Retro.ttf", 20);
+textColour = { 0, 255, 0, 255 };
+
+std::string levelObjective = "Destroy more enemy virus and ships\nThe player with the highest score\nIs the winner";
+
+if (!gLevelObjectiveTextTexture.loadFromRenderedText(levelObjective, textColour, gFont, rend, true)) {	// Green text for level objectives
+printf("Unable to render level game objective texture!\n");
+}
+
+//scrollVerticalLogo(rend, gLevel2, 0, 15, -SCREEN_HEIGHT);											// Scroll Level1 logo down the screen
+scrollRightL2Logo(gRenderer, -SCREEN_WIDTH);
+
+enemyInformationSplashScreen(rend, gLevel2, gVirusGreenTexture, gVirusOrangeTexture, gVirusBlueTexture, gEnemyShipTexture, gEnemyShipTexture);
+
+// Objectives
+//scrollVerticalLogo(rend, gLevel2, 1, 10, -SCREEN_HEIGHT);
+scrollRightL2Logo(gRenderer, -SCREEN_WIDTH);
+
+scrollUpText(rend, "level2ID", gLevelObjectiveTextTexture);
+
+return false;	// set display screens boolean to false so it stops repeating over and over
+}
+
+// Level 3 background with scrolling text
+//bool SplashScreen::level3IntroScreens(SDL_Renderer *rend, Texture &virus, Texture &orangeVirus, Texture &enemyShip) {
+bool SplashScreen::level3IntroScreens(SDL_Renderer *rend) {
+gFont = TTF_OpenFont("Fonts/Retro.ttf", 20);
+textColour = { 0, 255, 0, 255 };
+
+std::string levelObjective = "Destroy even more enemy virus and ships\nThe player with the highest score\nIs the winner";
+
+if (!gLevelObjectiveTextTexture.loadFromRenderedText(levelObjective, textColour, gFont, rend, true)) {	// Green text for level objectives
+printf("Unable to render level game objective texture!\n");
+}
+
+scrollVerticalLogo(rend, gLevel3, 0, 15, -SCREEN_HEIGHT);											// Scroll Level1 logo down the screen
+
+enemyInformationSplashScreen(rend, gLevel3, gVirusGreenTexture, gVirusOrangeTexture, gVirusBlueTexture, gEnemyShipTexture, gEnemyShipTexture);
+
+// Objectives
+scrollVerticalLogo(rend, gLevel3, 1, 10, -SCREEN_HEIGHT);
+
+scrollUpText(rend, "level3ID", gLevelObjectiveTextTexture);
+
+return false;	// set display screens boolean to false so it stops repeating over and over
+}
+*/

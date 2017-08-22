@@ -44,3 +44,7 @@ WeaponPlNinjaStar::WeaponPlNinjaStar(int player) {
 WeaponPlNinjaStar::~WeaponPlNinjaStar() {
 	std::cout << "NinjaStar destructor called.\n";
 }
+
+void WeaponPlNinjaStar::move() {
+	GameObject::move();
+}

@@ -30,7 +30,6 @@
 WeaponPlLaser::WeaponPlLaser(int player, int angle, int grade) {
 	//std::cout << "Laser constuctor called.\n";
 	setType(PLAYER_WEAPON);
-
 	setPlayer(player);
 
 	if (player == PLAYER1) setSubType(LASER_P1);
@@ -55,24 +54,17 @@ WeaponPlLaser::~WeaponPlLaser(){
 	std::cout << "Laser destructor called.\n";
 }
 
-void WeaponPlLaser::movement() {
-	GameObject::movement();
+void WeaponPlLaser::move(int x, int y) {
 	setY(getY() + getVelY());		// Up direction
 	//if (getGrade() == 1) {
 	if (getAngle() == LASER2_TOP) setY(getY() - 1);
 	else if (getAngle() == LASER2_BOTTOM) setY(getY() + 1);
 	else if (getAngle() == LASER3_TOP) setY(getY() - 3);
 	else if (getAngle() == LASER3_BOTTOM) setY(getY() + 3);
+
+	GameObject::move();
 }
 
-void WeaponPlLaser::spawn(int x, int y, int velocity, int player, int type) {
-	setX(x);
-	setY(y);
-	//setVelocity(velocity);
-	setVelX(velocity);
-	setPlayer(player);
-	setSubType(type);
-}
 
 // Render the laser objects to the screen // 2017/01/22 Moved from game.cpp
 void WeaponPlLaser::render(int player, Texture &orange, Texture &green) {

@@ -8,7 +8,7 @@ public:
 	EnemyBoss();							// Initializes the variables
 	~EnemyBoss();
 
-	void movement();
+	void move();
 };
 
 #endif

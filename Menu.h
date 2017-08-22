@@ -16,6 +16,7 @@ public:
 	Texture gMenuTextTexture5;
 	Texture gMenuTextTexture6;
 	Texture gMenuTextTexture7;
+	Texture gMenuTextTexture8;
 
 	//Buttons objects
 	Button gButtons[TOTAL_BUTTONS];
@@ -24,10 +25,11 @@ public:
 	SDL_Rect gSpriteClipsMenu[BUTTON_SPRITE_TOTAL];
 	Texture gButtonSpriteSheetTexture;
 	
-	void closeMenu();
+	void closeMenuMedia();
 	void handleMenuEvents(SDL_Event& e);
-	bool loadMediaMenu();
+	bool loadMenuMedia();
 	void draw();
+	void drawPause();
 
 
 	//Menu(int x, int y);							// Initializes the variables

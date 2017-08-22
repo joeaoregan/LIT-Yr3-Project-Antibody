@@ -5,6 +5,8 @@
 
 class HUD {
 public:
+	TTF_Font *gHUDFont = NULL;
+
 	Texture gLevelTextTexture;			// Current level displayed at top of game screen
 	Texture gSpeedBoostTextTexture;		// Text "SPEED BOOST"
 	Texture gPowerUpRocketTexture2;		// Texture for Rocket power up

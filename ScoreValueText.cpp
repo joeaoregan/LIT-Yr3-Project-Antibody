@@ -14,6 +14,7 @@
 */
 
 #include "ScoreValueText.h"
+#include "Texture.h"
 #include <math.h>
 
 ScoreValueText::ScoreValueText(int x, int y, int score, int player) {
@@ -32,12 +33,16 @@ ScoreValueText::ScoreValueText(int x, int y, int score, int player) {
 	if (player == PLAYER1) setSubType(PLAYER1_SCORE);
 	else if (player == PLAYER2) setSubType(PLAYER2_SCORE);	// NEEDS TO BE ADJUSTED FOR ROCKETS
 
+	//if (!m_Texture.loadFromRenderedText("+" + std::to_string(score), { 240, 210, 65, 255 }, gFontRetro20)) {	// Gold Text
+	//	printf("Unable to render player text texture!\n");
+	//}
+
 	setLineAlgCalculated(false);
 }
 
 ScoreValueText::~ScoreValueText() {}
 int i = 0;
-void ScoreValueText::movement(int x, int y) {
+void ScoreValueText::move(int x, int y) {
 
 	float dx = x - getX();
 	float dy = y - getY();

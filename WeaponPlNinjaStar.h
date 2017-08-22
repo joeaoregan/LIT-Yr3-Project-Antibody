@@ -13,6 +13,8 @@ class WeaponPlNinjaStar : public Weapon {
 public:
 	WeaponPlNinjaStar(int player);							// Initializes the variables
 	~WeaponPlNinjaStar();
+
+	virtual void move();
 };
 
 #endif

@@ -1,4 +1,5 @@
 /*
+	2017/02/27:	User game singleton to access renderer
 	2017/01/19 Started working on menu functionality with buttons
 */
 /*
@@ -9,12 +10,6 @@
 #include "Button.h"
 #include "Game.h"
 
-
-//Game game;
-
-/*
-	2017/02/27:	User game singleton to access renderer
-*/
 enum { STORY, GAME_1PLAYER, GAME_2PLAYER, SETTINGS, HIGH_SCORES, QUIT };
 
 //SDL_Rect gSpriteClipsMenu[BUTTON_SPRITE_TOTAL];
@@ -86,7 +81,7 @@ void Button::handleEvent(SDL_Event* e, int buttonSelected) {
 					std::cout << "Level: " << Game::Instance()->getCurrentLevel() << std::endl;
 					Game::Instance()->twoPlayer = false;
 					Game::Instance()->displayLevelIntro = true;
-					Game::Instance()->update();
+					//Game::Instance()->update();
 					// Call a function in Game.cpp in the Main Project
 				}
 				else if (buttonSelected == GAME_1PLAYER) {
@@ -99,7 +94,7 @@ void Button::handleEvent(SDL_Event* e, int buttonSelected) {
 					std::cout << "Level: " << Game::Instance()->getCurrentLevel() << std::endl;
 					Game::Instance()->twoPlayer = false;
 					Game::Instance()->displayLevelIntro = false;
-					Game::Instance()->update();
+					//Game::Instance()->update();
 					// Call a function in Game.cpp in the Main Project
 				}
 				else if (buttonSelected == GAME_2PLAYER) {
@@ -110,7 +105,7 @@ void Button::handleEvent(SDL_Event* e, int buttonSelected) {
 					//std::cout << "Level: " << game.getCurrentLevel() << std::endl;
 					Game::Instance()->twoPlayer = true;
 					Game::Instance()->setCurrentLevel(1);
-					Game::Instance()->update();
+					//Game::Instance()->update();
 					std::cout << "Level: " << Game::Instance()->getCurrentLevel() << std::endl;
 
 					// Call a function in Game.cpp in the Main Project
@@ -118,13 +113,13 @@ void Button::handleEvent(SDL_Event* e, int buttonSelected) {
 				else if (buttonSelected == SETTINGS) {
 					std::cout << "Selected: Go To Settings Menu" << std::endl;
 					//game.init();
-					Game::Instance()->init();
+					//Game::Instance()->init();
 					// Call a function in Game.cpp in the Main Project
 				}
 				else if (buttonSelected == HIGH_SCORES) {
 					std::cout << "Selected: View High Scores" << std::endl;
 					//game.init();
-					Game::Instance()->init();
+					//Game::Instance()->init();
 					// Call a function in Game.cpp in the Main Project
 				}
 				else if (buttonSelected == QUIT) {

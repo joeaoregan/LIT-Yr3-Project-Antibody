@@ -56,6 +56,7 @@ WeaponEnLaser::WeaponEnLaser(int subType, int rotateCenter) {
 		setColliderWidth(25);
 		setColliderHeight(25);
 	}
+
 	setScore(0);						// 2017/01/20 Points to deduct from player after collision with this object
 
 	rotateCounter = 0;
@@ -67,7 +68,7 @@ WeaponEnLaser::~WeaponEnLaser() {
 	std::cout << "Enemy Laser destructor called.\n";
 }
 
-void WeaponEnLaser::movement() {
+void WeaponEnLaser::move() {
 	/*
 	if (getType() == BLUE_VIRUS_BULLET) {
 		//centerX = getX();
@@ -82,8 +83,8 @@ void WeaponEnLaser::movement() {
 	}
 	else {
 	*/
-		GameObject::movement();
-		setY(getY() + getVelY());
+		GameObject::move();
+		///setY(getY() + getVelY()); // seems to work fine for orange virus explosion without this
 	//}
 	// destroy laser beam once it is offscreen
 	//if (getY() < 40) setAlive(false);			// Once it reaches the pink border

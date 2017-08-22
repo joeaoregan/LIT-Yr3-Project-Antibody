@@ -1,7 +1,7 @@
 #ifndef PLAY_STATE_H
 #define PLAY_STATE_H
 
-#include "GameState.h"
+#include "StateGameAbstract.h"
 #include "GameObject.h"
 //#include "SDLGameObject.h" // SDLGameObject
 //#include <vector>
@@ -10,7 +10,7 @@
 
 class GameObject;
 
-class StatePlay : public GameState {
+class StatePlay : public StateGameAbstract {
 public:
 	virtual void update();
 	virtual void render();

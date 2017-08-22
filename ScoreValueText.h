@@ -16,7 +16,8 @@ public:
 	ScoreValueText(int x, int y, int score, int player);
 	~ScoreValueText();
 
-	void movement(int x, int y);
+	virtual void move() {};
+	void move(int x, int y);	// Tracker movement, scores move towards players who earned the points
 
 	Texture m_Texture;
 };

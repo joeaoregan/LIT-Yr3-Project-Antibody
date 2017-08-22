@@ -15,6 +15,7 @@
 
 #define ROCKET_TIMER 3.0
 
+#include "GameObjectAbstract.h"
 #include <SDL.h>
 //#include <SDL_image.h>
 #include "Texture.h"
@@ -43,39 +44,24 @@ enum GameObjectSubTypes {
 enum weaponsGrades { LASER_SINGLE, LASER_DOUBLE, LASER_TRIPLE };
 enum laserAngles { STRAIGHT, LASER2_TOP, LASER2_BOTTOM, LASER3_TOP, LASER3_BOTTOM };
 
-class GameObject {
+class GameObject : public GameObjectAbstract {
 public:
 	GameObject();
 	~GameObject();												// Deconstructor
 
 	virtual void handleEvent(SDL_Event& e, int player) {}
 
-	void spawn(int x, int y, int vx = 0, int vy = 0);
+	virtual void spawn(int x, int y, int vx = 0, int vy = 0);
 
-	virtual void spawn(int x, int y, int vx, SDL_Rect* collider);
-
-	virtual void spawn(int x, int y, int velocity, int player, int type = 0) {}			// Player laser
-
-	virtual void spawn(int x, int y, SDL_Rect* collider, int player = 1, int type = 9);	// Spawn the object at the dimensions provided --> Rocket
-
-	virtual void spawn(int x, int y, int vx, int vy, SDL_Rect* collider, int type = 0);
-
-	virtual void movement();
-	void movement(int centerX, int centerY, float timer);
-	virtual void movement(int x, int y) {
-		//setY(getY() - 5);
-				//if (getY() <= 40) setAlive(false);
-	};
-	//virtual void movement(int x, int y, int z) {};
+	virtual void move(int x = 0, int y = 0);
+	virtual void moveStalker(int x, int y) {};	// 2017/03/03 Updated movement functions, for objects that move towards other objects
+	virtual void orbit(int centerX, int centerY, float timer);
 
 	void destroy();
 
 	virtual void render();
 	virtual void render(Texture &texture, int degrees = 0);
 	void render(Texture &texture,  SDL_Rect *currentClip, int &currentframe, int frames);
-	//void render(Texture &texture, SDL_Renderer *rend, int degrees = 0);
-	//void render(LTexture &texture, SDL_Renderer *rend);	// Shows the Enemy on the screen
-	//void render(Texture &texture, SDL_Renderer *rend, SDL_Rect *currentClip, int &currentframe, int frames);
 
 	int getX() { return m_x; }						// Get GameObject X coord
 	int getY() { return m_y; }						// Get GameObject Y coord
@@ -191,7 +177,7 @@ public:
 	float getBoostPercent() { return boostPercent; }
 	void setBoostPercent(float speed) { boostPercent = speed; }
 
-private:
+protected:
 	// GameObject Variables
 	std::string m_Name;				// Name of the object
 	int m_Health;					// Value between 0 and 160
@@ -214,7 +200,6 @@ private:
 	float m_Timer;					// Time to end displaying
 	unsigned int lastTime = 0.0;
 
-	//SDL_Color fontColour;			// moved to texture class
 	int m_Angle;					// 2017-02-07: Angle to rotate an object
 
 	int m_Frames;					// 2017/02/09 Number of frames for an animation

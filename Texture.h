@@ -3,11 +3,10 @@
 				Moved flashGameObject() functionality into Texture class
 	2017/01/24 Changed screen size from 1280 x 720 from 800 x 600
 */
-#ifndef LTEXTURE_H
-#define LTEXTURE_H
+#ifndef TEXTURE_MANAGER_H
+#define TEXTURE_MANAGER_H
 
 #include"Game.h"
-//#include <SDL.h>
 #include <SDL_image.h>
 #include <string>
 #include <map>
@@ -31,18 +30,19 @@ public:
 		return s_pInstance;							// Make sure the texture manager only exists once
 	}
 	// Need to be private for singleton
-	Texture(int degrees = 0);						// Initializes variables
+	Texture(int degrees = 0);				// Initializes variables
+	~Texture();								// Deallocates memory
 
-	~Texture();										// Deallocates memory
+	bool loadTextureMedia(); // 2017/02/26
+
+	bool load(std::string fileName, std::string id);
 
 
 	//bool loadFromRenderedTextIO(std::string id, std::string textureText, SDL_Color textColor, TTF_Font* font, SDL_Renderer* renderer, bool textWrapped);
 
-	void loadInputText(std::string input);
-	void loadEnterNameText(std::string nameText);
+	//void loadInputText(std::string input);
+	//void loadEnterNameText(std::string nameText);
 	bool loadFromRenderedTextID(std::string textureText, std::string id, SDL_Color textColor, TTF_Font* font, bool textWrapped = false);
-	bool loadTextureMedia(); // 2017/02/26
-	bool load(std::string fileName, std::string id);
 	void draw(std::string id, int x, int y, int width, int height, SDL_RendererFlip flip = SDL_FLIP_NONE);
 	void weaponIndicator(std::string textureID, int x);	// 2017/02/26 Function to render weapon indicators
 	SDL_Texture* loadTexture(std::string path);	// Loads individual image as texture
@@ -117,7 +117,7 @@ public:
 	void UITextPlayerMessage(std::string playerMessage, int type = 0);
 	void numRocketsLeft(std::string textureText);											// 2017/02/19 Indicate the number of rockets each player has left
 	void speedBoostText(std::string textureText);											// 2017/02/20 Indicates a speedboost is active
-	void createdByText();						// 2017/02/20			
+	//void createdByText();						// 2017/02/20		 2017/03/03 altered	
 	/*
 	void UIText(std::string textureText, SDL_Renderer* rend);								// Render Text for player scores, FPS, and current Level
 	void UITextTimer(std::string timerText, SDL_Renderer* rend, unsigned int Timer);		// Render Text for Game Timer
@@ -126,7 +126,7 @@ public:
 	void speedBoostText(std::string textureText, SDL_Renderer* rend);						// 2017/02/20 Indicates a speedboost is active
 	void createdByText(SDL_Renderer* rend);													// 2017/02/20			
 	*/
-	unsigned int lastTime;
+	unsigned int lastTime = 0;
 
 	std::map<std::string, SDL_Texture*> getTextureMap() { return m_textureMap; }
 

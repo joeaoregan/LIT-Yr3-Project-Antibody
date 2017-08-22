@@ -8,7 +8,6 @@ class Weapon : public GameObject {
 public:
 	Weapon();
 	~Weapon();
-
 	
 	int getGrade() { return mGrade; }
 	void setGrade(int g) { mGrade = g; }

@@ -67,35 +67,31 @@ void GameObject::spawn(int x, int y, int vx, int vy) {
 	setAlive(true);
 }
 
-void GameObject::spawn(int x, int y, int vx, SDL_Rect* collider) {
-	m_x = x;
-	m_y = y;
-	m_xVel = vx;
-	m_yVel = vx;	// 2017-01-10 JOE: use same velocity for x and y
-//	m_Collider = collider;
-	setCollider((*collider));
-}
-
-void GameObject::spawn(int x, int y, int vx, int vy, SDL_Rect* collider, int subType) {
-	m_x = x;
-	m_y = y;
-	m_xVel = vx;
-	m_yVel = vy;	// 2017-01-10 JOE: use same velocity for x and y
-	setCollider((*collider));
-	m_SubType = subType;
-	setAlive(true);
-}
-
-
-void GameObject::movement() {
+void GameObject::move(int x, int y) {
 	m_x += m_xVel;
-	//m_y += m_yVel;
+	m_y += m_yVel;
 
 	setColliderX(getX());
 	setColliderY(getY());
 
 	destroy();
 }
+
+void GameObject::orbit(int centerX, int centerY, float timer) {
+	if (centerX < SCREEN_WIDTH) {
+		rotateCounter %= 360;
+
+		if (timer != 0.5) {
+			setX(70 * cos(rotateCounter * 3.1415926f / 180.0f) + centerX);		// rotate the bullet object
+			setY(70 * sin(rotateCounter * 3.1415926f / 180.0f) + centerY);
+
+			rotateCounter += 3;
+		}
+		else
+			move();					// Fire the satellite bullet object
+	}
+}
+
 
 void GameObject::destroy() {
 	// Destroy Game Object moving off screen on Y axis
@@ -107,21 +103,6 @@ void GameObject::destroy() {
 	if ((getX() > SCREEN_WIDTH && getVelX() > 0)) setAlive(false);	// 2017/02/08 Need to check if velocity is negative, or power ups & blood cells don't appear on screen
 	else if (getX() < -getWidth() - 20) setAlive(false);			// If the object if off screen to the left
 	else setAlive(true);
-}
-
-
-void GameObject::movement(int centerX, int centerY, float timer) {
-	if (centerX < SCREEN_WIDTH) {
-		rotateCounter %= 360;
-		if (timer != 0.5) {
-			setX(70 * cos(rotateCounter * 3.1415926f / 180.0f) + centerX);		// rotate the bullet object
-			setY(70 * sin(rotateCounter * 3.1415926f / 180.0f) + centerY);
-
-			rotateCounter += 3;
-		}
-		else
-			movement();					// Fire the satellite bullet object
-	}
 }
 
 void GameObject::setHealth(int h) {
@@ -136,15 +117,6 @@ void GameObject::setHealth(int h) {
 }
 
 
-void GameObject::spawn(int x, int y, SDL_Rect* collider, int player, int type) {
-	setX(x + 57);
-	setY(y + 13);
-	setVelX(getVelocity());
-	setVelY(0);
-	setCollider((*collider));
-	setPlayer(player);
-	setSubType(type);
-}
 
 // 2017-02-21 Moved from Player.cpp
 void GameObject::setSpeedBoost(bool boost) {

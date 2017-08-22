@@ -12,8 +12,8 @@
 /*
 	TEXTURE:
 
-	This class manages all texture functionality for the game. Loading textures from, storing them to
-	a map for indexing, and then rendering to screen. There are functions to render textures from text,
+	This class manages all texture functionality for the game. Loading textures from, storing them to 
+	a map for indexing, and then rendering to screen. There are functions to render textures from text, 
 	and also to handle the alpha value of objects, to make them transparent or flash.
 */
 #include "Texture.h"
@@ -57,7 +57,7 @@ bool Texture::load(std::string fileName, std::string id) {
 
 void Texture::draw(std::string id, int x, int y, int width, int height, SDL_RendererFlip flip) {
 //void Texture::draw(std::string id, int x, int y, int width, int height, SDL_Renderer* rend, SDL_RendererFlip flip) {
-//	SDL_Rect renderQuad = { x, y, mWidth, mHeight };	// Set rendering space and render to screen
+	SDL_Rect renderQuad = { x, y, mWidth, mHeight };	// Set rendering space and render to screen
 	SDL_Rect srcRect;
 	SDL_Rect destRect;
 
@@ -289,36 +289,6 @@ void Texture::modifyAlpha(Uint8 alpha) {
 }
 
 /*
-	2017/02/20:
-	Function to show who created the game
-*/
-//void Texture::createdByText(SDL_Renderer* rend) {
-void Texture::createdByText() {
-	free();
-	std::string textureText = "ANTIBODY";
-	SDL_Color txtColour = { 0, 255, 0, 255 };
-
-	if (SDL_GetTicks() > 0 && SDL_GetTicks() <= lastTime + 1500) {								// Decrement countdown timer
-		textureText = "ANTIBODY";
-		txtColour = { 50, 200, 255, 255 };	// light blue
-	}
-	else if (SDL_GetTicks() > lastTime + 1500 && SDL_GetTicks() < lastTime + 3000) {
-		textureText = "A GAME BY";
-		txtColour = { 0, 255, 0, 255 };
-	}
-	else if (SDL_GetTicks() > lastTime + 3000 && SDL_GetTicks() < lastTime + 4500) {
-		textureText = "Seán Horgan and Joe O'Regan";
-		txtColour = { 0, 255, 0, 255 };
-	}
-	else if (SDL_GetTicks() >= lastTime + 4500)
-		lastTime = SDL_GetTicks();
-
-	if (!loadFromRenderedText(textureText, txtColour, TTF_OpenFont("Fonts/Retro.ttf", 16), true)) {		// Green Text
-	//if (!loadFromRenderedText(textureText, txtColour, TTF_OpenFont("Fonts/Retro.ttf", 16), rend, true)) {		// Green Text
-		printf("createdByText(): Unable to render Created By Text Texture!\n");
-	}
-}
-/*
 	2017/02/19:
 	Function to indicate if a speed boost is active or not
 */
@@ -340,7 +310,7 @@ void Texture::numRocketsLeft(std::string textureText) {
 		printf("numRocketsLeft(): Unable to render Num Rockets Left User Interface Text Texture!\n");
 	}
 }
-/*
+/* 
 	2017-02-15:
 	Function to render the players scores, the FPS, and the current game level
 */
@@ -379,32 +349,47 @@ void Texture::UITextTimer(std::string timerText, unsigned int Timer) {
 }
 
 /*
+	2017/03/03	THIS FUNCTION IS OK
 	2017/02/15:
 	Independent messages for player 1 and 2, for picking up objects and upgrading weapons etc
 */
+
+//std::string previous1, previous2, previous3;
 void Texture::UITextPlayerMessage(std::string playerMessage, int type) {
+	
 	free();
 //void Texture::UITextPlayerMessage(std::string playerMessage, SDL_Renderer* rend, int type) {
 	if (type == 0) {
-		if (!loadFromRenderedText(playerMessage, { 65, 210, 240, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 20))) {	// Blue Text For General Message
-			printf("Unable to render General Info Message text texture!\n");
-		}
+		//if (previous1 != playerMessage) {
+			if (!loadFromRenderedText(playerMessage, { 65, 210, 240, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 20))) {	// Blue Text For General Message
+				printf("Unable to render General Info Message text texture!\n");
+			}
+		//}
+		//previous1 = playerMessage;
 	}
 	else if (type == 1) {
-		if (!loadFromRenderedText(playerMessage, { 240, 210, 65, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 20))) {	// Gold Text For Player 1
-			printf("Unable to render player 1 Message text texture!\n");
-		}
+		//if (previous2 != playerMessage) {
+			if (!loadFromRenderedText(playerMessage, { 240, 210, 65, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 20))) {	// Gold Text For Player 1
+				printf("Unable to render player 1 Message text texture!\n");
+			}
+		//}
+		//previous2 = playerMessage;
 	}
 	else if (type == 2) {
-		if (!loadFromRenderedText(playerMessage, { 0, 255, 150, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 20))) {	// Green Text For Player 2
-			printf("Unable to render player 2 Message text texture!\n");
-		}
+		//if (previous3 != playerMessage) {
+			if (!loadFromRenderedText(playerMessage, { 0, 255, 150, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 20))) {	// Green Text For Player 2
+				printf("Unable to render player 2 Message text texture!\n");
+			}
+		//}
+		//previous3 = playerMessage;
 	}
 }
+
 void Texture::weaponIndicator(std::string textureID, int x) {
 	//void Texture::weaponIndicator(std::string textureID, int x, SDL_Renderer* rend) {
 	renderMap(textureID, x + 5, 5, 50, 48);
 }
+/*
 void Texture::loadInputText(std::string input) {
 	free();
 	//void Texture::loadInputText(std::string input, SDL_Renderer* rend) {
@@ -412,14 +397,16 @@ void Texture::loadInputText(std::string input) {
 	Texture* inputTextTexture = 0;
 	inputTextTexture->loadFromRenderedTextID(input, "inputTextID", { 255, 255, 255, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 20), true);		// Lives in top left corner
 }
+
 void Texture::loadEnterNameText(std::string nameText) {
 	free();
 	//void Texture::loadEnterNameText(std::string nameText, SDL_Renderer* rend) {
 	//SDL_Texture enterName = 0;	// The actual hardware texture
 	Texture* enterName = 0;	// The actual hardware texture
 	enterName->loadFromRenderedTextID(nameText, "enterNameID", { 255, 255, 255, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 20), true);		// Lives in top left corner
+
 }
-/*
+
 SDL_Color Texture::getFontColour() {
 return txtColour;
 }
@@ -432,6 +419,9 @@ void Texture::clearMedia() {
 }
 bool Texture::loadTextureMedia() {
 //bool Texture::loadTextureMedia(SDL_Renderer* rend) {
+
+	lastTime = SDL_GetTicks();
+	
 	bool success = true;
 	// Particles
 
@@ -472,7 +462,7 @@ bool Texture::loadTextureMedia() {
 		printf("Failed to load Level 3 texture!\n");
 		success = false;
 	}
-
+	
 	// Init the objects to give information on
 	if (!Instance()->load("Art/EnemyShip.png", "enemyShipID")) {
 		printf("Failed to load Enemy Ship texture!\n");

@@ -23,14 +23,13 @@ public:
 		return s_pInstance;
 	}
 
-
 	//The music that will be played
 	Mix_Music *gMusic1 = NULL;				// Mix_Music: Data type for music
 	Mix_Music *gMusic2 = NULL;
 	Mix_Music *gMusic3 = NULL;
 	Mix_Music *gMusic4 = NULL;				// 2017/02/17 - The First Step - Jimmy O'Regan
 	Mix_Music *gMusic5 = NULL;				// 2017/02/22 - Virus - Joe O'Regan
-	unsigned int currentSong;						// Play a random song when the game starts
+	int currentSong;						// Play a random song when the game starts
 
 	std::vector<Mix_Music*> listOfMusic;	// List of Music tracks
 
@@ -69,8 +68,8 @@ private:
 	Audio();						// Initializes the variables
 	~Audio();
 
-	std::map<std::string, Mix_Chunk*> m_sfxs;
-	std::map<std::string, Mix_Music*> m_music;
+	//std::map<std::string, Mix_Chunk*> m_sfxs;
+	//std::map<std::string, Mix_Music*> m_music;
 
 	static Audio* s_pInstance;
 };

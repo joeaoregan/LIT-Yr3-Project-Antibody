@@ -1,4 +1,5 @@
 /*
+	2017/03/03 FPS is now activated by holding the "F1" key
 	2017/02/02 Completely separated FPS to its own class
 	2017/02/01 Separated FPS to its own class
 				Added frames for second class FPS.h

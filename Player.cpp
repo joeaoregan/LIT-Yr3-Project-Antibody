@@ -324,6 +324,8 @@ int Player::moveDiagonal() {
 	return getVelocity() / sqrt(2);
 }
 
+
+
 void Player::gameControllerDPad(SDL_Event& e) {
 	if (e.jhat.value == SDL_HAT_UP) {
 		resetPreviousDirection();
@@ -469,18 +471,6 @@ void::Player::rocketScore() {
 
 	setKillRocket(false);										// The rocket can be erased
 }
-/*
-void Player::setSpeedBoost(bool boost) {
-	mSpeedBoost = boost;
-
-	if (boost) {
-		setBoostStartTime(SDL_GetTicks());
-		std::cout << "SPEED BOOST START" << std::endl;
-	}
-	else
-		boostPercent = 3.0;
-}
-*/
 
 float Player::boostTimer() {
 	float boost = getBoostPercent();
@@ -495,7 +485,7 @@ float Player::boostTimer() {
 	return boost;
 }
 
-void Player::movement() {
+void Player::move() {
 	curTime = SDL_GetTicks();
 
 	if (getVelY() > 0 && getVelY() < getVelocity()) setVelY(0);
@@ -509,14 +499,14 @@ void Player::movement() {
 		std::cout << "SPEED BOOST ENDED";
 	}
 
-	GameObject::movement();
+	GameObject::move();
 
 	// If the ship went too far to the left or right
 	if ((getX() < 0) || ((getX() + getWidth()) > SCREEN_WIDTH)) {
 		setX(getX() - getVelX());										// Move back
 	}
 
-	setY(getY() + getVelY());											// Move the ship up or down
+	//setY(getY() + getVelY());											// Move the ship up or down
 
 																		// If the ship went too far up or down
 	if ((getY() < 40) || ((getY() + getHeight()) > SCREEN_HEIGHT_GAME - 40)) {

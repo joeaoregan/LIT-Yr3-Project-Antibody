@@ -96,7 +96,7 @@ public:
 	int frames;							// Frame count for speed of Enemy animation
 
 	// Time
-	unsigned int lastTime, currentTime, countdownTimer;	// TEST TIMING
+	unsigned int lastTime, currentTime, countdownTimer, gameOverTimer, lastTime2;	// TEST TIMING
 
 	// Game Over Messages
 	std::string finalScores, gameWinners;
@@ -122,7 +122,7 @@ public:
 	int activeEnemyVirusSmall;
 	int activeEnemyBoss;
 
-	enum levels { MENU, LEVEL_1, LEVEL_2, LEVEL_3 };
+	enum levels { MENU, LEVEL_1, LEVEL_2, LEVEL_3, PAUSE };
 
 	void setRotatingAngle();	// 2017/02/22 Moved here. Set the angle for rotating objects
 	void scrollBackground();	// 2017/02/22 Moved here. Scoll the background
@@ -164,7 +164,8 @@ public:
 	void spawnRocket(int x, int y, int player, int type, bool launch);	// 2017-02-06
 
 	void gameProgress();
-	void gameTimer();										// 2017-02-15
+	//void gameTimer(unsigned int &timer);					// 2017-03-02
+	//void gameTimer();										// 2017-02-15
 
 	//void gamepadInfo();									// 2017/01/17: Separate gamepad information
 
@@ -176,7 +177,11 @@ public:
 	void collisionCheck();
 
 	bool playerInput(bool quit);							// 2017/01/09 JOE: Handle input from player
-	void renderGameObjects();								// 2017-01-09 JOE: Render the game objects to the screen
+	void render();
+	void renderGamePlay();									// 2017-01-09 JOE: Render the game objects to the screen
+	void renderGameOver();									// 2017/03/02 JOE: Render the game objects for Game Over state
+	void renderTimer(unsigned int &timer);					// 2017/03/02 JOE: Separate the game timer to its own function
+	//void renderTimer();					// 2017/03/02 JOE: Separate the game timer to its own function
 	void moveGameObjects();									// 2017-01-09 JOE: Move the game objects on the screen
 	void destroyGameObjects();								// 2017-01-09 JOE: Destroy the game objects when finished on the screen
 
