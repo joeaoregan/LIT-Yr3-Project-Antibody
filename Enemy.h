@@ -1,14 +1,14 @@
-/*
-	2017/03/04 Moved smaller class files functionality into their headers
-	2017/01/10 Added spawn functions to spawn enemies and obstacles at random coords & distances apart
-					Create parent class for Enemies
-*/
-/*
-	ENEMY:
+/*	---------------------------------------------------------------------------------------------------------------------
+	- Name:					Enemy.h
+	- Description:			Base class for enemy objects, inherits from Game Object class
+	- Information:			Contains constructor and destructor for enemy objects
 
-	Base class for enemy objects, inherits from Game Object class
-*/
+	- Log:
 
+		2017/03/04			Moved smaller class files functionality into their headers
+		2017/01/10			Added spawn functions to spawn enemies and obstacles at random coords & distances apart
+							Create parent class for Enemies
+	----------------------------------------------------------------------------------------------------------------------*/
 #ifndef ENEMY_H
 #define ENEMY_H
 

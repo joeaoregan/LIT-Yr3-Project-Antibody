@@ -1,31 +1,31 @@
-/*
-	2017/03/17 Combined music loading with effects loading, as only one function is necessary
-				Added array for music information including path, id, and error message to display
-				Changed playMusic() to playPauseMusic() and changed type to void from int as identifyTrack() is now in Audio class not Game
-				Moved play / pause functionality to playMusic() function in Audio class
-				Changed musicForwardSongName() and musicBackSongName() type to void from int, as tracks are identified with identifyTrack() in Audio and not Game class
-	2017/03/13 Added sound fx to a map
-				Added effect for large blood cells being destroyed
-				Added effect for Virus enemies ripping in 2
-				Added seperate effects for players collecting power ups
-	2017/03/07 Moved identifyTrack() function from Game class
-	2017/02/17 Added identifyTrack() function to Game class to dentify the song current playing and display the name on screen
-				Started adding original music tracks to the game
-	2017/02/09 Separated audio to it's own class
-				Fixed music not playing problem
-*/
-/*
-	AUDIO: Audio.h
+/*	-----------------------------------------------------------------------------------------------------------------------------------------------------
+	- Name:					Audio.h
+	- Description:			Handles game music and sound effects
+	- Information:
+	- How it works:			There is a list of music objects to contain the songs. Tracks can be skipped using the keyboard and game controller.
+							An information message indicates the current track playing.
 
-	Handles game music and sound effects.
+							An array stores the path, id, and error identifier for each effect, this is then used to load the effects
 
-	There is a list of music objects to contain the songs. Tracks can be skipped using the keyboard and game controller.
-	An information message indicates the current track playing.
+							Sound effects are played when different objects are spawned such as Play and Enemy weapons, and explosions.
+	- Log:
 
-	An array stores the path, id, and error identifier for each effect, this is then used to load the effects
-
-	Sound effects are played when different objects are spawned such as Play and Enemy weapons, and explosions.
-*/
+		2017/03/17			Combined music loading with effects loading, as only one function is necessary
+							Added array for music information including path, id, and error message to display
+							Changed playMusic() to playPauseMusic() and changed type to void from int as identifyTrack() is now in Audio class not Game
+							Moved play / pause functionality to playMusic() function in Audio class
+							Changed musicForwardSongName() and musicBackSongName() type to void from int,
+							as tracks are identified with identifyTrack() in Audio and not Game class
+		2017/03/13			Added sound fx to a map
+							Added effect for large blood cells being destroyed
+							Added effect for Virus enemies ripping in 2
+							Added seperate effects for players collecting power ups
+		2017/03/07			Moved identifyTrack() function from Game class
+		2017/02/17			Added identifyTrack() function to Game class to dentify the song current playing and display the name on screen
+							Started adding original music tracks to the game
+		2017/02/09			Separated audio to it's own class
+							Fixed music not playing problem
+-------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 #ifndef AUDIO_H
 #define AUDIO_H
@@ -68,7 +68,7 @@ private:
 	Audio();											// Constructor is private for use as a Singleton. Initializes the variables
 	~Audio();											// Private destructor shuts down and cleans up the mixer API
 
-	unsigned int currentSong;							// Play a random song when the game starts, 2017/03/17 Changed to Private
+	unsigned int currentSong;									// Play a random song when the game starts, 2017/03/17 Changed to Private
 
 	std::vector<Mix_Music*> listOfMusic;				// List of Music tracks, 2017/03/17 Changed to Private
 	std::map<std::string, Mix_Chunk*> m_sfxs;			// Sound effects are stored in a map can be accessed using the unique ID for each effect

@@ -1,3 +1,14 @@
+/*	---------------------------------------------------------------------------------------------------------------------
+	- Name:					Player.h
+	- Description:			header file for the Player class.
+	- Information:			Contains all function definitions and variables for Player class.
+							The Player ship that will move around on the screen
+	- Log:
+		2017/02/27			User game singleton to access renderer
+		2017/01/25			Changed player max y value to 600 - 40
+		2017/01/04			Fixed dimensions of ship
+		2017/01/09			Moved functionality common to game objects to GameObjects class reducing the code
+	----------------------------------------------------------------------------------------------------------------------*/
 #ifndef PLAYER_H
 #define PLAYER_H
 

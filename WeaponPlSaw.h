@@ -35,9 +35,11 @@ public:
 
 		if (subType == SAW1) {
 			setName("Saw P1");
+			setPlayer(PLAYER1);
 		}
 		else if (subType == SAW2) {
 			setName("Saw P2");
+			setPlayer(PLAYER2);
 		}
 
 		setTextureID("sawID");		// 2017/03/18 Added saw texture to texture map

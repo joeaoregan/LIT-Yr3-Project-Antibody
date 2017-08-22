@@ -1,11 +1,15 @@
+/*	---------------------------------------------------------------------------------------------------------------------
+	- Name:					EnterName.cpp
+	- Description:			cpp file for the name entering system. MAYBE MORE INFO HERE
+	- Information:			FILL IN INFO HERE
+	- Log:
+		2017/02/14 Added menu handling class
+		2017/01/24 Added Menu to main code
+		2017/01/19 Started to add game main menu
+		Added working menu buttons
+	----------------------------------------------------------------------------------------------------------------------*/
 /*
-2017/02/14 Added menu handling class
-2017/01/24 Added Menu to main code
-2017/01/19 Started to add game main menu
-Added working menu buttons
-*/
-/*
-MENU:
+NAME ENTERING MENU:
 
 This function handles the objects for the game menu. The separate button class
 handles the transitions.
@@ -70,7 +74,7 @@ bool EnterName::loadNameMedia() {
 	}
 
 
-	///Texture::Instance()->loadEnterNameText("Please Enter Your Name:");
+	//Texture::Instance()->loadEnterNameText("Please Enter Your Name:");
 
 	return success;
 }

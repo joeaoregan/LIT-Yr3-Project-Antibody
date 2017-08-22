@@ -1,6 +1,16 @@
-/*
-	2017/02/27:	User game singleton to access renderer
-*/
+/*	---------------------------------------------------------------------------------------------------------------------
+	- Name:					FPS.H
+	- Description:			Header for Frames Per Second calculations
+	- Information:
+		How it works:		Class to declare functions and variables for calculating and displaying FPS
+	
+	- Link to tutorial:		http://sdl.beuc.net/sdl.wiki/SDL_Average_FPS_Measurement - Ctrl + Click to view page
+
+	- Log:
+
+		2017/01/18			Implemented FPS class and functions to get an accurate measurement of the FPS. 
+
+----------------------------------------------------------------------------------------------------------------------*/
 
 #ifndef FPS_H
 #define FPS_H
@@ -13,16 +23,14 @@ class FPS {
 public:
 	Texture gFPSTextTexture;			// Frames Per Second displayed at top of screen
 
-	// FPS
-	Uint32 frametimes[FRAME_VALUES];	// An array to store frame times:
+	Uint32 frametimes[FRAME_VALUES];	// An array to store frame times
 	Uint32 frametimelast;				// Last calculated SDL_GetTicks
-	Uint32 framecount;					// total frames rendered
+	Uint32 framecount;					// Total frames rendered
 
-	// FPS
-	float framespersecond;				// the value you want
+	float framespersecond;				// The value that will display the FPS the game is running at
 
-	void fpsinit();
-	void fpsthink();
+	void fpsinit();						// Sets all frame times to 0ms
+	void fpsthink();				
 	void fpsclose();
 
 	float getFPS();

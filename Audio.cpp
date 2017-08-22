@@ -1,31 +1,32 @@
-/*
-	2017/03/17 Combined music loading with effects loading, as only one function is necessary
-				Added array for music information including path, id, and error message to display
-				Changed playMusic() to playPauseMusic() and changed type to void from int as identifyTrack() is now in Audio class not Game
-				Moved play / pause functionality to playMusic() function in Audio class
-				Changed musicForwardSongName() and musicBackSongName() type to void from int, as tracks are identified with identifyTrack() in Audio and not Game class
-	2017/03/13 Added sound fx to a map
-				Added effect for large blood cells being destroyed
-				Added effect for Virus enemies ripping in 2
-				Added seperate effects for players collecting power ups
-	2017/03/07 Moved identifyTrack() function from Game class
-	2017/02/17 Added identifyTrack() function to Game class to dentify the song current playing and display the name on screen
-				Started adding original music tracks to the game
-	2017/02/09 Separated audio to it's own class
-				Fixed music not playing problem
-*/
-/*
-	AUDIO: Audio.cpp
+/*	-----------------------------------------------------------------------------------------------------------------------------------------------------
+	- Name:					Audio.cpp
+	- Description:			Handles game music and sound effects
+	- Information:
+	- How it works:			There is a list of music objects to contain the songs. Tracks can be skipped using the keyboard and game controller.
+							An information message indicates the current track playing.
 
-	Handles game music and sound effects.
+							An array stores the path, id, and error identifier for each effect, this is then used to load the effects
 
-	There is a list of music objects to contain the songs. Tracks can be skipped using the keyboard and game controller.
-	An information message indicates the current track playing.
+							Sound effects are played when different objects are spawned such as Play and Enemy weapons, and explosions.
+	- Log:
 
-	An array stores the path, id, and error identifier for each effect, this is then used to load the effects
+		2017/03/17			Combined music loading with effects loading, as only one function is necessary
+							Added array for music information including path, id, and error message to display
+							Changed playMusic() to playPauseMusic() and changed type to void from int as identifyTrack() is now in Audio class not Game
+							Moved play / pause functionality to playMusic() function in Audio class
+							Changed musicForwardSongName() and musicBackSongName() type to void from int,
+							as tracks are identified with identifyTrack() in Audio and not Game class
+		2017/03/13			Added sound fx to a map
+							Added effect for large blood cells being destroyed
+							Added effect for Virus enemies ripping in 2
+							Added seperate effects for players collecting power ups
+		2017/03/07			Moved identifyTrack() function from Game class
+		2017/02/17			Added identifyTrack() function to Game class to dentify the song current playing and display the name on screen
+							Started adding original music tracks to the game
+		2017/02/09			Separated audio to it's own class
+							Fixed music not playing problem
+-------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
-	Sound effects are played when different objects are spawned such as Play and Enemy weapons, and explosions.
-*/
 #include "Audio.h"
 #include "Game.h"
 #include <iostream>
@@ -124,74 +125,6 @@ bool Audio::loadMediaAudio() {
 	Mix_PlayMusic(listOfMusic[currentSong], -1);		// Play the currently selected song
 
 	return success;
-
-	/*
-	// Previous method of loading effects
-
-	loadFX("Audio/Laser1.wav", "laser1FX");
-	loadFX("Audio/Laser1.wav", "laser1FX");
-	loadFX("Audio/Laser2.wav", "laser2FX");
-	loadFX("Audio/Swoosh1.wav", "ninja1FX");
-	loadFX("Audio/Swoosh2.wav", "ninja2FX");
-	loadFX("Audio/LaserEnemy.wav", "enemyLaserFX");
-	loadFX("Audio/explosion.wav", "explosionFX");
-	loadFX("Audio/Saw.wav", "sawFX");
-	loadFX("Audio/Splash.wav", "splashFX");
-	loadFX("Audio/Rip.wav", "ripFX");
-
-	// Load the laser FX for Player 1
-	gLaserFX1 = Mix_LoadWAV("Audio/Laser1.wav");														// Load sound effects
-	if (gLaserFX1 == NULL) {
-	printf("Failed to load P1 laser beam sound effect! SDL_mixer Error: %s\n", Mix_GetError());
-	success = false;
-	}
-
-	// Load the laser FX for Player 2
-	gLaserFX2 = Mix_LoadWAV("Audio/Laser2.wav");														// Load sound effects
-	if (gLaserFX2 == NULL) {
-	printf("Failed to load P2 laser beam sound effect! SDL_mixer Error: %s\n", Mix_GetError());
-	}
-
-	// Load the Ninja Star FX for Player 1
-	gNinjaFX1 = Mix_LoadWAV("Audio/Swoosh1.wav");														// Load sound effects
-	if (gNinjaFX1 == NULL) {
-	printf("Failed to load P1 ninja star sound effect! SDL_mixer Error: %s\n", Mix_GetError());
-	}
-
-	// Load the Ninja Star FX for Player 2
-	gNinjaFX2 = Mix_LoadWAV("Audio/Swoosh2.wav");														// Load sound effects
-	if (gNinjaFX2 == NULL) {
-	printf("Failed to load P2 ninja star sound effect! SDL_mixer Error: %s\n", Mix_GetError());
-	}
-
-	// Load the Laser FX for Enemy Ships
-	gLaserEFX = Mix_LoadWAV("Audio/LaserEnemy.wav");													// Load sound effects
-	if (gLaserEFX == NULL) {
-	printf("Failed to load enemy laser beam sound effect! SDL_mixer Error: %s\n", Mix_GetError());
-	}
-
-	// Load the Explosion FX
-	gExplosionFX = Mix_LoadWAV("Audio/explosion.wav");													// Load sound effects
-	if (gExplosionFX == NULL) {
-	printf("Failed to load explosion sound effect! SDL_mixer Error: %s\n", Mix_GetError());
-	}
-
-	// Load the Saw FX for player ships
-	gSawFX = Mix_LoadWAV("Audio/Saw.wav");																// Load sound effects
-	if (gSawFX == NULL) {
-	printf("Failed to load Saw sound effect! SDL_mixer Error: %s\n", Mix_GetError());
-	}
-	// Load the Splash FX for destroyed blood cells
-	gSplashFX = Mix_LoadWAV("Audio/Splash.wav");																// Load sound effects
-	if (gSplashFX == NULL) {
-	printf("Failed to load Splash sound effect! SDL_mixer Error: %s\n", Mix_GetError());
-	}
-	// Load the Rip FX for splitting Virus Enemies
-	gRipFX = Mix_LoadWAV("Audio/Rip.wav");																// Load sound effects
-	if (gRipFX == NULL) {
-	printf("Failed to load Rip sound effect! SDL_mixer Error: %s\n", Mix_GetError());
-	}
-	*/
 }
 
 /*
@@ -223,17 +156,6 @@ void Audio::playFX(std::string id) {
 	}
 
 	Mix_PlayChannel(1, m_sfxs[id], 0);
-
-	/*
-	// Attempt to pan stereo audio based on x coordinate position of sound trigger (didn't work)
-
-	Mix_SetPanning(0, 127, 127);
-	Mix_SetPanning(1, 127, 1);
-	Mix_SetPanning(2, 1, 254);
-
-	Mix_PlayChannel(-1, m_sfxs[id], 0);
-	Mix_PlayChannel(2, m_sfxs[id], 0);
-	*/
 }
 
 /*
@@ -277,8 +199,6 @@ void Audio::musicBackSongName() {						// Pick previous track on the list
 
 	Mix_PlayMusic(listOfMusic[currentSong], -1);
 	identifyTrack(currentSong);
-
-	//return currentSong;	// 2017/03/17 Changed type from int to void, as song is identified in Audio and not Game class
 }
 
 /*
@@ -306,6 +226,8 @@ void Audio::identifyTrack(int songName) {
 		std::cout << "Current Song: BLOOD LEVEL by Joe O'Regan" << std::endl;
 	}
 }
+
+
 
 /*
 	This function starts the music playing using the randomly selected current song
@@ -348,10 +270,7 @@ void Audio::stopMusic() {
 */
 void Audio::destroy() {
 	// Free the sound effects from memory
-
-
 	//Free the music
-
 
 	/*
 	// Free the sound effects from memory
@@ -371,7 +290,6 @@ void Audio::destroy() {
 	Mix_FreeChunk(gSawFX);			// Free a sound effect
 	gSawFX = NULL;
 
-
 	m_sfxs.clear;			// Clear the sound effects map
 
 	//Free the music
@@ -388,7 +306,93 @@ void Audio::destroy() {
 }
 
 
-/*
+
+
+
+
+
+/*	//
+	//return currentSong;	// 2017/03/17 Changed type from int to void, as song is identified in Audio and not Game class
+
+	// Attempt to pan stereo audio based on x coordinate position of sound trigger (didn't work)
+
+	Mix_SetPanning(0, 127, 127);
+	Mix_SetPanning(1, 127, 1);
+	Mix_SetPanning(2, 1, 254);
+
+	Mix_PlayChannel(-1, m_sfxs[id], 0);
+	Mix_PlayChannel(2, m_sfxs[id], 0);
+
+
+
+// Previous method of loading effects
+
+loadFX("Audio/Laser1.wav", "laser1FX");
+loadFX("Audio/Laser1.wav", "laser1FX");
+loadFX("Audio/Laser2.wav", "laser2FX");
+loadFX("Audio/Swoosh1.wav", "ninja1FX");
+loadFX("Audio/Swoosh2.wav", "ninja2FX");
+loadFX("Audio/LaserEnemy.wav", "enemyLaserFX");
+loadFX("Audio/explosion.wav", "explosionFX");
+loadFX("Audio/Saw.wav", "sawFX");
+loadFX("Audio/Splash.wav", "splashFX");
+loadFX("Audio/Rip.wav", "ripFX");
+
+// Load the laser FX for Player 1
+gLaserFX1 = Mix_LoadWAV("Audio/Laser1.wav");														// Load sound effects
+if (gLaserFX1 == NULL) {
+printf("Failed to load P1 laser beam sound effect! SDL_mixer Error: %s\n", Mix_GetError());
+success = false;
+}
+
+// Load the laser FX for Player 2
+gLaserFX2 = Mix_LoadWAV("Audio/Laser2.wav");														// Load sound effects
+if (gLaserFX2 == NULL) {
+printf("Failed to load P2 laser beam sound effect! SDL_mixer Error: %s\n", Mix_GetError());
+}
+
+// Load the Ninja Star FX for Player 1
+gNinjaFX1 = Mix_LoadWAV("Audio/Swoosh1.wav");														// Load sound effects
+if (gNinjaFX1 == NULL) {
+printf("Failed to load P1 ninja star sound effect! SDL_mixer Error: %s\n", Mix_GetError());
+}
+
+// Load the Ninja Star FX for Player 2
+gNinjaFX2 = Mix_LoadWAV("Audio/Swoosh2.wav");														// Load sound effects
+if (gNinjaFX2 == NULL) {
+printf("Failed to load P2 ninja star sound effect! SDL_mixer Error: %s\n", Mix_GetError());
+}
+
+// Load the Laser FX for Enemy Ships
+gLaserEFX = Mix_LoadWAV("Audio/LaserEnemy.wav");													// Load sound effects
+if (gLaserEFX == NULL) {
+printf("Failed to load enemy laser beam sound effect! SDL_mixer Error: %s\n", Mix_GetError());
+}
+
+// Load the Explosion FX
+gExplosionFX = Mix_LoadWAV("Audio/explosion.wav");													// Load sound effects
+if (gExplosionFX == NULL) {
+printf("Failed to load explosion sound effect! SDL_mixer Error: %s\n", Mix_GetError());
+}
+
+// Load the Saw FX for player ships
+gSawFX = Mix_LoadWAV("Audio/Saw.wav");																// Load sound effects
+if (gSawFX == NULL) {
+printf("Failed to load Saw sound effect! SDL_mixer Error: %s\n", Mix_GetError());
+}
+// Load the Splash FX for destroyed blood cells
+gSplashFX = Mix_LoadWAV("Audio/Splash.wav");																// Load sound effects
+if (gSplashFX == NULL) {
+printf("Failed to load Splash sound effect! SDL_mixer Error: %s\n", Mix_GetError());
+}
+// Load the Rip FX for splitting Virus Enemies
+gRipFX = Mix_LoadWAV("Audio/Rip.wav");																// Load sound effects
+if (gRipFX == NULL) {
+printf("Failed to load Rip sound effect! SDL_mixer Error: %s\n", Mix_GetError());
+}
+
+
+
 // Older functions for skipping tracks forwards and backwards
 
 void Audio::musicForward() {						// Pick next track on the list

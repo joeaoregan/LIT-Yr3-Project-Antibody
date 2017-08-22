@@ -1,14 +1,23 @@
-/*
-	2017/03/04 Set a game object texture ID variable, Player and Enemy lasers now render based on their unique texture ID
-	2017/02/18 Moved Blood Cells to game object list
-	2017/02/09 Added indpendent animation frames
-	2017/02/07 Added independent angle to rotate each object
-	2017/01/30 Moved degrees variable to object so all rotating objects rotate at different times
-	2017/01/25 Added setSubType() function to set the objects sub-type
-	2017/02/18 Added setType() function to seet the objects type
-	2017/01/09 Moved functionality common to game objects to GameObjects class reducing the code
-	2017/01/17 Separated Player 1 and 2 scores in Game class
-*/
+/*	-----------------------------------------------------------------------------------------------------------------------------------------------------
+		- Name:					GameObject.h
+		- Description:			The base class for most of the objects in the game including player and enemy objects
+		- Information:			A list of game objects is used to handle object movement, rendering, and collisions.
+		- Log:
+
+			2017/03/04			Set a game object texture ID variable, Player and Enemy lasers now render based on their unique texture ID
+			2017/02/18			Moved Blood Cells to game object list
+								Added setType() function to seet the objects type
+			2017/02/09			Added indpendent animation frames
+			2017/02/07			Added independent angle to rotate each object
+			2017/01/30			Moved degrees variable to object so all rotating objects rotate at different times
+			2017/01/25			Added setSubType() function to set the objects sub-type
+			2017/01/24			Added Y padding to keep objects within the game screen boundary
+			2017/01/22			Moved render functions out of Game.cpp
+			2017/02/18			Added setType() function to seet the objects type
+			2017/01/17			Separated Player 1 and 2 scores in Game class
+			2017/01/09			Moved functionality common to game objects to GameObjects class reducing the code
+								Added moveGameObjects() funtction to move the game objects on the screen in Game class
+------------------------------------------------------------------------------------------------------------------------------------------------------- */
 #ifndef GAME_OBJECTS_H
 #define GAME_OBJECTS_H
 
@@ -25,14 +34,14 @@
 
 const int TOTAL_PARTICLES2 = 20;	// Particle count
 
-
+// Main types of Game Objects
 enum GameObjectTypes {
-	PLAYER,
-	BLOOD_CELL, PLAYER_WEAPON, ENEMY_WEAPON, ENEMY_OBJECT, POWER_UP, SMALL_VIRUS, BLOCKAGE,				// Main type of object
-	MAP_ALERT, SCORE_TEXT, EXPLOSION, BACKGROUND																// Scores
+	PLAYER, BACKGROUND,
+	BLOOD_CELL, PLAYER_WEAPON, ENEMY_WEAPON, ENEMY_OBJECT, POWER_UP, SMALL_VIRUS, BLOCKAGE,
+	MAP_ALERT, SCORE_TEXT, EXPLOSION
 };
 enum GameObjectSubTypes {
-	PLAYER1, PLAYER2,																						// Players
+	GAMEOBJECT, PLAYER1, PLAYER2,																			// Players
 	PLAYER1_SCORE, PLAYER2_SCORE,																			// Scores
 	POWER_UP_HEALTH, POWER_UP_LASER, POWER_UP_ROCKET, POWER_UP_CHECKPOINT, POWER_UP_LIVES,					// Power ups
 	ENEMY_SHIP_LASER, BLUE_VIRUS_BULLET, VIRUS_FIREBALL,													// Bullets
@@ -212,14 +221,17 @@ protected:
 	std::string m_Name;				// Name of the object
 	std::string m_TextureID;		// ID for the texture associated with the object
 	int m_Health;					// Value between 0 and 160
-	int m_x, m_y;					// GameObject coords
-	int m_xVel, m_yVel, m_Velocity;	// Velocity
 	int m_Width, m_Height;			// Dimensions
 	bool m_Alive;					// Is the GameObject active on screen, return true if its health is greater than 0
 	SDL_Rect m_Collider;			// Collider for objects
 	int m_Score;					// Score value for killing or collecting an object
 	int m_NumLives;					// The playes number of lives
 	int m_Damage;					// The damage an object inflicts
+
+	// Movement
+	int m_x, m_y;					// GameObject coords
+	int m_xVel, m_yVel, m_Velocity;	// Velocity
+	//bool m_movesToCoords;			// 2017/03/22 The objects moves to specified coordinates, flag to indicate to use move() function with x and y values
 
 	// Object Types
 	int m_SubType;					// Integer value to indicate the type of game object POWER UP, VIRUS
@@ -228,7 +240,7 @@ protected:
 	// 31-01 Display time
 	float m_TimeTracker;			// Time to begin displaying
 	float m_Timer;					// Time to end displaying
-	unsigned int lastTime = 0.0;
+	unsigned int lastTime = 0.0;	// Previous stored time
 
 	// Textures and Animations
 	int m_Angle;					// 2017-02-07: Angle to rotate an object

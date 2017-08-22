@@ -1,12 +1,13 @@
-/*
-	2017/03/08 Added Settings Menu class
-*/
-/*
-	SETTINGS MENU:
+/*	-----------------------------------------------------------------------------------------------------------------------------------------------------
+		- Name:					SettingsMenu.cpp
+		- Description:			A menu containing settings for the game
+		- Information:			Buttons are used to select options such as turn on /off music, Full Screen / Windowed
+								This function handles the objects for the settings menu. The separate button class
+								handles the transitions.
 
-	This function handles the objects for the settings menu. The separate button class
-	handles the transitions.
-*/
+		- Log:
+			2017/03/08			Added Settings Menu class
+------------------------------------------------------------------------------------------------------------------------------------------------------- */
 
 #include "SettingsMenu.h"
 #include <SDL_ttf.h>

@@ -1,3 +1,15 @@
+/*	-----------------------------------------------------------------------------------------------------------------------------------------------------
+		- Name:					randomMessageGenerator.h
+		- Description:			Generates random messages from lists of messages for certain situations
+		- Information:			Generate messages for a new level, blockages, a boss spawning, or the player spawning
+
+		- Log:
+
+			2017/03/04			Added function to display a random message at the start of each level
+								Added function to display a random spawning message for blockages
+								Added function to display a random spawning message for Boss Enemies
+								Added function to display a random spawning message for Player Ships
+------------------------------------------------------------------------------------------------------------------------------------------------------- */
 #ifndef RANDOM_MESSAGE_H
 #define RANDOM_MESSAGE_H
 

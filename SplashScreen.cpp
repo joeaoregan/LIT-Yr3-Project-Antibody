@@ -1,28 +1,28 @@
-/*
-	2017/03/06 Added function for randomly selecting the scrolling direction for level background logos
-				Added function for choosing the level background ID based on the level
-				Added array for loading textures
-	2017/02/09 Added separate function for text and logos to Game class
-	2017/02/08 Added separate splash screen class SplashScreen.h for displaying splash screens
-				Moved press enter to continue for splash screens instead of delay before progressing to level
-	2017/02/02 Added storyline at intro to game
-	2017/01/20 Added game over message
-	2017/01/18 Added splash screens at start of game, Game Title & Game Creators
-				Added pressButtonToContinue() function for splash screens at start of game, so player can read writing at own pace
-	2017/01/17 Added scrolling text to intro screens
-				Added wrapped text to add new line character for level intro splash screens
-	2017/01/11 Added flashing game over texture
-*/
-/*
-	SPLASH SCREEN:
+/*	-----------------------------------------------------------------------------------------------------------------------------------------------------
+		- Name:					SplashScreen.cpp
+		- Description:			Handles intro screens, information screens and their random movement
+		- Information:			Game intro screens and information screens at start of game are created in this class, 
+								and transition screens between level with scores and level objectives.
+								Displays final score and game winner at end of game.
 
-	Handles game intro screens and information screens at start of game, 
-	and transition screens between level with scores and level objectives.
-	Displays final score and game winner at end of game.
+								Backgrounds have random scrolling, up / down / left / right to give a
+								transition affect between title, logo, and information screens
 
-	Backgrounds have random scrolling, up / down / left / right to give a
-	transition affect between title, logo, and information screens
-*/
+		- Log:
+			2017/03/06			Added function for randomly selecting the scrolling direction for level background logos
+								Added function for choosing the level background ID based on the level
+								Added array for loading textures
+			2017/02/09			 Added separate function for text and logos to Game class
+			2017/02/08			Added separate splash screen class SplashScreen.h for displaying splash screens
+								Moved press enter to continue for splash screens instead of delay before progressing to level
+			2017/02/02			Added storyline at intro to game
+			2017/01/20			Added game over message
+			2017/01/18			Added splash screens at start of game, Game Title & Game Creators
+								Added pressButtonToContinue() function for splash screens at start of game, so player can read writing at own pace
+			2017/01/17			Added scrolling text to intro screens
+								Added wrapped text to add new line character for level intro splash screens
+			2017/01/11			Added flashing game over texture
+------------------------------------------------------------------------------------------------------------------------------------------------------- */
 
 #include "SplashScreen.h"
 #include "Game.h"

@@ -1,18 +1,18 @@
-/*
-	_TestData.h
-
-	This header files contains game settings which can be adjusted as needed
-	to balance and test the game
-*/
+/*	----------------------------------------------------------------------------------------------------------------------
+	- Name:					_TestData.h
+	- Description:			This header files contains game settings which can be adjusted as needed
+							to balance and test the game.
+	- Information:			Contains all functions for calculating and displaying FPS
+	----------------------------------------------------------------------------------------------------------------------*/
 
 #ifndef TEST_DATA_H
 #define TEST_DATA_H
 
-#define GAME_TIMER 50						// Time to start counting down from, in seconds
+#define GAME_TIMER 30						// Time to start counting down from, in seconds
 
 #define NUM_PLAYERS 2						// The number of players
 
-#define BACKGROUND_SCROLL_TIMES 12			// The number of times the main background scrolls
+#define BACKGROUND_SCROLL_TIMES 15			// The number of times the main background scrolls
 #define BACKGROUND_SCROLL_SPEED 5
 
 
@@ -48,18 +48,18 @@
 
 // Seans Game Balancing Stuff
 // Number of enemies to be displayed on screen
-#define SPAWN_NUM_ENEMY_SHIPS_LVL1 3	// WAS 2 The number of enemy ships that can appear on screen at a time
+#define SPAWN_NUM_ENEMY_SHIPS_LVL1 3		// WAS 2 The number of enemy ships that can appear on screen at a time
 #define SPAWN_NUM_ENEMY_SHIPS_LVL2 3
 #define SPAWN_NUM_ENEMY_SHIPS_LVL3 4
 
-#define SPAWN_NUM_BLOOD_CELL 4			// WAS 6 The number of large blood cells that can appear on screen at a time
-#define SPAWN_NUM_BLOOD_CELL_S 5		// WAS 9 The number of small blood cells that can appear on screen at a time
-#define SPAWN_NUM_BLOOD_CELL_WHITE 2	// WAS 3 The number of white blood cells that can appear on screen at a time
-#define SPAWN_NUM_POWER_UPS 1			// The number of power ups that can appear on screen at a time
-#define SPAWN_NUM_BLOCKAGES 4			// Max number of blockage enemies to spawn
+#define SPAWN_NUM_BLOOD_CELL 4				// WAS 6 The number of large blood cells that can appear on screen at a time
+#define SPAWN_NUM_BLOOD_CELL_S 5			// WAS 9 The number of small blood cells that can appear on screen at a time
+#define SPAWN_NUM_BLOOD_CELL_WHITE 2		// WAS 3 The number of white blood cells that can appear on screen at a time
+#define SPAWN_NUM_POWER_UPS 1				// The number of power ups that can appear on screen at a time
+#define SPAWN_NUM_BLOCKAGES 4				// Max number of blockage enemies to spawn
 
 // Max number of checkpoints to spawn in any one level
-#define SPAWN_NUM_CHECKPOINTS  1		// Number of checkpoints to be spawned
-#define MAX_NUM_CHECKPOINTS 2			// The maximum number of checkpoints to be on screen at any time
+#define SPAWN_NUM_CHECKPOINTS  1			// Number of checkpoints to be spawned
+#define MAX_NUM_CHECKPOINTS 2				// The maximum number of checkpoints to be on screen at any time
 
 #endif

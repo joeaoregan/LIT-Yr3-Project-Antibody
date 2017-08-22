@@ -1,3 +1,8 @@
+/*	---------------------------------------------------------------------------------------------------------------------
+	- Name:					Menu.h
+	- Description:			header file for the Menu class.
+	- Information:			Contains all function definitions and variables for Menu class.
+	----------------------------------------------------------------------------------------------------------------------*/
 #ifndef MENU_H
 #define MENU_H
 

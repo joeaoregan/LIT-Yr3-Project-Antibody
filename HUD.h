@@ -1,3 +1,8 @@
+/*	---------------------------------------------------------------------------------------------------------------------
+	- Name:					HUD.h
+	- Description:			Header file for the heads up display class.
+	- Information:			Contains all function definitions and variables for the HUD.
+	----------------------------------------------------------------------------------------------------------------------*/
 #ifndef HEADS_UP_DISPLAY_H
 #define HEADS_UP_DISPLAY_H
 

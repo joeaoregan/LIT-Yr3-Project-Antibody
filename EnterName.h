@@ -1,3 +1,8 @@
+/*	---------------------------------------------------------------------------------------------------------------------
+	- Name:					EnterName.h
+	- Description:			Header file for the name entering system
+	- Information:			FILL IN INFO HERE
+	----------------------------------------------------------------------------------------------------------------------*/
 #ifndef ENTER_NAME_H
 #define ENTER_NAME_H
 

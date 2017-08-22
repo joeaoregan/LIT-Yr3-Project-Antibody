@@ -1,16 +1,13 @@
-/*
-	2017/02/14 Added menu handling class
-	2017/01/24 Added Menu to main code
-	2017/01/19 Started to add game main menu
-				Added working menu buttons
-*/
-/*
-	MENU: 
-
-	This function handles the objects for the game menu. The separate button class
-	handles the transitions.
-*/
-
+/*	---------------------------------------------------------------------------------------------------------------------
+	- Name:					Menu.cpp
+	- Description:			cpp file for the Menu class.
+	- Information:			This class handles the objects for the game menu. The separate button class handles the transitions.
+	- Log
+		2017/02/14		Added menu handling class
+		2017/01/24		Added Menu to main code
+		2017/01/19		Started to add game main menu	
+						Added working menu buttons
+	----------------------------------------------------------------------------------------------------------------------*/
 #include "Menu.h"
 #include <SDL_ttf.h>
 
@@ -18,6 +15,8 @@ SDL_Rect menuViewPort;		// 2017/03/18 Menu Info Screens
 
 unsigned int createdByTimer2 = 0, createdByLastTime2 = 0, changeEverySecond2 = 0;
 
+// Name: loadMenuMedia()
+// Role: Loads textures and images for the menu
 bool Menu::loadMenuMedia() {
 	bool success = true;
 
@@ -110,7 +109,8 @@ bool Menu::loadMenuMedia() {
 		gMenuTextTexture7.setY(450);
 	}
 
-	//Load sprites
+
+	// Load sprites
 	if (!gButtonSpriteSheetTexture.loadFromFile("Art/buttonOne.png")) {		// CHANGED ADDED RENDERER TO FUNCTION
 		printf("Failed to load button sprite texture!\n");
 		success = false;
@@ -142,6 +142,8 @@ bool Menu::loadMenuMedia() {
 	return success;
 }
 
+// Name: handleMenuEvents()
+// Role: React to button presses
 void Menu::handleMenuEvents(SDL_Event& e) {
 	// Handle button events
 	for (int i = 0; i < TOTAL_MAIN_MENU_BUTTONS; ++i) {
@@ -149,6 +151,8 @@ void Menu::handleMenuEvents(SDL_Event& e) {
 	}
 }
 
+// Name: closeMenuMedia()
+// Role: free menu textures from memory
 void Menu::closeMenuMedia() {
 	// Buttons
 	gButtonSpriteSheetTexture.free();
@@ -164,32 +168,34 @@ void Menu::closeMenuMedia() {
 	gMenuTextTexture8.free();
 }
 
+// Name: Draw()
+// Role: Render the menu buttons#
 void Menu::draw() {
 	//SDL_SetRenderDrawColor(Game::Instance()->getRenderer(), 117, 10, 10, 255);
 	randomBackgroundColour();
 	SDL_RenderClear(Game::Instance()->getRenderer());
 
-	SDL_SetTextureAlphaMod(Texture::Instance()->getTexture("shipOutlineID"), 100);	// Lower the alpha value of the ship outline image
-	Texture::Instance()->renderMap("shipOutlineID", 0, 40, SCREEN_WIDTH, 620);		// Draw ship outline image to screen
+	SDL_SetTextureAlphaMod(Texture::Instance()->getTexture("shipOutlineID"), 100);					// Lower the alpha value of the ship outline image
+	Texture::Instance()->renderMap("shipOutlineID", 0, 40, SCREEN_WIDTH, 620);						// Draw ship outline image to screen
 
 	for (int i = 0; i < TOTAL_MAIN_MENU_BUTTONS; ++i) {
 		gMenuButtons[i].render(gButtonSpriteSheetTexture, &gSpriteClipsMenu[gMenuButtons[i].mCurrentSprite]);
 	}
 
 	gMenuTextTexture1.render((SCREEN_WIDTH - gMenuTextTexture1.getWidth()) / 2, (SCREEN_HEIGHT - gMenuTextTexture1.getHeight()) / 12);
-	gMenuTextTexture2.render(gMenuTextTexture2.getX(), gMenuTextTexture2.getY());	// STORY
-	gMenuTextTexture3.render(gMenuTextTexture3.getX(), gMenuTextTexture3.getY());	// GAME_1PLAYER
-	gMenuTextTexture4.render(gMenuTextTexture4.getX(), gMenuTextTexture4.getY());	// GAME_2PLAYER
-	gMenuTextTexture5.render(gMenuTextTexture5.getX(), gMenuTextTexture5.getY());	// SETTINGS
-	gMenuTextTexture6.render(gMenuTextTexture6.getX(), gMenuTextTexture6.getY());	// HIGH_SCORES
-	gMenuTextTexture7.render(gMenuTextTexture7.getX(), gMenuTextTexture7.getY());	// QUIT
+	gMenuTextTexture2.render(gMenuTextTexture2.getX(), gMenuTextTexture2.getY());					// STORY
+	gMenuTextTexture3.render(gMenuTextTexture3.getX(), gMenuTextTexture3.getY());					// GAME_1PLAYER
+	gMenuTextTexture4.render(gMenuTextTexture4.getX(), gMenuTextTexture4.getY());					// GAME_2PLAYER
+	gMenuTextTexture5.render(gMenuTextTexture5.getX(), gMenuTextTexture5.getY());					// SETTINGS
+	gMenuTextTexture6.render(gMenuTextTexture6.getX(), gMenuTextTexture6.getY());					// HIGH_SCORES
+	gMenuTextTexture7.render(gMenuTextTexture7.getX(), gMenuTextTexture7.getY());					// QUIT
 
-	SDL_RenderSetViewport(Game::Instance()->getRenderer(), &menuViewPort);			// Switch to menu viewport
+	SDL_RenderSetViewport(Game::Instance()->getRenderer(), &menuViewPort);							// Switch to menu viewport
 
-	createdByTimer2 = SDL_GetTicks();										// Get the current game running time
-	if (createdByTimer2 > createdByLastTime2 + 1500) {						// Decrement countdown timer
-		createdByLastTime2 = createdByTimer2;								// Store this time
-		changeEverySecond2++;												// Decrement the timer
+	createdByTimer2 = SDL_GetTicks();																// Get the current game running time
+	if (createdByTimer2 > createdByLastTime2 + 1500) {												// Decrement countdown timer
+		createdByLastTime2 = createdByTimer2;														// Store this time
+		changeEverySecond2++;																		// Decrement the timer
 	//std::cout << "Time: " << countdownTimer << " lastTime: " << lastTime << " currentTime: " << currentTime << std::endl;
 	}
 
@@ -203,20 +209,23 @@ void Menu::draw() {
 		changeEverySecond2 = 0;	// Reset timer
 	}
 
-	SDL_RenderSetViewport(Game::Instance()->getRenderer(), NULL);					// Clear the current viewport to render to full window / screen
+	SDL_RenderSetViewport(Game::Instance()->getRenderer(), NULL);									// Clear the current viewport to render to full window / screen
 
-	SDL_RenderPresent(Game::Instance()->getRenderer());								// Update screen
+	SDL_RenderPresent(Game::Instance()->getRenderer());												// Update screen
 
 
 }
 
+
+// Name: drawPause()
+// Role: Handling media for the pause state of the game
 void Menu::drawPause() {
 	//SDL_SetRenderDrawColor(Game::Instance()->getRenderer(), 117, 10, 10, 255);
 	randomBackgroundColour();
 	SDL_RenderClear(Game::Instance()->getRenderer());
 
-	SDL_SetTextureAlphaMod(Texture::Instance()->getTexture("shipOutlineID"), 100);	// Lower the alpha value of the ship outline image
-	Texture::Instance()->renderMap("shipOutlineID", 0, 40, SCREEN_WIDTH, 620);		// Draw ship outline image to screen
+	SDL_SetTextureAlphaMod(Texture::Instance()->getTexture("shipOutlineID"), 100);					// Lower the alpha value of the ship outline image
+	Texture::Instance()->renderMap("shipOutlineID", 0, 40, SCREEN_WIDTH, 620);						// Draw ship outline image to screen
 
 	// Create 3 buttons
 	for (int i = 0; i < 3; ++i) {
@@ -227,17 +236,17 @@ void Menu::drawPause() {
 	gMenuTextTexture8.setY(SCREEN_HEIGHT - gMenuTextTexture8.getHeight() - 10);
 
 	gMenuTextTexture1.render((SCREEN_WIDTH - gMenuTextTexture1.getWidth()) / 2, (SCREEN_HEIGHT - gMenuTextTexture1.getHeight()) / 12);	// ANTIBODY TITLE
-	gMenuTextTexture9.render(gMenuTextTexture9.getX(), gMenuTextTexture2.getY());	// RESUME GAME -> place at button 1s Y position
-	gMenuTextTexture10.render(gMenuTextTexture10.getX(), gMenuTextTexture3.getY());	// RESUME GAME -> place at button 2s Y position
-	gMenuTextTexture7.render(gMenuTextTexture7.getX(), gMenuTextTexture4.getY());	// QUIT GAME -> place at button 2s Y position
-	gMenuTextTexture8.render(gMenuTextTexture8.getX(), gMenuTextTexture8.getY());	// PAUSE TITLE
+	gMenuTextTexture9.render(gMenuTextTexture9.getX(), gMenuTextTexture2.getY());					// RESUME GAME -> place at button 1s Y position
+	gMenuTextTexture10.render(gMenuTextTexture10.getX(), gMenuTextTexture3.getY());					// RESUME GAME -> place at button 2s Y position
+	gMenuTextTexture7.render(gMenuTextTexture7.getX(), gMenuTextTexture4.getY());					// QUIT GAME -> place at button 2s Y position
+	gMenuTextTexture8.render(gMenuTextTexture8.getX(), gMenuTextTexture8.getY());					// PAUSE TITLE
 
-	SDL_RenderSetViewport(Game::Instance()->getRenderer(), &menuViewPort);			// Switch to menu viewport
+	SDL_RenderSetViewport(Game::Instance()->getRenderer(), &menuViewPort);							// Switch to menu viewport
 
-	createdByTimer2 = SDL_GetTicks();										// Get the current game running time
-	if (createdByTimer2 > createdByLastTime2 + 1500) {						// Decrement countdown timer
-		createdByLastTime2 = createdByTimer2;								// Store this time
-		changeEverySecond2++;												// Decrement the timer
+	createdByTimer2 = SDL_GetTicks();																// Get the current game running time
+	if (createdByTimer2 > createdByLastTime2 + 1500) {												// Decrement countdown timer
+		createdByLastTime2 = createdByTimer2;														// Store this time
+		changeEverySecond2++;																		// Decrement the timer
 	//std::cout << "Time: " << countdownTimer << " lastTime: " << lastTime << " currentTime: " << currentTime << std::endl;
 	}
 
@@ -251,12 +260,14 @@ void Menu::drawPause() {
 		changeEverySecond2 = 0;	// Reset timer
 	}
 
-	SDL_RenderSetViewport(Game::Instance()->getRenderer(), NULL);					// Clear the current viewport to render to full window / screen
-	SDL_RenderPresent(Game::Instance()->getRenderer());								// Update screen
+	SDL_RenderSetViewport(Game::Instance()->getRenderer(), NULL);									// Clear the current viewport to render to full window / screen
+	SDL_RenderPresent(Game::Instance()->getRenderer());												// Update screen
 }
 
 bool changeMenuBGColour = true;
 
+// Name: randomBackgroundColour()
+// Role: Select a random background image for the menu
 void Menu::randomBackgroundColour() {
 	if (changeMenuBGColour) {
 		int menuColour = rand() % 5; // a number 0 to 4

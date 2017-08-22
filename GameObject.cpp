@@ -1,24 +1,23 @@
-/*
-	2017/02/18 Moved Blood Cells to game object list
-				Added setType() function to seet the objects type
-	2017/02/09 Added indpendent animation frames
-	2017/02/07 Added independent angle to rotate each object
-	2017/01/30 Moved degrees variable to object so all rotating objects rotate at different times
-	2017/01/25 Added setSubType() function to set the objects sub-type
-	2017/01/24 Added Y padding to keep objects within the game screen boundary
-	2017/01/22 Moved render functions out of Game.cpp
-	2017/01/18 Fixed animations for game objects, with independent frame handling, m_Frames variable added
-	2017/01/09 Moved functionality common to game objects to GameObjects class reducing the code
-	2017/01/17 Separated Player 1 and 2 scores in Game class
-	2017/01/09 Added destroyGameObjects() function to destroy the game objects when finished using in Game class
-				Added moveGameObjects() funtction to move the game objects on the screen in Game class
-*/
-/*
-	GAME OBJECT:
+/*	-----------------------------------------------------------------------------------------------------------------------------------------------------
+		- Name:					GameObject.cpp
+		- Description:			The base class for most of the objects in the game including player and enemy objects
+		- Information:			A list of game objects is used to handle object movement, rendering, and collisions.
+		- Log:
 
-	This is the base class for all game objects within the game including player and enemy objects. A list of
-	game objects is used to handle object movement, rendering, and collisions.
-*/
+			2017/03/04			Set a game object texture ID variable, Player and Enemy lasers now render based on their unique texture ID
+			2017/02/18			Moved Blood Cells to game object list
+								Added setType() function to seet the objects type
+			2017/02/09			Added indpendent animation frames
+			2017/02/07			Added independent angle to rotate each object
+			2017/01/30			Moved degrees variable to object so all rotating objects rotate at different times
+			2017/01/25			Added setSubType() function to set the objects sub-type
+			2017/01/24			Added Y padding to keep objects within the game screen boundary
+			2017/01/22			Moved render functions out of Game.cpp
+			2017/02/18			Added setType() function to seet the objects type
+			2017/01/17			Separated Player 1 and 2 scores in Game class
+			2017/01/09			Moved functionality common to game objects to GameObjects class reducing the code
+								Added moveGameObjects() funtction to move the game objects on the screen in Game class
+------------------------------------------------------------------------------------------------------------------------------------------------------- */
 
 #include "GameObject.h"
 #include "Game.h"

@@ -1,191 +1,196 @@
-/*
-	2017/03/21 Added ScrollingBackground class to handle background scrolling and rendering
-	2017/03/20 Moved additional render functionality from Game class
-				Fixed memory leak after moving level number rendering to HUD class
-	2017/03/19 Added ship start and end point positions to mini map
-				Added separate function to count timers for how long messages appear on screen, checkMessageTimes()
-	2017/03/18 Added the Ninja Stars and Saw texture to the texture map in Texture class
-				Ninja Star and Saw rotations are updated in the move() function in their own Classes instead of setRotatingAngle() in Game class
-				Added checks to make sure objects are being delted
-				Fixed Saws not being deleted from game object list
-				Cut 2 mb/sec memory leak by loading createdByTextTexture text in 3 separate textures only once in the game in Texture class
-				Added new Boss Enemy with lasers spawning from eyes, and Virus spawning from mouth in level 1
-				Boss has random movement
-	2017/03/17 Combined music loading with effects loading, as only one function is necessary
-				Added array for music information including path, id, and error message to display
-				Changed playMusic() to playPauseMusic() and changed type to void from int as identifyTrack() is now in Audio class not Game
-				Moved play / pause functionality to playMusic() function in Audio class
-				Changed musicForwardSongName() and musicBackSongName() type to void from int, as tracks are identified with identifyTrack() in Audio and not Game class
-				Moved enemy laser spawning from Game class to Enemy Ship move function
-				Created a unique render function for Blood Cells that uses the stored texture ID to load the texture image
-				it also rotates the blood cells in a random direction
-	2017/03/13 Added full screen toggle setting by pressing F11 and in settings menu
-				Tidied up the pause menu, so it can only be accessed from within the game
-				Added bubble image to represent player shield shieldP1ID, shieldP2ID
-				Added splash effect for destroying blood cells and rip effect for Virus enemies ripping in 2
-				Added sound fx to a map
-				Added effect for large blood cells being destroyed
-				Added effect for Virus enemies ripping in 2
-				Added seperate effects for players collecting power ups
-	2017/03/08 Added full screen
-	2017/03/07 Added additional original song Blood Level
-	2017/03/06 Moved texture information to array for loading
-	2017/03/04 Moved smaller class files functionality into their headers
-				Set a game object texture ID variable, Player and Enemy lasers now render based on their unique texture ID
-				Added a function to display a random message at the start of each level
-	2017/03/03 Fixed memory leak in game, where text is rendered to a texture when it doesn't need to be
-				Shortened some functions like player spawnlaser() function
-				Started work on pause menu (press 'Esc')
-				Changed movement for chasing objects to stalker movement (moveStalker())
-				Only 1 spawn function is needed, the object constructors do the rest of the work
-				FPS is now activated by holding the F1 key, to view the current FPS
-	2017/03/02 Added abstract base class for game objects
-				Added boss enemy, needs work on movement
-				Changed movement() name to move()
-				Pressing "Esc" now sets the currentLevel to 0 bringing us back to the menu
-				Reset number of rockets at end of game, when resetting back to menu
-	2017/03/01 Added double laser for player
-				Press esc to return to main menu
-				Fixed delete ninja stars - checking for type not subtype
-				Fixed story formatting, adding bigger text to fill the screen space
-	2017/02/28 Fixed entry point not defined error with #define SDL_MAIN_HANDLED
-				Moved background texture loading to texture map
-	2017/02/27 Made the Constructor private for use as a singleton
-				Removed unnecessary header files
-				Fixed player lives not rendering for 1 Player mode
-	2017/02/26 GAME: Added singletons for Texture class
-	2017/02/23 PLAYER: Added option to play as 1 or 2 players
-				GAME: Added singleton for Game class
-				Added full screen option, removed as flickers when intro backgrounds are scrolling
-	2017/02/22 PLAYER: Added check to make sure player is alive to dislay speed boost indicator on heads up display
-	2017/02/21 HUD: Separated heads up display object initialisation to the class for loading textures for player lives etc
-				HUD: Added Heads up display class HUD.h for handling displaying objects on the heads up display / User interface
-	2017/02/19 EXPLOSIONS: Added separate explosions for blood cells to look more like a blood splatter
-				ROCKET: Added functionality to initialise the rocket, then create and launch the rocket after returning true from function in spawnRocket() function
-				PLAYER: Added check to player movement for speed boost
-	2017/02/18 CHECKPOINT: Added checkpoint power, enemy laser, blood cells up to game objects list
-				Set types and sub-types for objects on game objects list
-				Fixed explosions for weapon collisions, so they only occur when the objects collided with are on screen
-	2017/02/17 AUDIO: Added identifyTrack() function to dentify the song current playing and display the name on screen
-				AUDIO: Started adding original music tracks to the game
-	2017/02/16 MESSAGES: Added infoMessage() function to display player messages for player events
-	2017/02/15 GAME OBJECT: Started converting all game objects to be moved to one game object list, instead of separate lists for each object type
-				LEVEL: Added reset function for completing a level, or resetting the game
-				MESSAGES: Added independent information messages for player 1 and 2
-				SAW: Fixed saw not spawning ...again!
-				MAP: Fixed dimensions of map, and set transparent when enlarged
-				POWER UPS: Added Power Ups, Explosions to list of game objects
-	2017/02/14 MENU: Added menu handling class
-	2017/02/10 SCORES: Added functionality so the scores displayed on screen move to player who scored them (Changed from moving to players score)
-				MAP: Tried using some of the algorithms from graphics last sememster to see could they be used to move a player ship on the game map, to indicate it's position with no luck
-	2017/02/09 GAMEPAD: Display gamepad information, moved to separate header file
-				EXPLOSION: Fixed the explosion animations, they are now assigned to indiviual objects with the game object frame attribute
-				Fixed the Enemy Ship animations, they are now assigned to indiviual objects with the game object frame attribute
-				Added audio class Audio.h for handling music and sound effects
-				Added gamepad class Gamepad.h for handling gamepad functionality
-				Added collision class CollisionStuff.h for handling collisions between objects
-				Added status bar class StatusBar.h for creating status bars, such as health bar
-				Added score class ScoreValueText.h for displaying values of scores for destroying objects
-				Added separate function for text and logos to Game class
-	2017/02/08 Added separate splash screen class SplashScreen.h for displaying splash screens
-				Added check so rocket explodes on collision with the game boundary
-				Added press enter to continue for splash screens instead of delay before progressing to level
-	2017/02/06 Added managePlayerScores() function to handle players score
-				Added spawnRocket() function to create rockets for players, rocket movement can be controlled by player
-				Added class for rockets Rocket.h (Renamed WeaponPlRocket.h)
-				Added functionality so only 1 rocket can be active at a time for players
-	2017/02/02 Completely separated FPS to its own class
-				Added storyline at intro to game
-	2017/02/01 Started to move FPS functionality to it's own class
-				Added frames for second class FPS.h
-	2017/01/31 Added vector list of game objects to display the scores for each object killed
-				Added timer for player information messages
-				Added points value messages for each player
-	2017/01/30 Added rotation angle to constructors for Textures that rotate
-				Moved flashGameObject() functionality into Texture class
-				Added particle texture alpha modify functionality
-				Combined player weapons to one list instead of lists for each type
-	2017/01/29 Added mini map to game, map increases/decreases size by pressing button using viewports
-	2017/01/25 Added spawnExplosion() function for creating explosions when lasers collide with Enemy Ships and Virus
-				Added explosion handling class Explosion.h
-				Fixed error for Player Message Text
-				Fixed Ninja Star scoring for Player 2
-				Added check for if the type of virus is newer Orange Exploding Virus or older Green Virus
-				Added alert message to notify player Exploding Orange Virus is approaching
-				Added functionality so Orange Virus explodes after colliding with player
-	2017/01/24 Changed fonts and graphics at start of level, and start and end of scrolling background
-				Added Menu to main code
-				Changed screen size from 1280 x 720 from 800 x 600
-				Added Y padding to keep objects within the game screen boundary
-	2017/01/23 Set up level progression and background
-				Added laser power up, player can increase the laser weapons grade to fire 3 beams instead of just 1
-				Fixed saw spawning, now appearing/disappearing
-	2017/01/22 Added forwards/backwards rotation for blood cells
-				Moved render functions out of Game.cpp
-	2017/01/20 Spawn Player 1 at random Y coord added to spawnPlayer() function
-				Added more random shooting from enemy ships
-				Fixed problem where not all ships are firing
-				Fixed problem for ninja stars only scoring for Player 1
-				Added spawnSaw() function to create Saw Weapon for player
-				Added spawnExplosion() functions for creating explosions when objects collide
-				Added particle handling class Particle.h for player ship engine particles
-				Added game over message
-				Added player lives indicators for players
-	2017/01/19 Started to add game main menu
-				Added for loops for separating sprite sheets
-				Added 3 beam laser weapon
-	2017/01/18 Added splash screens at start of game, Game Title & Game Creators
-				Added pressButtonToContinue() function for splash screens at start of game, so player can read writing at own pace
-				Added spawnRandom() function to separate out common randomness of game object spawning
-				Added collision handling functions
-				Fixed animations for game objects, with independent frame handling
-				Added health bars for players
-				Added force feedback (haptic) support for controller button press and collisions
-				Added player speedboost
-				Fixed virus movement to move towards the nearest player not just player 1
-	2017/01/17 Added displayText() function to render text used in the game
-				Added gamepadInfo() function to separate gamepad information into its own function
-				Added player decision to spawnNinjaStar() function - determines player to spawn for and their coords
-				Added class for saw weapon Saw.h (renamed WeaponPlSaw.h)
-				Added collision detection for Ninja Stars
-				Separated Player 1 and 2 scores
-				Added check for number of gamepads connected to system
-				Added wrapped text to add new line character for level intro splash screens
-				Added scrolling text to intro screen
-	2017/01/16 Added spawnLaser() function to spawn a laser at coords, with velocitys
-				Added second player to game
-	2017/01/15 Added support for game controller (sticks not working correctly)
-				Added gameTimer() function, to ouput the current seconds remaining in the game
-	2017/01/13 Fixed problem with rendering text -> true type fonts not initialised in init()
-	2017/01/12 Added check so scrolling background stops at end, so end of level boss can be inserted
-	2017/01/11 Added checks for collisions by lasers
-				Added flash on collision for player
-				Started work on true type font support for game text (and timer) adding SDL_ttf
-				Added flashing game over texture
-				Added flashing to timer for when there is 5 seconds or less on the clock, also changes colour to red, to warn player
-				Alter function for alpha values to handle any object and not just Players
-	2017/01/10 Added Large Blood Cell object
-				Added class for handling blood cells including Small Blood Cell, and White Blood Cells, BloodCell.h
-				Added spawn functions to spawn enemies and obstacles at random coords & distances apart
-				Added class for handling powerups PowerUp.h
-	2017/01/09 Added music and sound effects to game, needs to be initialised with video in init()
-				Added spawnNinjaStar() function to create ninja star weapon
-				Edited background to be 800 x 600 instead of 600 x 480
-				Added playerInput() function to handle input from player
-				Added destroyGameObjects() function to destroy the game objects when finished using
-				Added moveGameObjects() funtction to move the game objects on the screen
-				Added spawnEnemyShip() function to create enemy ships at random times and random y coord
-	2017/01/06 Added player lasers
-				Enemy movement from right to left towards player adapted from laser spawning
-	2016/10/17 First prototype of game
-*/
-/*
-	GAME:
-
-	The game class controls the initialisation, updating, and cleaning of the game. Object movement, rendering and functionality
-	is handled within this class. Level progression and game over conditions are handles. A simple state machine controls
-	progression from menu, and then through the levels, and back to the menu on game over.
-*/
+/*	---------------------------------------------------------------------------------------------------------------------
+	- Name:					Game.cpp
+	- Description:			cpp file for the game class. This is where most of the games functionality lies.
+							The game class controls the initialisation, updating, and cleaning of the game. Object movement, rendering and functionality
+							is handled within this class. Level progression and game over conditions are handles. A simple state machine controls
+							progression from menu, and then through the levels, and back to the menu on game over.
+	- Log:
+		2017/03/22 		Moved animations for Explosions to the Explosion class
+						Added alpha value to Game Object class
+						Added separate render function for animations using a Texture ID to Game Object class
+						Removed degrees from Texture constructor as this is now handled from within the class of each rotating object
+						Seperate function added for Virus to decide which Player to move towards
+						Players and Scrolling Background added to Game Object list
+		2017/03/21		Added ScrollingBackground class to handle background scrolling and rendering
+		2017/03/20		Moved additional render functionality from Game class
+						Fixed memory leak after moving level number rendering to HUD class
+		2017/03/19		Added ship start and end point positions to mini map
+						Added separate function to count timers for how long messages appear on screen, checkMessageTimes()
+		2017/03/18		Added the Ninja Stars and Saw texture to the texture map in Texture class
+						Ninja Star and Saw rotations are updated in the move() function in their own Classes instead of setRotatingAngle() in Game class
+						Added checks to make sure objects are being delted
+						Fixed Saws not being deleted from game object list
+						Cut 2 mb/sec memory leak by loading createdByTextTexture text in 3 separate textures only once in the game in Texture class
+						Added new Boss Enemy with lasers spawning from eyes, and Virus spawning from mouth in level 1
+						Boss has random movement
+		2017/03/17		Combined music loading with effects loading, as only one function is necessary
+						Added array for music information including path, id, and error message to display
+						Changed playMusic() to playPauseMusic() and changed type to void from int as identifyTrack() is now in Audio class not Game
+						Moved play / pause functionality to playMusic() function in Audio class
+						Changed musicForwardSongName() and musicBackSongName() type to void from int, as tracks are identified with identifyTrack() in Audio and not Game class
+						Moved enemy laser spawning from Game class to Enemy Ship move function
+						Created a unique render function for Blood Cells that uses the stored texture ID to load the texture image
+						it also rotates the blood cells in a random direction
+		2017/03/13		Added full screen toggle setting by pressing F11 and in settings menu
+						Tidied up the pause menu, so it can only be accessed from within the game
+						Added bubble image to represent player shield shieldP1ID, shieldP2ID
+						Added splash effect for destroying blood cells and rip effect for Virus enemies ripping in 2
+						Added sound fx to a map
+						Added effect for large blood cells being destroyed
+						Added effect for Virus enemies ripping in 2
+						Added seperate effects for players collecting power ups
+		2017/03/08		Added full screen
+		2017/03/07		Added additional original song Blood Level
+		2017/03/06		Moved texture information to array for loading
+		2017/03/04		Moved smaller class files functionality into their headers
+						Set a game object texture ID variable, Player and Enemy lasers now render based on their unique texture ID
+						Added a function to display a random message at the start of each level
+		2017/03/03		Fixed memory leak in game, where text is rendered to a texture when it doesn't need to be
+						Shortened some functions like player spawnlaser() function
+						Started work on pause menu (press 'Esc')
+						Changed movement for chasing objects to stalker movement (moveStalker())
+						Only 1 spawn function is needed, the object constructors do the rest of the work
+						FPS is now activated by holding the F1 key, to view the current FPS
+		2017/03/02		Added abstract base class for game objects
+						Added boss enemy, needs work on movement
+						Changed movement() name to move()
+						Pressing "Esc" now sets the currentLevel to 0 bringing us back to the menu
+						Reset number of rockets at end of game, when resetting back to menu
+		2017/03/01		Added double laser for player
+						Press esc to return to main menu
+						Fixed delete ninja stars - checking for type not subtype
+						Fixed story formatting, adding bigger text to fill the screen space
+		2017/02/28		Fixed entry point not defined error with #define SDL_MAIN_HANDLED
+						Moved background texture loading to texture map
+		2017/02/27		Made the Constructor private for use as a singleton
+						Removed unnecessary header files
+						Fixed player lives not rendering for 1 Player mode
+		2017/02/26		GAME: Added singletons for Texture class
+		2017/02/23		PLAYER: Added option to play as 1 or 2 players
+						GAME: Added singleton for Game class
+						Added full screen option, removed as flickers when intro backgrounds are scrolling
+		2017/02/22		PLAYER: Added check to make sure player is alive to dislay speed boost indicator on heads up display
+		2017/02/21		HUD: Separated heads up display object initialisation to the class for loading textures for player lives etc
+						HUD: Added Heads up display class HUD.h for handling displaying objects on the heads up display / User interface
+		2017/02/19		EXPLOSIONS: Added separate explosions for blood cells to look more like a blood splatter
+						ROCKET: Added functionality to initialise the rocket, then create and launch the rocket after returning true from function in spawnRocket() function
+						PLAYER: Added check to player movement for speed boost
+		2017/02/18		CHECKPOINT: Added checkpoint power, enemy laser, blood cells up to game objects list
+						Set types and sub-types for objects on game objects list
+						Fixed explosions for weapon collisions, so they only occur when the objects collided with are on screen
+		2017/02/17		AUDIO: Added identifyTrack() function to dentify the song current playing and display the name on screen
+						AUDIO: Started adding original music tracks to the game
+		2017/02/16		MESSAGES: Added infoMessage() function to display player messages for player events
+		2017/02/15		GAME OBJECT: Started converting all game objects to be moved to one game object list, instead of separate lists for each object type
+						LEVEL: Added reset function for completing a level, or resetting the game
+						MESSAGES: Added independent information messages for player 1 and 2
+						SAW: Fixed saw not spawning ...again!
+						MAP: Fixed dimensions of map, and set transparent when enlarged
+						POWER UPS: Added Power Ups, Explosions to list of game objects
+		2017/02/14		MENU: Added menu handling class
+		2017/02/10		SCORES: Added functionality so the scores displayed on screen move to player who scored them (Changed from moving to players score)
+						MAP: Tried using some of the algorithms from graphics last sememster to see could they be used to move a player ship on the game map, to indicate it's position with no luck
+		2017/02/09		GAMEPAD: Display gamepad information, moved to separate header file
+						EXPLOSION: Fixed the explosion animations, they are now assigned to indiviual objects with the game object frame attribute
+						Fixed the Enemy Ship animations, they are now assigned to indiviual objects with the game object frame attribute
+						Added audio class Audio.h for handling music and sound effects
+						Added gamepad class Gamepad.h for handling gamepad functionality
+						Added collision class CollisionStuff.h for handling collisions between objects
+						Added status bar class StatusBar.h for creating status bars, such as health bar
+						Added score class ScoreValueText.h for displaying values of scores for destroying objects
+						Added separate function for text and logos to Game class
+		2017/02/08		Added separate splash screen class SplashScreen.h for displaying splash screens
+						Added check so rocket explodes on collision with the game boundary
+						Added press enter to continue for splash screens instead of delay before progressing to level
+		2017/02/06		Added managePlayerScores() function to handle players score
+						Added spawnRocket() function to create rockets for players, rocket movement can be controlled by player
+						Added class for rockets Rocket.h (Renamed WeaponPlRocket.h)
+						Added functionality so only 1 rocket can be active at a time for players
+		2017/02/02		Completely separated FPS to its own class
+						Added storyline at intro to game
+		2017/02/01		Started to move FPS functionality to it's own class
+						Added frames for second class FPS.h
+		2017/01/31		Added vector list of game objects to display the scores for each object killed
+						Added timer for player information messages
+						Added points value messages for each player
+		2017/01/30		Added rotation angle to constructors for Textures that rotate
+						Moved flashGameObject() functionality into Texture class
+						Added particle texture alpha modify functionality
+						Combined player weapons to one list instead of lists for each type
+		2017/01/29		Added mini map to game, map increases/decreases size by pressing button using viewports
+		2017/01/25		Added spawnExplosion() function for creating explosions when lasers collide with Enemy Ships and Virus
+						Added explosion handling class Explosion.h
+						Fixed error for Player Message Text
+						Fixed Ninja Star scoring for Player 2
+						Added check for if the type of virus is newer Orange Exploding Virus or older Green Virus
+						Added alert message to notify player Exploding Orange Virus is approaching
+						Added functionality so Orange Virus explodes after colliding with player
+		2017/01/24		Changed fonts and graphics at start of level, and start and end of scrolling background
+						Added Menu to main code
+						Changed screen size from 1280 x 720 from 800 x 600
+						Added Y padding to keep objects within the game screen boundary
+		2017/01/23		Set up level progression and background
+						Added laser power up, player can increase the laser weapons grade to fire 3 beams instead of just 1
+						Fixed saw spawning, now appearing/disappearing
+		2017/01/22		Added forwards/backwards rotation for blood cells
+						Moved render functions out of Game.cpp
+		2017/01/20		Spawn Player 1 at random Y coord added to spawnPlayer() function
+						Added more random shooting from enemy ships
+						Fixed problem where not all ships are firing
+						Fixed problem for ninja stars only scoring for Player 1
+						Added spawnSaw() function to create Saw Weapon for player
+						Added spawnExplosion() functions for creating explosions when objects collide
+						Added particle handling class Particle.h for player ship engine particles
+						Added game over message
+						Added player lives indicators for players
+		2017/01/19		Started to add game main menu
+						Added for loops for separating sprite sheets
+						Added 3 beam laser weapon
+		2017/01/18		Added splash screens at start of game, Game Title & Game Creators
+						Added pressButtonToContinue() function for splash screens at start of game, so player can read writing at own pace
+						Added spawnRandom() function to separate out common randomness of game object spawning
+						Added collision handling functions
+						Fixed animations for game objects, with independent frame handling
+						Added health bars for players
+						Added force feedback (haptic) support for controller button press and collisions
+						Added player speedboost
+						Fixed virus movement to move towards the nearest player not just player 1
+		2017/01/17		Added displayText() function to render text used in the game
+						Added gamepadInfo() function to separate gamepad information into its own function
+						Added player decision to spawnNinjaStar() function - determines player to spawn for and their coords
+						Added class for saw weapon Saw.h (renamed WeaponPlSaw.h)
+						Added collision detection for Ninja Stars
+						Separated Player 1 and 2 scores
+						Added check for number of gamepads connected to system
+						Added wrapped text to add new line character for level intro splash screens
+						Added scrolling text to intro screen
+		2017/01/16		Added spawnLaser() function to spawn a laser at coords, with velocitys
+						Added second player to game
+		2017/01/15		Added support for game controller (sticks not working correctly)
+						Added gameTimer() function, to ouput the current seconds remaining in the game
+		2017/01/13		Fixed problem with rendering text -> true type fonts not initialised in init()
+		2017/01/12		Added check so scrolling background stops at end, so end of level boss can be inserted
+		2017/01/11		Added checks for collisions by lasers
+						Added flash on collision for player
+						Started work on true type font support for game text (and timer) adding SDL_ttf
+						Added flashing game over texture
+						Added flashing to timer for when there is 5 seconds or less on the clock, also changes colour to red, to warn player
+						Alter function for alpha values to handle any object and not just Players
+		2017/01/10		Added Large Blood Cell object
+						Added class for handling blood cells including Small Blood Cell, and White Blood Cells, BloodCell.h
+						Added spawn functions to spawn enemies and obstacles at random coords & distances apart
+						Added class for handling powerups PowerUp.h
+		2017/01/09		Added music and sound effects to game, needs to be initialised with video in init()
+						Added spawnNinjaStar() function to create ninja star weapon
+						Edited background to be 800 x 600 instead of 600 x 480
+						Added playerInput() function to handle input from player
+						Added destroyGameObjects() function to destroy the game objects when finished using
+						Added moveGameObjects() funtction to move the game objects on the screen
+						Added spawnEnemyShip() function to create enemy ships at random times and random y coord
+		2017/01/06		Added player lasers
+						Enemy movement from right to left towards player adapted from laser spawning
+		2016/10/17		First prototype of game
+	----------------------------------------------------------------------------------------------------------------------*/
 
 #include "_TestData.h"				// JOE: 2017/02/09 Keeps testing functionality in one place
 #include "Game.h"					// Game header file, with functions and variabls
@@ -263,7 +268,6 @@ Particle particle;
 SettingsMenu settings;
 HighScores highScore;
 EnterName enterName1;
-ScrollingBackground scrollBG;		// 2017/03/21 Scroll background
 
 // Animation frames
 SDL_Rect gEnemySpriteClips[ANIMATION_FRAMES];	// Sprite frames for Enemy Ship animation
@@ -275,24 +279,26 @@ SDL_Rect gBlueVirusSpriteClips[6];				// Sprite frames for Blue Virus animation
 SDL_Rect gSmallGreenVirusSpriteClips[6];		// Sprite frames for Small Green Virus animation
 SDL_Rect gSmallOrangeVirusSpriteClips[6];		// Sprite frames for Small Orange Virus animation
 SDL_Rect gSmallBlueVirusSpriteClips[6];			// Sprite frames for Small Blue Virus animation
+/*
 // Explosion Animations
 SDL_Rect gExplosionClips[EXPLOSION_ANIMATION_FRAMES];				// Sprite frames for Explosion animation
 SDL_Rect gBloodExplosionClips[BLOOD_EXP_ANIMATION_FRAMES];			// Sprite frames for Blood Explosion animation
 SDL_Rect gVirusGreenExplosionClips[BLOOD_EXP_ANIMATION_FRAMES];		// Sprite frames for Green Virus Explosion animation
 SDL_Rect gVirusOrangeExplosionClips[BLOOD_EXP_ANIMATION_FRAMES];	// Sprite frames for Orange Virus Explosion animation
 SDL_Rect gVirusBlueExplosionClips[BLOOD_EXP_ANIMATION_FRAMES];		// Sprite frames for Blue Virus Explosion animation
-
+*/
 Texture gEnemySpriteSheetTexture;					// Enemy sprite sheet
 Texture gEnemyBossSpriteSheetTexture;				// Enemy Boss sprite sheet
 Texture gEnemyBossEyesSpriteSheetTexture;			// Enemy Boss Eyes sprite sheet
 Texture gEnemyBossStatusBarTextTexture;				// Identify the Enemy Boss on the health bar
 
+/*
 Texture gExplosionSpriteSheetTexture;				// Explosion sprite sheet
 Texture gBloodExplosionSpriteSheetTexture;			// Blood explosion sprite sheet
 Texture gVirusGreenExplosionSpriteSheetTexture;		// Green Virus explosion sprite sheet
 Texture gVirusOrangeExplosionSpriteSheetTexture;	// Orange Virus explosion sprite sheet
 Texture gVirusBlueExplosionSpriteSheetTexture;		// Blue Virus explosion sprite sheet
-
+*/
 Texture gGreenVirusSpriteSheetTexture;		// Green Virus sprite sheet
 Texture gOrangeVirusSpriteSheetTexture;		// Orange Virus sprite sheet
 Texture gBlueVirusSpriteSheetTexture;		// Blue Virus sprite sheet
@@ -306,7 +312,7 @@ SDL_Event e;							// Event handler
 // Joystick
 SDL_Joystick* gController1 = NULL;		// Game Controller 1 handler - Data type for a game controller is SDL_Joystick
 SDL_Joystick* gController2 = NULL;		// Game Controller 1 handler - Data type for a game controller is SDL_Joystick
-//SDL_Haptic*	gControllerHaptic = NULL;	// 2017/01/18 Haptic (Force Feedback) added
+SDL_Haptic*	gControllerHaptic = NULL;	// 2017/01/18 Haptic (Force Feedback) added
 
 // Text
 SDL_Color textColour;				// Set the text colour
@@ -327,16 +333,20 @@ Texture gInfoMessageMapTextTexture;	// Player notification messages for picking 
 
 // Vectors for objects that have collisions
 std::vector<GameObject*> listOfGameObjects;		// 2017/01/31 Using to display the scores for each object killed, 2017/02/15 added Power Ups, Explosions
-std::vector<Player*> listOfPlayers;				// 2017/03/22 List of players to remove duplicate code
 
+
+ScrollingBackground* scrollBG = new ScrollingBackground();		// 2017/03/21 Scroll background added to Game Object list
 Player* player1 = new Player();
 Player* player2 = new Player();
 
 bool Game::init() {
-	listOfGameObjects.push_back(player1);					// Add explosion to list of game objects
-	if (twoPlayer) listOfGameObjects.push_back(player2);					// Add explosion to list of game objects
+	// Add objects to Game Objects list
+	listOfGameObjects.push_back(player1);					// 2017/03/22 Add Player 1 to Game Objects list
+	if (twoPlayer) listOfGameObjects.push_back(player2);	// 2017/03/22 Add Player 2 to Game Objects list
 
-	std::cout << "player 1 list test " << listOfGameObjects[0]->getName() << std::endl;
+	listOfGameObjects.push_back(scrollBG);					// 2017/03/22 Add Scrolling Background to Game Objects list;
+
+	//std::cout << "player 1 list test " << listOfGameObjects[0]->getName() << std::endl;
 
 	m_pGameStateMachine = new GameStateMachine();			// Create the state machine
 //	m_pGameStateMachine->changeState(new StateMainMenu());	// Add a state
@@ -569,7 +579,7 @@ bool Game::loadMedia() {
 	else {
 		setupAnimationClip(gSmallBlueVirusSpriteClips, 6, 40, true);									// Set sprite clips
 	}
-
+	/*
 	if (!gExplosionSpriteSheetTexture.loadFromFile("Art/Explosion.png")) {								// Sprite sheet for Explosions
 		printf("Failed to load Explosion animation texture!\n");
 		success = false;
@@ -605,7 +615,7 @@ bool Game::loadMedia() {
 	else {
 		setupAnimationClip(gVirusBlueExplosionClips, BLOOD_EXP_ANIMATION_FRAMES, 128);					// Set sprite clips
 	}
-
+	*/
 	return success;
 }
 
@@ -637,12 +647,13 @@ void Game::close() {
 
 	// free animations
 	gEnemySpriteSheetTexture.free();
+	/*
 	gExplosionSpriteSheetTexture.free();
 	gBloodExplosionSpriteSheetTexture.free();
 	gVirusGreenExplosionSpriteSheetTexture.free();
 	gVirusOrangeExplosionSpriteSheetTexture.free();
 	gVirusBlueExplosionSpriteSheetTexture.free();
-
+	*/
 	gGreenVirusSpriteSheetTexture.free();
 	gOrangeVirusSpriteSheetTexture.free();
 	gBlueVirusSpriteSheetTexture.free();
@@ -711,12 +722,6 @@ void Game::update(){
 				if (!twoPlayer) player2->setAlive(false);
 
 				quit = playerInput(quit);									// 2017/01/09 JOE: Handle input from player
-
-				//if (getCurrentLevel() == 0 && displayGameIntro) displayGameIntro = splash.displayGameTitleScreens();	// 2017/01/18 Splash screens at start of game, Game Title & Game Creators
-
-				//if (getCurrentLevel() == GAME_INTRO) displayGameIntro = splash.displayGameTitleScreens();
-				//else
-				//setCurrentLevel(MENU); in game.h
 
 				if (getCurrentLevel() == MENU) menu1.draw();				// New
 				else if (getCurrentLevel() == PAUSE) menu1.drawPause();		// New
@@ -1028,7 +1033,7 @@ void Game::renderGamePlay() {
 	SDL_RenderSetViewport(getRenderer(), &gameViewport);				// Set the viewport to Game Screen
 
 	if (levelOver == false && gameOver == false) {
-		scrollBG.render();												// 2017/03/21 Render the Scrolling Background
+		//scrollBG->render();												// 2017/03/21 Render the Scrolling Background // 2017/03/22 Added to GameObject List
 
 		SDL_SetRenderDrawColor(getRenderer(), 0xFF, 0xFF, 0xFF, 0xFF);
 
@@ -1042,60 +1047,12 @@ void Game::renderGamePlay() {
 			//SDL_RenderDrawRect(getRenderer(), &listOfGameObjects[index]->getCollider());	// Draw object colliders
 			frames = listOfGameObjects[index]->getNumFrames();			// 2017/02/09 Fixed the explosion animations, they are now assigned to indiviual objects with the game object frame attribute
 
-			// Render Explosions
-			if (listOfGameObjects[index]->getSubType() == FIRE_EXPLOSION) {
-				/*
-				listOfGameObjects[index]->render(gExplosionSpriteSheetTexture, &gExplosionClips[frames / EXPLOSION_ANIMATION_FRAMES], frames, EXPLOSION_ANIMATION_FRAMES);
-				if (frames / 8 >= EXPLOSION_ANIMATION_FRAMES) {		// If the explosion reaches the last frame
-					listOfGameObjects[index]->setAlive(false);
-				}
-				*/
-				listOfGameObjects[index]->render();
-			}
-			// Render Blood Explosion
-			else if (listOfGameObjects[index]->getSubType() == BLOOD_EXPLOSION) {
-				gBloodExplosionSpriteSheetTexture.modifyAlpha(listOfGameObjects[index]->getAlpha());
-				listOfGameObjects[index]->render(gBloodExplosionSpriteSheetTexture, &gBloodExplosionClips[frames / 5], frames, BLOOD_EXP_ANIMATION_FRAMES);
-				if (frames / 5 >= BLOOD_EXP_ANIMATION_FRAMES) {		// If the explosion reaches the last frame
-					listOfGameObjects[index]->setAlive(false);
-				}
-			}
-			else if (listOfGameObjects[index]->getSubType() == GREEN_VIRUS_EXPLOSION) {
-				/*
-				gVirusGreenExplosionSpriteSheetTexture.modifyAlpha(listOfGameObjects[index]->getAlpha());
-				listOfGameObjects[index]->render(gVirusGreenExplosionSpriteSheetTexture, &gVirusGreenExplosionClips[frames / 5], frames, BLOOD_EXP_ANIMATION_FRAMES);
-				if (frames / 5 >= BLOOD_EXP_ANIMATION_FRAMES) {		// If the explosion reaches the last frame
-					listOfGameObjects[index]->setAlive(false);
-				}
-				*/
-				listOfGameObjects[index]->render();
-				std::cout << "alpha " << listOfGameObjects[index]->getAlpha() << std::endl;
-			}
-			else if (listOfGameObjects[index]->getSubType() == ORANGE_VIRUS_EXPLOSION) {
-				gVirusOrangeExplosionSpriteSheetTexture.modifyAlpha(listOfGameObjects[index]->getAlpha());
-				listOfGameObjects[index]->render(gVirusOrangeExplosionSpriteSheetTexture, &gVirusOrangeExplosionClips[frames / 5], frames, BLOOD_EXP_ANIMATION_FRAMES);
-				if (frames / 5 >= BLOOD_EXP_ANIMATION_FRAMES) listOfGameObjects[index]->setAlive(false);	// If the explosion reaches the last frame kill the object
-			}
-			else if (listOfGameObjects[index]->getSubType() == BLUE_VIRUS_EXPLOSION) {
-				gVirusBlueExplosionSpriteSheetTexture.modifyAlpha(listOfGameObjects[index]->getAlpha());
-				listOfGameObjects[index]->render(gVirusBlueExplosionSpriteSheetTexture, &gVirusBlueExplosionClips[frames / 5], frames, BLOOD_EXP_ANIMATION_FRAMES);
+			if (listOfGameObjects[index]->getType() == EXPLOSION) listOfGameObjects[index]->render();						// Render Explosions
+			else if (listOfGameObjects[index]->getType() == SCORE_TEXT) listOfGameObjects[index]->render();					// Render player scores for killing Enemies
+			else if (listOfGameObjects[index]->getType() == BACKGROUND) listOfGameObjects[index]->render();					// 2017/03/22 Render the background
 
-
-				if (frames / 5 >= BLOOD_EXP_ANIMATION_FRAMES) listOfGameObjects[index]->setAlive(false);	// If the explosion reaches the last frame kill the object
-			}
-			// Render player scores for killing Enemies
-			else if (listOfGameObjects[index]->getSubType() == PLAYER1_SCORE) {
-				if (player1->getAlive()) listOfGameObjects[index]->render();			// works for m_Texture but not getTexture
-				else listOfGameObjects[index]->setAlive(false);
-			}
-			else if (listOfGameObjects[index]->getSubType() == PLAYER2_SCORE) {
-				if (player2->getAlive()) listOfGameObjects[index]->render();			// works for m_Texture but not getTexture
-				else listOfGameObjects[index]->setAlive(false);
-			}
 			// Render Enemies
-			else if (listOfGameObjects[index]->getSubType() == ENEMY_SHIP) {																						// 2017/02/09 Fixed the Enemy Ship animations, they are now assigned to indiviual objects with the game object frame attribute
-				listOfGameObjects[index]->render(gEnemySpriteSheetTexture, &gEnemySpriteClips[frames / 10], frames, 4);												// 4 the number of frames
-			}
+			else if (listOfGameObjects[index]->getSubType() == ENEMY_SHIP) listOfGameObjects[index]->render(gEnemySpriteSheetTexture, &gEnemySpriteClips[frames / 10], frames, 4);
 			else if (listOfGameObjects[index]->getSubType() == ENEMY_BOSS) {																						// 2017/02/09 Fixed the Enemy Ship animations, they are now assigned to indiviual objects with the game object frame attribute
 				listOfGameObjects[index]->render(gEnemyBossSpriteSheetTexture, &gEnemyBossSpriteClips[frames / 10], frames, 4);										// 4 the number of frames
 				if (listOfGameObjects[index]->getX() < SCREEN_WIDTH - 400) {
@@ -1330,64 +1287,59 @@ void Game::moveGameObjects() {
 	if (player1->getAlive()) player1->move();												// Update ship movement
 	if (player2->getAlive()) player2->move();
 
-	scrollBG.move();
-
 	// Cycle through list of Game Objects and move them, Player scores, and Power Ups so far
 	for (unsigned int index = 0; index != listOfGameObjects.size(); ++index) {
-		if (listOfGameObjects[index]->getSubType() == PLAYER1_SCORE) {
-			listOfGameObjects[index]->moveStalker(player1->getX(), player1->getY());		// Move the score to Player 1 ship
-		}
-		else if (listOfGameObjects[index]->getSubType() == SAW1) {							// Move Player 1 saw with Player 1 Ship
-			listOfGameObjects[index]->move(player1->getX(), player1->getY());
-		}
-		else if (listOfGameObjects[index]->getSubType() == PLAYER2_SCORE) {					// Move the score to Player 2 ship
-				listOfGameObjects[index]->moveStalker(player2->getX(), player2->getY());
-			}
-		else if (listOfGameObjects[index]->getSubType() == SAW2) {							// Move Player 2 saw with Player 2 Ship
-			listOfGameObjects[index]->move(player2->getX(), player2->getY());
-		}
+		// Objects that move towards coordinates
+		if (listOfGameObjects[index]->getSubType() == PLAYER1_SCORE)		listOfGameObjects[index]->move(player1->getX(), player1->getY());	// Move the score to Player 1 ship
+		else if (listOfGameObjects[index]->getSubType() == SAW1)			listOfGameObjects[index]->move(player1->getX(), player1->getY());	// Move Player 1 saw with Player 1 Ship
+		else if (listOfGameObjects[index]->getSubType() == PLAYER2_SCORE)	listOfGameObjects[index]->move(player2->getX(), player2->getY());	// Move the score to Player 2 ship
+		else if (listOfGameObjects[index]->getSubType() == SAW2)			listOfGameObjects[index]->move(player2->getX(), player2->getY());	// Move Player 2 saw with Player 2 Ship
 		else if (listOfGameObjects[index]->getSubType() == VIRUS_GREEN || listOfGameObjects[index]->getSubType() == VIRUS_ORANGE || listOfGameObjects[index]->getSubType() == VIRUS_BLUE) {	// Move Enemy Virus, tracking the player movement
-			if (listOfGameObjects[index]->getX() > SCREEN_WIDTH && listOfGameObjects[index]->getX() < SCREEN_WIDTH + 10) {										// When a virus is within 10 pixels of appearing on screen
-					infoMessage(listOfGameObjects[index]->getName() + " Approaching");																			// 2017/02/19 Added information message indicates virus is approaching
-			}
-			if (player2->getAlive() && (abs(player1->getX() - listOfGameObjects[index]->getX()) * abs(player1->getX() - listOfGameObjects[index]->getX())) +	// Distance on X axis between player 1 and virus squared
-				(abs(player1->getY() - listOfGameObjects[index]->getY()) * abs(player1->getY() - listOfGameObjects[index]->getY())) >							// Distance on Y axis between player 1 and virus squared
-				(abs(player2->getX() - listOfGameObjects[index]->getX()) * abs(abs(player2->getX() - listOfGameObjects[index]->getX())) + 						// Distance on X axis between player 2 and virus squared
-				(abs(player2->getY() - listOfGameObjects[index]->getY()) * abs(abs(player2->getY() - listOfGameObjects[index]->getY())))))						// Distance on Y axis between player 2 and virus squared
-			{
-				listOfGameObjects[index]->moveStalker(player2->getX(), player2->getY());
-			}
-			else {
-				listOfGameObjects[index]->moveStalker(player1->getX(), player1->getY());
-			}
+			if (moveToPlayer1(listOfGameObjects[index]->getX(), listOfGameObjects[index]->getY())) listOfGameObjects[index]->moveStalker(player1->getX(), player1->getY());
+			else listOfGameObjects[index]->moveStalker(player2->getX(), player2->getY());
 		}
 		else if (listOfGameObjects[index]->getSubType() == WHITE_BLOOD_CELL && activeEnemyVirusSmall > 0) {
-			std::cout << "small virus count " << activeEnemyVirusSmall << std::endl;
-			//if (activeEnemyVirusSmall > 0) {
-				//else if (listOfGameObjects[index]->getSubType() == WHITE_BLOOD_CELL) {
-				std::cout << "white blood cell " << index << "x " << listOfGameObjects[index]->getX() << " y " << listOfGameObjects[index]->getY() << std::endl;
-				//infoMessage("Number of small blue viruses: " + std::to_string(activeEnemyVirusSmall));
+			std::cout << "white blood cell " << index << "x " << listOfGameObjects[index]->getX() << " y " << listOfGameObjects[index]->getY() << std::endl;
 
-				int nearestSmallBlueVirus = 1280 * 1280 + 600 * 600;	// Furthest distance objects can be apart on screen
+			int nearestSmallVirus = 1280 * 1280 + 600 * 600;	// Furthest distance objects can be apart on screen
 
-				// The White blood cell can attack smaller sized virus objects
-				for (unsigned int smallVirusIndex = 0; smallVirusIndex != listOfGameObjects.size(); ++smallVirusIndex) {
-					if (listOfGameObjects[smallVirusIndex]->getType() == SMALL_VIRUS) {
-						if (abs(listOfGameObjects[smallVirusIndex]->getX() - listOfGameObjects[index]->getX()) * abs(listOfGameObjects[smallVirusIndex]->getX() - listOfGameObjects[index]->getX()) +
-							abs(listOfGameObjects[smallVirusIndex]->getY() - listOfGameObjects[index]->getY()) * abs(listOfGameObjects[smallVirusIndex]->getY() - listOfGameObjects[index]->getY()) < nearestSmallBlueVirus)
-							nearestSmallBlueVirus = abs(listOfGameObjects[smallVirusIndex]->getX() - listOfGameObjects[index]->getX()) * abs(listOfGameObjects[smallVirusIndex]->getX() - listOfGameObjects[index]->getX()) +
-							abs(listOfGameObjects[smallVirusIndex]->getY() - listOfGameObjects[index]->getY()) * abs(listOfGameObjects[smallVirusIndex]->getY() - listOfGameObjects[index]->getY()) < nearestSmallBlueVirus;
+			// The White blood cell can attack smaller sized virus objects
+			for (unsigned int smallVirusIndex = 0; smallVirusIndex != listOfGameObjects.size(); ++smallVirusIndex) {
+				if (listOfGameObjects[smallVirusIndex]->getType() == SMALL_VIRUS) {
+					if (abs(listOfGameObjects[smallVirusIndex]->getX() - listOfGameObjects[index]->getX()) * abs(listOfGameObjects[smallVirusIndex]->getX() - listOfGameObjects[index]->getX()) +
+						abs(listOfGameObjects[smallVirusIndex]->getY() - listOfGameObjects[index]->getY()) * abs(listOfGameObjects[smallVirusIndex]->getY() - listOfGameObjects[index]->getY()) < nearestSmallVirus)
+						nearestSmallVirus = abs(listOfGameObjects[smallVirusIndex]->getX() - listOfGameObjects[index]->getX()) * abs(listOfGameObjects[smallVirusIndex]->getX() - listOfGameObjects[index]->getX()) +
+						abs(listOfGameObjects[smallVirusIndex]->getY() - listOfGameObjects[index]->getY()) * abs(listOfGameObjects[smallVirusIndex]->getY() - listOfGameObjects[index]->getY()) < nearestSmallVirus;
 
-						listOfGameObjects[index]->moveStalker(listOfGameObjects[smallVirusIndex]->getX(), listOfGameObjects[smallVirusIndex]->getY());	// move towards nearest small virus
-					}
+					listOfGameObjects[index]->moveStalker(listOfGameObjects[smallVirusIndex]->getX(), listOfGameObjects[smallVirusIndex]->getY());	// move towards nearest small virus
 				}
-			//}
+			}
 		}
+		// Objects with ordinary movement, or movement pattern defined in move function
 		else listOfGameObjects[index]->move();
 	}
 }
 
-// 2017-02-16 Display player messages for player events, added to a function
+/*
+	This function moves the Enemy Virus to the nearest Player on the screen
+*/
+bool Game::moveToPlayer1(int x, int y) {
+	bool moveToPlayer1 = true;
+
+	if (player2->getAlive() && (abs(player1->getX() - x) * abs(player1->getX() - x)) +	// Distance on X axis between player 1 and virus squared
+		(abs(player1->getY() - y) * abs(player1->getY() - y)) >							// Distance on Y axis between player 1 and virus squared
+		(abs(player2->getX() - x) * abs(abs(player2->getX() - x)) + 					// Distance on X axis between player 2 and virus squared
+		(abs(player2->getY() - y) * abs(abs(player2->getY() - y)))))					// Distance on Y axis between player 2 and virus squared
+	{
+		moveToPlayer1 = false;
+	}
+
+	return moveToPlayer1;
+}
+
+/*
+	2017-02-16 Display player messages for player events, added to a function
+*/
 void Game::infoMessage(std::string message, int type, int timer) {
 	if (type == 0) {
 		infoMessageCounter = 0;
@@ -1408,10 +1360,17 @@ void Game::infoMessage(std::string message, int type, int timer) {
 	std::cout << message << std::endl;
 }
 
-// Destroy Game Objects
+/*
+	Destroy Game Objects
+*/
 void Game::destroyGameObjects() {
+	// Test game objects are being destroyed and removed from list
+
 	if (getCurrentLevel() == LEVEL_1 || getCurrentLevel() == LEVEL_2 || getCurrentLevel() == LEVEL_3) {
-		// Test game objects are being destroyed and removed from list
+		// Active Enemies
+		std::cout << "small virus count " << activeEnemyVirusSmall << std::endl;
+
+
 		int countSaws = 0, countBloodCells = 0, countEnemies = 0, countEnemyBullets = 0, countPowerUps = 0, countScoreValues = 0;
 		int countNumPlayerWeapons = 0, countExplosions = 0;
 
@@ -1429,13 +1388,11 @@ void Game::destroyGameObjects() {
 			}
 			// Blood Cells
 			if (listOfGameObjects[index]->getType() == BLOOD_CELL) countBloodCells++;
-			// Sub-type of blood cell
 			if (listOfGameObjects[index]->getSubType() == LARGE_BLOOD_CELL) countLargeBloodCells++;
 			else if (listOfGameObjects[index]->getSubType() == SMALL_BLOOD_CELL) countSmallBloodCells++;
 			else if (listOfGameObjects[index]->getSubType() == WHITE_BLOOD_CELL) countWhiteBloodCells++;
 			// Enemys
 			if (listOfGameObjects[index]->getType() == ENEMY_OBJECT) countEnemies++;
-			// Sub-type of blood cell
 			if (listOfGameObjects[index]->getSubType() == VIRUS_GREEN) countGreenVirus++;
 			else if (listOfGameObjects[index]->getSubType() == VIRUS_ORANGE) countOrangeVirus++;
 			else if (listOfGameObjects[index]->getSubType() == SMALL_VIRUS) countBlueVirus++;
@@ -1499,12 +1456,13 @@ void Game::destroyGameObjects() {
 	}
 
 	for (unsigned int index = 0; index != listOfGameObjects.size(); ++index) {															// Erase Game Objects
+		// If the Player the score is for is dead, or the score is active for 2.5 seconds destroy it
 		if ((listOfGameObjects[index]->getSubType() == PLAYER1_SCORE)) {
-			if (SDL_GetTicks() > listOfGameObjects[index]->getTimerTracker() + 2500) listOfGameObjects[index]->setAlive(false); // if the current time is more than the start time + 100
+			if (SDL_GetTicks() > listOfGameObjects[index]->getTimerTracker() + 2500 || !player1->getAlive()) listOfGameObjects[index]->setAlive(false); // if the current time is more than the start time + 100, OR player 1 is dead
 			//if (listOfGameObjects[index]->getAlive() == false) scoreTextP1counter--;											// Decrement the player 1 score text counter
 		}
 		else if ((listOfGameObjects[index]->getSubType() == PLAYER2_SCORE)) {
-			if (SDL_GetTicks() > listOfGameObjects[index]->getTimerTracker() + 2500) listOfGameObjects[index]->setAlive(false); // if the current time is more than the start time + 100
+			if (SDL_GetTicks() > listOfGameObjects[index]->getTimerTracker() + 2500 || !player2->getAlive()) listOfGameObjects[index]->setAlive(false); // if the current time is more than the start time + 100, OR player 2 is dead
 			//if (listOfGameObjects[index]->getAlive() == false) scoreTextP2counter--;											// Decrement the player 2 score text counter
 		}
 
@@ -1560,6 +1518,7 @@ void Game::destroyGameObjects() {
 		}
 	}// end for
 }
+
 
 // Decide how many of each enemy / obstacle on screen at a given time
 void Game::spawnMovingObjects() {

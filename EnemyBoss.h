@@ -1,22 +1,23 @@
-/*
-	2017/03/22 Made the Enemy Boss collider slightly smaller and closer to the face, 
-				so explosions are happening closer to the target
-	2017/03/18 Updated animation swapping Lorcan for Daniel (an improvement!!!)
-				Added more complicated movement, with the player performing different
-				movement sequences at different points on the screen
-				Added laser spawning from the eyes, along with laser generation animation
-				Added Virus spawning from the opening mouth at certain positions on screen
-	2017/03/02 Added Enemy Boss class
-*/
-/*
-	ENEMY BOSS:
+/*	---------------------------------------------------------------------------------------------------------------------
+	- Name:					EnemyBoss.h
+	- Description:			Header file for the EnemyBoss object which is a sub-type of Enemy but with more functionality
+	- Information:			Contains constructor and destructor for enemy boss object and all functionality.
+							The Boss is a sub-type of Enemy but with more functionality than basic nano-bots and viruses.
+							It has more varied movement than other enemy objects, but stops short of the start of the 
+							game screen, giving the player a position from which to attack.
+							It also fires lasers from its eyes and viruses from its mouth in level 1.
+							
 
-	The Boss is a sub-type of Enemy but with more functionality than basic nano-bots and viruses
-	It has more varied movement than other enemy objects, but stops short of the start of the 
-	game screen, giving the player a position from which to attack
-	It also fires lasers from its eyes and viruses from its mouth in level 1
-*/
-
+	- Log:	
+		2017/03/22		Made the Enemy Boss collider slightly smaller and closer to the face, 
+						so explosions are happening closer to the target.
+		2017/03/18		Updated animation swapping Lorcan for Daniel (an improvement!!!)
+						Added more complicated movement, with the player performing different
+						movement sequences at different points on the screen.
+						Added laser spawning from the eyes, along with laser generation animation
+						Added Virus spawning from the opening mouth at certain positions on screen
+		2017/03/02		Added Enemy Boss class.
+	----------------------------------------------------------------------------------------------------------------------*/
 #ifndef ENEMY_BOSS_H
 #define ENEMY_BOSS_H
 
@@ -25,11 +26,11 @@
 
 class EnemyBoss : public Enemy {
 public:
-	//bool moveRight = true; // 2017/03/21 original movement boolean
+	//bool moveRight = true;					// 2017/03/21 original movement boolean
 
 	/* 
-		Enemy Boss Constructor
-
+		Name: EnemyBoss()
+		Role: Constructor for enemty boss
 		The Boss is a sub-type of Enemy
 		It has more varied movement than other enemy objects
 		It also fires lasers from its eyes and viruses from its mouth in level 1
@@ -78,9 +79,11 @@ public:
 	bool moveUp = false, moveDown = false, moveForward = true, moveBackwards = false, moveAttack = false, spawnVirus = false;
 	int countMoves = 0;
 
+	// Name: move()
+	// Role: Move the Enemy Boss Object around the screen in a pattern
 	virtual void move(int x, int y) {
 		// Set collider movement as its not inheriting movment
-		setColliderX(getX() + 30);	// 2017/03/22 Set the enemy collider closer to its face
+		setColliderX(getX() + 30);					// 2017/03/22 Set the enemy collider closer to its face
 		setColliderY(getY() + 10);
 		//if (getX() == 
 
@@ -159,7 +162,8 @@ public:
 	}
 
 	/*
-		This function counts the number of times the boss moves up and down
+		Name: CountBossMoves()
+		Role: This function counts the number of times the boss moves up and down
 		before it progresses to random diagonal movement back and forth from Player
 	*/
 	void countBossMoves() {
@@ -171,6 +175,8 @@ public:
 	}
 
 	/*
+		Name: destroy();
+		Role: destroy the enemy boss objects and set it to be removed from memory
 		The destroy function inherits from GameObject
 	*/
 	virtual void destroy() {		// Destory the enemy boss when it moves out of bounds

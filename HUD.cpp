@@ -1,26 +1,25 @@
-/*
-	2017/03/20 Moved additional render functionality from Game class
-	2017/03/18 Cut 2 mb/sec memory leak by loading createdByTextTexture text in 3 separate textures only once in the game in Texture class
-	2017/03/03 Fixed rendered text so that it is only updated or loaded when needed, as it eats too much memory
-				Moved some text functions back out of Texture class to HUD class
-				Added a timer to created by text, so it only updates when the timer changes and not constantly
-				Added a variable to store the previous rocket number, so the text displayed only renders again when changed
-				Loading Speed Boost text for indicator only once in HUD load function, saving more memory wasting
-				Added a previous state variable for scores, does the same thing as the rocket number indicator
-	2017/02/21 All indicators now scroll left to right on start up
-	2017/02/21 Moved player lives, scores, speed boost indicator, rocket indicator, and created by text to head up display
-	2017/02/19 Added rocket icon to viewoport displaying information on the number of rockets in the players inventory
-*/
-/*
-	HEADS UP DISPLAY (HUD):
+/*	---------------------------------------------------------------------------------------------------------------------
+	- Name:					GameObject.cpp
+	- Description:			cpp file for the gameobject class.
+	- Information:			This class contains all the information relavent to the player dashboard, including lives, scores, and weapon indicators
+							for each player. Weapon indicators include, current laser grade, number of rockets, and an indicator for when the player
+							speed boost is active, displaying a status bar for when the boost timer runs out.
 
-	This class contains all the information relavent to the player dashboard, including lives, scores, and weapon indicators
-	for each player. Weapon indicators include, current laser grade, number of rockets, and an indicator for when the player
-	speed boost is active, displaying a status bar for when the boost timer runs out.
-
-	The game map is also displayed here in mini form, which can be resized by pressing a button on the keyboard or gamepad.
-	There is also an animated game creator text on the bottom of the display.
-*/
+							The game map is also displayed here in mini form, which can be resized by pressing a button on the keyboard or gamepad.
+							There is also an animated game creator text on the bottom of the display.
+	- Log:
+		2017/03/20		Moved additional render functionality from Game class
+		2017/03/18		Cut 2 mb/sec memory leak by loading createdByTextTexture text in 3 separate textures only once in the game in Texture class
+		2017/03/03		Fixed rendered text so that it is only updated or loaded when needed, as it eats too much memory
+						Moved some text functions back out of Texture class to HUD class
+						Added a timer to created by text, so it only updates when the timer changes and not constantly
+						Added a variable to store the previous rocket number, so the text displayed only renders again when changed
+						Loading Speed Boost text for indicator only once in HUD load function, saving more memory wasting
+						Added a previous state variable for scores, does the same thing as the rocket number indicator
+		2017/02/21		All indicators now scroll left to right on start up
+		2017/02/21		Moved player lives, scores, speed boost indicator, rocket indicator, and created by text to head up display
+		2017/02/19		Added rocket icon to viewoport displaying information on the number of rockets in the players inventory
+	----------------------------------------------------------------------------------------------------------------------*/
 #include "HUD.h"
 #include <sstream>
 #include "GameObject.h"	// 2017/03/20 For Weapon indicators
@@ -469,6 +468,7 @@ void HUD::rendPlayerLives(int livesP1, int livesP2) {
 
 	//Texture::Instance()->render("levelID", 10, 8);	// Display the level number NEEDS TO BE IN DIFFERENT VIEW PORT
 }
+
 
 /*
 std::stringstream timeText;

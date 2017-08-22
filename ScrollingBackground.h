@@ -1,6 +1,12 @@
-/*
-	2017/03/21 Added ScrollingBackground class to handle background scrolling and rendering
-*/
+/*	-----------------------------------------------------------------------------------------------------------------------------------------------------
+		- Name:					ScrollingBackground.h
+		- Description:			This class renders and scrolls the background images
+		- Information:			The background is treated as a game object, and can be moved and rendered with the
+								rest of the objects in the game
+
+		- Log:
+			2017/03/21			Added ScrollingBackground class to handle background scrolling and rendering
+------------------------------------------------------------------------------------------------------------------------------------------------------- */
 
 #ifndef SCROLLING_BACKGROUND_H
 #define SCROLLING_BACKGROUND_H
