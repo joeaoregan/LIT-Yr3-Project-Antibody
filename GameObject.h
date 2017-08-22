@@ -21,9 +21,6 @@ public:
 	void spawn(int x, int y, int vx = 0, int vy = 0);
 	void spawn(int x, int y, int vx, SDL_Rect* collider);
 	void spawn(int x, int y, int vx, int vy, SDL_Rect* collider, int type = 0);
-//		p_Rocket->spawn(x, y, p_Rocket->getCollider(), player, type);
-//void spawn(std::string typeID, int health, int speed);
-    void spawn(std::string typeID, int health, int speed, int x, int y);	// create an object
 
 	virtual void movement();
 	virtual void movement(int x, int y) {

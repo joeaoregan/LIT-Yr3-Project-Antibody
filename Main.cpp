@@ -1,27 +1,32 @@
 #include "Game.h"
-//#include "GameObject.h"// This breaks code
+#include "GameObject.h"
 #include <iostream>
 #include <fstream>
 #include <string>
 
 using namespace std;
 
-string writeFile(string user) 
+string writeFile(string user)
 {
+	//This is BROKEN
+	int num = PLAYER1_SCORE;
+	char name[] = "Brian Ryan";
 
-	char name[] = "Joe KKK Bloggs";
-	int num = 2500;
-	
+	//This way WILL WORK
+	int num1 = 2500;
+	char name1[] = "Joe Bloggs";
 
 	ofstream myfile;
 	myfile.open("example.txt");
 
-	myfile << "Player Two Name: " << name << "\n";
-	myfile << "Player Two Score: " << num << "\n";
+	myfile << "Player One Name: " << name << "\n";
+	myfile << "Player One Score: " << num << "\n";
+
+	myfile << "Player Two Name: " << name1 << "\n";
+	myfile << "Player Two Score: " << num1 << "\n";
 
 	myfile << flush;
 	myfile.close();
-
 	return string();
 }
 
@@ -42,7 +47,8 @@ string readFile(string line)
 	return string();
 }
 
-int main() {
+//int main() {
+int main(int argv, char** argc) {
 
 	string user;
 	writeFile(user);

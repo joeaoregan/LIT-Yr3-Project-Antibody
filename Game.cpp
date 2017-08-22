@@ -10,7 +10,6 @@
 #include <SDL.h>
 #include <SDL_image.h>
 #include <SDL_ttf.h>
-#include <math.h>
 
 #include "Game.h"					// Game header file, with functions and variabls
 #include <sstream>					// For timer
@@ -39,7 +38,7 @@
 #include "Gamepad.h"				// 2017/02/09
 #include "Audio.h"					// 2017/02/09
 
-
+#include <math.h>
 
 bool DisplayTheFuckinScreensNumbNuts = true;
 
@@ -326,7 +325,7 @@ bool Game::loadMedia() {
 		textColour = { 255, 0, 0, 255 };													// Set text color for three names RED
 		TTF_SetFontStyle(gFontRetro20, TTF_STYLE_BOLD);										// Use bold font
 
-		if (!gCreatedByTextTexture.loadFromRenderedText("Sean Horgan, Joe O'Regan, Brian Ryan", textColour, gFontRetro20, gRenderer)) {
+		if (!gCreatedByTextTexture.loadFromRenderedText("A game by Seán Horgan and Joe O'Regan", textColour, gFontRetro20, gRenderer)) {
 			printf("Unable to render prompt text texture!\n");
 			success = false;
 		}

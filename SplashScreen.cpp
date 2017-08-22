@@ -277,9 +277,6 @@ void SplashScreen::scrollUpText(SDL_Renderer *rend, Texture &background, Texture
 		SDL_RenderPresent(rend);				// Update screen
 	}
 
-	SDL_RenderClear(rend);						// Clear the screen
-	text.render((SCREEN_WIDTH - text.getWidth()) / 2, startAt, rend); // FOR TESTING
-
 	SDL_Delay(seconds * 1000);					// Pause with image on screen
 	//background.free();						// Free Logo 2 from memory --> THE BACKGROUND NEEDS TO STAY IN PLACE
 	text.free();								// Free Logo 2 from memory
