@@ -99,7 +99,7 @@ public:
 		This functionality is inherited from the Game Object base class
 	*/
 	virtual void destroy() {
-		//GameObject::destroy();					// 2017/03/18 destroy method inherited from Game Object base class
+		GameObject::destroy();					// 2017/03/18 destroy method inherited from Game Object base class
 	};
 
 	/*

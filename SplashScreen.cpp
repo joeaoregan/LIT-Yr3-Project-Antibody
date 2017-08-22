@@ -48,6 +48,10 @@ std::string textures[NUM_TEXTURES][3] = {
 bool SplashScreen::initSplashScreens() {
 	bool success = true;
 
+	levelObjective = "Destroy the enemy virus and nano bots\nThe player with the highest score is the winner\n\nBeat the clock to complete the level!";
+
+	Texture::Instance()->loadFromRenderedTextID(levelObjective, "level1ObjectiveID", textColour, TTF_OpenFont("Fonts/Retro.ttf", 32)); // 2017/03/18
+		
 	// Init the game title and credit screens
 	for (int i = 0; i < NUM_TEXTURES; i++) {
 		if (!Texture::Instance()->load(textures[i][0], textures[i][1])) {					// Game Title Logo

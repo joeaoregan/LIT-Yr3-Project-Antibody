@@ -1570,55 +1570,69 @@ void Game::infoMessage(std::string message, int type, int timer) {
 
 // Destroy Game Objects
 void Game::destroyGameObjects() {
-	// Test game objects are being destroyed and removed from list
-	int countTheSaws = 0, countTheBloodCells = 0, countEnemies = 0, countEnemyBullets = 0, countPowerUps = 0;
-	int countLargeBloodCells = 0, countSmallBloodCells = 0, countWhiteBloodCells = 0;
-	int countNanoBots = 0, countGreenVirus = 0, countOrangeVirus = 0, countBlueVirus = 0;
-	int countEnLaser = 0, countFireball = 0, countVBullet = 0;
-	int countPUHealth = 0, countPULaser = 0, countPURocket = 0, countPUtimer = 0, countPULife = 0;
+	if (getCurrentLevel() == LEVEL_1 || getCurrentLevel() == LEVEL_2 || getCurrentLevel() == LEVEL_3) {
+		// Test game objects are being destroyed and removed from list
+		int countTheSaws = 0, countTheBloodCells = 0, countEnemies = 0, countEnemyBullets = 0, countPowerUps = 0, countScoreValues = 0;
+		int countNumPlayerWeapons = 0;
 
-	// Count number of each object on list
-	for (unsigned int index = 0; index != listOfGameObjects.size(); ++index) {
-		if (listOfGameObjects[index]->getSubType() == SAW1 || listOfGameObjects[index]->getSubType() == SAW2) {
-			countTheSaws++;
-			//if (listOfGameObjects[index]->getAlive() == false) std::cout << "Dead saw" << std::endl;
+		int countLargeBloodCells = 0, countSmallBloodCells = 0, countWhiteBloodCells = 0;
+		int countNanoBots = 0, countGreenVirus = 0, countOrangeVirus = 0, countBlueVirus = 0;
+		int countEnLaser = 0, countFireball = 0, countVBullet = 0;
+		int countPUHealth = 0, countPULaser = 0, countPURocket = 0, countPUtimer = 0, countPULife = 0;
+		int countP1Laser = 0, countP2Laser = 0;
+
+		// Count number of each object on list
+		for (unsigned int index = 0; index != listOfGameObjects.size(); ++index) {
+			if (listOfGameObjects[index]->getSubType() == SAW1 || listOfGameObjects[index]->getSubType() == SAW2) {
+				countTheSaws++;
+				//if (listOfGameObjects[index]->getAlive() == false) std::cout << "Dead saw" << std::endl;
+			}
+			// Blood Cells
+			if (listOfGameObjects[index]->getType() == BLOOD_CELL) countTheBloodCells++;
+			// Sub-type of blood cell
+			if (listOfGameObjects[index]->getSubType() == LARGE_BLOOD_CELL) countLargeBloodCells++;
+			else if (listOfGameObjects[index]->getSubType() == SMALL_BLOOD_CELL) countSmallBloodCells++;
+			else if (listOfGameObjects[index]->getSubType() == WHITE_BLOOD_CELL) countWhiteBloodCells++;
+			// Enemys
+			if (listOfGameObjects[index]->getType() == ENEMY_OBJECT) countEnemies++;
+			// Sub-type of blood cell
+			if (listOfGameObjects[index]->getSubType() == VIRUS_GREEN) countGreenVirus++;
+			else if (listOfGameObjects[index]->getSubType() == VIRUS_ORANGE) countOrangeVirus++;
+			else if (listOfGameObjects[index]->getSubType() == SMALL_VIRUS) countBlueVirus++;
+			else if (listOfGameObjects[index]->getSubType() == ENEMY_SHIP) countNanoBots++;
+			// Enemy Weapons
+			if (listOfGameObjects[index]->getType() == ENEMY_WEAPON) countEnemyBullets++;
+			if (listOfGameObjects[index]->getSubType() == ENEMY_SHIP_LASER) countEnLaser++;
+			else if (listOfGameObjects[index]->getSubType() == VIRUS_FIREBALL) countFireball++;
+			else if (listOfGameObjects[index]->getSubType() == BLUE_VIRUS_BULLET) countVBullet++;
+			// Power Ups
+			if (listOfGameObjects[index]->getType() == POWER_UP) countPowerUps++;
+			if (listOfGameObjects[index]->getSubType() == POWER_UP_HEALTH) countPUHealth++;
+			else if (listOfGameObjects[index]->getSubType() == POWER_UP_LASER) countPULaser++;
+			else if (listOfGameObjects[index]->getSubType() == POWER_UP_ROCKET) countPURocket++;
+			else if (listOfGameObjects[index]->getSubType() == POWER_UP_CHECKPOINT) countPUtimer++;
+			else if (listOfGameObjects[index]->getSubType() == POWER_UP_LIVES) countPULife++;
+			// Score Values
+			if (listOfGameObjects[index]->getType() == SCORE_TEXT) countScoreValues++;
+			// Player Weapons
+			if (listOfGameObjects[index]->getType() == PLAYER_WEAPON) countNumPlayerWeapons++;
+			if (listOfGameObjects[index]->getSubType() == LASER_P1) countP1Laser++;
+			else if (listOfGameObjects[index]->getSubType() == LASER_P2) countP2Laser++;
 		}
-		// Blood Cells
-		if (listOfGameObjects[index]->getType() == BLOOD_CELL) countTheBloodCells++;
-		// Sub-type of blood cell
-		if (listOfGameObjects[index]->getSubType() == LARGE_BLOOD_CELL) countLargeBloodCells++;
-		else if (listOfGameObjects[index]->getSubType() == SMALL_BLOOD_CELL) countSmallBloodCells++;
-		else if (listOfGameObjects[index]->getSubType() == WHITE_BLOOD_CELL) countWhiteBloodCells++;
-		// Enemys
-		if (listOfGameObjects[index]->getType() == ENEMY_OBJECT) countEnemies++;
-		// Sub-type of blood cell
-		if (listOfGameObjects[index]->getSubType() == VIRUS_GREEN) countGreenVirus++;
-		else if (listOfGameObjects[index]->getSubType() == VIRUS_ORANGE) countOrangeVirus++;
-		else if (listOfGameObjects[index]->getSubType() == SMALL_VIRUS) countBlueVirus++;
-		else if (listOfGameObjects[index]->getSubType() == ENEMY_SHIP) countNanoBots++;
-		// Enemy Weapons
-		if (listOfGameObjects[index]->getType() == ENEMY_WEAPON) countEnemyBullets++;
-		if (listOfGameObjects[index]->getSubType() == ENEMY_SHIP_LASER) countEnLaser++;
-		else if (listOfGameObjects[index]->getSubType() == VIRUS_FIREBALL) countFireball++;
-		else if (listOfGameObjects[index]->getSubType() == BLUE_VIRUS_BULLET) countVBullet++;
-		// Power Ups
-		if (listOfGameObjects[index]->getType() == POWER_UP) countPowerUps++;
-		if (listOfGameObjects[index]->getSubType() == POWER_UP_HEALTH) countPUHealth++;
-		else if (listOfGameObjects[index]->getSubType() == POWER_UP_LASER) countPULaser++;
-		else if (listOfGameObjects[index]->getSubType() == POWER_UP_ROCKET) countPURocket++;
-		else if (listOfGameObjects[index]->getSubType() == POWER_UP_CHECKPOINT) countPUtimer++;
-		else if (listOfGameObjects[index]->getSubType() == POWER_UP_LIVES) countPULife++;
-	}
 
-	std::cout << "\n\nSaws: " << countTheSaws << std::endl;
-	std::cout << "* Blood Cells: " << countTheBloodCells << std::endl;
-	std::cout << "Large: " << countLargeBloodCells << " Small: " << countSmallBloodCells << " White: " << countWhiteBloodCells << std::endl;
-	std::cout << "* Enemies: " << countEnemies << std::endl;
-	std::cout << "Bots: " << countNanoBots << " Green: " << countGreenVirus << " Orange: " << countOrangeVirus << " Blue: " << countBlueVirus << std::endl;
-	std::cout << "* Enemy Weapons: " << countEnemyBullets << std::endl;
-	std::cout << "En Laser: " << countEnLaser << " Fireball: " << countFireball << " Satellite: " << countVBullet << std::endl;
-	std::cout << "* Power Ups: " << countPowerUps << std::endl;
-	std::cout << "Health PU: " << countPUHealth << " Laser PU: " << countPULaser << " Rocket PU: " << countPURocket << " Timer PU: " << countPUtimer << " New Life PU: " << countPULife << std::endl;
+		std::cout << "\n\nSaws: " << countTheSaws << std::endl;
+		std::cout << "* Blood Cells: " << countTheBloodCells << std::endl;
+		std::cout << "Large: " << countLargeBloodCells << " Small: " << countSmallBloodCells << " White: " << countWhiteBloodCells << std::endl;
+		std::cout << "* Enemies: " << countEnemies << std::endl;
+		std::cout << "Bots: " << countNanoBots << " Green: " << countGreenVirus << " Orange: " << countOrangeVirus << " Blue: " << countBlueVirus << std::endl;
+		std::cout << "* Enemy Weapons: " << countEnemyBullets << std::endl;
+		std::cout << "En Laser: " << countEnLaser << " Fireball: " << countFireball << " Satellite: " << countVBullet << std::endl;
+		std::cout << "* Power Ups: " << countPowerUps << std::endl;
+		std::cout << "Health PU: " << countPUHealth << " Laser PU: " << countPULaser << " Rocket PU: " << countPURocket << " Timer PU: " << countPUtimer << " New Life PU: " << countPULife << std::endl;
+		std::cout << "* Score Values: " << countScoreValues << std::endl;
+		std::cout << "* Player Weapons: " << countNumPlayerWeapons << std::endl;
+		std::cout << "P1 Laser: " << countP1Laser << " P2 Laser: " << countP2Laser << std::endl;
+	}
 
 	for (unsigned int index = 0; index != listOfGameObjects.size(); ++index) {
 		if (listOfGameObjects[index]->getX() <= 0 - listOfGameObjects[index]->getWidth()) {

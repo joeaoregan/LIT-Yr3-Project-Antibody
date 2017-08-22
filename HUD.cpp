@@ -28,7 +28,7 @@ unsigned int createdByTimer = 0, createdByLastTime = 0, changeEverySecond = 0;
 bool HUD::loadLevelStuff() {
 	bool success = true;
 
-	Texture::Instance()->loadFromRenderedTextID("Level " + std::to_string(Game::Instance()->getCurrentLevel()), "levelID", { 0, 255, 0, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 20)); // 2017/03/18 Moved from Game class
+	//Texture::Instance()->loadFromRenderedTextID("Level " + std::to_string(Game::Instance()->getCurrentLevel()), "levelID", { 0, 255, 0, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 20)); // 2017/03/18 Moved from Game class
 
 	// 2017/03/03 Moved to init as text only needs to be loaded once because it never changed, will consider changing to image
 	if (!gSpeedBoostTextTexture.loadFromRenderedText("Speed\nBoost", { 0, 255, 0, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 13), true)) {		// Green Text
@@ -36,7 +36,7 @@ bool HUD::loadLevelStuff() {
 	}
 
 	// Created by text at the bottom of the heads up display
-	if (!gCreatedByTextTexture1.loadFromRenderedText("ANTIBODY", { 50, 200, 255, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 16), true)) {				// Green Text
+	if (!gCreatedByTextTexture1.loadFromRenderedText("ANTIBODY", { 50, 200, 255, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 16), true)) {			// Green Text
 		printf("createdByText(): Unable to render Created By Text Texture!\n");
 	}
 	if (!gCreatedByTextTexture2.loadFromRenderedText("A GAME BY", { 0, 255, 0, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 16), true)) {				// Green Text
@@ -109,6 +109,7 @@ void HUD::displayLevelNum(int levelNum) {
 		//gLevelTextTexture.UIText("Level " + std::to_string(levelNum));	// Render text - Use a string to render the current Level to a texture
 		//Texture::Instance()->getTexture("levelID");
 		Texture::Instance()->loadFromRenderedTextID("Level " + std::to_string(levelNum), "levelID", { 0, 255, 0, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 20));
+
 	previousLevelNum = levelNum;
 	gLevelTextTexture.render(10, 8);
 }

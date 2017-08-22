@@ -85,7 +85,9 @@ public:
 		GameObject::move();				// Inherited movement
 	};
 
-	virtual void destroy() {};
+	virtual void destroy() {
+		GameObject::destroy();			// 2017/03/18 destroy method inherited from Game Object base class
+	};
 
 	/*
 		2017/03/18 Render function

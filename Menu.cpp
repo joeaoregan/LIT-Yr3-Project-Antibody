@@ -232,6 +232,26 @@ void Menu::drawPause() {
 	gMenuTextTexture7.render(gMenuTextTexture7.getX(), gMenuTextTexture4.getY());	// QUIT GAME -> place at button 2s Y position
 	gMenuTextTexture8.render(gMenuTextTexture8.getX(), gMenuTextTexture8.getY());	// PAUSE TITLE
 
+	SDL_RenderSetViewport(Game::Instance()->getRenderer(), &menuViewPort);			// Switch to menu viewport
+
+	createdByTimer2 = SDL_GetTicks();										// Get the current game running time
+	if (createdByTimer2 > createdByLastTime2 + 1500) {						// Decrement countdown timer
+		createdByLastTime2 = createdByTimer2;								// Store this time
+		changeEverySecond2++;												// Decrement the timer
+	//std::cout << "Time: " << countdownTimer << " lastTime: " << lastTime << " currentTime: " << currentTime << std::endl;
+	}
+
+
+	if (changeEverySecond2 % 2 == 1) {
+		//Texture::Instance()->renderMap(textureID, 0, startAt, SCREEN_WIDTH, SCREEN_HEIGHT);
+		Texture::Instance()->renderMap("gameTitleID", 0, 0, 400, 300);
+	}
+	else if (changeEverySecond2 % 2 == 0) {															// Pause with image on screen for 1 second
+		Texture::Instance()->renderMap("levelID", 0, 0, 400, 300);
+		changeEverySecond2 = 0;	// Reset timer
+	}
+
+	SDL_RenderSetViewport(Game::Instance()->getRenderer(), NULL);					// Clear the current viewport to render to full window / screen
 	SDL_RenderPresent(Game::Instance()->getRenderer());								// Update screen
 }
 
