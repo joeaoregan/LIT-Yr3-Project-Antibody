@@ -90,7 +90,7 @@ public:
 	GameStateMachine* getStateMachine() { return m_pGameStateMachine; }
 	
 	bool nameEntered;
-	bool enterName();
+	//bool enterName();
 	//void enterName();
 	bool renderText;
 	std::string inputText = "Name";
@@ -122,6 +122,8 @@ public:
 	std::string infoMessageP1, infoMessageP2; 			// Player notification messages, Yellow writing appearing in the middle of the game screen
 	std::string infoMessageGeneral, infoMessageMap;
 
+	void checkMessageTimes();							// 2017/03/19 Check how long a message has been on screen
+
 	// Number of Game Objects currently on the screen
 	int activeBloodCells;
 	int activeWhiteBloodCells;
@@ -132,8 +134,7 @@ public:
 	int activeEnemyVirusSmall;
 	int activeEnemyBoss;
 
-
-	void setRotatingAngle();	// 2017/02/22 Moved here. Set the angle for rotating objects
+	//void setRotatingAngle();	// 2017/02/22 Moved here. Set the angle for rotating objects // No longer needed angle set in move() function for rotating objects
 	void scrollBackground();	// 2017/02/22 Moved here. Scoll the background
 
 	int getCurrentLevel() { return mCurrentLevel; }

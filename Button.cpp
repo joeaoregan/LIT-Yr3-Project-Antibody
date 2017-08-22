@@ -33,8 +33,8 @@ void Button::setPosition(int x, int y) {
 }
 
 void Button::handleEvent(SDL_Event* e, int buttonSelected) {
-//	SDL_Color textColorOne = { 255, 255, 255 };	//If mouse event happened
-
+	SDL_Color textColorOne = { 255, 255, 255 };	//If mouse event happened	
+	
 	if (e->type == SDL_MOUSEMOTION || e->type == SDL_MOUSEBUTTONDOWN || e->type == SDL_MOUSEBUTTONUP) {
 		//Get mouse position
 		//MainMenu menu;
@@ -42,10 +42,10 @@ void Button::handleEvent(SDL_Event* e, int buttonSelected) {
 		SDL_GetMouseState(&x, &y);
 
 		bool inside = true;											// Check if mouse is in button
-
+		
 		if (x < mPosition.x) inside = false;						// Mouse is left of the button
-		else if (x > mPosition.x + BUTTON_WIDTH) inside = false;	// Mouse is right of the button
-		else if (y < mPosition.y) inside = false;					// Mouse above the button
+		else if (x > mPosition.x + BUTTON_WIDTH) inside = false;	// Mouse is right of the button		
+		else if (y < mPosition.y) inside = false;					// Mouse above the button		
 		else if (y > mPosition.y + BUTTON_HEIGHT) inside = false;	// Mouse below the button
 
 		//Mouse is outside button
@@ -197,7 +197,7 @@ void Button::handleEvent(SDL_Event* e, int buttonSelected) {
 }
 
 // Render the current button sprite at the button position
-//
+// 
 void Button::render(Texture &texture, SDL_Rect *currentClip) {
 	texture.render(mPosition.x, mPosition.y, currentClip);	// Show current button spriteCHANGED - RENDERER IS ADDED
 //void Button::render(Texture &texture, SDL_Renderer *rend, SDL_Rect *currentClip) {

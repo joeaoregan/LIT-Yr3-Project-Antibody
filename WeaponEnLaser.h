@@ -65,7 +65,7 @@ public:
 			setColliderHeight(getHeight());
 		}
 		// Type 1 = orange fireball
-		else {
+		else {								
 			setColliderWidth(25);
 			setColliderHeight(25);
 		}
@@ -79,8 +79,8 @@ public:
 	// Enemy laser Destructor
 	~WeaponEnLaser() {
 		std::cout << "Enemy Laser destructor called.\n";
-	};
-
+	};			
+	
 	// Moves the Enemy laser
 	virtual void move() {
 		GameObject::move();
@@ -100,4 +100,4 @@ public:
 	int centerX, centerY;		// center for rotation
 };
 
-#endif
+#endif#pragma once

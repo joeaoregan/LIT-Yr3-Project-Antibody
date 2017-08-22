@@ -14,8 +14,8 @@
 /*
 	TEXTURE:
 
-	This class manages all texture functionality for the game. Loading textures from, storing them to
-	a map for indexing, and then rendering to screen. There are functions to render textures from text,
+	This class manages all texture functionality for the game. Loading textures from, storing them to 
+	a map for indexing, and then rendering to screen. There are functions to render textures from text, 
 	and also to handle the alpha value of objects, to make them transparent or flash.
 */
 #include "Texture.h"
@@ -59,7 +59,7 @@ bool Texture::load(std::string fileName, std::string id) {
 
 void Texture::draw(std::string id, int x, int y, int width, int height, SDL_RendererFlip flip) {
 //void Texture::draw(std::string id, int x, int y, int width, int height, SDL_Renderer* rend, SDL_RendererFlip flip) {
-//	SDL_Rect renderQuad = { x, y, mWidth, mHeight };	// Set rendering space and render to screen
+	SDL_Rect renderQuad = { x, y, mWidth, mHeight };	// Set rendering space and render to screen
 	SDL_Rect srcRect;
 	SDL_Rect destRect;
 
@@ -293,7 +293,7 @@ void Texture::flashGameObject(int rate, int times) {
 void Texture::modifyAlpha(Uint8 alpha, std::string id) {
 	if (id == "")
 		SDL_SetTextureAlphaMod(mTexture, alpha);			// Modulate texture alpha
-	else
+	else 
 		SDL_SetTextureAlphaMod(m_textureMap[id], alpha);
 }
 
@@ -319,7 +319,7 @@ void Texture::numRocketsLeft(std::string textureText) {
 		printf("numRocketsLeft(): Unable to render Num Rockets Left User Interface Text Texture!\n");
 	}
 }
-/*
+/* 
 	2017-02-15:
 	Function to render the players scores, the FPS, and the current game level
 */
@@ -365,7 +365,7 @@ void Texture::UITextTimer(std::string timerText, unsigned int Timer) {
 
 //std::string previous1, previous2, previous3;
 void Texture::UITextPlayerMessage(std::string playerMessage, int type) {
-
+	
 	free();
 //void Texture::UITextPlayerMessage(std::string playerMessage, SDL_Renderer* rend, int type) {
 	if (type == 0) {
