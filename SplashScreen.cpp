@@ -4,7 +4,97 @@
 
 enum levels {MENU, LEVEL_1, LEVEL_2, LEVEL_3};
 
+int frame1 = 0;
+
 int scrollOffset = SCREEN_HEIGHT;								// Scrolling offset for splash screens
+
+bool SplashScreen::initSplashScreens(SDL_Renderer *rend) {
+	bool success = true;
+
+	if (!gLevel1.loadFromFile("Art/Level1720.png", rend)) {								// 10/01 Added Power Up - Load Power Up texture
+		printf("Failed to load Level 1 texture!\n");
+		success = false;
+	}
+	if (!gLevel2.loadFromFile("Art/Level2720.png", rend)) {								// 10/01 Added Power Up - Load Power Up texture
+		printf("Failed to load Level 2 texture!\n");
+		success = false;
+	}
+	if (!gLevel3.loadFromFile("Art/Level3720.png", rend)) {								// 10/01 Added Power Up - Load Power Up texture
+		printf("Failed to load Level 3 texture!\n");
+		success = false;
+	}
+
+	//Load sprite sheet texture
+	if (!gPressEnterSpriteSheetTexture.loadFromFile("Art/PressEnterSpriteSheet2.png", rend)) {	// Sprite sheet for Press Enter Button
+		printf("Failed to load walking animation texture!\n");
+		success = false;
+	}
+	else {
+		// Set sprite clips 19/01/2017 Added for loop
+		for (int i = 0; i < 6; ++i) {
+			gPressButtonToContinueSpriteClips[i].x = 0;
+			if (i < 4)
+				gPressButtonToContinueSpriteClips[i].y = i * 50;
+			else if (i == 4)
+				gPressButtonToContinueSpriteClips[i].y = 100;
+			else if (i == 5)
+				gPressButtonToContinueSpriteClips[i].y = 50;
+			gPressButtonToContinueSpriteClips[i].w = 718;
+			gPressButtonToContinueSpriteClips[i].h = 50;
+		}
+	}
+
+	if (!gGameOverTextTexture.loadFromFile("Art/GameOver1.png", rend)) {				// Game Over Text
+		printf("Failed to load Game Over texture!\n");
+		success = false;
+	}
+
+	return success;
+}
+
+void SplashScreen::pressButtonToContinue(SDL_Renderer *rend, SDL_Event e) {
+	bool continueGame = false;
+
+	SDL_Rect* currentClip = &gPressButtonToContinueSpriteClips[frame1 / 6];	// Render current frame
+	gPressEnterSpriteSheetTexture.render((SCREEN_WIDTH - currentClip->w) / 2, (SCREEN_HEIGHT - currentClip->h) / 2 + 200, rend, currentClip);
+
+	SDL_RenderPresent(rend);			// Update screen
+	++frame1;	// Go to next frame
+
+	if (frame1 / 6 >= 4) {	// Cycle animation
+		frame1 = 0;
+	}
+
+	while (SDL_PollEvent(&e)) {
+		switch (e.type) {
+		case SDL_KEYDOWN:
+			continueGame = true;
+			break;
+		}
+
+		break;
+	}
+
+	if (!continueGame) pressButtonToContinue(rend, e);
+}
+
+void SplashScreen::closeSplashScreens() {
+	gLevel1.free();
+	gLevel2.free();
+	gLevel3.free();
+	gLevelObjectiveTextTexture.free();
+
+	gPressEnterSpriteSheetTexture.free();
+
+	// End of Level / Game Scores
+	gFinalScoreTextTexture.free();
+	gGameWinnerTextTexture.free();
+	gGameOverTextTexture.free();
+
+	//Free global font
+	TTF_CloseFont(gFont);
+	gFont = NULL;
+}
 
 bool SplashScreen::displayGameIntroSplashScreens(SDL_Renderer *rend) {
 
@@ -28,6 +118,127 @@ bool SplashScreen::displayGameIntroSplashScreens(SDL_Renderer *rend) {
 	scrollVerticalLogo(rend, gLogo2, 1, 15, SCREEN_HEIGHT );		// Scroll up Logo2 and delay for 1 second
 
 	return false;
+}
+
+// Level 1 background with scrolling text
+void SplashScreen::level1IntroScreens(SDL_Renderer *rend, Texture &virus, Texture &orangeVirus, Texture &enemyShip) {
+	gFont = TTF_OpenFont("Fonts/Retro.ttf", 20);
+	textColour = { 0, 255, 0, 255 };
+
+	std::string levelObjective = "Destroy enemy virus and ships      \nThe player with the highest score\nIs the winner";
+
+	if (!gLevelObjectiveTextTexture.loadFromRenderedText(levelObjective, textColour, gFont, rend, true)) {	// Green text for level objectives
+		printf("Unable to render level game objective texture!\n");
+	}
+
+	scrollVerticalLogo(rend, gLevel1, 0, 15, -SCREEN_HEIGHT);											// Scroll Level1 logo down the screen
+
+	enemyInformationSplashScreen(rend, virus, orangeVirus, enemyShip);
+
+	// Objectives
+	scrollVerticalLogo(rend, gLevel1, 1, 10, -SCREEN_HEIGHT);
+
+	scrollUpText(rend, gLevel1, gLevelObjectiveTextTexture, 0);
+}
+
+// Level 2 background, with scrolling text
+void SplashScreen::level2IntroScreens(SDL_Renderer *rend, Texture &virus, Texture &orangeVirus, Texture &enemyShip) {
+	gFont = TTF_OpenFont("Fonts/Retro.ttf", 20);
+	textColour = { 0, 255, 0, 255 };
+
+	std::string levelObjective = "Destroy more enemy virus and ships\nThe player with the highest score\nIs the winner";
+
+	if (!gLevelObjectiveTextTexture.loadFromRenderedText(levelObjective, textColour, gFont, rend, true)) {	// Green text for level objectives
+		printf("Unable to render level game objective texture!\n");
+	}
+
+	scrollVerticalLogo(rend, gLevel2, 0, 15, -SCREEN_HEIGHT);											// Scroll Level1 logo down the screen
+
+	enemyInformationSplashScreen(rend, virus, orangeVirus, enemyShip);
+
+	// Objectives
+	scrollVerticalLogo(rend, gLevel2, 1, 10, -SCREEN_HEIGHT);
+
+	scrollUpText(rend, gLevel2, gLevelObjectiveTextTexture, 0);
+}
+
+// Level 3 background with scrolling text
+void SplashScreen::level3IntroScreens(SDL_Renderer *rend, Texture &virus, Texture &orangeVirus, Texture &enemyShip) {
+	gFont = TTF_OpenFont("Fonts/Retro.ttf", 20);
+	textColour = { 0, 255, 0, 255 };
+
+	std::string levelObjective = "Destroy even more enemy virus and ships\nThe player with the highest score\nIs the winner";
+
+	if (!gLevelObjectiveTextTexture.loadFromRenderedText(levelObjective, textColour, gFont, rend, true)) {	// Green text for level objectives
+		printf("Unable to render level game objective texture!\n");
+	}
+
+	scrollVerticalLogo(rend, gLevel3, 0, 15, -SCREEN_HEIGHT);											// Scroll Level1 logo down the screen
+
+	enemyInformationSplashScreen(rend, virus, orangeVirus, enemyShip);
+
+	// Objectives
+	scrollVerticalLogo(rend, gLevel3, 1, 10, -SCREEN_HEIGHT);
+
+	scrollUpText(rend, gLevel3, gLevelObjectiveTextTexture, 0);
+}
+
+
+// Final Score For Level 1
+void SplashScreen::level1FinalScore(SDL_Renderer *rend) {
+	scrollVerticalLogo(rend, gLevel1, 1, 15, -SCREEN_HEIGHT);
+}
+void SplashScreen::level2FinalScore(SDL_Renderer *rend) {
+	scrollVerticalLogo(rend, gLevel2, 1, 15, -SCREEN_HEIGHT);
+}
+void SplashScreen::level3FinalScore(SDL_Renderer *rend) {
+	scrollVerticalLogo(rend, gLevel3, 1, 15, -SCREEN_HEIGHT);
+}
+void SplashScreen::endOfGame(SDL_Renderer *rend, int level, std::string finalScore, std::string winner) {
+	gFont = TTF_OpenFont("Fonts/Retro.ttf", 40);
+	textColour = {0, 255, 0, 255};
+	TTF_SetFontStyle(gFont, TTF_STYLE_BOLD);											// Use bold font
+	std::string complete = "Complete!!!";
+
+	if (!gFinalScoreTextTexture.loadFromRenderedText(finalScore, textColour, gFont, rend)) {
+		printf("Unable to render final scores texture!\n");
+	}
+	if (!gStoryB.loadFromRenderedText(complete, {255, 255, 255, 255}, TTF_OpenFont("Fonts/Retro.ttf", 60), rend)) {
+		printf("Unable to render final scores texture!\n");
+	}
+
+	if (level == LEVEL_1) level1FinalScore(rend);					// Scroll Level 1 background down from top of screen
+	else if (level == LEVEL_2) level2FinalScore(rend);					// Scroll Level 1 background down from top of screen
+	else if (level == LEVEL_3) level3FinalScore(rend);					// Scroll Level 1 background down from top of screen
+
+	gGameOverTextTexture.setFlash(true);
+	gGameOverTextTexture.flashGameObject(5);
+
+	SDL_SetRenderDrawColor(rend, 0x3C, 0x3C, 0x3C, 0xFF);			// Grey colour --> shows up in UI
+	SDL_RenderClear(rend);
+
+	gLevel3.render(0, 0, rend);										// Static background	AND THE BACKGROUND NEEDS TO BE BEHIND THE TEXT EACH TIME
+
+	if (level == 1) scrollUpText(rend, gLevel1, gStoryB, 1, 15);										// 2nd page of text for story
+	else if (level == 2) scrollUpText(rend, gLevel2, gStoryB, 1, 15);										// 2nd page of text for story
+
+	gFinalScoreTextTexture.modifyAlpha(gGameOverTextTexture.getAlpha());
+	gFinalScoreTextTexture.render((SCREEN_WIDTH - gFinalScoreTextTexture.getWidth()) / 2, (SCREEN_HEIGHT - gFinalScoreTextTexture.getHeight() + 300) / 2, rend); // FOR TESTING
+
+	if (level > 3) {
+		if (!gGameWinnerTextTexture.loadFromRenderedText(winner, textColour, gFont, rend)) {
+			printf("Unable to render game winner texture!\n");
+		}
+
+		if (!gFinalScoreTextTexture.loadFromRenderedText(finalScore, textColour, gFont, rend)) {
+			printf("Unable to render final scores texture!\n");
+		}
+
+		gGameOverTextTexture.modifyAlpha(gGameOverTextTexture.getAlpha());
+		gGameOverTextTexture.render((SCREEN_WIDTH - gGameOverTextTexture.getWidth()) / 2, (SCREEN_HEIGHT - gGameOverTextTexture.getHeight() - 100) / 2, rend);		// FOR TESTING
+		gGameWinnerTextTexture.modifyAlpha(gGameOverTextTexture.getAlpha());
+		gGameWinnerTextTexture.render((SCREEN_WIDTH - gGameWinnerTextTexture.getWidth()) / 2, (SCREEN_HEIGHT - gGameWinnerTextTexture.getHeight() + 450) / 2, rend); // FOR TESTING
+	}
 }
 
 // Scroll a logo up or down the screen
@@ -88,3 +299,34 @@ void SplashScreen::scrollTextAndImage(SDL_Renderer *rend, int seconds, int start
 
 	SDL_Delay(seconds * 1000);
 }
+
+void SplashScreen::enemyInformationSplashScreen(SDL_Renderer *rend, Texture &tx1, Texture &tx2, Texture &tx3) {
+	gFont = TTF_OpenFont("Fonts/Retro.ttf", 20);
+	textColour = { 255,255,255,255 };
+
+
+	storyPage1 = "The player must avoid contact with Enemy Viruses\nThe Viruses will move towards the nearest player\n\n\nThe Orange Virus moves towards the nearest player\nAnd explodes when its timer has run out\n\n\nThe Enemy Ship fires lasers\nAs it crosses the screen right to left";
+
+	std::string storyPage2 = "Story 2 blah blah \nFill this\nIn Later";
+	std::string storyPage3 = "Story 3 blah blah blah\nFill this\nIn Later";
+
+	if (!gStoryA.loadFromRenderedText(storyPage1, textColour, gFont, rend, true)) {
+		printf("Unable to render level game objective texture!\n");
+	}
+
+	// STORY
+	textColour = { 255,255,255,255 };
+	if (!gStoryB.loadFromRenderedText(storyPage2, textColour, gFont, rend, true)) {
+		printf("Failed to render text texture!\n");
+	}
+	if (!gStoryC.loadFromRenderedText(storyPage3, textColour, gFont, rend, true)) {
+		printf("Failed to render text texture!\n");
+	}
+
+	scrollTextAndImage(rend, 2, SCREEN_HEIGHT, gLevel1, gStoryA, tx1, tx2, tx3);
+
+	scrollUpText(rend, gLevel1, gStoryB, 2);										// 2nd page of text for story
+	scrollUpText(rend, gLevel1, gStoryC, 2);										// 3rd page of text for story
+}
+
+

@@ -12,11 +12,11 @@ class WeaponEnLaser : public Weapon {
 public:
 	WeaponEnLaser(int type = 0, int rotateCenter = 0);						// Initializes the variables
 	~WeaponEnLaser();									// Destructor
-
-	virtual void movement();						// Moves the laser
+	
+	virtual void movement();						// Moves the laser	
 	virtual void movement(int x, int y, float timer);	// Center point and timer for virus
 
 	int centerX, centerY;		// center for rotation
 };
 
-#endif
+#endif#pragma once

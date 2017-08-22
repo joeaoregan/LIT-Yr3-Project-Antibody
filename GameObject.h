@@ -44,7 +44,7 @@ public:
 	int getHealth() { return m_Health; }			// return the objects health
 	int getMaxHealth() { return MAX_HEALTH; }
 	int getNumLives() { return m_NumLives; }
-	int getType() { return m_Type; }				// 2017/01/25 Return the objects type
+	unsigned int getType() { return m_Type; }				// 2017/01/25 Return the objects type
 	int getAngle() { return m_Angle; }				// 2017/02/07 Return the objects angle
 
 	void setX(int x) { m_x = x; }					// Set GameObject X coord
@@ -67,7 +67,7 @@ public:
 	void setColliderHeight(int h) { m_Collider.h = h; }
 	void setColliderX(int x) { m_Collider.x = x; }
 	void setColliderY(int y) { m_Collider.y = y; }
-	void setType(int t) { m_Type = t; }				// 2017/01/25 Set the objects type
+	void setType(unsigned int t) { m_Type = t; }				// 2017/01/25 Set the objects type
 	void setAngle(int a) { m_Angle = a; }
 
 	//SDL_Color getFontColour();
@@ -108,10 +108,10 @@ private:
 	int m_Score;					// Score value for killing or collecting an object
 	int m_NumLives;
 
-	int m_Type;						// Integer value to indicate the type of game object POWER UP, VIRUS
+	unsigned int m_Type;			// Integer value to indicate the type of game object POWER UP, VIRUS
 
 	// 31-01 Display time
-	float m_TimeTracker;				// Time to begin displaying
+	float m_TimeTracker;			// Time to begin displaying
 	float m_Timer;					// Time to end displaying
 	//SDL_Color fontColour;			// moved to texture class
 	int m_Angle;					// 2017-02-07: Angle to rotate an object

@@ -45,6 +45,13 @@ Player::Player() {
 	setScore(0);
 	setAlive(false);
 	setNumLives(3);							// works, game is over when both players lives are <= 0
+
+	//Initialize particles
+	for (int i = 0; i < TOTAL_PARTICLES; ++i) {
+		particles[i] = new Particle(getX(), getY(), gDarkBlueParticleTexture, gMediumBlueParticlTexture, gLightBlueParticleTexture);
+	}
+
+	drawParticle = true;
 }
 
 Player::Player(Texture &dark, Texture &medium, Texture &light) {
@@ -75,6 +82,51 @@ Player::Player(Texture &dark, Texture &medium, Texture &light) {
 	}
 
 	drawParticle = true;
+}
+
+bool Player::loadMediaPlayer(SDL_Renderer *rend) {
+	bool success = true;
+	// Particles
+	if (!gDarkBlueParticleTexture.loadFromFile("Art/particleDarkBlue.bmp", rend)) {	// Load Dark Particle texture
+		printf("Failed to load red texture!\n");
+		success = false;
+	}
+	if (!gMediumBlueParticlTexture.loadFromFile("Art/particleMediumBlue.bmp", rend)) {	// Load Medium Particle texture
+		printf("Failed to load green texture!\n");
+		success = false;
+	}
+	if (!gLightBlueParticleTexture.loadFromFile("Art/particleLightBlue.bmp", rend)) {	// Load Light Particle texture
+		printf("Failed to load blue texture!\n");
+		success = false;
+	}
+	if (!gShimmerTexture.loadFromFile("Art/shimmer.bmp", rend)) {						// Load shimmer texture
+		printf("Failed to load shimmer texture!\n");
+		success = false;
+	}
+
+	return success;
+}
+
+void Player::closePlayer() {
+	// Particles
+	gDarkBlueParticleTexture.free();
+	gMediumBlueParticlTexture.free();
+	gLightBlueParticleTexture.free();
+	gShimmerTexture.free();
+}
+
+// 2017/01/22 Separated player render() from game.cpp
+void Player::render(Texture &player, SDL_Renderer *rend) {
+	//Set texture transparency
+	gDarkBlueParticleTexture.modifyAlpha(100);	// Alpha of 192 gives particles a semi transparent look
+	gMediumBlueParticlTexture.modifyAlpha(100);
+	gLightBlueParticleTexture.modifyAlpha(100);
+	gShimmerTexture.modifyAlpha(150);
+
+	if (getAlive()) {																			// 2017/01/22 If the player is alive render the player, with particles
+		renderParticles(gDarkBlueParticleTexture, gMediumBlueParticlTexture, gLightBlueParticleTexture, gShimmerTexture, rend);
+		player.render(getX(), getY(), rend);
+	}
 }
 
 // 2017/01/22 Separated player render() from game.cpp

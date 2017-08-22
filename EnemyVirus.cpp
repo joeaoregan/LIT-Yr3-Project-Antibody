@@ -1,10 +1,12 @@
 #include "EnemyVirus.h"
 
 EnemyVirus::EnemyVirus(int type, float time) {
-	if(type == 0)
+	if(type == GREEN)
 		setScore(10);						// Value for killing object
-	else if (type == 1)
+	else if (type == ORANGE)
 		setScore(15);
+	else if (type == BLUE)
+		setScore(20);
 
 	setWidth(75);
 	setHeight(75);

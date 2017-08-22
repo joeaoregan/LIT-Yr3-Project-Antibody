@@ -2,7 +2,9 @@
 #define PLAYER_H
 
 #include "GameObject.h"
+#include "Texture.h"
 #include "Particle.h"
+
 
 // The Player ship that will move around on the screen
 
@@ -22,7 +24,17 @@ public:
 	Player();							// Initializes the variables
 	Player(Texture &dark, Texture &medium, Texture &light);				// 2017/01/20 Particles
 
+	// Particles
+	Texture gDarkBlueParticleTexture;	// Dark blue engine particle
+	Texture gMediumBlueParticlTexture;	// Medium blue engine particle
+	Texture gLightBlueParticleTexture;	// Light blue engine particle
+	Texture gShimmerTexture;			// Shimmer engine particle
+
 	void spawnPlayerSaw(int x, int y, int player);
+
+	bool loadMediaPlayer(SDL_Renderer *rend);
+	void closePlayer();
+	void render(Texture &player, SDL_Renderer *rend);
 
 	//void handleEvent(SDL_Event& e);
 	void handleEvent(SDL_Event& e, int player);	// Takes key presses and adjusts the ship's velocity

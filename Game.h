@@ -39,10 +39,6 @@ public:
 	bool gameOver = false;
 	bool levelOver = false;
 
-	// Render Healthbars
-	//enum healthBarOrientation { VERTICAL, HORIZONTAL };
-	//void renderHealthBar(int x, int y, int w, int h, float Percent, SDL_Color FGColor, SDL_Color BGColor, int orientation);	// 2017/01/20 Added orientation
-
 	bool init();								// Starts up SDL and creates window -- ERROR window won't close
 	void update();
 	void close();								// Frees media and shuts down SDL
@@ -51,7 +47,6 @@ public:
 	void displayLevelIntroScreens(int level);
 	std::string levelObjective;
 
-	void menu();
 	void playLevel(int levelNum);
 
 	void displayScoreForObject(int x, int y, int score, int player);
@@ -72,14 +67,14 @@ public:
 	void spawnPowerUp();
 	void spawnRocket(int x, int y, int player, int type = ROCKET);				// 2017-02-06
 
-
+	void gameProgress();
 
 	//void gamepadInfo();										// 2017/01/17: Separate gamepad information
 
 
 
 	void displayText();										// 2017/01/17: Display game text
-	void pressButtonToContinue();							// 2017/01/18
+	//void pressButtonToContinue();							// 2017/01/18
 
 	void collisionCheck();
 	//bool checkCollision(SDL_Rect *a, SDL_Rect *b);

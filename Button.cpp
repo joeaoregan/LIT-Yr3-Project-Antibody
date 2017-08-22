@@ -32,7 +32,7 @@ void Button::handleEvent(SDL_Event* e, int buttonSelected) {
 
 		bool inside = true;	// Check if mouse is in button
 
-							//Mouse is left of the button
+		//Mouse is left of the button
 		if (x < mPosition.x) {
 			inside = false;
 		}
@@ -58,8 +58,7 @@ void Button::handleEvent(SDL_Event* e, int buttonSelected) {
 			switch (e->type) {
 			case SDL_MOUSEMOTION:
 				mCurrentSprite = BUTTON_SPRITE_MOUSE_OVER_MOTION;	// Set sprite mouse over 1
-																	//std::cout << "Mouse Motion" << std::endl;
-																	// THIS ONE PROBABLY NOT NEEDED
+				//std::cout << "Mouse Motion" << std::endl; // THIS ONE PROBABLY NOT NEEDED
 				break;
 
 			case SDL_MOUSEBUTTONDOWN:
@@ -71,10 +70,7 @@ void Button::handleEvent(SDL_Event* e, int buttonSelected) {
 					std::cout << "Selected: Start A New Game!" << std::endl;
 					game.setCurrentLevel(1);
 					std::cout << "Level: " << game.getCurrentLevel() << std::endl;
-					//game.close();
-					//game.init();
 					game.update();
-					//menu.close();
 					// Call a function in Game.cpp in the Main Project
 				}
 				else if (buttonSelected == SETTINGS) {
