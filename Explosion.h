@@ -71,7 +71,6 @@ public:
 			setFrames(16);
 		}
 
-		// Animation Stuff
 		setAnimCount(0);
 		setCurrentFrame(0);								// Start at 1st frame of animation
 		setAnimRow(0);									// Current row in the sprite sheet
@@ -92,7 +91,7 @@ public:
 		//frameCount++;
 		setAnimCount(getAnimCount() + 1);
 		//setCurrentFrame(getCurrentFrame() + int(frameCount / 100));
-		setCurrentFrame(getCurrentFrame() + (getAnimCount() / 20));
+		setCurrentFrame(getCurrentFrame() + int(getAnimCount() / 18));
 		if (getCurrentFrame() == getNumFrames()) setAlive(false);
 	};
 

@@ -82,7 +82,7 @@ public:
 	void gameProgress();
 
 	void displayText();										// 2017/01/17: Display game text
-	
+
 	void infoMessage(std::string message, int type = 0, int timer = 0);
 
 	void collisionCheck();
@@ -93,7 +93,7 @@ public:
 
 	bool moveToPlayer1(int x, int y);						// 2017/03/22 Separate which Player the virus chooses to move towards to function
 
-	void destroyGameObjects();								// 2017-01-09 JOE: Destroy the game objects when finished on the screen
+//	void destroyGameObjects();								// 2017-01-09 JOE: Destroy the game objects when finished on the screen
 
 	void spawnRandomAttributes(int &x, int &y, int &randomSpeed, int xMuliplier = 0, int yPadding = 80, int speed = 1);
 

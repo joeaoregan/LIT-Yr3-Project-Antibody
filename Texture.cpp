@@ -432,15 +432,11 @@ void Texture::clearMedia() {
 
 }
 
-const int NUM_TEXTURES2 = 48;
+const int NUM_TEXTURES2 = 36;
 
 // 2D Array of textures, with path to file, texture ID, and description for error messages
 std::string textures2[NUM_TEXTURES2][3] = {
-	// Players
-	{ "Art/Player1Ship.png", "player1ID", "Player 1" },								// 2017/03/22 Added Player 1 Texture to map
-	{ "Art/Player2Ship.png", "player2ID", "Player 2" },								// 2017/03/22 Added Player 2 Texture to map
-
-	// Map
+	// Game
 	{ "Art/Prof.png", "profID", "Professor" },										// Map texture to show the players current position inside the professor
 	{ "Art/Player1ShipBlue30.png", "mapShipID", "Blue Mini Map Ship" },				// Map texture to show the players current position inside the professor
 
@@ -473,7 +469,6 @@ std::string textures2[NUM_TEXTURES2][3] = {
 	{ "Art/NinjaStarBlue.png", "nsP2ID", "Ninja Star Player 2" },					// 2017/03/18 Added Ninja Star for Player 2 to map
 	{ "Art/VirusFireball.png", "fireballID", "Fire Ball Weapon" },
 	{ "Art/EnemyVirusSatellite.png", "satelliteID", "Virus Satellite Projectile" },
-	{ "Art/eyeLaserSpriteSheet.png", "eyeLaserID", "Enemy Boss Eye Laser" },		// 2017/03/22 Added Enemy Boss Eye Laser to map
 	{ "Art/LaserGreen.png", "greenLaserID", "Green Laser" },
 	{ "Art/LaserOrange.png", "orangeLaserID", "Orange Laser" },
 	{ "Art/LaserBlue.png", "blueLaserID", "Blue Laser" },
@@ -493,18 +488,7 @@ std::string textures2[NUM_TEXTURES2][3] = {
 	{ "Art/LaserGunV3.png", "laserPowerUpV3ID", "Triple Laser HUD" },
 
 	// Obstacles
-	{ "Art/Blockage.png", "blockageID", "Blockage" },
-
-	// Animated Objects
-	{ "Art/EnemySpriteSheet.png", "nanoBotID", "Enemy Ship Sprite Sheet" },
-	{ "Art/eyeLaserSpriteSheet.png", "eyeLaserID", "Enemy Eye Laser Sprite Sheet" },
-	{ "Art/lorcanSpriteSheet.png", "bossID", "Enemy Boss Sprite Sheet" },
-	{ "Art/EnemyVirus_SpriteSheet_Green.png", "greenVirusID", "Green Virus Sprite Sheet" },
-	{ "Art/EnemyVirus_SpriteSheet_Orange.png", "orangeVirusID", "Orange Virus Sprite Sheet" },
-	{ "Art/EnemyVirus_SpriteSheet_Blue.png", "blueVirusID", "Blue Virus Sprite Sheet" },
-	{ "Art/EnemyVirus_SpriteSheet_Green_Small.png", "greenVirusSmallID", "Small Green Virus Sprite Sheet" },
-	{ "Art/EnemyVirus_SpriteSheet_Orange_Small.png", "orangeVirusSmallID", "Small Orange Virus Sprite Sheet" },
-	{ "Art/EnemyVirus_SpriteSheet_Blue_Small.png", "blueVirusSmallID", "Small Blue Virus Sprite Sheet" }
+	{ "Art/Blockage.png", "blockageID", "Blockage" }
 };
 
 bool Texture::loadTextureMedia() {

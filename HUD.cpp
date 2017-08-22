@@ -131,7 +131,7 @@ void HUD::closeLevelStuff() {
 void HUD::render() {
 	if (weaponScrolling > 0) weaponScrolling--;
 
-	bool numPlayers2 = Game::Instance()->twoPlayer;
+//	bool numPlayers2 = Game::Instance()->twoPlayer;
 	scoreP1 = Game::Instance()->player1Score;
 	scoreP2 = Game::Instance()->player2Score;
 

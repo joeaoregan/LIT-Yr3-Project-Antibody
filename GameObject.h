@@ -25,24 +25,24 @@
 
 const int TOTAL_PARTICLES2 = 20;	// Particle count
 
-// Main types of Game Objects
+
 enum GameObjectTypes {
-	PLAYER, BACKGROUND,
-	BLOOD_CELL, PLAYER_WEAPON, ENEMY_WEAPON, ENEMY_OBJECT, POWER_UP, SMALL_VIRUS, BLOCKAGE,
-	MAP_ALERT, SCORE_TEXT, EXPLOSION
+	PLAYER,
+	BLOOD_CELL, PLAYER_WEAPON, ENEMY_WEAPON, ENEMY_OBJECT, POWER_UP, SMALL_VIRUS, BLOCKAGE,				// Main type of object
+	MAP_ALERT, SCORE_TEXT, EXPLOSION, BACKGROUND																// Scores
 };
 enum GameObjectSubTypes {
-	PLAYER1, PLAYER2,																									// Players
-	PLAYER1_SCORE, PLAYER2_SCORE,																						// Scores
-	POWER_UP_HEALTH, POWER_UP_LASER, POWER_UP_ROCKET, POWER_UP_CHECKPOINT, POWER_UP_LIVES,								// Power ups
-	ENEMY_SHIP_LASER, BLUE_VIRUS_BULLET, VIRUS_FIREBALL,																// Bullets
-	FIRE_EXPLOSION, BLOOD_EXPLOSION, GREEN_VIRUS_EXPLOSION, ORANGE_VIRUS_EXPLOSION, BLUE_VIRUS_EXPLOSION, EYE_LASER,	// Explosions
-	SAW1, SAW2,																											// Saw
-	LARGE_BLOOD_CELL, SMALL_BLOOD_CELL, WHITE_BLOOD_CELL,																// Blood Cells
-	ENEMY_SHIP, ENEMY_BOSS,																								// Enemies
-	VIRUS_GREEN, VIRUS_ORANGE, VIRUS_BLUE, VIRUS_SMALL_GREEN, VIRUS_SMALL_ORANGE, VIRUS_SMALL_BLUE,						// Virus
-	LASER_P1, LASER_P2, LASER_V2_P1, LASER_V2_P2, LASER_V3_P1, LASER_V3_P2,												// Player Laser
-	NINJA_STAR_P1, NINJA_STAR_P2, ROCKET_P1, ROCKET_P2,																	// Misc Weapons
+	PLAYER1, PLAYER2,																						// Players
+	PLAYER1_SCORE, PLAYER2_SCORE,																			// Scores
+	POWER_UP_HEALTH, POWER_UP_LASER, POWER_UP_ROCKET, POWER_UP_CHECKPOINT, POWER_UP_LIVES,					// Power ups
+	ENEMY_SHIP_LASER, BLUE_VIRUS_BULLET, VIRUS_FIREBALL,													// Bullets
+	FIRE_EXPLOSION, BLOOD_EXPLOSION, GREEN_VIRUS_EXPLOSION, ORANGE_VIRUS_EXPLOSION, BLUE_VIRUS_EXPLOSION,	// Explosions
+	SAW1, SAW2,																								// Saw
+	LARGE_BLOOD_CELL, SMALL_BLOOD_CELL, WHITE_BLOOD_CELL,													// Blood Cells
+	ENEMY_SHIP, ENEMY_BOSS,																					// Enemies
+	VIRUS_GREEN, VIRUS_ORANGE, VIRUS_BLUE, VIRUS_SMALL_GREEN, VIRUS_SMALL_ORANGE, VIRUS_SMALL_BLUE,			// Virus
+	LASER_P1, LASER_P2, LASER_V2_P1, LASER_V2_P2, LASER_V3_P1, LASER_V3_P2,									// Player Laser
+	NINJA_STAR_P1, NINJA_STAR_P2, ROCKET_P1, ROCKET_P2,														// Misc Weapons
 };
 
 /*
@@ -109,7 +109,7 @@ public:
 	int getSubType() const { return m_SubType; }						// 2017/01/25 Return the objects type
 	int getAngle() const { return m_Angle; }							// 2017/02/07 Return the objects angle
 	std::string getTextureID() const { return m_TextureID; }			// return the texture ID
-	SDL_Rect getCollider() const { return m_Collider; }					// Get the collider for an object
+	SDL_Rect* getCollider() { return &m_Collider; }					// Get the collider for an object
 	int getNumFrames() const { return m_Frames; }						// 2017/02/09 Animation frames
 	int getCurrentFrame() const { return m_CurrentFrame; }				// 2017/03/22 Get the current animation frame of sprite sheet
 	int getAnimRow() const { return m_CurrentAnimationRow; }			// 2017/03/22 Get the current animation row of sprite sheet
@@ -162,7 +162,7 @@ public:
 	// Blue Virus Satellite object
 	int rotateCounter;													// degrees the satellite object has rotated
 	bool satelliteObjectOrbiting;										// Check is satellite object orbiting Blue Virus
-	int whichVirusAssignedTo;											// The Blue virus the satellite is assigned to
+	unsigned int whichVirusAssignedTo;									// The Blue virus the satellite is assigned to
 
 	// Rockets
 	bool getRocketBarActive() const { return m_RocketBarActive; }		// Is the rocket status bar active
@@ -212,17 +212,14 @@ protected:
 	std::string m_Name;				// Name of the object
 	std::string m_TextureID;		// ID for the texture associated with the object
 	int m_Health;					// Value between 0 and 160
+	int m_x, m_y;					// GameObject coords
+	int m_xVel, m_yVel, m_Velocity;	// Velocity
 	int m_Width, m_Height;			// Dimensions
 	bool m_Alive;					// Is the GameObject active on screen, return true if its health is greater than 0
 	SDL_Rect m_Collider;			// Collider for objects
 	int m_Score;					// Score value for killing or collecting an object
 	int m_NumLives;					// The playes number of lives
 	int m_Damage;					// The damage an object inflicts
-
-	// Movement
-	int m_x, m_y;					// GameObject coords
-	int m_xVel, m_yVel, m_Velocity;	// Velocity
-	//bool m_movesToCoords;			// 2017/03/22 The objects moves to specified coordinates, flag to indicate to use move() function with x and y values
 
 	// Object Types
 	int m_SubType;					// Integer value to indicate the type of game object POWER UP, VIRUS
@@ -231,7 +228,7 @@ protected:
 	// 31-01 Display time
 	float m_TimeTracker;			// Time to begin displaying
 	float m_Timer;					// Time to end displaying
-	unsigned int lastTime = 0.0;	// Previous stored time
+	unsigned int lastTime = 0.0;
 
 	// Textures and Animations
 	int m_Angle;					// 2017-02-07: Angle to rotate an object

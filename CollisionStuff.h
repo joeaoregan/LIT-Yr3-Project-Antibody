@@ -18,9 +18,8 @@
 #define COLLISION_STUFF_H
 
 #include <SDL.h>
-#include "Level.h"
 
-bool Level::checkCollision(SDL_Rect *a, SDL_Rect *b) {
+bool Game::checkCollision(SDL_Rect *a, SDL_Rect *b) {
 	//The sides of the rectangles
 	int leftA, leftB, rightA, rightB;
 	int topA, topB, bottomA, bottomB;

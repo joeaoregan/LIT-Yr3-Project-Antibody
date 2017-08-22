@@ -9,12 +9,13 @@
 /*
 	SCORE VALUE TEXT:
 
-	This class generates the scores that appear when an enemy is shot, 
+	This class generates the scores that appear when an enemy is shot,
 	using a different colour to indicate which player will recive the points
 */
 
 #include "ScoreValueText.h"
 #include "Texture.h"
+#include <math.h>
 
 ScoreValueText::ScoreValueText(int x, int y, int score, int player) {
 	setType(SCORE_TEXT);
@@ -37,7 +38,7 @@ ScoreValueText::ScoreValueText(int x, int y, int score, int player) {
 
 ScoreValueText::~ScoreValueText() {}
 int i = 0;
-void ScoreValueText::move(int x, int y) {	
+void ScoreValueText::moveStalker(int x, int y) {
 	float dx = x - getX();
 	float dy = y - getY();
 	float goal_dist = sqrt((dx * dx) + (dy * dy));

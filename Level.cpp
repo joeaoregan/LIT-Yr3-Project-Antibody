@@ -32,12 +32,13 @@
 #include "Gamepad.h"				// 2017/02/09 JOE: Class for handling gamepad functionality
 #include "EnemyBoss.h"				// 2017/02/03 JOE: Class for handling Enemy Boss objects
 #include "GameStateMachine.h"		// 2017/02/03 JOE: Class for handling Game State Machine (Finite State Machine)
-#include "StateMainMenu.h"			// 2017/02/03 JOE: Class for handling the main menu state
+//#include "StateMainMenu.h"			// 2017/02/03 JOE: Class for handling the main menu state
 #include "Blockage.h"
 #include "randomMessageGenerator.h"	// 2017/02/04 JOE: Class for randomising messages
 #include "SettingsMenu.h"
 #include "HighScores.h"
 #include "EnterName.h"
+#include <math.h>
 
 bool miniMap = true;
 
@@ -66,11 +67,6 @@ Particle particle;
 FPS fps1;							// 2017/02/01 Moved FPS functionality to it's own class
 StatusBar bar;
 
-Texture gPlayer1Texture;
-Texture gPlayer2Texture;
-Texture gEnemyBossEyesSpriteSheetTexture;
-Texture gEnemyBossStatusBarTextTexture;
-
 // Animation frames
 SDL_Rect gEnemyBossSpriteClips[6];				// Sprite frames for Enemy Boss animation
 SDL_Rect gEnemyBossEyes[16];					// Sprite frames for Enemy Boss Small Blue Virus generation animation
@@ -87,7 +83,7 @@ Texture gSmallGreenVirusSpriteSheetTexture;		// Small Green Virus sprite sheet
 Texture gSmallOrangeVirusSpriteSheetTexture;	// Small Orange Virus sprite sheet
 Texture gSmallBlueVirusSpriteSheetTexture;		// Small Blue Virus sprite sheet
 
-												// Objects and weapons
+// Objects and weapons
 Texture gPlayer1Texture;			// Player 1 ship
 Texture gPlayer2Texture;			// Player 2 ship
 
@@ -135,10 +131,10 @@ bool Level::loadMedia() {
 		std::cout << "Player 2 Health: " << player2->getHealth() << " Lives: " << player2->getNumLives() << std::endl;					// Player 1 health & Lives at start of game
 		//if (testMode) player2->setNumLives(MAX_NUM_LIVES);
 	}
-	
+
 	// View ports
 	setViewport(gameViewport, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT_GAME);	// Main Game Screen
-	
+
 	// Global Level Media
 	bool success = true;														// Loading success flag
 
@@ -227,7 +223,7 @@ bool Level::loadMedia() {
 	else {
 		setupAnimationClip(gSmallBlueVirusSpriteClips, 40, 40, 4);									// Set sprite clips
 	}
-	
+
 	/*
 	// Specific Level Media
 	if (Game::Instance()->getCurrentLevel() == LEVEL_1) {
@@ -242,7 +238,7 @@ bool Level::loadMedia() {
 }
 
 void setupAnimationClip(SDL_Rect rect[], int width, int height, int frames, int rows) {
-	for (int i = 0; i < frames; ++i) {
+	for (unsigned int i = 0; i < frames; ++i) {
 		rect[i].x = i * width;
 		rect[i].y = i * rows;
 		rect[i].w = width;
@@ -290,14 +286,14 @@ void Level::update() {
 }
 
 void Level::playLevel(int levelNum) {
-	//if (!nameEntered) 
+	//if (!nameEntered)
 	//nameEntered = enterName();
-	//else 
+	//else
 	if (Game::Instance()->displayLevelIntro)
 		displayLevelIntroScreens(levelNum);	// Set true or false in _test.cpp
 
 	if (!gameOver) {
-		// 2017/03/04 Display a message at the start of each level 
+		// 2017/03/04 Display a message at the start of each level
 		if (countdownTimer == GAME_TIMER) infoMessage(randomLevelMessageGenerator(Game::Instance()->getCurrentLevel()), 3);
 
 		spawnMovingObjects();				// 2017/01/10 JOE: Spawn enemies and obstacles at random coords & distances apart
@@ -336,9 +332,8 @@ void Level::renderGamePlay() {
 		//if (player1->getAlive()) SDL_RenderDrawRect(getRenderer(), &player1->getCollider());					// Player 1 collider rectangle graphic
 		//if (twoPlayer && player2->getAlive()) SDL_RenderDrawRect(getRenderer(), &player2->getCollider());		// Player 2 collider rectangle graphic
 
-
-		for (int index = 0; index != listOfGameObjects.size(); ++index) {
-			SDL_RenderDrawRect(Game::Instance()->getRenderer(), &listOfGameObjects[index]->getCollider());	// Draw object colliders
+		for (unsigned int index = 0; index != listOfGameObjects.size(); ++index) {
+			SDL_RenderDrawRect(Game::Instance()->getRenderer(), listOfGameObjects[index]->getCollider());	// Draw object colliders
 			frames = listOfGameObjects[index]->getNumFrames();			// 2017/02/09 Fixed the explosion animations, they are now assigned to indiviual objects with the game object frame attribute
 
 			if (listOfGameObjects[index]->getSubType() == ENEMY_BOSS) { //
@@ -419,7 +414,7 @@ void Level::renderGamePlay() {
 			player2->render(gPlayer2Texture);
 		}
 
-		for (int index = 0; index != listOfGameObjects.size(); ++index) {
+		for (unsigned int index = 0; index != listOfGameObjects.size(); ++index) {
 			// Orange Virus
 			if (listOfGameObjects[index]->getSubType() == VIRUS_ORANGE) {									// 2017/01/25 If the type of virus is an Orange Exploding Virus
 																											// Start the timer
@@ -465,7 +460,7 @@ void Level::renderGamePlay() {
 				}
 
 				// Set the Virus Satellite center point
-				for (int index1 = 0; index1 != listOfGameObjects.size(); ++index1) {
+				for (unsigned int index1 = 0; index1 != listOfGameObjects.size(); ++index1) {
 					if (listOfGameObjects[index1]->getSubType() == BLUE_VIRUS_BULLET) {
 
 						// Timer For Blue Virus!!!
@@ -494,14 +489,14 @@ void Level::renderGamePlay() {
 							&& listOfGameObjects[index]->getTimer() < 0
 							&& listOfGameObjects[index1]->getProjectileActive() == true) {
 
-							listOfGameObjects[index1]->move();								// Projectile movement							
+							listOfGameObjects[index1]->move();								// Projectile movement
 						}
 					}
 				}
 			}
 		}
 
-		// User Interface / Player Information Panel			
+		// User Interface / Player Information Panel
 		headsUpDisplay.getPlayerInfo(player1->getAlive(), player2->getAlive(),	// 2017/03/20 values needed for heads up display
 			player1->getNumLives(), player2->getNumLives(),
 			player1->getLaserGrade(), player2->getLaserGrade(),
@@ -510,7 +505,7 @@ void Level::renderGamePlay() {
 			player1->boostTimer(), player2->boostTimer()
 		);
 
-		headsUpDisplay.render();												// 2017/03/20 Move HeadsUpDisplay functionality to HUD class		
+		headsUpDisplay.render();												// 2017/03/20 Move HeadsUpDisplay functionality to HUD class
 	}
 	else if (levelOver == true) {
 		SDL_RenderSetViewport(Game::Instance()->getRenderer(), NULL);								// Clear View Port
@@ -587,7 +582,7 @@ void Level::displayText() {
 
 	if (!levelOver && !gameOver) {
 		if (checkpointsSpawned == 2 && countdownTimer < 2 && (player1->getAlive() || player2->getAlive())) {
-			levelOver = true;		// Level is over 
+			levelOver = true;		// Level is over
 			if (Game::Instance()->getCurrentLevel() == MAX_NUM_LEVELS) gameOver = true;
 		}
 		else if (countdownTimer > 0 && countdownTimer <= GAME_TIMER) {
@@ -620,10 +615,10 @@ void Level::displayText() {
 		previous4 = infoMessageMap;
 	}
 	else if (levelOver == true) {
-		//std::cout << "Level " << getCurrentLevel() << " Complete" << std::endl;		
+		//std::cout << "Level " << getCurrentLevel() << " Complete" << std::endl;
 		//gamerOverMessageDisplayCounter = 0;
 		gameProgress();
-	}// Levels	
+	}// Levels
 
 	if (noTime == true) {
 		resetGame(Game::Instance()->getCurrentLevel());
@@ -675,19 +670,19 @@ void Level::displayScoreForObject(int Xcoord, int Ycoord, int score, int player)
 }
 
 void Level::moveGameObjects() {
-	if (player1->getAlive()) player1->move();												// Update ship movement	
+	if (player1->getAlive()) player1->move();												// Update ship movement
 	if (player2->getAlive()) player2->move();
 
 	//scrollBG.move();																		// Move the Scrolling background
 
 	// Cycle through list of Game Objects and move them, Player scores, and Power Ups so far
-	for (int index = 0; index != listOfGameObjects.size(); ++index) {
+	for (unsigned int index = 0; index != listOfGameObjects.size(); ++index) {
 		// Objects that move towards coordinates
-		if (listOfGameObjects[index]->getSubType() == PLAYER1_SCORE)		listOfGameObjects[index]->move(player1->getX(), player1->getY());	// Move the score to Player 1 ship	
+		if (listOfGameObjects[index]->getSubType() == PLAYER1_SCORE)		listOfGameObjects[index]->move(player1->getX(), player1->getY());	// Move the score to Player 1 ship
 		else if (listOfGameObjects[index]->getSubType() == SAW1)			listOfGameObjects[index]->move(player1->getX(), player1->getY());	// Move Player 1 saw with Player 1 Ship
 		else if (listOfGameObjects[index]->getSubType() == PLAYER2_SCORE)	listOfGameObjects[index]->move(player2->getX(), player2->getY());	// Move the score to Player 2 ship
 		else if (listOfGameObjects[index]->getSubType() == SAW2)			listOfGameObjects[index]->move(player2->getX(), player2->getY());	// Move Player 2 saw with Player 2 Ship
-		else if (listOfGameObjects[index]->getSubType() == VIRUS_GREEN || listOfGameObjects[index]->getSubType() == VIRUS_ORANGE || listOfGameObjects[index]->getSubType() == VIRUS_BLUE) {	// Move Enemy Virus, tracking the player movement			
+		else if (listOfGameObjects[index]->getSubType() == VIRUS_GREEN || listOfGameObjects[index]->getSubType() == VIRUS_ORANGE || listOfGameObjects[index]->getSubType() == VIRUS_BLUE) {	// Move Enemy Virus, tracking the player movement
 			if (moveToPlayer1(listOfGameObjects[index]->getX(), listOfGameObjects[index]->getY())) listOfGameObjects[index]->move(player1->getX(), player1->getY());
 			else listOfGameObjects[index]->move(player2->getX(), player2->getY());
 		}
@@ -697,7 +692,7 @@ void Level::moveGameObjects() {
 			int nearestSmallVirus = 1280 * 1280 + 600 * 600;	// Furthest distance objects can be apart on screen
 
 																// The White blood cell can attack smaller sized virus objects
-			for (int smallVirusIndex = 0; smallVirusIndex != listOfGameObjects.size(); ++smallVirusIndex) {
+			for (unsigned int smallVirusIndex = 0; smallVirusIndex != listOfGameObjects.size(); ++smallVirusIndex) {
 				if (listOfGameObjects[smallVirusIndex]->getType() == SMALL_VIRUS) {
 					if (abs(listOfGameObjects[smallVirusIndex]->getX() - listOfGameObjects[index]->getX()) * abs(listOfGameObjects[smallVirusIndex]->getX() - listOfGameObjects[index]->getX()) +
 						abs(listOfGameObjects[smallVirusIndex]->getY() - listOfGameObjects[index]->getY()) * abs(listOfGameObjects[smallVirusIndex]->getY() - listOfGameObjects[index]->getY()) < nearestSmallVirus)
@@ -753,7 +748,7 @@ void Level::infoMessage(std::string message, int type, int timer) {
 void Level::spawnMovingObjects() {
 	int blockageCount = 0;
 	// Count game objects
-	for (int index = 0; index != listOfGameObjects.size(); ++index) {
+	for (unsigned int index = 0; index != listOfGameObjects.size(); ++index) {
 		if (listOfGameObjects[index]->getSubType() == BLOCKAGE) {
 			blockageCount++;
 		}
@@ -785,7 +780,7 @@ void Level::spawnMovingObjects() {
 	activeEnemyVirus = 0;	// Number of active onscreen Enemy Virus
 
 							// Check how many of each game object are in the list
-	for (int index = 0; index != listOfGameObjects.size(); ++index) {
+	for (unsigned int index = 0; index != listOfGameObjects.size(); ++index) {
 		if (listOfGameObjects[index]->getType() == POWER_UP) activePowerUps++;
 		else if (listOfGameObjects[index]->getSubType() == ENEMY_SHIP)	activeEnemyShips++;
 		else if (listOfGameObjects[index]->getSubType() == ENEMY_BOSS)	activeEnemyBoss++;
@@ -863,7 +858,7 @@ void Level::spawnPlayer(int player) {
 		//std::cout << "player1.getY() " << player1.getY() << " player2.getY() " << player2.getY() << std::endl;
 	}
 
-	if (!Game::Instance()->twoPlayer && player == PLAYER_1 || (Game::Instance()->twoPlayer)) {
+	if ((!Game::Instance()->twoPlayer && player == PLAYER_1) || (Game::Instance()->twoPlayer)) {
 		infoMessage(randomPlayerMessage(player), player);					// 2017/03/04 Random player spawning messagess
 	}
 }
@@ -969,7 +964,7 @@ void Level::spawnPowerUp() {
 
 	GameObject* p_PowerUp = new PowerUp(powerUpType, 50);						// Type and score
 	spawnRandomAttributes(x, y, randomSpeed, 200, p_PowerUp->getHeight());		// Spawn with random X and Y coord, and speed between 1 and 3
-	p_PowerUp->spawn(x, y, -5);													// 2017/01/16 USES OVERLOADED FUNCTION -- CHECK 
+	p_PowerUp->spawn(x, y, -5);													// 2017/01/16 USES OVERLOADED FUNCTION -- CHECK
 	listOfGameObjects.push_back(p_PowerUp);
 }
 void Level::spawnRandomAttributes(int &x, int &y, int &randomSpeed, int xMuliplier, int yPadding, int speed) {	// 2017-01-20 Separate out common randomness of game object spawning
@@ -1042,7 +1037,7 @@ void Level::spawnEnemyLaser(int xCoord, int yCoord, int subType, int whichVirus)
 		}
 	}
 	else if (subType == VIRUS_FIREBALL) {
-		for (int i = 1; i < 9; i++) {
+		for (unsigned int i = 1; i < 9; i++) {
 			//std::cout << "Laser " << i << " created" << std::endl;
 			GameObject* p_Laser = new WeaponEnLaser(VIRUS_FIREBALL);	// Create an Enemy Laser of type 1 (Orange Virus)
 			p_Laser->spawn(xCoord, yCoord);								// Spawn the laser from the Virus Coordinates
@@ -1158,7 +1153,7 @@ void Level::spawnSaw(int x, int y, int subType) {			// player to spawn for and t
 		if (!gameOver) Audio::Instance()->playFX("sawFX");	// Play the sound effect for the saw starting
 	}
 	else if (!createSaw) {
-		for (int index = 0; index != listOfGameObjects.size(); ++index) {
+		for (unsigned int index = 0; index != listOfGameObjects.size(); ++index) {
 
 			if (listOfGameObjects[index]->getSubType() == subType) {		// if saw is the right sub-type
 				if (listOfGameObjects[index]->getAlive() == true) {			// if saw is active
@@ -1182,7 +1177,7 @@ void Level::spawnSaw(int x, int y, int subType) {			// player to spawn for and t
 					}
 				}
 			}
-		}// end for	
+		}// end for
 	} // end else
 	  //std::cout << "Num Saws: " << numSaws << std::endl;
 }
@@ -1205,7 +1200,7 @@ void Level::destroyGameObjects() {
 		int countP1Laser = 0, countP2Laser = 0, countP1NStar = 0, countP2NStar = 0, countP1Rocket = 0, countP2Rocket = 0;
 
 		// Count number of each object on list
-		for (int index = 0; index != listOfGameObjects.size(); ++index) {
+		for (unsigned int index = 0; index != listOfGameObjects.size(); ++index) {
 			if (listOfGameObjects[index]->getSubType() == SAW1 || listOfGameObjects[index]->getSubType() == SAW2) {
 				countSaws++;
 				//if (listOfGameObjects[index]->getAlive() == false) std::cout << "Dead saw" << std::endl;
@@ -1261,7 +1256,7 @@ void Level::destroyGameObjects() {
 		std::cout << "Active Explosions: " << countExplosions << " Total: " << totalExplosions << std::endl;
 	}
 
-	for (int index = 0; index != listOfGameObjects.size(); ++index) {
+	for (unsigned int index = 0; index != listOfGameObjects.size(); ++index) {
 		if (listOfGameObjects[index]->getX() <= 0 - listOfGameObjects[index]->getWidth()) {
 			if (listOfGameObjects[index]->getSubType() == BLOCKAGE) numBlockages--;
 			//std::cout << "blockage check 2: " << numBlockages << std::endl;
@@ -1279,7 +1274,7 @@ void Level::destroyGameObjects() {
 		managePlayerHealth(PLAYER_2, 25);
 	}
 
-	for (int index = 0; index != listOfGameObjects.size(); ++index) {															// Erase Game Objects
+	for (unsigned int index = 0; index != listOfGameObjects.size(); ++index) {															// Erase Game Objects
 																																// If the Player the score is for is dead, or the score is active for 2.5 seconds destroy it
 		if ((listOfGameObjects[index]->getSubType() == PLAYER1_SCORE)) {
 			if (SDL_GetTicks() > listOfGameObjects[index]->getTimerTracker() + 2500 || !player1->getAlive()) listOfGameObjects[index]->setAlive(false); // if the current time is more than the start time + 100, OR player 1 is dead
@@ -1340,7 +1335,7 @@ void Level::destroyGameObjects() {
 			listOfGameObjects.erase(listOfGameObjects.begin() + index);
 			index--;
 		}
-	}// end for		
+	}// end for
 }
 
 
@@ -1417,10 +1412,10 @@ void Level::managePlayerHealth(int player, int damage, std::string name) {
 */
 void Level::collisionCheck() {
 	// Check if Player 1 or 2 has collided with another game object
-	for (int index = 0; index != listOfGameObjects.size(); ++index) {
-		if (checkCollision(&player1->getCollider(), &listOfGameObjects[index]->getCollider()) == true) {
+	for (unsigned int index = 0; index != listOfGameObjects.size(); ++index) {
+		if (checkCollision(player1->getCollider(), listOfGameObjects[index]->getCollider()) == true) {
 			player1->setScore(player1->getScore() + listOfGameObjects[index]->getScore());
-			
+
 			// If the players saw is active
 			if (player1->getSawActive()) {
 				if (listOfGameObjects[index]->getSubType() == LARGE_BLOOD_CELL) listOfGameObjects[index]->setAlive(false);	// If the players saw is active and it collides with a large blood cell, the blood cell is destroyed
@@ -1431,7 +1426,7 @@ void Level::collisionCheck() {
 			if (listOfGameObjects[index]->getSubType() == BLOCKAGE) {
 				player1->setX((player1->getX() + listOfGameObjects[index]->getVelX()) - player1->getVelX());
 				player1->moveLeft(true);
-			}	
+			}
 
 			// Power Ups
 			if (listOfGameObjects[index]->getType() == POWER_UP) {
@@ -1502,7 +1497,7 @@ void Level::collisionCheck() {
 		}
 
 		// Check Player 2 collisions
-		else if (Game::Instance()->twoPlayer && checkCollision(&player2->getCollider(), &listOfGameObjects[index]->getCollider()) == true) {
+		else if (Game::Instance()->twoPlayer && checkCollision(player2->getCollider(), listOfGameObjects[index]->getCollider()) == true) {
 			player2->setScore(player2->getScore() + listOfGameObjects[index]->getScore());
 			// If the players saw is active
 			if (player2->getSawActive()) {
@@ -1579,21 +1574,21 @@ void Level::collisionCheck() {
 				else if (!gPlayer2Texture.getFlash()) managePlayerHealth(PLAYER_2, listOfGameObjects[index]->getDamage() / 3, "Enemy Virus");	// If player 2 isn't flashing, Take off 5 health
 			}
 
-			
+
 			//	Certain game objects should not be destroyed when colliding with the player
 			//	Blood Cells, Blockage, and Enemy Boss
-			
+
 			if (listOfGameObjects[index]->getType() != PLAYER_WEAPON && listOfGameObjects[index]->getType() != BLOOD_CELL && listOfGameObjects[index]->getSubType() != BLOCKAGE && listOfGameObjects[index]->getSubType() != ENEMY_BOSS)
 				listOfGameObjects[index]->setAlive(false);
 		}
 	}
 
 	// Check Weapons Sub-Type For Collisions With Enemy Sub-Type
-	for (int weaponIndex = 0; weaponIndex != listOfGameObjects.size(); weaponIndex++) {
-		for (int enemyIndex = 0; enemyIndex != listOfGameObjects.size(); enemyIndex++) {
+	for (unsigned int weaponIndex = 0; weaponIndex != listOfGameObjects.size(); weaponIndex++) {
+		for (unsigned int enemyIndex = 0; enemyIndex != listOfGameObjects.size(); enemyIndex++) {
 			// If a white blood cell collides with a small virus, the small virus is destroyed
 			if (listOfGameObjects[weaponIndex]->getSubType() == WHITE_BLOOD_CELL && listOfGameObjects[enemyIndex]->getType() == SMALL_VIRUS) {
-				if (checkCollision(&listOfGameObjects[weaponIndex]->getCollider(), &listOfGameObjects[enemyIndex]->getCollider()) == true) {
+				if (checkCollision(listOfGameObjects[weaponIndex]->getCollider(), listOfGameObjects[enemyIndex]->getCollider()) == true) {
 					listOfGameObjects[enemyIndex]->setAlive(false);	// Destroy the small virus
 					//infoMessage("DESTROY BLUE VIRUS");
 				}
@@ -1601,14 +1596,14 @@ void Level::collisionCheck() {
 
 			// 2017/02/19 If there is a collison between ninja stars and large blood cells
 			if ((listOfGameObjects[weaponIndex]->getSubType() == NINJA_STAR_P1 || listOfGameObjects[weaponIndex]->getSubType() == NINJA_STAR_P2) && listOfGameObjects[enemyIndex]->getSubType() == LARGE_BLOOD_CELL) {
-				if (checkCollision(&listOfGameObjects[weaponIndex]->getCollider(), &listOfGameObjects[enemyIndex]->getCollider()) == true) {
+				if (checkCollision(listOfGameObjects[weaponIndex]->getCollider(), listOfGameObjects[enemyIndex]->getCollider()) == true) {
 					listOfGameObjects[enemyIndex]->setAlive(false);
 					listOfGameObjects[weaponIndex]->setAlive(false);	// DESTROY
 				}
 			}
 
 			if (listOfGameObjects[weaponIndex]->getType() == PLAYER_WEAPON && listOfGameObjects[enemyIndex]->getType() == ENEMY_OBJECT) {
-				if (checkCollision(&listOfGameObjects[weaponIndex]->getCollider(), &listOfGameObjects[enemyIndex]->getCollider()) == true) {
+				if (checkCollision(listOfGameObjects[weaponIndex]->getCollider(), listOfGameObjects[enemyIndex]->getCollider()) == true) {
 					if (listOfGameObjects[enemyIndex]->getSubType() != ENEMY_BOSS) {
 						// 2017/02/22 Updated messages to include name
 						if (listOfGameObjects[weaponIndex]->getSubType() == ROCKET_P1) {
@@ -1623,10 +1618,10 @@ void Level::collisionCheck() {
 
 							if (listOfGameObjects[enemyIndex]->getSubType() == ENEMY_BOSS) listOfGameObjects[enemyIndex]->setHealth(listOfGameObjects[enemyIndex]->getHealth() - 25);
 						}
-						
+
 						//	Virus enemies can be cut in half using the Players Saw or Ninja Star weapons
 						//	If a virus is cut in half, spawn 2 smaller virus
-						
+
 						else if (listOfGameObjects[weaponIndex]->getSubType() == SAW1 || listOfGameObjects[weaponIndex]->getSubType() == SAW2 || listOfGameObjects[weaponIndex]->getSubType() == NINJA_STAR_P1 || listOfGameObjects[weaponIndex]->getSubType() == NINJA_STAR_P2) {
 							if (listOfGameObjects[enemyIndex]->getSubType() == VIRUS_GREEN) {
 								spawnEnemyVirus(VIRUS_SMALL_GREEN, listOfGameObjects[enemyIndex]->getX(), listOfGameObjects[enemyIndex]->getY());
@@ -1655,7 +1650,7 @@ void Level::collisionCheck() {
 							listOfGameObjects[enemyIndex]->setAlive(false);
 					}// If it is the enemy boss
 					else {
-						
+
 						// Health points deducted for different weapons
 						if (listOfGameObjects[weaponIndex]->getSubType() == ROCKET_P1) {
 							listOfGameObjects[enemyIndex]->setHealth(listOfGameObjects[enemyIndex]->getHealth() - 20);
@@ -1675,11 +1670,11 @@ void Level::collisionCheck() {
 						else if (listOfGameObjects[weaponIndex]->getSubType() == LASER_P2) {
 							listOfGameObjects[enemyIndex]->setHealth(listOfGameObjects[enemyIndex]->getHealth() - 1);
 						}
-						
+
 						// If it is not a saw in contact with the enemy spawn an explosion
 						if (listOfGameObjects[weaponIndex]->getSubType() != SAW1 && listOfGameObjects[weaponIndex]->getSubType() != SAW2)
 							spawnExplosion(listOfGameObjects[weaponIndex]->getX(), listOfGameObjects[weaponIndex]->getY(), FIRE_EXPLOSION);
-						
+
 						// If the Enemy Boss health is less than or equal to 0, kill it
 						if (listOfGameObjects[enemyIndex]->getHealth() <= 0) {
 							listOfGameObjects[enemyIndex]->setAlive(false);
@@ -1688,7 +1683,7 @@ void Level::collisionCheck() {
 					}
 
 					listOfGameObjects[weaponIndex]->setAlive(false);	// DESTROY the player weapon
-				} // end not enemy boss				
+				} // end not enemy boss
 			}
 		}
 	}
@@ -1722,7 +1717,7 @@ void Level::resetGame(int currentLevel) {
 	activeEnemyVirusSmall = 0;
 	activeEnemyBoss = 0;
 
-	//if (currentLevel == MENU) 
+	//if (currentLevel == MENU)
 	//displayGameIntro = DISPLAY_GAME_INTRO_SCREENS;
 	//displayLevelIntro = DISPLAY_LEVEL_INTRO_SCREENS;
 	backgroundLoopCounter = 0;
