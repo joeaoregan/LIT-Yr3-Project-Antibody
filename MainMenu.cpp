@@ -91,7 +91,8 @@ bool MainMenu::loadMedia() {
 	bool success = true;	// Loading success flag
 	SDL_Color textColor = { 0, 0, 0 };
 
-	gFontMenu = TTF_OpenFont(".\\Fonts\\Lazy.ttf", 29);	// Open the font
+	gFontMenu = TTF_OpenFont(".\\Fonts\\Lazy.ttf", 29);
+	//gFontMenu = TTF_OpenFont("Fonts/Lazy.ttf", 29);	// Open the font
 	if (gFontMenu == NULL) {
 		printf("XXX Failed to load lazy font! SDL_ttf Error: %s\n", TTF_GetError());
 		success = false;
@@ -248,11 +249,11 @@ void LButton::render() {
 
 void LButton::init()
 {
-	bool success = true;	// Initialization flag
+//	bool success = true;	// Initialization flag
 
 	if (SDL_Init(SDL_INIT_VIDEO) < 0) {	// Initialize SDL
 		printf("SDL could not initialize! SDL Error: %s\n", SDL_GetError());
-		success = false;
+//		success = false;
 	}
 	else {
 		//Set texture filtering to linear
@@ -264,14 +265,14 @@ void LButton::init()
 		gWindowMenu = SDL_CreateWindow("GAME", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
 		if (gWindowMenu == NULL) {
 			printf("Window could not be created! SDL Error: %s\n", SDL_GetError());
-			success = false;
+//			success = false;
 		}
 		else {
 			//Create vsynced renderer for window
 			gRendererMenu = SDL_CreateRenderer(gWindowMenu, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 			if (gRendererMenu == NULL) {
 				printf("Renderer could not be created! SDL Error: %s\n", SDL_GetError());
-				success = false;
+//				success = false;
 			}
 			else {
 				//Initialize renderer color
@@ -281,13 +282,13 @@ void LButton::init()
 				int imgFlags = IMG_INIT_PNG;
 				if (!(IMG_Init(imgFlags) & imgFlags)) {
 					printf("SDL_image could not initialize! SDL_image Error: %s\n", IMG_GetError());
-					success = false;
+//					success = false;
 				}
 
 				//Initialize SDL_ttf
 				if (TTF_Init() == -1) {
 					printf("SDL_ttf could not initialize! SDL_ttf Error: %s\n", TTF_GetError());
-					success = false;
+//					success = false;
 				}
 			}
 		}

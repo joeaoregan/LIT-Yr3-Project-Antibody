@@ -1,26 +1,23 @@
-// 09/01 Edited background to be 800 x 600 instead of 600 * 480
-// 2017/01/23 set up levels and background
+// 2017/01/25	Added explosions when lasers collide with Enemy Ships and Virus
+//				Fixed error for Player Message Text
+//				Fixed Ninja Star scoring for Player 2
+// 2017/01/24	Changed fonts and graphics at start of level, and start and end of scrolling background
+//				Added Menu to main code
+//				Changed to 1280 x 720 from 800 x 600
+// 2017/01/23	Set up levels and background
+// 2017/01/09	Edited background to be 800 x 600 instead of 600 x 480
 
-/*
-    Changed Background and Logo graphics
-
-    2017-08-11:
-        Joe: Change window title
-        Joe: Add relative path for asset files in "Art" directory
-        Joe: Changed getCollision() for ship and enemyship
-        Joe: Add relative path for asset files in "Music" and "SoundFX" directories
-*/
 
 #include <SDL.h>
 #include <SDL_image.h>
 
 #include <SDL_ttf.h>
-#include "Game.h"
+#include "Game.h"					// Game header file, with functions and variabls
 #include <sstream>					// For timer
 #include <string.h>
 
 #include <SDL_mixer.h>				// 2017/01/09 JOE: SOUND - library we use to make audio playing easier
-#include <cmath>
+//#include <cmath>					// Unused header
 #include "LTexture.h"				// Game textures
 #include "Player.h"					// Player class
 #include "EnemyShip.h"				// Enemy ship class
@@ -34,6 +31,7 @@
 #include "PowerUp.h"				// 2017/01/10 SEAN: Added Power Up
 #include "LaserEnemy.h"				// The laser the enemy fires
 #include "Particle.h"				// Particles for the ship engine
+#include "Explosion.h"				// 2017/01/25 Added explosions for Player Laser colliding with Enemy Ships and Virus
 
 
 // Game & Level Testing
@@ -74,18 +72,18 @@ void renderHealthBar(int x, int y, int w, int h, float Percent, SDL_Color FGColo
 #define BACKGROUND_SCROLL_TIMES 5	// The number of times the main background scrolls
 #define MAX_HEALTH 100.0			// The max health for a player
 #define GAME_TIMER 30				// Time to start counting down from, in seconds
-#define NUMBER_OF_SONGS = 3;
+#define NUMBER_OF_SONGS = 3;		// Total number of songs in the playlist
 
 // Time
 Uint32 startTime = 6000;			// Unsigned integer 32-bits
 unsigned int lastTime = 0, currentTime, countdownTimer = GAME_TIMER;	// TEST TIMING
 
 // Scrolling and Rotation
-int degrees = 0;
+int degrees = 0;					// Degrees to rotate Stars and Saw
 int degreesBC = 0;					// 2017/01/10 JOE: Added degrees for blood cell rotation
-int degreesBCS = 0;
+int degreesBCS = 0;					// Degrees to rotate Small Blood Cells
 
-int backgroundLoopCounter = 0;
+int backgroundLoopCounter = 0;		// Number of times the background image has looped
 int scrollingOffset = 0;			// 2017/01/10 JOE: Declare the background scrolling offset (Moved as stops background scrolling when in the render function)
 int scrollingOffsetLogo = 600;		// Scrolling offset for splash screens
 
@@ -99,13 +97,17 @@ void fpsinit();
 void fpsthink();
 
 // Animation
-int frame = 0, frameUp = 0, frameDown = 0;		// Current animation frame
-const int ANIMATION_FRAMES = 4;
-SDL_Rect gSpriteClips[6];
-SDL_Rect gEnemySpriteClips[ANIMATION_FRAMES];
-LTexture gSpriteSheetTexture;
-LTexture gEnemySpriteSheetTexture;
-int enemyframe = 0;
+int frame = 0, frameUp = 0, frameDown = 0;				// Current animation frame
+const int ANIMATION_FRAMES = 4;							// Number of frames of animation for Enemy Ship
+const int EXPLOSION_ANIMATION_FRAMES = 12;				// Number of frames of animation for Explosions
+SDL_Rect gPressButtonToContinueSpriteClips[6];			// Sprite frames for Press Button to Continue animation
+SDL_Rect gEnemySpriteClips[ANIMATION_FRAMES];			// Sprite frames for Enemy Ship animation
+SDL_Rect gExplosionClips[EXPLOSION_ANIMATION_FRAMES];	// Sprite frames for Explosion animation
+LTexture gPressEnterSpriteSheetTexture;					// Press Enter to Continue sprite sheet
+LTexture gEnemySpriteSheetTexture;						// Enemy sprite sheet
+LTexture gExplosionSpriteSheetTexture;					// explosion sprite sheet
+int enemyFrame = 0;										// Frame count for speed of Enemy animation
+int explosionFrame = 0;									// Frame count for speed of explosion animation
 
 // Alpha values for flashing objects
 int player1Alpha = 255;				// Modulation component for flashing objects
@@ -117,7 +119,7 @@ bool player1Flash = false;			// Player 1 is flashing
 bool player2Flash = false;			// Turn player 2 flashing on off
 bool gameOverFlash = true;			// Turn game over flashing on or off
 bool timerFlash = false;			// Turn timer flashing on or off
-bool playerMessageFlash = true;
+//bool playerMessageFlash = true;		// Decide if player message is flashing or not
 int alphaUp = 5, alphaDown = 5;		// turn the alpha value up or down
 
 SDL_Event e;						// Event handler
@@ -131,7 +133,7 @@ SDL_Haptic*	gControllerHaptic = NULL;	// 2017/01/18 Haptic (Force Feedback) adde
 Mix_Music *gMusic1 = NULL;				// Mix_Music: Data type for music
 Mix_Music *gMusic2 = NULL;
 Mix_Music *gMusic3 = NULL;
-unsigned int currentSong;						// Play a random song when the game starts
+unsigned int currentSong;				// Play a random song when the game starts
 
 //The sound effects that will be used (pointers)
 Mix_Chunk *gNinjaFX1 = NULL;		// 2017/01/09 JOE: SOUND - Mix_Chunk: Data type for short sounds
@@ -152,21 +154,21 @@ Uint8 a = 0;						// Modulation component
 
 // Text
 SDL_Color textColour;				// Set the text colour
-TTF_Font *gFont = NULL;				// Globally used font
-TTF_Font *gFont2 = NULL;
+TTF_Font *gFontRetro16 = NULL;		// Globally used font 2017-01-25 Changed to Retro font which is more readable
+TTF_Font *gFontRetro40 = NULL;		// Same as previous font with larger size
 std::string l1Objective = "Destroy enemy virus and ships\nThe player with the highest score\nIs the winner";
 std::string l2Objective = "Destroy more enemy virus and ships\nThe player with the highest score\nIs the winner";
 std::string l3Objective = "Destroy even more enemy virus and ships\nThe player with the highest score\nIs the winner";
-int gamerOverMessageDisplayCounter = 0;
-#define MESSAGE_TIME 100			// Stays on screen for a couple of seconds
-int playerMessageCounter = MESSAGE_TIME;
-std::string playerMessage = "";
+int gamerOverMessageDisplayCounter = 0;		// Length of time to display game over message
+#define MESSAGE_TIME 100					// Stays on screen for a couple of seconds
+int playerMessageCounter = MESSAGE_TIME;	// Time to display player notification messages
+std::string playerMessage = "";				// Player notification messages, Yellow writing appearing in the middle of the game screen
 
 // Scene textures
 LTexture gBGTexture;				// Background
-LTexture gBGStartTexture;
-LTexture gBGEndTexture;
-LTexture gGameOverTextTexture;
+LTexture gBGStartTexture;			// Start of background
+LTexture gBGEndTexture;				// End of background scrolling
+LTexture gGameOverTextTexture;		// End of game, game over texture
 // Objects and weapons
 LTexture gPlayer1Texture;			// Player 1 ship
 LTexture gP1LivesTexture;			// Player 1 Small ship for number of lives
@@ -191,25 +193,26 @@ LTexture gLevel1;					// 2017/01/18 Texture for level Splash Screen 1
 LTexture gLevel2;					// 2017/01/18 Texture for level Splash Screen 2
 LTexture gLevel3;					// 2017/01/18 Texture for level Splash Screen 3
 
-LTexture gTimeTextTexture;
-LTexture gCreatedByTextTexture;
-LTexture gLevelTextTexture;
-LTexture gP1ScoreTextTexture;
-LTexture gP2ScoreTextTexture;
-LTexture gFPSTextTexture;
-LTexture gFinalScoreTextTexture;
-LTexture gGameWinnerTextTexture;
-LTexture gLevelObjectiveTextTexture;
-LTexture gPlayerMessageTextTexture;
+LTexture gTimeTextTexture;			// Countdown time displayed in game screen
+LTexture gCreatedByTextTexture;		// Created by message at bottom of screen for demo
+LTexture gLevelTextTexture;			// Current level displayed at top of game screen
+LTexture gP1ScoreTextTexture;		// Player 1 current score
+LTexture gP2ScoreTextTexture;		// Player 2 current score
+LTexture gFPSTextTexture;			// Frames Per Second displayed at top of screen
+LTexture gFinalScoreTextTexture;	// Final score displayed at end of level / end of game
+LTexture gGameWinnerTextTexture;	// Game winner displayed at end of game
+LTexture gLevelObjectiveTextTexture;// Objective for each level
+LTexture gPlayerMessageTextTexture;	// Player notification messages for picking up objects etc.
 
 // Vectors for objects that have collisions
-std::vector<PowerUp*> listOfPowerUps;
+std::vector<PowerUp*> listOfPowerUps;					// List of power up objects
 std::vector<LaserEnemy*> listOfEnemyLaserObjects;		// 2017/01/10
 std::vector<Laser*> listOfLaserObjects;					// List to store laser object
 std::vector<Mix_Music*> listOfMusic;					// List of Music tracks
 std::vector<EnemyShip*> listOfEnemyShips;				// 2017/01/09 JOE: List to store laser objects
 std::vector<EnemyVirus*> listOfEnemyVirus;				// 2017/01/09 JOE: List to store laser objects
 std::vector<NinjaStar*> listOfNinjaStarObjects;			// 2017/01/09 JOE: List to store Ninja Star objects
+std::vector<Explosion*> listOfExplosions;				// 2017/01/25 Added Explosions list
 //std::vector<Player> listPlayer;						// 2017/01/23
 
 // Lists - objects with no collisions (yet)
@@ -219,16 +222,16 @@ std::list<BloodCellSmall*> listOfSmallBloodCells;		// 2017/01/10 JOE: List to st
 std::list<BloodCellSmall*>::const_iterator iterSBC;		// 2017/01/10 JOE: Make them read only
 std::list<Saw*> listOfSawObjects;						// 2017/01/17: List to store Saw objects
 std::list<Saw*>::const_iterator iterSaw;				// 2017/01/17: Create global iterators to cycle through Saw objects - Make them read only
-std::list<WhiteBloodCell*> listOfWhiteBloodCells;
-std::list<WhiteBloodCell*>::const_iterator iterWBC;
+std::list<WhiteBloodCell*> listOfWhiteBloodCells;		// List of White Blood Cell objects
+std::list<WhiteBloodCell*>::const_iterator iterWBC;		// Iterator for white blood cell objects
 
-Player player1(gDarkBlueParticleTexture, gMediumBlueParticlTexture, gLightBlueParticleTexture);
+Player player1(gDarkBlueParticleTexture, gMediumBlueParticlTexture, gLightBlueParticleTexture);	// Create a player with particles for engine
 Player player2(gDarkBlueParticleTexture, gMediumBlueParticlTexture, gLightBlueParticleTexture);
 
 bool init() {
-	std::cout << "Player 1 Health: " << player1.getHealth() << " " << "Player 2 Health: " << player2.getHealth() << std::endl;
+	std::cout << "Player 1 Health: " << player1.getHealth() << " " << "Player 2 Health: " << player2.getHealth() << std::endl;		// Player health at start of game
 	std::cout << "Player 1 Lives: " << player1.getNumLives() << " " << "Player 2 Lives: " << player2.getNumLives() << std::endl;
-	player1.setName("Player 1");
+	player1.setName("Player 1");	// Names for players
 	player2.setName("Player 2");
 	if (testMode) player1.setNumLives(NUM_LIVES);
 	if (testMode) player2.setNumLives(NUM_LIVES);
@@ -285,7 +288,7 @@ bool init() {
 		}
 
 		// Create window
-		gWindow = SDL_CreateWindow("ANTIBODY v1.01 by Joe O'Regan & Se\u00E1n Horgan: New Background & Logo Graphics", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);	/* Window name */
+		gWindow = SDL_CreateWindow("ANTIBODY v1.04 by Joe O'Regan & Se\u00E1n Horgan: Supervisor Demo", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);	/* Window name */
 		if (gWindow == NULL) {
 			printf("Window could not be created! SDL Error: %s\n", SDL_GetError());
 			success = false;
@@ -355,31 +358,31 @@ bool loadMedia() {
 	gShimmerTexture.modifyAlpha(150);
 
 	// Open the font
-	//gFont = TTF_OpenFont("Fonts/Retro.ttf", 16);
-	gFont = TTF_OpenFont(".\\Fonts\\Retro.ttf", 16);
-	if (gFont == NULL) {
+	//gFontRetro16 = TTF_OpenFont("Fonts/Retro.ttf", 16);
+	gFontRetro16 = TTF_OpenFont(".\\Fonts\\Retro.ttf", 16);
+	if (gFontRetro16 == NULL) {
 		printf("Failed to load lazy font! SDL_ttf Error: %s\n", TTF_GetError());
 		success = false;
 	}
 	else {
 		textColour = { 255, 0, 0, 255 };								// Set text color for three names RED
-		TTF_SetFontStyle(gFont, TTF_STYLE_BOLD);								// Use bold font
+		TTF_SetFontStyle(gFontRetro16, TTF_STYLE_BOLD);						// Use bold font
 
-		if (!gCreatedByTextTexture.loadFromRenderedText("A Game By Sean Horgan And Joe O'Regan", textColour, gFont, gRenderer)) {
+		if (!gCreatedByTextTexture.loadFromRenderedText("A Game By Seán Horgan And Joe O'Regan", textColour, gFontRetro16, gRenderer)) {
 			printf("Unable to render prompt text texture!\n");
 			success = false;
 		}
 	}
 
-	//gFont2 = TTF_OpenFont("Fonts/Retro.ttf", 40);
-	gFont2 = TTF_OpenFont(".\\Fonts\\Retro.ttf", 40);
-	if (gFont2 == NULL) {
+	//gFontRetro40 = TTF_OpenFont("Fonts/Retro.ttf", 40);
+	gFontRetro40 = TTF_OpenFont(".\\Fonts\\Retro.ttf", 40);
+	if (gFontRetro40 == NULL) {
 		printf("Failed to load kunstler font! SDL_ttf Error: %s\n", TTF_GetError());
 		success = false;
 	}
 	else {
 		textColour = { 0, 255, 0, 255 };
-		TTF_SetFontStyle(gFont2, TTF_STYLE_BOLD);											// Use bold font
+		TTF_SetFontStyle(gFontRetro40, TTF_STYLE_BOLD);											// Use bold font
 	}
 
 	// Load Textures
@@ -387,7 +390,6 @@ bool loadMedia() {
 		printf("Failed to load Player 1 texture!\n");
 		success = false;
 	}
-//	if (!gPlayer2Texture.loadFromFile(".\\Art\\Player2Ship.png", gRenderer)) {					// Ship Texture
 	if (!gPlayer2Texture.loadFromFile(".\\Art\\Player2ShipOld.png", gRenderer)) {					// Ship Texture
 		printf("Failed to load Player 2 texture!\n");
 		success = false;
@@ -396,12 +398,10 @@ bool loadMedia() {
 		printf("Failed to load Player 1 Small Ship texture!\n");
 		success = false;
 	}
-//	if (!gP2LivesTexture.loadFromFile(".\\Art\\Player2ShipSmall.png", gRenderer)) {				// Ship Texture
 	if (!gP2LivesTexture.loadFromFile(".\\Art\\Player2ShipSmallOld.png", gRenderer)) {				// Ship Texture
 		printf("Failed to load Player 2 Small Ship texture!\n");
 		success = false;
 	}
-//	if (!gEnemyVirusTexture.loadFromFile(".\\Art\\EnemyVirus.png", gRenderer)) {				// Enemy Virus Texture
 	if (!gEnemyVirusTexture.loadFromFile(".\\Art\\VirusGreen.png", gRenderer)) {				// Enemy Virus Texture
 		printf("Failed to load Enemy Virus texture!\n");
 		success = false;
@@ -458,12 +458,10 @@ bool loadMedia() {
 		printf("Failed to load White Blood Cell texture!\n");
 		success = false;
 	}
-//	if (!gPowerUpHealthTexture.loadFromFile(".\\Art\\HealthBox.png", gRenderer)) {				// 10/01 Added Power Up - Load Power Up texture
 	if (!gPowerUpHealthTexture.loadFromFile(".\\Art\\PowerUpHealthBox.png", gRenderer)) {				// 10/01 Added Power Up - Load Power Up texture
 		printf("Failed to load Health Power Up texture!\n");
 		success = false;
 	}
-//	if (!gPowerUpLaserTexture.loadFromFile(".\\Art\\LaserGun2.png", gRenderer)) {				// 10/01 Added Power Up - Load Power Up texture
 	if (!gPowerUpLaserTexture.loadFromFile(".\\Art\\PowerUpLaser.png", gRenderer)) {				// 10/01 Added Power Up - Load Power Up texture
 		printf("Failed to load Laser Power Up texture!\n");
 		success = false;
@@ -490,22 +488,22 @@ bool loadMedia() {
 	}
 
 	//Load sprite sheet texture
-	if (!gSpriteSheetTexture.loadFromFile(".\\Art\\PressEnterSpriteSheet1.png", gRenderer)) {	// Sprite sheet for Press Enter Button
+	if (!gPressEnterSpriteSheetTexture.loadFromFile(".\\Art\\PressEnterSpriteSheet1.png", gRenderer)) {	// Sprite sheet for Press Enter Button
 		printf("Failed to load walking animation texture!\n");
 		success = false;
 	}
 	else {
 		// Set sprite clips 19/01/2017 Added for loop
 		for (unsigned int i = 0; i < 6; ++i) {
-			gSpriteClips[i].x = 0;
+			gPressButtonToContinueSpriteClips[i].x = 0;
 			if(i < 4)
-				gSpriteClips[i].y = i * 94;
+				gPressButtonToContinueSpriteClips[i].y = i * 94;
 			else if (i == 4)
-				gSpriteClips[i].y = 188;
+				gPressButtonToContinueSpriteClips[i].y = 188;
 			else if (i == 5)
-				gSpriteClips[i].y = 94;
-			gSpriteClips[i].w = 718;
-			gSpriteClips[i].h = 94;
+				gPressButtonToContinueSpriteClips[i].y = 94;
+			gPressButtonToContinueSpriteClips[i].w = 718;
+			gPressButtonToContinueSpriteClips[i].h = 94;
 		}
 	}
 
@@ -520,6 +518,20 @@ bool loadMedia() {
 			gEnemySpriteClips[i].y = i * 50;
 			gEnemySpriteClips[i].w = 120;
 			gEnemySpriteClips[i].h = 50;
+		}
+	}
+
+	if (!gExplosionSpriteSheetTexture.loadFromFile(".\\Art\\Explosion.png", gRenderer)) {	// Sprite sheet for Explosions
+		printf("Failed to load Enemy Ship animation texture!\n");
+		success = false;
+	}
+	else {
+		//Set sprite clips
+		for (unsigned int i = 0; i < EXPLOSION_ANIMATION_FRAMES; ++i) {
+			gExplosionClips[i].x = i * 96;
+			gExplosionClips[i].y = 0;
+			gExplosionClips[i].w = 96;
+			gExplosionClips[i].h = 96;
 		}
 	}
 
@@ -624,7 +636,7 @@ void Game::close() {
 	gLevel2.free();
 	gLevel3.free();
 	// free animations
-	gSpriteSheetTexture.free();
+	gPressEnterSpriteSheetTexture.free();
 	gEnemySpriteSheetTexture.free();
 
 	gTimeTextTexture.free();
@@ -639,10 +651,10 @@ void Game::close() {
 	gPlayerMessageTextTexture.free();
 
 	//Free global font
-	TTF_CloseFont(gFont);
-	gFont = NULL;
-	TTF_CloseFont(gFont2);
-	gFont2 = NULL;
+	TTF_CloseFont(gFontRetro16);
+	gFontRetro16 = NULL;
+	TTF_CloseFont(gFontRetro40);
+	gFontRetro40 = NULL;
 
 	//Free the sound effects
 	Mix_FreeChunk(gNinjaFX1);	// Free a sound effect
@@ -724,9 +736,9 @@ void Game::resetGame(int currentLevel) {	// Reset a level or the game
 	gamerOverMessageDisplayCounter = 0;
 
 	// Rotations
-	degrees = 0;							// Number of degrees to rotate spinning objects
-	degreesBC = 0;							// Number of degrees to rotate spinning objects
-	degreesBCS = 0;							// Number of degrees to rotate spinning objects
+	degrees = 0;							// Number of degrees to rotate Ninja Stars and Saw
+	degreesBC = 0;							// Number of degrees to rotate Blood Cells
+	degreesBCS = 0;							// Number of degrees to rotate Small Blood Cells
 
 	// Timer
 	countdownTimer = GAME_TIMER;			// Reset the countdown timer
@@ -822,7 +834,7 @@ void Game::displayLevelSplashScreen(std::string objective) {
 	scrollingOffsetLogo = 600;				// Texture will start below window
 
 	textColour = { 0, 255, 0, 255 };		// Green text for level objectives
-	if (!gLevelObjectiveTextTexture.loadFromRenderedText(objective, textColour, gFont, gRenderer, true)) { // gLevel1ObjectiveTextTexture
+	if (!gLevelObjectiveTextTexture.loadFromRenderedText(objective, textColour, gFontRetro16, gRenderer, true)) { // gLevel1ObjectiveTextTexture
 		printf("Unable to render level game objective texture!\n");
 	}
 
@@ -844,8 +856,8 @@ void Game::displayLevelSplashScreen(std::string objective) {
 void Game::pressButtonToContinue() {
 	bool continueGame = false;
 
-	SDL_Rect* currentClip = &gSpriteClips[frame / 6];	// Render current frame
-	gSpriteSheetTexture.render((SCREEN_WIDTH - currentClip->w) / 2, (SCREEN_HEIGHT - currentClip->h) / 2 + 200, gRenderer, currentClip);
+	SDL_Rect* currentClip = &gPressButtonToContinueSpriteClips[frame / 6];	// Render current frame
+	gPressEnterSpriteSheetTexture.render((SCREEN_WIDTH - currentClip->w) / 2, (SCREEN_HEIGHT - currentClip->h) / 2 + 200, gRenderer, currentClip);
 
 	SDL_RenderPresent(gRenderer);			// Update screen
 	++frame;	// Go to next frame
@@ -933,7 +945,7 @@ void Game::displayText() {
 		if (currentLevel == 1) textColour = { 0, 255, 0, 255 };
 		if (currentLevel == 2) textColour = { 0, 255, 0, 255 };
 		if (currentLevel == 3) textColour = { 0, 255, 0, 255 };
-		if (!gFinalScoreTextTexture.loadFromRenderedText(finalScores, textColour, gFont2, gRenderer)) {
+		if (!gFinalScoreTextTexture.loadFromRenderedText(finalScores, textColour, gFontRetro40, gRenderer)) {
 			printf("Unable to render final scores texture!\n");
 		}
 
@@ -990,27 +1002,29 @@ void Game::displayText() {
 			textColour = { 0, 255, 0, 255 };			// Green text for timer
 			timerFlash = false;
 		}
-		if (!gTimeTextTexture.loadFromRenderedText(timeText.str().c_str(), textColour, gFont, gRenderer)) {
+		if (!gTimeTextTexture.loadFromRenderedText(timeText.str().c_str(), textColour, gFontRetro16, gRenderer)) {
 			printf("Unable to render time texture!\n");
 		}
 
 		//Render text - Get a string from it and use it to render the current time to a texture
 		textColour = { 0, 255, 0, 255 }; // Green text for UI elements
-		if (!gP1ScoreTextTexture.loadFromRenderedText(score1Text.str().c_str(), textColour, gFont, gRenderer)) {
+		if (!gP1ScoreTextTexture.loadFromRenderedText(score1Text.str().c_str(), textColour, gFontRetro16, gRenderer)) {
 			printf("Unable to render P1 score texture!\n");
 		}
-		if (!gP2ScoreTextTexture.loadFromRenderedText(score2Text.str().c_str(), textColour, gFont, gRenderer)) {
+		if (!gP2ScoreTextTexture.loadFromRenderedText(score2Text.str().c_str(), textColour, gFontRetro16, gRenderer)) {
 			printf("Unable to render P2 score texture!\n");
 		}
-		if (!gFPSTextTexture.loadFromRenderedText(framesPerSec.str().c_str(), textColour, gFont, gRenderer)) {
+		if (!gFPSTextTexture.loadFromRenderedText(framesPerSec.str().c_str(), textColour, gFontRetro16, gRenderer)) {
 			printf("Unable to render FPS texture!\n");
 		}
-		if (!gLevelTextTexture.loadFromRenderedText("Level " + std::to_string(currentLevel), textColour, gFont, gRenderer)) {
+		if (!gLevelTextTexture.loadFromRenderedText("Level " + std::to_string(currentLevel), textColour, gFontRetro16, gRenderer)) {
 			printf("Unable to render level text texture!\n");
 		}
-		textColour = { 240, 210, 65, 255 };			// Gold colour
-		if(!gPlayerMessageTextTexture.loadFromRenderedText(playerMessage, textColour, gFont, gRenderer)) {
-			printf("Unable to render player text texture!\n");
+		if (playerMessage != "") {
+			textColour = { 240, 210, 65, 255 };			// Gold colour
+			if (!gPlayerMessageTextTexture.loadFromRenderedText(playerMessage, textColour, gFontRetro16, gRenderer)) {
+				printf("Unable to render player text texture!\n");
+			}
 		}
 	}
 
@@ -1023,10 +1037,10 @@ void Game::displayText() {
 		else
 			gameWinner = "It's a draw";
 
-		if (!gFinalScoreTextTexture.loadFromRenderedText(finalScores, textColour, gFont2, gRenderer)) {
+		if (!gFinalScoreTextTexture.loadFromRenderedText(finalScores, textColour, gFontRetro40, gRenderer)) {
 			printf("Unable to render final scores texture!\n");
 		}
-		if (!gGameWinnerTextTexture.loadFromRenderedText(gameWinner, textColour, gFont2, gRenderer)) {
+		if (!gGameWinnerTextTexture.loadFromRenderedText(gameWinner, textColour, gFontRetro40, gRenderer)) {
 			printf("Unable to render game winner texture!\n");
 		}
 
@@ -1053,7 +1067,7 @@ void Game::displayText() {
 }
 
 bool Game::playerInput(bool quit = false) {
-	//SDL_Color textColor = { 0, 255, 0, 255 };	//Set text color as green
+//	SDL_Color textColor = { 0, 255, 0, 255 };	//Set text color as green
 
 	// In memory text stream
 	// string streams - function like iostreams only instead of reading or writing to the console, they allow you to read and write to a string in memory
@@ -1126,11 +1140,11 @@ void Game::musicBack() {								// Pick previous track on the list
 }
 
 void Game::renderGameObjects() {
-	degrees += 5;										// Number of degrees to rotate spinning objects
+	degrees += 5;										// Number of degrees to rotate Ninja Stars and Saw
 	degrees %= 360;
-	degreesBC += 1;										// Number of degrees to rotate spinning objects
+	degreesBC += 1;										// Number of degrees to rotate Blood Cells
 	degreesBC %= 360;
-	degreesBCS += 2;									// Number of degrees to rotate spinning objects
+	degreesBCS += 2;									// Number of degrees to rotate Small Blood Cells
 	degreesBCS %= 360;
 
 	displayText();										// 2017/01/17: Display the game text
@@ -1206,12 +1220,23 @@ void Game::renderGameObjects() {
 
 		// Cycle through list of Enemy Ships and Virus and render to screen
 		for (unsigned int index = 0; index != listOfEnemyShips.size(); ++index) {
-			listOfEnemyShips[index]->render(gEnemySpriteSheetTexture, gRenderer, &gEnemySpriteClips[enemyframe / 10], enemyframe);
+			listOfEnemyShips[index]->render(gEnemySpriteSheetTexture, gRenderer, &gEnemySpriteClips[enemyFrame / 10], enemyFrame);
 			//SDL_RenderDrawRect(gRenderer, &listOfEnemyShips[index]->getCollider());
 		}
 		for (unsigned int index = 0; index != listOfEnemyVirus.size(); ++index) {
 			listOfEnemyVirus[index]->render(gEnemyVirusTexture, gRenderer);
 			//SDL_RenderDrawRect(gRenderer, &listOfEnemyVirus[index]->getCollider());
+		}
+
+		// Cycle through list of Explosions and render to screen
+		for (unsigned int index = 0; index != listOfExplosions.size(); ++index) {
+			listOfExplosions[index]->render(gExplosionSpriteSheetTexture, gRenderer, &gExplosionClips[explosionFrame / 8], explosionFrame);
+			//SDL_RenderDrawRect(gRenderer, &listOfExplosions[index]->getCollider());
+			//std::cout << "ExplosionFrame: " << explosionframe << std::endl;
+			if (explosionFrame / 8 >= EXPLOSION_ANIMATION_FRAMES) {
+				explosionFrame = 0;
+				listOfExplosions[index]->setAlive(false);
+			}
 		}
 
 		// Cycle through list of power up objects and render them to screen
@@ -1255,6 +1280,10 @@ void Game::renderGameObjects() {
 			gPlayerMessageTextTexture.render((SCREEN_WIDTH - gPlayerMessageTextTexture.getWidth()) / 2, (SCREEN_HEIGHT - gPlayerMessageTextTexture.getHeight()) / 2, gRenderer);
 			playerMessageCounter++;
 		}
+
+
+
+
 
 		gTimeTextTexture.modifyAlpha(timerAlpha);	// Flash the timer
 		gTimeTextTexture.render(1150, 8, gRenderer);
@@ -1378,6 +1407,14 @@ void Game::flashGameObject(int &alpha, bool &flash, int rate, int times) {
 
 // Destroy Game Objects
 void Game::destroyGameObjects() {
+	for (unsigned int index = 0; index != listOfExplosions.size(); ++index) {
+		if (!listOfExplosions[index]->getAlive()) {
+			listOfExplosions.erase(listOfExplosions.begin() + index);
+			//std::cout << "Explosion Destroyed." << std::endl;
+			index--;
+		}
+	}// end for
+
 	for (unsigned int index = 0; index != listOfEnemyShips.size(); ++index) {
 		if (!listOfEnemyShips[index]->getAlive()) {
 			listOfEnemyShips.erase(listOfEnemyShips.begin() + index);
@@ -1499,6 +1536,14 @@ void Game::spawnPlayer(int player) {
 		player2.setAlive(true);
 		//std::cout << "player1.getY() " << player1.getY() << " player2.getY() " << player2.getY() << std::endl;
 	}
+}
+
+void Game::spawnExplosion(int x, int y) {
+	Explosion* p_Explosion = new Explosion(x, y);
+	p_Explosion->setAlive(true);
+	p_Explosion->spawn(x, y - 30);
+	//p_Explosion->spawn(100, 100);
+	listOfExplosions.push_back(p_Explosion);
 }
 
 // List of enemy ships to spawn at random times and positions
@@ -1760,14 +1805,14 @@ void Game::collisionCheck() {
 				listOfEnemyVirus[index1]->setAlive(false);						// If saw is active kill that enemy
 			}
 			else
-				managePlayerHealth(PLAYER_1, listOfEnemyVirus[index1]->getScore() / 3, "Enemy Virus");	// Take off 5 health
+				if (!player1Flash) managePlayerHealth(PLAYER_1, listOfEnemyVirus[index1]->getScore() / 3, "Enemy Virus");	// Take off 5 health
 		}
 		else if (checkCollision(player2.getCollider(), listOfEnemyVirus[index1]->getCollider()) == true) {
 			if (player2.getSawActive()) {
 				listOfEnemyVirus[index1]->setAlive(false);						// If saw is active kill that enemy
 			}
 			else
-				managePlayerHealth(PLAYER_2, listOfEnemyVirus[index1]->getScore() / 3, "Enemy Virus");	// Take off 5 health
+				if (!player2Flash) managePlayerHealth(PLAYER_2, listOfEnemyVirus[index1]->getScore() / 3, "Enemy Virus");	// Take off 5 health
 		}
 	}
 
@@ -1777,14 +1822,14 @@ void Game::collisionCheck() {
 				listOfEnemyShips[index2]->setAlive(false);										// If saw is active kill that enemy
 			}
 			else
-				managePlayerHealth(PLAYER_1, listOfEnemyShips[index2]->getScore() / 5, "Enemy Ship");	// Take off 5 health
+				if (!player1Flash) managePlayerHealth(PLAYER_1, listOfEnemyShips[index2]->getScore() / 5, "Enemy Ship");	// Take off 5 health
 		}
 		else if (checkCollision(player2.getCollider(), listOfEnemyShips[index2]->getCollider()) == true) {
 			if (player2.getSawActive()) {
 				listOfEnemyShips[index2]->setAlive(false);										// If saw is active kill that enemy
 			}
 			else
-				managePlayerHealth(PLAYER_2, listOfEnemyShips[index2]->getScore() / 5, "Enemy Ship");	// Take off 5 health
+				if (!player2Flash) managePlayerHealth(PLAYER_2, listOfEnemyShips[index2]->getScore() / 5, "Enemy Ship");	// Take off 5 health
 		}
 	}
 
@@ -1841,6 +1886,7 @@ void Game::collisionCheck() {
 					player2.setScore(player2.getScore() + listOfEnemyVirus[index1]->getScore());
 
 				listOfEnemyVirus[index1]->setAlive(false);
+				spawnExplosion(listOfLaserObjects[index]->getX(), listOfLaserObjects[index]->getY());
 				listOfLaserObjects[index]->setAlive(false);
 				//std::cout << "Enemy Virus Killed by Player!\n";
 				Mix_PlayChannel(-1, gExplosionFX, 0);
@@ -1854,6 +1900,7 @@ void Game::collisionCheck() {
 					player2.setScore(player2.getScore() + listOfEnemyShips[index2]->getScore());
 
 				listOfEnemyShips[index2]->setAlive(false);
+				spawnExplosion(listOfLaserObjects[index]->getX(), listOfLaserObjects[index]->getY());
 				listOfLaserObjects[index]->setAlive(false);
 				//std::cout << "Enemy Ship Killed by Player!\n";
 				Mix_PlayChannel(-1, gExplosionFX, 0);
@@ -1874,7 +1921,7 @@ void Game::collisionCheck() {
 		}
 		for (unsigned int index2 = 0; index2 != listOfEnemyShips.size(); ++index2) {
 			if (checkCollision(listOfNinjaStarObjects[index]->getCollider(), listOfEnemyShips[index2]->getCollider()) == true) {
-				player1.setScore(player1.getScore() + listOfEnemyShips[index2]->getScore());
+				player2.setScore(player2.getScore() + listOfEnemyShips[index2]->getScore());
 				listOfEnemyShips[index2]->setAlive(false);
 				listOfNinjaStarObjects[index]->setAlive(false);
 				//std::cout << "Enemy Ship Killed by Player!\n";

@@ -18,7 +18,7 @@ void LButton::setPosition(int x, int y) {
 }
 
 void LButton::handleEvent(SDL_Event* e, int buttonSelected) {
-	SDL_Color textColorOne = { 255, 255, 255 };
+//	SDL_Color textColorOne = { 255, 255, 255 };
 	//If mouse event happened
 	if (e->type == SDL_MOUSEMOTION || e->type == SDL_MOUSEBUTTONDOWN || e->type == SDL_MOUSEBUTTONUP) {
 		//Get mouse position

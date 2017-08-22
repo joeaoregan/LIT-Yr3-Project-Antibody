@@ -43,6 +43,8 @@ public:
 
 	void resetGame(int level);					// Reset game to this level
 
+	void spawnExplosion(int x, int y);			// 2017/01/25 Added explosions
+
 	void spawnMovingObjects();
 	void spawnPlayer(int player);
 	void spawnEnemyShip();						// 2017/01/09 JOE: added function to create enemy ships at random times and random y coord
