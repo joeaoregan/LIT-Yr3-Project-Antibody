@@ -1,5 +1,21 @@
-//#include <SDL.h>
-//#include <SDL_ttf.h>
+/*
+	2017/02/28 Moved background texture loading to texture map
+	2017/02/26 Added singletons for Game and Texture
+	2017/02/09 Set a display time for textures such as information messages
+				A separate texture is needed for each individual score text, as score value changes for all, when a new score is recorded
+	2017/01/30 Added rotation angle to constructors for Textures that rotate
+				Moved flashGameObject() functionality into Texture class
+	2017/01/24 Changed screen size from 1280 x 720 from 800 x 600
+	2017/01/11 Alter function for alpha values to handle any object and not just Players
+	2017/01/09 Changed screen size and background to be 800 x 600 instead of 600 x 480
+*/
+/*
+	TEXTURE:
+
+	This class manages all texture functionality for the game. Loading textures from, storing them to
+	a map for indexing, and then rendering to screen. There are functions to render textures from text,
+	and also to handle the alpha value of objects, to make them transparent or flash.
+*/
 #include "Texture.h"
 
 Texture* Texture::s_pInstance = 0;
@@ -201,7 +217,7 @@ bool Texture::loadFromRenderedText(std::string textureText, SDL_Color textColor,
 	free();	//Get rid of preexisting texture
 
 	if (!textWrapped)
-		textSurface = TTF_RenderText_Solid(font, textureText.c_str(), textColor);	//Render text surface
+ 		textSurface = TTF_RenderText_Solid(font, textureText.c_str(), textColor);	//Render text surface
 	else
 		textSurface = TTF_RenderText_Blended_Wrapped(font, textureText.c_str(), textColor, 1000);
 
@@ -331,9 +347,9 @@ void Texture::numRocketsLeft(std::string textureText) {
 	2017-02-15:
 	Function to render the players scores, the FPS, and the current game level
 */
-void Texture::UIText(std::string textureText) {
+void Texture::UIText(std::string textureText, int fontSize) {
 //void Texture::UIText(std::string textureText, SDL_Renderer* rend) {
-	if (!loadFromRenderedText(textureText, { 0, 255, 0, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 20))) {		// Green Text
+	if (!loadFromRenderedText(textureText, { 0, 255, 0, 255 }, TTF_OpenFont("Fonts/Retro.ttf", fontSize))) {		// Green Text
 		printf("Unable to render UIText() User Interface Text Texture!\n");
 	}
 
@@ -394,6 +410,19 @@ bool Texture::loadTextureMedia() {
 //bool Texture::loadTextureMedia(SDL_Renderer* rend) {
 	bool success = true;
 
+	// Backgrounds
+	if (Texture::Instance()->load("Art/bgBegin720a.png", "startBG")) {			// 09/01 Edited background to be 800 x 600 instead of 600 * 480
+		printf("Failed to load background texture!\n");
+		success = false;
+	}
+	if (Texture::Instance()->load("Art/Background720.png", "middleBG")) {
+		printf("Failed to load start background texture!\n");
+		success = false;
+	}
+	if (Texture::Instance()->load("Art/bgEnd720a.png", "endBG")) {
+		printf("Failed to load end background texture!\n");
+		success = false;
+	}
 	// Init the game title and credit screens
 	if (Texture::Instance()->load("Art/Logo1720.png", "logoL1ID")) {
 		printf("Failed to load Logo 1 - Game Logo texture!\n");

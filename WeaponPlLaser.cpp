@@ -1,3 +1,10 @@
+/* 
+	2017/01/23 Added power up to change laser grade
+	2017/01/19 Added 3 beam laser
+	2017/01/16 Spawn laser function added to game class to create laser with coords and velocity
+	2017/01/09 Moved functionality common to game objects to GameObjects class reducing the code
+	2017/01/06 Added player lasers
+*/
 /*
 *-------------------------------------------------
 *		Laser.cpp
@@ -6,12 +13,15 @@
 *		Date Complete - 06/01/2017 - 19:46pm
 *-------------------------------------------------
 */
-/* 2017/01/09:
-JOE: Moved functionality common to game objects to GameObjects class reducing the code
-*/
-
 /*
-* Laser.cpp is where all the implementations of the function definitions in Laser.h reside.
+	LASER (Renamed WeaponPLLaser):
+
+	This class contains the functions for spawning, rendering, and moving player laser objects.
+	The player has two grades of laser, a single beam laser, and upon collecting a laser power
+	up, a three beam laser. The three beam laser fires 3 laser beams at a time, at 3 different 
+	angles. The player can fire an unlimited amount of laser beams.
+
+	Laser.cpp is where all the implementations of the function definitions in Laser.h reside.
 */
 
 #include "WeaponPlLaser.h"
@@ -49,13 +59,10 @@ void WeaponPlLaser::movement() {
 	GameObject::movement();
 	setY(getY() + getVelY());		// Up direction
 	//if (getGrade() == 1) {
-		if (getAngle() == 1) {
-			setY(getY() + 3);
-		}
-		else if (getAngle() == 2) {
-			setY(getY() - 3);
-		}
-	//}
+	if (getAngle() == LASER2_TOP) setY(getY() - 1);
+	else if (getAngle() == LASER2_BOTTOM) setY(getY() + 1);
+	else if (getAngle() == LASER3_TOP) setY(getY() - 3);
+	else if (getAngle() == LASER3_BOTTOM) setY(getY() + 3);
 }
 
 void WeaponPlLaser::spawn(int x, int y, int velocity, int player, int type) {

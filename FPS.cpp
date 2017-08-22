@@ -1,9 +1,17 @@
+/*
+	2017/02/02 Completely separated FPS to its own class
+	2017/02/01 Separated FPS to its own class
+				Added frames for second class FPS.h
+*/
+/*
+	FPS:
+
+	This class handles the frames per second
+*/
 #include <SDL.h>
 #include "FPS.h"
 #include <string.h>
 #include "Game.h"
-
-// 2017/02/01 Separated to its own class
 
 // This function gets called once on startup.
 void FPS::fpsinit() {

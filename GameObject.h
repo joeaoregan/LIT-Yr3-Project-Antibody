@@ -1,5 +1,12 @@
-/* 2017/01/09:
-JOE: Moved functionality common to game objects to GameObjects class reducing the code
+/*
+	2017/02/18 Moved Blood Cells to game object list
+	2017/02/09 Added indpendent animation frames
+	2017/02/07 Added independent angle to rotate each object
+	2017/01/30 Moved degrees variable to object so all rotating objects rotate at different times
+	2017/01/25 Added setSubType() function to set the objects sub-type
+	2017/02/18 Added setType() function to seet the objects type
+	2017/01/09 Moved functionality common to game objects to GameObjects class reducing the code
+	2017/01/17 Separated Player 1 and 2 scores in Game class
 */
 #ifndef GAME_OBJECTS_H
 #define GAME_OBJECTS_H
@@ -18,7 +25,7 @@ const int TOTAL_PARTICLES2 = 20;	// Particle count
 
 enum GameObjectTypes {
 	PLAYER, PLAYER1, PLAYER2,
-	PLAYER1_SCORE, PLAYER2_SCORE,																		// Scores
+	SCORE_TEXT,																							// Scores
 	POWER_UP_HEALTH, POWER_UP_LASER, POWER_UP_ROCKET, POWER_UP_CHECKPOINT, POWER_UP_LIVES,				// Power ups
 	ENEMY_SHIP_LASER, BLUE_VIRUS_BULLET, VIRUS_FIREBALL,												// Bullets
 	EXPLOSION, BLOOD_EXPLOSION,	GREEN_VIRUS_EXPLOSION, ORANGE_VIRUS_EXPLOSION, BLUE_VIRUS_EXPLOSION,	// Explosions
@@ -26,10 +33,15 @@ enum GameObjectTypes {
 	LARGE_BLOOD_CELL, SMALL_BLOOD_CELL, WHITE_BLOOD_CELL,												// Blood Cells
 	ENEMY_SHIP,																							// Enemies
 	VIRUS_GREEN, VIRUS_ORANGE, VIRUS_BLUE, VIRUS_SMALL_GREEN, VIRUS_SMALL_ORANGE, VIRUS_SMALL_BLUE,		// Virus
-	NINJA_STAR_P1, NINJA_STAR_P2, LASER_P1, LASER_P2, LASER_V2_P1, LASER_V2_P2, ROCKET_P1, ROCKET_P2,	// Weapons
+	LASER_P1, LASER_P2, LASER_V2_P1, LASER_V2_P2, LASER_V3_P1, LASER_V3_P2,								// Player Laser
+	NINJA_STAR_P1, NINJA_STAR_P2, ROCKET_P1, ROCKET_P2,													// Misc Weapons
 	BLOOD_CELL, PLAYER_WEAPON, ENEMY_WEAPON, ENEMY_OBJECT, POWER_UP, SMALL_VIRUS						// Main type of object
 };
-enum weaponsGrades {LASER_SINGLE, LASER_TRIPLE};
+enum GameObjectSubTypes {
+	PLAYER1_SCORE, PLAYER2_SCORE,																		// Scores
+};
+enum weaponsGrades { LASER_SINGLE, LASER_DOUBLE, LASER_TRIPLE };
+enum laserAngles { STRAIGHT, LASER2_TOP, LASER2_BOTTOM, LASER3_TOP, LASER3_BOTTOM };
 
 class GameObject {
 public:
@@ -164,7 +176,7 @@ public:
 	}
 	// Laser
 	int getLaserGrade() { return mLaserGrade; }
-	void setLaserGrade(int grade) { mLaserGrade = grade; }
+	void setLaserGrade(int grade);
 
 	// Particles
 	bool getDrawParticle() { return drawParticle; }
@@ -216,7 +228,7 @@ private:
 	int mPlayer;
 	bool sawActive;
 	int rocketBonusScore;
-	bool m_ProjectileActive;			// If an object can fire rockets or not
+	bool m_ProjectileActive;		// 2017/02/06 Decides if an object can fire rockets or other weapons
 	bool m_RocketBarActive;
 	int numRockets;					// The number of rockets an object has
 	bool killRocket;
@@ -231,53 +243,3 @@ private:
 };
 
 #endif
-
-/*
-// global functions friends of the GameObjects class
-//friend std::ostream& operator<<(std::ostream& os, const GameObject& aGameObject);
-
-//GameObject(int damage = 3);			// Constructor with default value of 3 for damage
-
-//std::string m_typeID;				// GameObject name
-//int m_Damage;						// Damage to reduce health after an object moves
-//int m_direction;					// CA2 - set the objects direction
-
-//	void render();
-//	void render(LTexture x);
-
-//void spawn(std::string typeID, int health, int speed);
-//void spawn(std::string typeID, int health, int speed, int x, int y);	// create an object
-//void draw();						// print to the screen the typeID and its x and y coords
-//virtual void update();				// virtual function
-//void info();						// print all info relating to the object
-
-// Getter Methods
-//std::string getID() const;			// Get GameObject name / ID
-//const int getHealth() const;		// Get GameObject health
-//int getSpeed() const;				// Get GameObject speed
-
-//int getDamage() const;				// Get GameObject Damage
-// Setter Methods
-//void setSpeed(int speed);			// Set speed between 1 and 4
-
-// Indicate where the border has been impacted
-//int reboundX = 0, reboundY = 0;		// Store impact point, to highlight
-//int getImpactX() const;				// Get the x coord of impact object
-//int getImpactY() const;				// Get the y coord of impact object
-//void setImpactX(int x);				// Set and reset objects impact x coord
-//void setImpactY(int y);				// Set and reset objects impact y coord
-
-// Change GameObject direction
-//int rebound;						// Amount to bounce back of perimeter
-//enum directionName { SW = 1, South, SE, West, East = 6, NW, North, NE };	// Use readable values for directions
-//int getDirection();					// CA2 - Get the objects direction
-//void setDirection(int d);			// Sets the direction of the GameObject (game init())
-//int direction;					// The direction GameObject is moving
-//void setRandomDirection();			// CA2 - Set a random direction for game objects
-
-//int getRandomCoord();				// Get Random Coordinate
-//void setRandomCoords(int x, int y); // NEVER USED X OR Y
-//void setRandomCoords();
-//void checkCoords();
-//void checkCoords(GameObject* objectToCheck);	// MOVED TO GAME as uniqueCoords
-*/

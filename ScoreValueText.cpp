@@ -1,11 +1,23 @@
-// 2017/02/09
-// This class generates the scores that appear when an enemy is shot,
-// using a different colour to indicate which player will recive the points
+/*
+	2017/02/10 Added functionality so the scores displayed on screen move to player who scored them (Changed from moving to players score)
+				Set score text transparency to 100, as it draw too much attention from the game action
+	2017/02/09 Added score class ScoreValueText.h for displaying values of scores for destroying objects
+	2017/02/06 Added managePlayerScores() function to handle players score to Game class
+	2017/01/31 Added points value messages for each player
+				Added vector list of game objects to display the scores for each object killed
+*/
+/*
+	SCORE VALUE TEXT:
+
+	This class generates the scores that appear when an enemy is shot,
+	using a different colour to indicate which player will recive the points
+*/
 
 #include "ScoreValueText.h"
 #include <math.h>
 
 ScoreValueText::ScoreValueText(int x, int y, int score, int player) {
+	setType(SCORE_TEXT);
 	setName("+" + std::to_string(score));		// Individual string
 	setX(x);
 	setY(y);
@@ -17,8 +29,8 @@ ScoreValueText::ScoreValueText(int x, int y, int score, int player) {
 	setColliderWidth(getWidth());
 	setColliderHeight(getHeight());
 
-	if (player % 2 == 0) setSubType(1);
-	else if (player % 2 == 1) setSubType(2);		// NEEDS TO BE ADJUSTED FOR ROCKETS
+	if (player == PLAYER1) setSubType(PLAYER1_SCORE);
+	else if (player == PLAYER2) setSubType(PLAYER2_SCORE);	// NEEDS TO BE ADJUSTED FOR ROCKETS
 
 	setLineAlgCalculated(false);
 }

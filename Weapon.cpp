@@ -1,5 +1,17 @@
-/* 2017-01-09:
-Weapons will inherit from weapon
+/* 
+	2017/02/19 Added rocket icon to viewoport displaying information on the number of rockets in the players inventory
+	2017/02/18 Fixed explosions for weapon collisions, so they only occur when the objects collided with are on screen
+	2017/02/08 Added control for rocket movement in Weapon class, can possible be inherited by other weapons later
+	2017/01/30 Combined player weapons to one list instead of lists for each type
+	2017/01/19 Added 3 beam laser weapon
+	2017/01/17 Added class for saw weapon Saw.h (renamed WeaponPlSaw.h)
+	2017/01/09 Weapons will inherit from weapon
+*/
+/*
+	WEAPON:
+
+	This is the base class for all the weapons in the game. It inherits from the Game Object class. 
+	It also handles the rocket movement, which can be inherited by any future weapons that are created.
 */
 #include "Weapon.h"
 

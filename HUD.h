@@ -29,6 +29,9 @@ public:
 	void playerScore(bool twoPlayer, int scoreP1, int scoreP2 = 0);		// 2017-02-23 Player 2 score initialised to 0 to allow reusing the function for single player game
 	//void gameTime(int time, SDL_Renderer *rend);
 	void displayLevelNum(int levelNum);
+
+	void percentageNinjaStarKills(bool twoPlayer, int ninja1, int ninja2); // 2017/03/01 Track a kill rate for ninja stars
+	void playerScoresCounter(bool twoPlayer, int p1, int p2);
 };
 
 #endif

@@ -1,3 +1,18 @@
+/*
+	2017/02/21 All indicators now scroll left to right on start up
+	2017/02/21 Moved player lives, scores, speed boost indicator, rocket indicator, and created by text to head up display
+	2017/02/19 Added rocket icon to viewoport displaying information on the number of rockets in the players inventory
+*/
+/*
+	HEADS UP DISPLAY (HUD):
+
+	This class contains all the information relavent to the player dashboard, including lives, scores, and weapon indicators
+	for each player. Weapon indicators include, current laser grade, number of rockets, and an indicator for when the player
+	speed boost is active, displaying a status bar for when the boost timer runs out.
+
+	The game map is also displayed here in mini form, which can be resized by pressing a button on the keyboard or gamepad.
+	There is also an animated game creator text on the bottom of the display.
+*/
 #include "HUD.h"
 #include <sstream>
 
@@ -76,12 +91,42 @@ void HUD::playerScore(bool twoPlayer, int scoreP1, int scoreP2) {
 	std::stringstream score1Text, score2Text;
 
 	score1Text << "P1: " << scoreP1;															// Player 1 score
-	gP1ScoreTextTexture.UIText(score1Text.str().c_str());									// Render text - Use a string to render the current P1 Score to a texture
-	gP1ScoreTextTexture.render(10, 55);													// Score for Player 1
+	gP1ScoreTextTexture.UIText(score1Text.str().c_str());										// Render text - Use a string to render the current P1 Score to a texture
+	gP1ScoreTextTexture.render(10, 55);															// Score for Player 1
 	if (twoPlayer) {
-		score2Text << "P2: " << scoreP2;															// Player 2 score
+		score2Text << "P2: " << scoreP2;														// Player 2 score
 		gP2ScoreTextTexture.UIText(score2Text.str().c_str());									// Render text - Use a string to render the current P2 Score to a texture
-		gP2ScoreTextTexture.render(SCREEN_WIDTH - gP2ScoreTextTexture.getWidth() - 10, 55);	// Score for Player 2
+		gP2ScoreTextTexture.render(SCREEN_WIDTH - gP2ScoreTextTexture.getWidth() - 10, 55);		// Score for Player 2
+	}
+}
+
+void HUD::percentageNinjaStarKills(bool twoPlayer, int ninja1, int ninja2) {
+	Texture gNinja1, gNinja2;
+
+	std::stringstream ninjaStarKillsP1, ninjaStarKillsP2;
+
+	ninjaStarKillsP1 << "Ninja 1: " << ninja1;														// Player 1 score
+	gNinja1.UIText(ninjaStarKillsP1.str().c_str(), 10);									// Render text - Use a string to render the current P1 Score to a texture
+	gNinja1.render(10 + 200, 5);															// Score for Player 1
+	if (twoPlayer) {
+		ninjaStarKillsP2 << "Ninja 2: " << ninja2;													// Player 2 score
+		gNinja2.UIText(ninjaStarKillsP2.str().c_str(), 10);								// Render text - Use a string to render the current P2 Score to a texture
+		gNinja2.render(SCREEN_WIDTH - gNinja2.getWidth() - 10 - 200, 5);		// Score for Player 2
+	}
+}
+
+void HUD::playerScoresCounter(bool twoPlayer, int scoreP1, int scoreP2) {
+	Texture gScoreText1, gScoreText2;
+
+	std::stringstream ninjaStarKillsP1, ninjaStarKillsP2;
+
+	ninjaStarKillsP1 << "Score Text 1: " << scoreP1;														// Player 1 score
+	gScoreText1.UIText(ninjaStarKillsP1.str().c_str(), 10);									// Render text - Use a string to render the current P1 Score to a texture
+	gScoreText1.render(10 + 200, 15);															// Score for Player 1
+	if (twoPlayer) {
+		ninjaStarKillsP2 << "Score Text 2: " << scoreP2;													// Player 2 score
+		gScoreText2.UIText(ninjaStarKillsP2.str().c_str(), 10);								// Render text - Use a string to render the current P2 Score to a texture
+		gScoreText2.render(SCREEN_WIDTH - gScoreText2.getWidth() - 10 - 200, 15);		// Score for Player 2
 	}
 }
 

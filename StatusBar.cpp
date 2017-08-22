@@ -1,3 +1,14 @@
+/*
+2017/02/09 Added status bar class StatusBar.h for creating status bars, such as health bar
+2017/01/18 Added health bars for players
+*/
+/*
+	STATUS BAR:
+
+	Display health bars, power bars for rockets and speed boosts. Also has a countdown virus for
+	when the Orange virus explodes, and the Blue Virus fires and spawns a new satellite object.
+*/
+
 #include "StatusBar.h"
 #include "Game.h"
 

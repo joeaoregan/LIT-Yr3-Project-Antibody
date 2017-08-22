@@ -1,6 +1,23 @@
+/*
+	2017/02/09 Added separate function for text and logos to Game class
+	2017/02/08 Added separate splash screen class SplashScreen.h for displaying splash screens
+				Moved press enter to continue for splash screens instead of delay before progressing to level
+	2017/02/02 Added storyline at intro to game
+	2017/01/20 Added game over message
+	2017/01/18 Added splash screens at start of game, Game Title & Game Creators
+				Added pressButtonToContinue() function for splash screens at start of game, so player can read writing at own pace
+	2017/01/17 Added scrolling text to intro screens
+				Added wrapped text to add new line character for level intro splash screens
+	2017/01/11 Added flashing game over texture
+*/
+/*
+	SPLASH SCREEN:
+
+	Handles game intro screens and information screens at start of game, and transition screens between level with scores and level objectives.
+	Displays final score and game winner at end of game.
+*/
+
 #include "SplashScreen.h"
-//#include <SDL_ttf.h>
-//#include <sstream>					// For timer
 
 enum levels {MENU, LEVEL_1, LEVEL_2, LEVEL_3};
 

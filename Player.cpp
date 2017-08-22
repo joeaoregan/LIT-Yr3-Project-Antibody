@@ -1,6 +1,39 @@
 ﻿/*
-	2017/02/27:	User game singleton to access renderer
-	2017/01/04: Added asdw keyboard movement
+	2017/02/27 User game singleton to access renderer
+				Fixed player lives not rendering for 1 Player mode in Game class
+	2017/02/23 Added option to play as 1 or 2 players
+	2017/02/22 Added check to make sure player is alive to dislay speed boost indicator on heads up display
+	2017/02/21 Separated heads up display object initialisation to the class for loading textures for player lives
+	2017/02/19 Added check to player movement for speed boost
+	2017/02/16 Added infoMessage() function to display player messages for player events in Game class
+	2017/02/15 Added independent information messages for player 1 and 2 in Game class
+				Fixed saw not spawning ...again!
+	2017/02/10 Added functionality so the scores displayed on screen move to player who scored them (Changed from moving to players score)
+	2017/02/09 Fixed player spawning, player now flashes after spawning, and can't be damaged straight away
+	2017/01/30 Moved flashGameObject() functionality into Texture class
+				Added particle texture alpha modify functionality
+				Combined player weapons to one list instead of lists for each type
+	2017/01/25 Fixed error for Player Message Text
+				Fixed Ninja Star scoring for Player 2
+	2017/01/23 Added laser power up, player can increase the laser weapons grade to fire 3 beams instead of just 1
+				Fixed saw spawning, now appearing/disappearing
+	2017/01/20 Spawn Player 1 at random Y coord added to spawnPlayer() function
+				Added player lives indicators for players
+	2017/01/18 Added speed boost
+				Added flashing for 2nd player
+				Added health bars for players
+	2017/01/17 Separated Player 1 and 2 scores
+	2017/01/16 Added second player to the game
+	2017/01/11 Added flash on collision for player
+	2017/01/09 Added playerInput() function to handle input from player
+	2017/01/04 Added asdw keyboard movement for player 1
+*/
+/*
+	PLAYER:
+
+	The Player class handles all the Player ships functionality, including movement, rendering the player ship,
+	and the player lives, player input from keyboard and gamepad, rendering particles for the ship engine,
+	and handling the players weapons. The Player weapons include Laser, Ninja Star, Saw, and Rocket.
 */
 #include "Player.h"
 #include "Game.h"
@@ -182,8 +215,8 @@ void Player::handleEvent(SDL_Event& e, int player) {
 			case SDLK_d: moveRight(); break;
 
 			// FIRE WEAPON
-			case SDLK_SPACE: Game::Instance()->spawnLaser(getX(), getY(), 1); break;				// TEST NEW WEAPON
-			case SDLK_n: Game::Instance()->spawnNinjaStar(getX(), getY(), 1); break;
+			case SDLK_SPACE: Game::Instance()->spawnLaser(getX(), getY(), PLAYER1, getLaserGrade()); break;				// TEST NEW WEAPON
+			case SDLK_n: Game::Instance()->spawnNinjaStar(getX(), getY(), PLAYER1); break;
 			case SDLK_e: Game::Instance()->spawnSaw(getX(), getY(), SAW1); break;					// 2017/01/17 Saw Weapon added, check saw is active with if statement in spawn Saw, and activate/deactivate the weapon
 			case SDLK_f: setSpeedBoost(true);
 				Game::Instance()->infoMessage("Player 1 speed boost activated", PLAYER_1); break;
@@ -212,8 +245,8 @@ void Player::handleEvent(SDL_Event& e, int player) {
 
 			// FIRE WEAPON SDLK_RCTRL
 			//case SDLK_e: game1.spawnLaser(getX(), getY()); break; // SEAN: Press space bar to spawn a new laser
-			case SDLK_RCTRL: Game::Instance()->spawnLaser(getX(), getY(), 2); break;
-			case SDLK_RSHIFT: Game::Instance()->spawnNinjaStar(getX(), getY(), 2); break;
+			case SDLK_RCTRL: Game::Instance()->spawnLaser(getX(), getY(), PLAYER2, getLaserGrade()); break;
+			case SDLK_RSHIFT: Game::Instance()->spawnNinjaStar(getX(), getY(), PLAYER2); break;
 			case SDLK_r: spawnPlayerSaw(getX(), getY(), SAW2); break;
 			case SDLK_g: setSpeedBoost(true);
 				Game::Instance()->infoMessage("Player 2 speed boost activated", PLAYER_2); break;
@@ -431,15 +464,15 @@ void Player::resetPreviousDirection() {
 
 void Player::gameControllerButton(SDL_Event& e) {
 	if (e.jbutton.button == 0) {
-		Game::Instance()->spawnLaser(getX(), getY(), 2);										// Fire Laser
+		Game::Instance()->spawnLaser(getX(), getY(), PLAYER2, getLaserGrade());						// Fire Laser
 		std::cout << "Laser Button: " << (int)e.jbutton.button << std::endl;		// shows which button has been pressed
 	}
 	if (e.jbutton.button == 1) {
-		Game::Instance()->spawnNinjaStar(getX(), getY(), 2);									// Fire Ninja Star
+		Game::Instance()->spawnNinjaStar(getX(), getY(), 2);						// Fire Ninja Star
 		std::cout << "Ninja Star Button: " << (int)e.jbutton.button << std::endl;	// shows which button has been pressed
 	}
 	if (e.jbutton.button == 2) {
-		Game::Instance()->spawnSaw(getX(), getY(), SAW2);										// Saw Weapon
+		Game::Instance()->spawnSaw(getX(), getY(), SAW2);							// Saw Weapon
 																					// spawnPlayerSaw(getX(), getY(), SAW2);
 		std::cout << "Saw Button: " << (int)e.jbutton.button << std::endl;			// shows which button has been pressed
 	}
@@ -449,11 +482,11 @@ void Player::gameControllerButton(SDL_Event& e) {
 		Game::Instance()->infoMessage("Player 2 speed boost activated", PLAYER_2);
 	}
 	if (e.jbutton.button == 4) {
-		Game::Instance()->musicTrackBackward();													// Pick previous track on the list
+		Game::Instance()->musicTrackBackward();										// Pick previous track on the list
 		std::cout << "Music Back: " << (int)e.jbutton.button << std::endl;			// shows which button has been pressed
 	}
 	if (e.jbutton.button == 5) {
-		Game::Instance()->musicTrackForward();													// Pick next track on the list
+		Game::Instance()->musicTrackForward();										// Pick next track on the list
 		std::cout << "Music Forward: " << (int)e.jbutton.button << std::endl;		// shows which button has been pressed
 	}
 	if (e.jbutton.button == 9) {															// Pick next track on the list
