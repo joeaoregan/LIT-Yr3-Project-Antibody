@@ -179,12 +179,13 @@
 #include "HUD.h"					// 2017/02/21 JOE: Class for handling displaying objects on heads up display
 #include "EnemyBoss.h"				// 2017/02/03 JOE: Class for handling Enemy Boss objects
 #include "GameStateMachine.h"		// 2017/02/03 JOE: Class for handling Game State Machine (Finite State Machine)
-#include "StateMainMenu.h"			// 2017/02/03 JOE: Class for handling the main menu state
+#include "MainMenuState.h"			// 2017/02/03 JOE: Class for handling the main menu state
 #include "Blockage.h"
 #include "randomMessageGenerator.h"	// 2017/02/04 JOE: Class for randomising messages
 #include <math.h>
 
 Game* Game::s_pInstance = 0;
+
 GameStateMachine* m_pGameStateMachine;	// P109 Add GameStateMachine as a member of the Game class
 
 std::stringstream framesPerSec;	// In memory text stream - string streams - function like iostreams only instead of reading or writing to the console, they allow you to read and write to a string in memory
@@ -218,7 +219,7 @@ void setViewport(SDL_Rect &rect, int x, int y, int w, int h);	// These classes a
 void setupAnimationClip(SDL_Rect rect[], int frames, int amount, bool type2 = false);
 
 // Classes
-Menu menu1;
+//Menu menu1;
 HUD headsUpDisplay;
 StatusBar bar;
 SplashScreen splash;
@@ -309,7 +310,8 @@ Player* player2 = new Player();
 
 bool Game::init() {
 	m_pGameStateMachine = new GameStateMachine();			// Create the state machine
-	m_pGameStateMachine->changeState(new StateMainMenu());	// Add a state
+	m_pGameStateMachine->changeState(new MainMenuState());	// Add a state
+
 	nameEntered = false;
 
 	//twoPlayer = true;
@@ -441,7 +443,8 @@ bool Game::loadMedia() {
 
 	Texture::Instance()->loadTextureMedia();
 
-	menu1.loadMenuMedia();						// Load buttons etc
+	//menu1.loadMenuMedia();						// Load buttons etc
+	//Menu::Instance()->loadMenuMedia();
 
 	//success = player1->loadMediaPlayer();		// Load particles for each player
 	//success = player2->loadMediaPlayer();		// Load particles for each player
@@ -707,7 +710,8 @@ void Game::close() {
 
 	//fps.fpsclose();
 	splash.closeSplashScreens();	// Close splash screen stuff
-	menu1.closeMenuMedia();				// Close menu stuff
+	//menu1.closeMenuMedia();				// Close menu stuff
+	Menu::Instance()->loadMenuMedia();
 	Audio::Instance()->destroy();
 	headsUpDisplay.closeLevelStuff();
 	particle.closeParticle();
@@ -743,8 +747,17 @@ void Game::update(){
 
 				if (getCurrentLevel() == 0 && displayGameIntro) displayGameIntro = splash.displayGameIntroSplashScreens();	// 2017/01/18 Splash screens at start of game, Game Title & Game Creators
 
-				if (getCurrentLevel() == MENU) menu1.draw();				// New
-				else if (getCurrentLevel() == PAUSE) menu1.drawPause();		// New
+				//if (getCurrentLevel() == MENU) menu1.draw();				// New
+				//else if (getCurrentLevel() == PAUSE) menu1.drawPause();	// New
+				if (getCurrentLevel() == MENU) {
+					Menu::Instance()->loadMenuMedia();
+					Menu::Instance()->draw();								// New
+				}
+				else if (getCurrentLevel() == PAUSE) {
+					Menu::Instance()->loadMenuMedia();
+					Menu::Instance()->drawPause();		// New
+				}
+
 				else if (getCurrentLevel() != MENU && getCurrentLevel() != PAUSE) playLevel(getCurrentLevel());
 				//if (!nameEntered) enterName();
 
@@ -885,7 +898,12 @@ void Game::gameProgress() {
 			gameOver = true;
 		}
 		else {
-			setCurrentLevel(getCurrentLevel() + 1);			// If there is a player alive go to next level
+			if (getCurrentLevel() < LEVEL_3)
+				setCurrentLevel(getCurrentLevel() + 1);			// If there is a player alive go to next level
+			else {
+				gameOver == true;
+				setCurrentLevel(MENU);
+			}
 
 			if (getCurrentLevel() > MAX_NUM_LEVELS) {		// If current game level goes over 3
 				gameOver = true;
@@ -931,33 +949,25 @@ void Game::displayText() {
 	if (player1->getAlive()) player1Score = player1->getScore();
 	if (twoPlayer && player2->getAlive()) player2Score = player2->getScore();
 
-	//std::stringstream framesPerSec;	// In memory text stream - string streams - function like iostreams only instead of reading or writing to the console, they allow you to read and write to a string in memory
-
-	//framesPerSec << "FPS: " << fps1.getFPS();										// FPS the game is running at
-
 	if(!twoPlayer)
 		finalScores = "Player 1: " + std::to_string(player1Score);					// End of game Player 1 and Player 2 scores
 	else if(twoPlayer)
 		finalScores = "Player 1: " + std::to_string(player1Score) + " Player 2: " + std::to_string(player2Score);	// End of game Player 1 and Player 2 scores
 
-	//std::stringstream timeText;
-	//timeText.str("");
-	// Set text to be rendered - string stream - print the time since timer last started - initialise empty
-
 	if (!levelOver && !gameOver) {
-		if (countdownTimer > 0 && countdownTimer <= GAME_TIMER) {
-			//timeText << "Time: " << countdownTimer;								// Set the game timer
-
-			renderTimer(countdownTimer);
-
-			//gFPSTextTexture.UIText(framesPerSec.str().c_str());						// Render text - Use a string to render the current FPS to a texture
-
-			levelOver = false;
-		} else
-			if (countdownTimer <= 0 || countdownTimer > GAME_TIMER + 6) {
-				levelOver = true;													// Level is over
+		if (checkpointsSpawned == 2 && countdownTimer < 2 && (player1->getAlive() || player2->getAlive())) {
+			levelOver = true;		// Level is over
 			if (getCurrentLevel() == MAX_NUM_LEVELS) gameOver = true;
 		}
+		else if (countdownTimer > 0 && countdownTimer <= GAME_TIMER) {
+			renderTimer(countdownTimer);
+
+			levelOver = false;
+		}
+		//else if (countdownTimer <= 0) {
+		//	noTime = true;		// Level is over
+		//	if (getCurrentLevel() == MAX_NUM_LEVELS) gameOver = true;
+		//}
 
 		//gameTimer();																// Set the count down timer - decrement by 1 second
 
@@ -970,9 +980,6 @@ void Game::displayText() {
 
 
 		//fps1.rendFPS(framesPerSec.str().c_str());
-
-
-
 
 		/*
 		if (!gFPSTextTexture.loadFromRenderedText(framesPerSec.str().c_str(), textColour, gFontRetro20, gRenderer)) {
@@ -996,11 +1003,16 @@ void Game::displayText() {
 		previous3 = infoMessageGeneral;
 		previous4 = infoMessageMap;
 	}
-	else if (levelOver == true) {
+
+	if (levelOver == true) {
 		//std::cout << "Level " << getCurrentLevel() << " Complete" << std::endl;
 		//gamerOverMessageDisplayCounter = 0;
 		gameProgress();
 	}// Levels
+	//if (noTime == true) {
+	//	resetGame(getCurrentLevel() + 1);
+	//	listOfGameObjects.clear();
+	//}
 }
 
 bool Game::playerInput(bool quit = false) {
@@ -1090,7 +1102,9 @@ bool Game::playerInput(bool quit = false) {
 			}
 		}
 
-		menu1.handleMenuEvents(e);
+		//menu1.handleMenuEvents(e);
+		Menu::Instance()->handleMenuEvents(e);
+
 		if (getCurrentLevel() != 0) {												// If not in menu state
 			if(player1->getAlive()) player1->handleEvent(e, 1);						// Handle input for Player 1
 			if (player2->getAlive()) player2->handleEvent(e, 2);					// Handle input for Player 2
@@ -1129,8 +1143,8 @@ void Game::identifyTrack(int songName) {
 		infoMessage("Track: Unknown", 2);
 	}
 	else if (songName == 2) {
-		infoMessage("Artist: Unknown", 1);
-		infoMessage("Track: Unknown", 2);
+		infoMessage("Artist: Sean Horgan", 1);
+		infoMessage("Song Title: Blood Stream", 2);
 	}
 	else if (songName == 3) {
 		infoMessage("Artist: Jim O'Regan", 1);
@@ -1577,7 +1591,11 @@ void Game::renderGamePlay() {
 
 		splash.endOfGame(getCurrentLevel(), finalScores);
 
-		resetGame(getCurrentLevel() + 1);
+		if (getCurrentLevel() < LEVEL_3)
+			resetGame(getCurrentLevel() + 1);
+		else
+			resetGame(MENU);
+
 		if (getCurrentLevel() >	MAX_NUM_LEVELS) gameOver = true;
 	}
 	/*
@@ -1788,7 +1806,7 @@ void Game::spawnMovingObjects() {
 			blockageCount++;
 		}
 	}
-	std::cout << "number of blockages counted " << blockageCount << std::endl;
+	//std::cout << "number of blockages counted " << blockageCount << std::endl;
 
 	if(player1->getAlive() == false && player1->getNumLives() > 0) spawnPlayer(PLAYER_1);
 	if(player2->getAlive() == false && player2->getNumLives() > 0) spawnPlayer(PLAYER_2);
@@ -1822,19 +1840,25 @@ void Game::spawnMovingObjects() {
 	}// end for
 
 	if (activePowerUps < SPAWN_NUM_POWER_UPS) { spawnPowerUp(); }
-	if (activeEnemyShips < SPAWN_NUM_ENEMY_SHIPS) { spawnEnemyShip(); }
-	if (activeEnemyVirus < SPAWN_NUM_ENEMY_VIRUS) { spawnEnemyVirus(); }
+
+	if (getCurrentLevel() == 1 && activeEnemyShips < SPAWN_NUM_ENEMY_SHIPS_LVL1) { spawnEnemyShip(); }
+	else if (getCurrentLevel() == 2 && activeEnemyShips < SPAWN_NUM_ENEMY_SHIPS_LVL2) { spawnEnemyShip(); }
+	else if (getCurrentLevel() == 3 && activeEnemyShips < SPAWN_NUM_ENEMY_SHIPS_LVL3) { spawnEnemyShip(); }
+
+	if (getCurrentLevel() == 1 && activeEnemyVirus < SPAWN_NUM_ENEMY_VIRUS_LVL1) { spawnEnemyVirus(); }
+	else if (getCurrentLevel() == 2 && activeEnemyVirus < SPAWN_NUM_ENEMY_SHIPS_LVL2) { spawnEnemyVirus(); }
+	else if (getCurrentLevel() == 3 && activeEnemyVirus < SPAWN_NUM_ENEMY_SHIPS_LVL3) { spawnEnemyVirus(); }
 
 	// Start the blockages halfway through the level
-	if (numBlockages < SPAWN_NUM_BLOCKAGES && backgroundLoopCounter > BACKGROUND_SCROLL_TIMES / 2) {
+	//if (numBlockages < SPAWN_NUM_BLOCKAGES && backgroundLoopCounter > BACKGROUND_SCROLL_TIMES / 2) {
 	//if (numBlockages < SPAWN_NUM_BLOCKAGES) {
-	//if (numBlockages < SPAWN_NUM_BLOCKAGES && (getCurrentLevel() == 2 || getCurrentLevel() == 3)) {
+	if (numBlockages < SPAWN_NUM_BLOCKAGES && (getCurrentLevel() == 2 || getCurrentLevel() == 3)) {
 		std::cout << "blockage check: " << numBlockages << std::endl;
 		spawnBlockage();
 	}
 
 	//if (activeEnemyBoss < 1 && backgroundLoopCounter == BACKGROUND_SCROLL_TIMES) spawnEnemyBoss();
-	if (activeEnemyBoss < 1) spawnEnemyBoss();
+	if (activeEnemyBoss < 1 && getCurrentLevel() == 3 && backgroundLoopCounter == BACKGROUND_SCROLL_TIMES) spawnEnemyBoss();
 }
 
 // Blockage Spawn Function
@@ -1866,7 +1890,7 @@ void Game::spawnPlayer(int player) {
 	int randomYCoord = rand() % 9; // a number 0 to 8
 
 	if (player == PLAYER_1) {
-		player1->spawn(50, (randomYCoord * 58) + 50);						// 2017/01/20: Spawn Player 1 at random Y coord
+		player1->spawn(50, (randomYCoord * 58) + 50);					// 2017/01/20: Spawn Player 1 at random Y coord
 		player1->setAlive(true);
 		gPlayer1Texture.setFlash(true);
 		gPlayer1Texture.flashGameObject(10, 4);							// 2017/01/30 Moved flashGameObject() function into LTexture
@@ -1880,7 +1904,9 @@ void Game::spawnPlayer(int player) {
 		//std::cout << "player1.getY() " << player1.getY() << " player2.getY() " << player2.getY() << std::endl;
 	}
 
-	infoMessage(randomPlayerMessage(player), player);					// 2017/03/04 Random player spawning messagess
+	if ((!twoPlayer && player == 1) || twoPlayer == true)
+		infoMessage(randomPlayerMessage(player), player);				// 2017/03/04 Random player spawning messagess
+
 }
 void Game::spawnEnemyBoss() {
 	int x, y, randomSpeed;
@@ -1924,13 +1950,13 @@ void Game::spawnEnemyVirus(int x, int y, int subType) {
 	else {
 		int randomExplodingVirus = rand() % 4 + 1;								// 1 in 4 chance of Orange Exploding Virus
 		//randomExplodingVirus = 2; // Test blue virus
-		if (randomExplodingVirus == 1) subType = VIRUS_ORANGE;
-		else if (randomExplodingVirus == 2) subType = VIRUS_BLUE;
+		if (randomExplodingVirus == 1 && (getCurrentLevel() == 2 || getCurrentLevel() == 3)) subType = VIRUS_ORANGE;
+		else if (randomExplodingVirus == 2 && getCurrentLevel() == 3) subType = VIRUS_BLUE;
 		else subType = VIRUS_GREEN;
 
 		GameObject* p_Virus = new EnemyVirus(subType, 3.0);		// Orange type = 1
 		p_Virus->setTimer(VIRUS_TIMER);
-		p_Virus->spawn(x, y, -randomSpeed, -randomSpeed);
+		p_Virus->spawn(x, y, -randomSpeed-4  , -randomSpeed);
 		listOfGameObjects.push_back(p_Virus);
 		//std::cout << "distance to virus p1: " << abs(((player1.getX() * player1.getX()) + (player1.getY() * player1.getY()))) << " p2: " << abs((player2.getX() * player2.getX()) + (player2.getY() * player2.getY())) << std::endl;
 	}
@@ -1951,8 +1977,9 @@ void Game::spawnPowerUp() {
 	int randomPowerup = rand() % 5 + 1;												// Number between 1 and 4
 	//randomPowerup = 4;
 
-	if (countdownTimer <= 10) {
+	if (countdownTimer <= 10 && checkpointsSpawned < 2) {
 		powerUpType = POWER_UP_CHECKPOINT;											// if the timer is less than or equal 10, spawn the Checkpoint power up
+		checkpointsSpawned++;
 	}
 	else {
 		if (randomPowerup == 1) powerUpType = POWER_UP_HEALTH;
@@ -1963,7 +1990,7 @@ void Game::spawnPowerUp() {
 
 	GameObject* p_PowerUp = new PowerUp(powerUpType, 50);						// Type and score
 	spawnRandom(x, y, randomSpeed, 200, p_PowerUp->getHeight());				// Spawn with random X and Y coord, and speed between 1 and 3
-	p_PowerUp->spawn(x, y, -randomSpeed);										// 2017/01/16 USES OVERLOADED FUNCTION -- CHECK
+	p_PowerUp->spawn(x, y, -5);										// 2017/01/16 USES OVERLOADED FUNCTION -- CHECK
 	listOfGameObjects.push_back(p_PowerUp);
 }
 void Game::spawnRandom(int &x, int &y, int &randomSpeed, int xMuliplier, int yPadding, int speed) {	// 2017-01-20 Separate out common randomness of game object spawning
@@ -1974,6 +2001,7 @@ void Game::spawnRandom(int &x, int &y, int &randomSpeed, int xMuliplier, int yPa
 	x = SCREEN_WIDTH + (randomX * xMuliplier);
 	y = 40 + (randomY * ((SCREEN_HEIGHT_GAME - yPadding - 80) / 8));			// 40 top and bottom, yPadding, object height
 }
+
 // Spawn Weapon at ships location
 void Game::spawnExplosion(int x, int y, int subType) {
 	GameObject* p_Explosion = new Explosion(x, y, subType);		// Create an explosion at x and y, with given type
@@ -2220,9 +2248,9 @@ void setViewport(SDL_Rect &rect, int x, int y, int w, int h) {
 
 
 // Reset a level or the game
-void Game::resetGame(int currentLevel) {
+void Game::resetGame(int levelToResetTo) {
 	frames = 0;					// Animation Frames
-
+	checkpointsSpawned = 0;		// Reset number of checkpoints spawned
 	//gLevel.free();
 
 	// Reset the map of the professor
@@ -2232,12 +2260,12 @@ void Game::resetGame(int currentLevel) {
 	std::string finalScores = "";										// Reset the final scores message
 	std::string gameWinners = "";										// Reset the game winner message
 
-	setCurrentLevel(currentLevel);										// Set the current level
+	setCurrentLevel(levelToResetTo);									// Set the current level
 
 	//gLevel.loadFromRenderedText("Level " + std::to_string(getCurrentLevel()), { 0, 255, 0, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 20));
 	//gLevel.loadFromRenderedTextID("Level " + std::to_string(getCurrentLevel()), "levelID", { 0, 255, 0, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 20));
 	//Texture::Instance()->loadFromRenderedTextID("Level " + std::to_string(currentLevel), "levelID", { 0, 255, 0, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 20));
-	std::cout << "Current Level Rendering: " << currentLevel << std::endl;
+	std::cout << "Current Level Rendering: " << levelToResetTo << std::endl;
 
 	// Reset the number of objects on screen
 	activeBloodCells = 0;
@@ -2277,7 +2305,7 @@ void Game::resetGame(int currentLevel) {
 	headsUpDisplay.resetHUD();
 
 	// Reset Players
-	if (currentLevel <= 1) {				// If the level isn't progressing
+	if (levelToResetTo <= 1) {				// If the level isn't progressing
 		player1->setScore(0);				// Reset player 1 score
 		player1->setNumLives(MAX_NUM_LIVES);
 		nameEntered = false;
@@ -2293,7 +2321,7 @@ void Game::resetGame(int currentLevel) {
 	player1->setNumRockets(3);					// FIX 2017/03/02
 
 	if (twoPlayer) {
-		if (currentLevel <= 1) {
+		if (levelToResetTo <= 1) {
 			player2->setScore(0);				// Reset player 2 score
 			player2->setNumLives(MAX_NUM_LIVES);
 		}
@@ -2322,6 +2350,8 @@ void Game::resetGame(int currentLevel) {
 
 	levelOver = false;
 	gameOver = false;
+	noTime = false;
+
 }
 
 void Game::collisionCheck() {
@@ -2338,7 +2368,7 @@ void Game::collisionCheck() {
 
 			//if (listOfGameObjects[index]->getSubType() == BLOCKAGE) player1->setVelX(player1->getVelX() - player1->getVelX() -BACKGROUND_SCROLL_SPEED);
 			if (listOfGameObjects[index]->getSubType() == BLOCKAGE) {
-				player1->setVelX(-BACKGROUND_SCROLL_SPEED);
+				player1->setX((player1->getX() + listOfGameObjects[index]->getVelX()) - player1->getVelX());
 				player1->moveLeft(true);
 			}
 
@@ -2433,7 +2463,8 @@ void Game::collisionCheck() {
 
 			//if (listOfGameObjects[index]->getSubType() == BLOCKAGE) player1->setVelX(player1->getVelX() - player1->getVelX() -BACKGROUND_SCROLL_SPEED);
 			if (listOfGameObjects[index]->getSubType() == BLOCKAGE) {
-				player2->setVelX(-BACKGROUND_SCROLL_SPEED);
+				//player2->setVelX(-BACKGROUND_SCROLL_SPEED);
+				player2->setX((player2->getX() + listOfGameObjects[index]->getVelX()) - player2->getVelX());
 				player2->moveLeft(true);
 			}
 

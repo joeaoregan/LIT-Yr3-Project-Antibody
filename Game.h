@@ -135,6 +135,9 @@ public:
 	//int counter = 0;		// counter for changing alpha for flashing
 	bool gameOver = false;
 	bool levelOver = false;
+	bool noTime = false;
+
+	int checkpointsSpawned = 0;
 	
 	bool init();								// Starts up SDL and creates window -- ERROR window won't close
 	void update();
@@ -165,6 +168,7 @@ public:
 	void spawnPowerUp();
 	void spawnRocket(int x, int y, int player, int type, bool launch);		// 2017-02-06
 	void spawnBlockage();
+
 
 	void gameProgress();
 	//void gameTimer(unsigned int &timer);					// 2017-03-02

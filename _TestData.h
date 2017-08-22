@@ -1,16 +1,20 @@
 #ifndef TEST_DATA_H
 #define TEST_DATA_H
 
-#define GAME_TIMER 10					// Time to start counting down from, in seconds
+#define GAME_TIMER 3					// Time to start counting down from, in seconds
 
 #define NUM_PLAYERS 2					// The number of players
 
-#define BACKGROUND_SCROLL_TIMES 5		// The number of times the main background scrolls
+#define BACKGROUND_SCROLL_TIMES 15		// The number of times the main background scrolls
 #define BACKGROUND_SCROLL_SPEED 5
 
 // Number of enemies to be displayed on screen
 #define SPAWN_NUM_ENEMY_SHIPS 3			// WAS 2 The number of enemy ships that can appear on screen at a time
-#define SPAWN_NUM_ENEMY_VIRUS 3			// WAS 2 The number of enemy virus that can appear on screen at a time
+#define SPAWN_NUM_ENEMY_VIRUS_LVL1 3			// WAS 2 The number of enemy virus that can appear on screen at a time
+#define SPAWN_NUM_ENEMY_VIRUS_LVL4 5
+#define SPAWN_NUM_ENEMY_VIRUS_LVL3 6
+
+
 //#define SPAWN_NUM_BLOOD_CELL 4			// WAS 6 The number of large blood cells that can appear on screen at a time
 //#define SPAWN_NUM_BLOOD_CELL_S 5		// WAS 9 The number of small blood cells that can appear on screen at a time
 //#define SPAWN_NUM_BLOOD_CELL_WHITE 2	// WAS 3 The number of white blood cells that can appear on screen at a time
@@ -39,18 +43,6 @@
 #define SPAWN_NUM_ENEMY_SHIPS_LVL1 3			// WAS 2 The number of enemy ships that can appear on screen at a time
 #define SPAWN_NUM_ENEMY_SHIPS_LVL2 3
 #define SPAWN_NUM_ENEMY_SHIPS_LVL3 4
-
-#define SPAWN_NUM_ENEMY_VIRUS_GREEN_LVL1 2			// WAS 2 The number of enemy virus that can appear on screen at a time
-#define SPAWN_NUM_ENEMY_VIRUS_GREEN_LVL2 2
-#define SPAWN_NUM_ENEMY_VIRUS_GREEN_LVL3 2
-
-#define SPAWN_NUM_ENEMY_VIRUS_ORANGE_LVL1 0
-#define SPAWN_NUM_ENEMY_VIRUS_ORANGE_LVL2 3
-#define SPAWN_NUM_ENEMY_VIRUS_ORANGE_LVL3 2
-
-#define SPAWN_NUM_ENEMY_VIRUS_BLUE_LVL1 0
-#define SPAWN_NUM_ENEMY_VIRUS_BLUE_LVL2 0
-#define SPAWN_NUM_ENEMY_VIRUS_BLUE_LVL3 2
 
 #define SPAWN_NUM_BLOOD_CELL 4			// WAS 6 The number of large blood cells that can appear on screen at a time
 #define SPAWN_NUM_BLOOD_CELL_S 5		// WAS 9 The number of small blood cells that can appear on screen at a time

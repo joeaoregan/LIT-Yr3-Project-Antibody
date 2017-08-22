@@ -14,6 +14,8 @@
 #include "Menu.h"
 #include <SDL_ttf.h>
 
+Menu* Menu::s_pInstance = 0;
+
 bool Menu::loadMenuMedia() {
 	bool success = true;
 

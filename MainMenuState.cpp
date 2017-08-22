@@ -1,14 +1,14 @@
 #include <iostream>
-#include "StateMainMenu.h"
-#include "StatePlay.h"
+#include "MainMenuState.h"
+#include "PlayState.h"
 #include "Texture.h"
 #include "Game.h"
 #include "Button.h"
 //#include "StateParser.h"
 
-const std::string StateMainMenu::s_menuID = "MENU";
+const std::string MainMenuState::s_menuID = "MENU";
 
-bool StateMainMenu::onEnter() {
+bool MainMenuState::onEnter() {
 	// parse the state
 	//StateParser stateParser;														// P148 Create StateParser
 	//stateParser.parseState("test.xml", s_menuID, &m_gameObjects, &m_textureIDList);	// Use it to parse the current state
@@ -21,7 +21,7 @@ bool StateMainMenu::onEnter() {
 	return true;
 }
 
-bool StateMainMenu::onExit() {
+bool MainMenuState::onExit() {
 	//for (unsigned int i = 0; i < m_gameObjects.size(); i++) {
 	//	m_gameObjects[i]->clean();
 	//}
@@ -38,32 +38,32 @@ bool StateMainMenu::onExit() {
 	return true;
 }
 
-void StateMainMenu::update() {
+void MainMenuState::update() {
 	for (unsigned int i = 0; i < m_gameObjects.size(); i++) {
 		m_gameObjects[i]->move();
 	}
 }
 
-void StateMainMenu::render() {
+void MainMenuState::render() {
 	for (unsigned int i = 0; i < m_gameObjects.size(); i++) {
 		m_gameObjects[i]->render();
 	}
 }
 
-void StateMainMenu::s_menuToPlay() {
+void MainMenuState::s_menuToPlay() {
 	std::cout << "Play button clicked\n";
 
-	Game::Instance()->getStateMachine()->changeState(new StatePlay());
+	Game::Instance()->getStateMachine()->changeState(new PlayState());
 }
 
-void StateMainMenu::s_exitFromMenu() {
+void MainMenuState::s_exitFromMenu() {
 	std::cout << "Exit button clicked\n";
 
 	Game::Instance()->close();	// Exit the game
 }
 
 // Assign callbacks
-void StateMainMenu::setCallbacks(const std::vector<Callback>& callbacks) {
+void MainMenuState::setCallbacks(const std::vector<Callback>& callbacks) {
 	// go through the game objects
 	for (unsigned int i = 0; i < m_gameObjects.size(); i++) {
 		// if they are of type MenuButton then assign a callback based on the id passed in from the file

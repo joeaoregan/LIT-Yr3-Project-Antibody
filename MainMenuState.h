@@ -2,10 +2,10 @@
 #define MAIN_MENU_STATE_
 
 //#include <vector>
-#include "StateMenuAbstract.h"
+#include "MenuStateAbstract.h"
 #include "GameObject.h"
 
-class StateMainMenu : public StateMenuAbstract {	// P148 Derives from absract MenuState class
+class MainMenuState : public MenuStateAbstract {	// P148 Derives from absract MenuState class
 public:
 
 	virtual void update();

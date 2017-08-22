@@ -1,4 +1,4 @@
-#include "StatePlay.h"
+#include "PlayState.h"
 #include "Game.h"
 #include "Texture.h"
 #include "Player.h"
@@ -6,14 +6,14 @@
 //#include "StatePause.h"
 #include "Enemy.h"
 #include "GameObject.h"
-#include "StateGameOver.h"
+#include "GameOverState.h"
 //#include "StateParser.h"
 #include <iostream>
 //#include "LevelParser.h"
 //#include "Level.h"
-const std::string StatePlay::s_playID = "PLAY";
+const std::string PlayState::s_playID = "PLAY";
 
-void StatePlay::update() {
+void PlayState::update() {
 	//	std::cout << "entering PlayState:update loop \n";
 
 	// PAUSE THE GAME
@@ -24,11 +24,11 @@ void StatePlay::update() {
 	//pLevel->update();
 }
 
-void StatePlay::render() {
+void PlayState::render() {
 	//pLevel->render();
 }
 
-bool StatePlay::onEnter() {
+bool PlayState::onEnter() {
 	// parse the state
 
 	//LevelParser levelParser;
@@ -39,7 +39,7 @@ bool StatePlay::onEnter() {
 	return true;
 }
 
-bool StatePlay::onExit() {
+bool PlayState::onExit() {
 	/*
 	for(int i = 0; i < m_gameObjects.size(); i++)
 	{

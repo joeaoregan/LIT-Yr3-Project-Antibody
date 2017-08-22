@@ -25,7 +25,7 @@ void GameStateMachine::render() {
 }
 /* P108 Push the passed-in pState parameter into the m_gameStates array and 
 call its onEnter function */
-void GameStateMachine::pushState(StateGameAbstract *pState) {
+void GameStateMachine::pushState(GameStateAbstract *pState) {
 	m_gameStates.push_back(pState);		// Add a state to vector of states
 	m_gameStates.back()->onEnter();		// Call the onEnter function to init the state
 }
@@ -43,7 +43,7 @@ void GameStateMachine::popState() {
 /* P109 Check if there are states in the array, do nothing if the state matches the 
 current stored states ID. It its not a match remove the current state, add the new
 state, call its onEnter function */
-void GameStateMachine::changeState(StateGameAbstract *pState) {
+void GameStateMachine::changeState(GameStateAbstract *pState) {
 	if (!m_gameStates.empty()) {											// If the vector of states is not empty
 		if (m_gameStates.back()->getStateID() == pState->getStateID()) {	// If the state is the same as the one stored
 			return;															// do nothing

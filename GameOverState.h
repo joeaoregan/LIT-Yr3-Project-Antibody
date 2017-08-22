@@ -1,14 +1,14 @@
 #ifndef GAME_OVER_STATE
 #define GAME_OVER_STATE
 
-#include "StateGameAbstract.h"
+#include "GameStateAbstract.h"
 #include "GameObject.h"
-#include "StateMenuAbstract.h"
+#include "MenuStateAbstract.h"
 //#include <vector>
 
 class GameObject;
 
-class GameOverState : public StateMenuAbstract {	// P154 To handle callbacks GameOverState inherits from MenuState
+class GameOverState : public MenuStateAbstract {	// P154 To handle callbacks GameOverState inherits from MenuState
 public:
 	virtual void update();
 	virtual void render();

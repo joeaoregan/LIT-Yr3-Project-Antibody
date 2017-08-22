@@ -6,6 +6,15 @@
 
 class Menu {
 public:
+	static Menu* Instance() {
+		if (s_pInstance == 0) {
+			s_pInstance = new Menu();
+			return s_pInstance;
+		}
+
+		return s_pInstance;							// Make sure the texture manager only exists once
+	}
+
 	TTF_Font *gFont = NULL;
 
 	// Menu Text
@@ -36,6 +45,9 @@ public:
 	//~Menu();
 
 	//Mix_Chunk *sound = Mix_LoadWAV("Audio/explosion.wav");		// Explosion sound fx
+
+private:
+		static Menu* s_pInstance;
 };
 
 #endif

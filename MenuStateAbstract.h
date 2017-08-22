@@ -1,12 +1,12 @@
 #ifndef MENU_STATE_H
 #define MENU_STATE_H
 
-#include "StateGameAbstract.h"
+#include "GameStateAbstract.h"
 #include <vector>
 
 // Abstract class that inherits from GameState
 
-class StateMenuAbstract : public StateGameAbstract {
+class MenuStateAbstract : public GameStateAbstract {
 protected:
 	typedef void(*Callback)();
 	virtual void setCallbacks(const std::vector<Callback>& callbacks) = 0;	// P147 Function that sets the callbacks for any items that need it

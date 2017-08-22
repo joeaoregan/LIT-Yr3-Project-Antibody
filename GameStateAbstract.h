@@ -7,10 +7,10 @@
 #include <iostream>
 #include <vector>
 
-class StateGameAbstract {
+class GameStateAbstract {
 public:
 
-	virtual ~StateGameAbstract() {}
+	virtual ~GameStateAbstract() {}
 
 	virtual void update() = 0;
 	virtual void render() = 0;
@@ -24,7 +24,7 @@ public:
 
 protected:
 
-	StateGameAbstract() : m_loadingComplete(false), m_exiting(false) {}
+	GameStateAbstract() : m_loadingComplete(false), m_exiting(false) {}
 
 	bool m_loadingComplete;
 	bool m_exiting;

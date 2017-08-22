@@ -1,8 +1,8 @@
 #include <iostream>
-#include "StateMainMenu.h" //
+#include "MainMenuState.h" //
 //#include "AnimatedGraphic.h"
-#include "StateGameOver.h"
-#include "StatePlay.h"
+#include "GameOverState.h"
+#include "PlayState.h"
 #include "Texture.h"
 #include "Game.h"
 #include "Button.h"
@@ -11,11 +11,11 @@
 const std::string GameOverState::s_gameOverID = "GAMEOVER";
 
 void GameOverState::s_gameOverToMain() {
-	Game::Instance()->getStateMachine()->changeState(new	StateMainMenu());
+	Game::Instance()->getStateMachine()->changeState(new	MainMenuState());
 }
 
 void GameOverState::s_restartPlay() {
-	Game::Instance()->getStateMachine()->changeState(new	StatePlay());
+	Game::Instance()->getStateMachine()->changeState(new	PlayState());
 }
 
 void GameOverState::update() {

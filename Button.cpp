@@ -9,6 +9,7 @@
 */
 #include "Button.h"
 #include "Game.h"
+#include "Menu.h"
 
 enum { STORY, GAME_1PLAYER, GAME_2PLAYER, SETTINGS, HIGH_SCORES, QUIT };
 
@@ -27,7 +28,7 @@ void Button::setPosition(int x, int y) {
 }
 
 void Button::handleEvent(SDL_Event* e, int buttonSelected) {
-	SDL_Color textColorOne = { 255, 255, 255 };
+//	SDL_Color textColorOne = { 255, 255, 255 };
 	//If mouse event happened
 	if (e->type == SDL_MOUSEMOTION || e->type == SDL_MOUSEBUTTONDOWN || e->type == SDL_MOUSEBUTTONUP) {
 		//Get mouse position
@@ -77,10 +78,12 @@ void Button::handleEvent(SDL_Event* e, int buttonSelected) {
 					//std::cout << "Level: " << game.getCurrentLevel() << std::endl;
 					//game.twoPlayer = false;
 					//game.update();
-					Game::Instance()->setCurrentLevel(1);
 					std::cout << "Level: " << Game::Instance()->getCurrentLevel() << std::endl;
 					Game::Instance()->twoPlayer = false;
 					Game::Instance()->displayLevelIntro = true;
+					Game::Instance()->setCurrentLevel(1);
+					Menu::Instance()->closeMenuMedia();
+
 					//Game::Instance()->update();
 					// Call a function in Game.cpp in the Main Project
 				}
@@ -90,10 +93,11 @@ void Button::handleEvent(SDL_Event* e, int buttonSelected) {
 					//std::cout << "Level: " << game.getCurrentLevel() << std::endl;
 					//game.twoPlayer = false;
 					//game.update();
-					Game::Instance()->setCurrentLevel(1);
 					std::cout << "Level: " << Game::Instance()->getCurrentLevel() << std::endl;
 					Game::Instance()->twoPlayer = false;
 					Game::Instance()->displayLevelIntro = false;
+					Game::Instance()->setCurrentLevel(1);
+					Menu::Instance()->closeMenuMedia();
 					//Game::Instance()->update();
 					// Call a function in Game.cpp in the Main Project
 				}
@@ -104,7 +108,9 @@ void Button::handleEvent(SDL_Event* e, int buttonSelected) {
 					//game.update();
 					//std::cout << "Level: " << game.getCurrentLevel() << std::endl;
 					Game::Instance()->twoPlayer = true;
+					Game::Instance()->displayLevelIntro = false;
 					Game::Instance()->setCurrentLevel(1);
+					Menu::Instance()->closeMenuMedia();
 					//Game::Instance()->update();
 					std::cout << "Level: " << Game::Instance()->getCurrentLevel() << std::endl;
 
@@ -144,7 +150,7 @@ void Button::handleEvent(SDL_Event* e, int buttonSelected) {
 }
 
 // Render the current button sprite at the button position
-// 
+//
 void Button::render(Texture &texture, SDL_Rect *currentClip) {
 	texture.render(mPosition.x, mPosition.y, currentClip);	// Show current button spriteCHANGED - RENDERER IS ADDED
 //void Button::render(Texture &texture, SDL_Renderer *rend, SDL_Rect *currentClip) {
