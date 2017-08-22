@@ -9,13 +9,19 @@
 #include <SDL.h>
 #include <SDL_mixer.h>				// 2017/01/09 JOE: SOUND - library we use to make audio playing easier
 #include <vector>
+#include <map>
 
 #define NUMBER_OF_SONGS 5;			// Total number of songs in the playlist
 
 class Audio {
 public:
-	//Audio();						// Initializes the variables
-	//~Audio();
+	static Audio* Instance() {
+		if (s_pInstance == 0) {
+			s_pInstance = new Audio();
+			return s_pInstance;
+		}
+		return s_pInstance;
+	}
 
 
 	//The music that will be played
@@ -24,7 +30,7 @@ public:
 	Mix_Music *gMusic3 = NULL;
 	Mix_Music *gMusic4 = NULL;				// 2017/02/17 - The First Step - Jimmy O'Regan
 	Mix_Music *gMusic5 = NULL;				// 2017/02/22 - Virus - Joe O'Regan
-	int currentSong;						// Play a random song when the game starts
+	unsigned int currentSong;				// Play a random song when the game starts
 
 	std::vector<Mix_Music*> listOfMusic;	// List of Music tracks
 
@@ -58,6 +64,15 @@ public:
 	int playMusic();
 
 	void destroy();
+
+private:
+	Audio();						// Initializes the variables
+	~Audio();
+
+	std::map<std::string, Mix_Chunk*> m_sfxs;
+	std::map<std::string, Mix_Music*> m_music;
+
+	static Audio* s_pInstance;
 };
 
 #endif

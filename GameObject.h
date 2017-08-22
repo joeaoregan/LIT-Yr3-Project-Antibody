@@ -119,6 +119,7 @@ public:
 
 	//SDL_Color getFontColour();
 	//void setFontColour(SDL_Color f);
+	Texture m_Texture;
 
 	// Timers
 	unsigned int getLastTime() { return lastTime; }
@@ -138,7 +139,6 @@ public:
 	void setLineAlgCalculated(bool alg) { lineAlgorithmCalculated = alg; }
 	int dx, dy;
 
-	Texture m_Texture;
 
 	int rotateCounter;	// degrees the satellite object has rotated
 	//int rotateCenter;

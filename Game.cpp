@@ -164,9 +164,12 @@
 
 Game* Game::s_pInstance = 0;
 
+Texture gLevel;
+
 int ninjaStarP1Counter, ninjaStarP2Counter, laserCounter, rocketCounter;
 int ninjaStarP1Missed, ninjaStarP2Missed, ninjaStarP1Streak, ninjaStarP2Streak;
 int scoreTextP1counter, scoreTextP2counter;
+int bloodCellCounterP1, bloodCellcounterP2;
 
 /***************************************************************************************************************************/
 /******************************************** TURN STUFF ON AND OFF FOR TESTING ********************************************/
@@ -174,8 +177,6 @@ int scoreTextP1counter, scoreTextP2counter;
 // Game & Level Testing
 bool quit = false;					// Main loop flag
 bool testMode = true;				// Game is in testing
-bool displayGameIntro;				// False means off - set in _TestData.h
-bool displayLevelIntro;				// Display the information splash screen at the start of a level - set in _TestData.h
 
 /***************************************************************************************************************************/
 
@@ -191,10 +192,9 @@ void setupAnimationClip(SDL_Rect rect[], int frames, int amount, bool type2 = fa
 // Classes
 Menu menu1;
 HUD headsUpDisplay;
-Audio audio1;
 StatusBar bar;
 SplashScreen splash;
-FPS fps;							// 2017/02/01 Moved FPS functionality to it's own class
+FPS fps1;							// 2017/02/01 Moved FPS functionality to it's own class
 Particle particle;
 
 // Viewports
@@ -247,7 +247,7 @@ SDL_Haptic*	gControllerHaptic = NULL;	// 2017/01/18 Haptic (Force Feedback) adde
 
 // Text
 SDL_Color textColour;					// Set the text colour
-TTF_Font *gFontRetro20;					// Globally used font 2017-01-25 Changed to Retro font which is more readable
+TTF_Font *gFontRetro20;				// Globally used font 2017-01-25 Changed to Retro font which is more readable
 
 // Objects and weapons
 Texture gPlayer1Texture;			// Player 1 ship
@@ -270,7 +270,7 @@ Texture gInfoMessageP2TextTexture;	// Player notification messages for picking u
 Texture gInfoMessageTextTexture;	// Player notification messages for picking up objects etc.
 
 // Vectors for objects that have collisions - These 2 lists are the only 2 we need
-//std::vector<Texture*> listOfScoreTextures;		// The score for any object a player Kills
+//std::vector<Texture*> listOfScoreTextures;	// The score for any object a player Kills
 std::vector<GameObject*> listOfGameObjects;		// 2017/01/31 Using to display the scores for each object killed, 2017/02/15 added Power Ups, Explosions
 
 Player* player1 = new Player();
@@ -402,6 +402,11 @@ bool Game::init() {
 }
 
 bool Game::loadMedia() {
+
+	//gLevel.loadFromRenderedText("Level " + std::to_string(getCurrentLevel()), { 0, 255, 0, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 20));
+	//gLevel.loadFromRenderedTextID("Level " + std::to_string(getCurrentLevel()), "levelID", { 0, 255, 0, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 20));
+	Texture::Instance()->loadFromRenderedTextID("Level " + std::to_string(getCurrentLevel()), "levelID", { 0, 255, 0, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 20));
+
 	bool success = true;			// Loading success flag
 
 	Texture::Instance()->loadTextureMedia();
@@ -412,7 +417,7 @@ bool Game::loadMedia() {
 	//success = player2->loadMediaPlayer();		// Load particles for each player
 	//if (twoPlayer) success = player2->loadMediaPlayer();		// Load particles for each player
 
-	success = audio1.loadMediaAudio();
+	success = Audio::Instance()->loadMediaAudio();
 	success = headsUpDisplay.loadLevelStuff();			// 2017/02/21 Separated heads up display object initialisation to the class for loading textures for player lives etc
 	success = particle.initParticle();
 
@@ -574,7 +579,7 @@ bool Game::loadMedia() {
 	}
 
 	//if (MUSIC_ON) audio.music();		// EDIT IN _TestData.h
-	audio1.music();		// EDIT IN _TestData.h
+	Audio::Instance()->music();
 
 	return success;
 }
@@ -656,10 +661,10 @@ void Game::close() {
 	gWindow = NULL;
 	//gRenderer = NULL;
 
-	fps.fpsclose();
+	//fps.fpsclose();
 	splash.closeSplashScreens();	// Close splash screen stuff
 	menu1.closeMenu();				// Close menu stuff
-	audio1.destroy();				// Close audio files
+	Audio::Instance()->destroy();
 	headsUpDisplay.closeLevelStuff();
 	particle.closeParticle();
 
@@ -698,13 +703,13 @@ void Game::update(){
 
 				//if (!nameEntered) enterName();
 
-				if(getCurrentLevel() == 1) enterName();
+				//if(getCurrentLevel() == 1) enterName();
 				//else {
 
 					if (getCurrentLevel() != 0) playLevel(getCurrentLevel());
 					//playLevel(1);	// Test start at level 2
 
-					if (getCurrentLevel() > 0) fps.fpsthink();					// Update the FPS
+					if (getCurrentLevel() > 0) fps1.fpsthink();					// Update the FPS
 
 					destroyGameObjects();										// 2017-01-09 JOE: Destroy the game objects when finished on the screen
 				//}
@@ -716,7 +721,7 @@ void Game::update(){
 
 bool renderText;
 std::string inputText = "Name";
-
+/*
 //bool Game::enterName() {
 bool Game::enterName() {
 	SDL_SetRenderDrawColor(getRenderer(), 0x00, 0x00, 0x00, 0xFF);	// Clear background
@@ -781,11 +786,11 @@ bool Game::enterName() {
 
 	return nameEntered;
 }
-
+*/
 
 void Game::playLevel(int levelNum) {
 	//if (!nameEntered)
-		nameEntered = enterName();
+		//nameEntered = enterName();
 	//else
 	if (displayLevelIntro)displayLevelIntroScreens(levelNum);	// Set true or false in _test.cpp
 	{
@@ -801,7 +806,8 @@ void Game::playLevel(int levelNum) {
 
 void Game::displayLevelIntroScreens(int level) {
 	// STORY - INSTRUCTIONS - OBJECTIVES - INFORMATION screens, pass in all the textures to give information about for each level
-	if (level == 1) displayLevelIntro = splash.level1IntroScreens();		// Display level story and info screens
+	//if (level == 1)
+		displayLevelIntro = splash.level1IntroScreens(getCurrentLevel());		// Display level story and info screens
 	//if (level == 2) displayLevelIntro = splash.level2IntroScreens();
 	//if (level == 3) displayLevelIntro = splash.level3IntroScreens();
 
@@ -814,7 +820,7 @@ void Game::displayText() {
 
 	std::stringstream framesPerSec;	// In memory text stream - string streams - function like iostreams only instead of reading or writing to the console, they allow you to read and write to a string in memory
 
-	framesPerSec << "FPS: " << fps.getFPS();													// FPS the game is running at
+	framesPerSec << "FPS: " << fps1.getFPS();													// FPS the game is running at
 
 	if(!twoPlayer)
 		finalScores = "Player 1: " + std::to_string(player1Score);								// End of game Player 1 and Player 2 scores
@@ -841,13 +847,17 @@ void Game::displayText() {
 
 		gameTimer();																// Set the count down timer - decrement by 1 second
 
-		//headsUpDisplay.gameTime(countdownTimer);
+		//headsUpDisplay.gameTime(countdownTimer);	// NOT WORKING
 
 		//gTimeTextTexture.UITextTimer(timeText.str().c_str(), countdownTimer);	// Render Text - Use a string to render the current Game Time to a Texture
 
-		//FPSTextTexture.render((SCREEN_WIDTH - 150) / 2, 8);
-		//fps.rendFPS(framesPerSec.str().c_str());
-
+		//gFPSTextTexture.render((SCREEN_WIDTH - 150) / 2, 8);
+		fps1.rendFPS(framesPerSec.str().c_str());
+		/*
+		if (!gFPSTextTexture.loadFromRenderedText(framesPerSec.str().c_str(), textColour, gFontRetro20, gRenderer)) {
+			printf("Unable to render FPS texture!\n");
+		}
+		*/
 		if (infoMessageP1 != "") gInfoMessageP1TextTexture.UITextPlayerMessage(infoMessageP1, PLAYER_1);	// Render Text - Use a string to render Player 1 notifications
 		if (infoMessageP2 != "") gInfoMessageP2TextTexture.UITextPlayerMessage(infoMessageP2, PLAYER_2);	// Render Text - Use a string to render Player 2 notifications
 		if (infoMessageGeneral != "") gInfoMessageTextTexture.UITextPlayerMessage(infoMessageGeneral);		// Render Text - Use a string to render General notifications
@@ -911,7 +921,7 @@ bool Game::playerInput(bool quit = false) {
 			// Play/Pause music on a m key press, stop music on 0
 			case SDLK_m:
 				if (Mix_PlayingMusic() == 0) {							// If there is no music playing
-					int song = audio1.playMusic();
+					int song = Audio::Instance()->playMusic();
 					identifyTrack(song);
 					infoMessage("Music Play");
 				}
@@ -985,12 +995,12 @@ bool Game::playerInput(bool quit = false) {
 }
 
 void Game::musicTrackForward() {
-	int songName = audio1.musicForwardSongName();
+	int songName = Audio::Instance()->musicForwardSongName();
 	identifyTrack(songName);
 	infoMessage("Music Track Skip Forwards");
 }
-void Game::musicTrackBackward() {
-	int songName = audio1.musicBackSongName();
+void Game::musicTrackBackward() {	;
+	int songName = Audio::Instance()->musicBackSongName();
 	identifyTrack(songName);
 	infoMessage("Music Track Skip Backwards");
 }
@@ -1196,7 +1206,12 @@ void Game::renderGameObjects() {
 		// Render Text
 		SDL_RenderSetViewport(getRenderer(), &gameViewport);
 
-		headsUpDisplay.displayLevelNum(getCurrentLevel());
+		//headsUpDisplay.displayLevelNum(getCurrentLevel());
+		//gLevel.free();
+
+		Texture::Instance()->render("levelID", 10, 8);
+		//Texture::Instance()->render("levelID", 10, 8);
+		//gLevel.render(10, 8);
 
 		if (infoMessageP1Counter < MESSAGE_TIME) {
 			gInfoMessageP1TextTexture.render((SCREEN_WIDTH - gInfoMessageP1TextTexture.getWidth()) / 2, ((SCREEN_HEIGHT - gInfoMessageP1TextTexture.getHeight()) / 2) - 20); // Top message P1
@@ -1339,7 +1354,9 @@ void Game::renderGameObjects() {
 		}
 
 		// User Interface / Player Information Panel
+
 		SDL_RenderSetViewport(getRenderer(), &UIViewport);
+
 		headsUpDisplay.playerScore(twoPlayer, player1Score, player2Score);
 		headsUpDisplay.percentageNinjaStarKills(twoPlayer, ninjaStarP1Counter, ninjaStarP2Counter);
 		headsUpDisplay.playerScoresCounter(twoPlayer, scoreTextP1counter, scoreTextP2counter);
@@ -1352,8 +1369,8 @@ void Game::renderGameObjects() {
 		else if (player1->getAlive() && (player2->getAlive() == false && !twoPlayer))
 			headsUpDisplay.rendPlayerLives(player1->getNumLives());
 
-		//if (player1->getAlive())
-		//	headsUpDisplay.rendPlayerLives(player1->getNumLives());
+		if (player1->getAlive())
+			headsUpDisplay.rendPlayerLives(player1->getNumLives());
 
 		headsUpDisplay.createdByText();
 
@@ -1378,6 +1395,7 @@ void Game::renderGameObjects() {
 		SDL_RenderSetViewport(getRenderer(), &boostViewport1);								// UIViewport
 		if (player1->getAlive()) headsUpDisplay.speedBoostIndicator(player1->getSpeedBoost());	// 2017/02/22 Added check to make sure player is alive
 		else headsUpDisplay.speedBoostIndicator(false);
+
 		bar.speedBoostBar(player1->boostTimer());
 
 		SDL_RenderSetViewport(getRenderer(), &weaponViewport2);  // UIViewport
@@ -1387,6 +1405,7 @@ void Game::renderGameObjects() {
 		else if (twoPlayer && player2->getLaserGrade() == LASER_TRIPLE) Texture::Instance()->weaponIndicator("laserPowerUpV3ID", weaponScrolling);
 
 		SDL_RenderSetViewport(getRenderer(), &rocketViewport2);								// UIViewport
+
 		if (twoPlayer && player2->getAlive()) {
 			headsUpDisplay.rocketIndicator(player2->getNumRockets(), player2->getAlive(), PLAYER_2);				// Number of rockets for Player 1
 		}
@@ -1531,6 +1550,12 @@ void Game::infoMessage(std::string message, int type, int timer) {
 
 // Destroy Game Objects
 void Game::destroyGameObjects() {
+	for (unsigned int index = 0; index != listOfGameObjects.size(); ++index) {
+		if (listOfGameObjects[index]->getX() <= 200 - listOfGameObjects[index]->getWidth()) {
+			listOfGameObjects[index]->setAlive(false);
+		}
+	}
+
 	for (unsigned int index = 0; index != listOfGameObjects.size(); ++index) {	// Erase Game Objects
 		if ((listOfGameObjects[index]->getSubType() == PLAYER1_SCORE)) {
 			if (SDL_GetTicks() > listOfGameObjects[index]->getTimerTracker() + 2500) listOfGameObjects[index]->setAlive(false); // if the current time is more than the start time + 100
@@ -1583,17 +1608,9 @@ void Game::destroyGameObjects() {
 				ninjaStarP2Counter--;
 			}
 
-
-			//else if (listOfGameObjects[index]->getType() == PLAYER_WEAPON && listOfGameObjects[index]->getSubType() != SAW1 && listOfGameObjects[index]->getSubType() != SAW2) { // 201702/19 Added check for saws
-			//	spawnExplosion(listOfGameObjects[index]->getX(), listOfGameObjects[index]->getY(), EXPLOSION);			// Expode Player Weapon when it is destroyed
-			//}
-
-			//if (listOfGameObjects[index]->getType() == BLOOD_CELL && listOfGameObjects[index]->getX() > 0) { // 2017/02/19 Added explosion for blood cells
-			//	spawnExplosion(listOfGameObjects[index]->getX(), listOfGameObjects[index]->getY(), BLOOD_EXPLOSION);	// Expode Blood Cell when it is destroyed
-			//}
-
 			// Erase The Object From The List
 			if (!listOfGameObjects[index]->getAlive()) {
+				std::cout << "kill " << listOfGameObjects[index]->getName() << std::endl;
 				listOfGameObjects.erase(listOfGameObjects.begin() + index);
 				index--;
 			}
@@ -1612,6 +1629,7 @@ void Game::spawnMovingObjects() {
 		activeBloodCells++;									// increment Blood cell counter
 		spawnBloodCell(LARGE_BLOOD_CELL);					// Spawn a large blood cell
 	}
+
 	if (activeSmallBloodCells < SPAWN_NUM_BLOOD_CELL_S) {
 		activeSmallBloodCells++;							// increment Small blood cell counter
 		spawnBloodCell(SMALL_BLOOD_CELL);					// Spawn a small blood cell
@@ -1697,14 +1715,14 @@ void Game::spawnEnemyVirus(int x, int y, int subType) {
 }
 void Game::spawnBloodCell(int subType) {
 	int x, y, randomSpeed;
-	GameObject* p_BloodCell = new BloodCell();
-
-	p_BloodCell->setSubType(subType);	// Set the type of Blood Cell
+	GameObject* p_BloodCell = new BloodCell(subType);
 
 	spawnRandom(x, y, randomSpeed, 200, p_BloodCell->getHeight());
 	//p_BloodCell->spawn(x, y, -randomSpeed, p_BloodCell->getDistanceBetween());	// 2017/01/24 Added Y padding to keep objects within the game screen boundary
 	p_BloodCell->spawn(x, y, -randomSpeed);											// 2017/01/24 Added Y padding to keep objects within the game screen boundary
 	listOfGameObjects.push_back(p_BloodCell);
+
+	bloodCellCounterP1++;
 }
 void Game::spawnPowerUp() {
 	int x, y, randomSpeed, powerUpType = 0;
@@ -1742,7 +1760,7 @@ void Game::spawnExplosion(int x, int y, int subType) {
 	p_Explosion->spawn(x, y - 30);								// Spawn the explosion at the given x & y coords
 	listOfGameObjects.push_back(p_Explosion);					// Add explosion to list of game objects
 
-	if (subType == EXPLOSION) audio1.explosionFX();				// Play explosion sound effect
+	if (subType == EXPLOSION) Audio::Instance()->explosionFX();				// Play explosion sound effectmusicBackSongName
 }
 
 void Game::spawnLaser(int x, int y, int player, int grade, int velocity) {
@@ -1795,8 +1813,8 @@ void Game::spawnLaser(int x, int y, int player, int grade, int velocity) {
 	}
 
 	if (!gameOver) {
-		if (player == 1) audio1.laserFX_P1();
-		else if (player == 2) audio1.laserFX_P2();
+		if (player == 1) Audio::Instance()->laserFX_P1();
+		else if (player == 2) Audio::Instance()->laserFX_P2();
 	}
 }
 void Game::spawnEnemyLaser(int xCoord, int yCoord, int type, int whichVirus) {
@@ -1808,7 +1826,7 @@ void Game::spawnEnemyLaser(int xCoord, int yCoord, int type, int whichVirus) {
 			p_LaserE->spawn(xCoord - 20, yCoord + 30, p_LaserE->getVelocity());
 			listOfGameObjects.push_back(p_LaserE);
 
-			audio1.laserFX_Enemy();
+			Audio::Instance()->laserFX_Enemy();
 		}
 	}
 	else if(type == VIRUS_FIREBALL){
@@ -1864,11 +1882,11 @@ void Game::spawnNinjaStar(int x, int y, int player) {					// player to spawn for
 	if (!gameOver) {
 		if (player == PLAYER_1) {
 			ninjaStarP1Counter++;
-			audio1.ninjaFX_P1();										// Play a different sound effect depending on the player
+			Audio::Instance()->ninjaFX_P1();										// Play a different sound effect depending on the player
 		}
 		else if (player == PLAYER_2) {
 			ninjaStarP2Counter++;
-			audio1.ninjaFX_P2();
+			Audio::Instance()->ninjaFX_P2();
 		}
 	}
 }
@@ -1907,8 +1925,8 @@ void Game::spawnSaw(int x, int y, int subType) {		// player to spawn for and the
 	if (createSaw) {
 		GameObject* p_Saw = new WeaponPlSaw(subType);	// Create new saw
 		p_Saw->spawn(x + 65, y + 25);					// Spawn the saw at the given x & y coords
-		listOfGameObjects.push_back(p_Saw);				// Add the saw to the game object list
-		if (!gameOver) audio1.sawFX();					// Play the sound effect for the saw starting
+		listOfGameObjects.push_back(p_Saw);				// Add the saw to the game object listg
+		if (!gameOver) Audio::Instance()->sawFX();					// Play the sound effect for the saw starting
 	}
 	else if (!createSaw) {
 		for (unsigned int index = 0; index != listOfGameObjects.size(); ++index) {
@@ -1921,218 +1939,6 @@ void Game::spawnSaw(int x, int y, int subType) {		// player to spawn for and the
 				}
 			}
 		}// end for
-	}
-}
-
-void Game::collisionCheck() {
-	// Check if Player 1 or 2 has collided with another game object
-	for (unsigned int index = 0; index != listOfGameObjects.size(); ++index) {
-		if (checkCollision(player1->getCollider(), listOfGameObjects[index]->getCollider()) == true) {
-			player1->setScore(player1->getScore() + listOfGameObjects[index]->getScore());
-
-			// Power Ups
-			if (listOfGameObjects[index]->getSubType() == POWER_UP_HEALTH) {
-				managePlayerHealth(PLAYER_1, -listOfGameObjects[index]->getDamage());
-				infoMessage("Player 1 has increased their health!!!", PLAYER_1);
-			}
-			else if (listOfGameObjects[index]->getSubType() == POWER_UP_LASER) {
-				player1->setScore(player1->getScore() + listOfGameObjects[index]->getScore());
-				player1->setLaserGrade(player1->getLaserGrade() + 1);
-				Laser1 = true;
-				infoMessage("Player 1 has upgraded their laser!!!", PLAYER_1);
-			}
-			else if (listOfGameObjects[index]->getSubType() == POWER_UP_ROCKET) {
-				player1->setScore(player1->getScore() + listOfGameObjects[index]->getScore());
-				player1->setNumRockets(player1->getNumRockets() + 1);
-				infoMessage("Player 1 has collected a Rocket!!! Rockets: " + std::to_string(player1->getNumRockets()), PLAYER_1);
-			}
-			else if (listOfGameObjects[index]->getSubType() == POWER_UP_CHECKPOINT) {
-				player1->setScore(player1->getScore() + listOfGameObjects[index]->getScore());
-				infoMessage("Checkpoint Reached!!!");
-				std::cout << "Checkpoint reached!\n";
-				countdownTimer += 20;
-			}
-			else if (listOfGameObjects[index]->getSubType() == POWER_UP_LIVES) {
-				player1->setScore(player1->getScore() + listOfGameObjects[index]->getScore());
-				if (player1->getNumLives() < MAX_NUM_LIVES) {
-					player1->setNumLives(player1->getNumLives() + 1);
-					infoMessage("Player 1 has increased their number of lives!!!", PLAYER_1);
-				}
-				else
-					infoMessage("Player 1 has already has the max number of lives!!!", PLAYER_1);
-			}
-
-			// Enemies
-			else if (listOfGameObjects[index]->getSubType() == ENEMY_SHIP_LASER || listOfGameObjects[index]->getSubType() == BLUE_VIRUS_BULLET || listOfGameObjects[index]->getSubType() == VIRUS_FIREBALL) {
-				managePlayerHealth(PLAYER_1, listOfGameObjects[index]->getDamage());															// Score used to inicate amount to remove from health --> need to add damage variable
-			}
-			else if (listOfGameObjects[index]->getSubType() == ENEMY_SHIP) {
-				if (player1->getSawActive()) {
-					listOfGameObjects[index]->setAlive(false);																				// If saw is active kill that enemy
-				}
-				else
-					if (!gPlayer1Texture.getFlash()) managePlayerHealth(PLAYER_1, listOfGameObjects[index]->getDamage() / 5, "Enemy Ship");	// Take off 5 health
-			}
-			else if (listOfGameObjects[index]->getSubType() == VIRUS_GREEN || listOfGameObjects[index]->getSubType() == VIRUS_ORANGE || listOfGameObjects[index]->getSubType() == VIRUS_BLUE) {
-				//if (player1->getSawActive() && listOfGameObjects[index]->getSubType() == VIRUS_GREEN) {
-				if (listOfGameObjects[index]->getSubType() == VIRUS_GREEN) {
-					spawnEnemyVirus(listOfGameObjects[index]->getX(), listOfGameObjects[index]->getY(), VIRUS_SMALL_GREEN);
-					spawnEnemyVirus(listOfGameObjects[index]->getX(), listOfGameObjects[index]->getY(), VIRUS_SMALL_GREEN);
-						listOfGameObjects[index]->setAlive(false);						// If saw is active kill that enemy
-				}
-				//else if (player1->getSawActive() && listOfGameObjects[index]->getSubType() == VIRUS_BLUE) {
-				else if (listOfGameObjects[index]->getSubType() == VIRUS_ORANGE) {
-					spawnEnemyVirus(listOfGameObjects[index]->getX(), listOfGameObjects[index]->getY(), VIRUS_SMALL_ORANGE);
-					spawnEnemyVirus(listOfGameObjects[index]->getX(), listOfGameObjects[index]->getY(), VIRUS_SMALL_ORANGE);
-					listOfGameObjects[index]->setTimer(0);
-				}
-				else if (listOfGameObjects[index]->getSubType() == VIRUS_BLUE) {
-					spawnEnemyVirus(listOfGameObjects[index]->getX(), listOfGameObjects[index]->getY(), VIRUS_SMALL_BLUE);
-					spawnEnemyVirus(listOfGameObjects[index]->getX(), listOfGameObjects[index]->getY(), VIRUS_SMALL_BLUE);
-					listOfGameObjects[index]->setAlive(false);						// If saw is active kill that enemy
-				}
-				else if (!gPlayer1Texture.getFlash()) managePlayerHealth(PLAYER_1, listOfGameObjects[index]->getDamage() / 3, "Enemy Virus");	// If player 1 isn't flashing, Take off 5 health
-			}
-
-			// Make sure the player isn't colliding with it's own weapon or a blood cell
-			if (listOfGameObjects[index]->getType() != PLAYER_WEAPON && listOfGameObjects[index]->getType() != BLOOD_CELL)
-				listOfGameObjects[index]->setAlive(false);	// If it's not a collision between a player and a player weapon or a blood cell
-
-			if (listOfGameObjects[index]->getSubType() == LARGE_BLOOD_CELL && player1->getSawActive())
-				listOfGameObjects[index]->setAlive(false);	// If the players saw is active and it collides with a large blood cell, the blood cell is destroyed
-		}
-		else if (twoPlayer && checkCollision(player2->getCollider(), listOfGameObjects[index]->getCollider()) == true) {
-			player2->setScore(player2->getScore() + listOfGameObjects[index]->getScore());
-
-			if (listOfGameObjects[index]->getSubType() == POWER_UP_HEALTH) {
-				managePlayerHealth(PLAYER_2, -listOfGameObjects[index]->getDamage());
-				infoMessageP2Counter = 0;
-				infoMessage("Player 2 has increased their health!!!", PLAYER_2);
-			}
-			else if (listOfGameObjects[index]->getSubType() == POWER_UP_LASER) {
-				player2->setScore(player2->getScore() + listOfGameObjects[index]->getScore());
-				player2->setLaserGrade(player2->getLaserGrade() + 1);
-				Laser2 = true;
-				infoMessage("Player 2 has upgraded their laser!!!", PLAYER_2);
-			}
-			else if (listOfGameObjects[index]->getSubType() == POWER_UP_ROCKET) {
-				player2->setScore(player2->getScore() + listOfGameObjects[index]->getScore());
-				player2->setNumRockets(player2->getNumRockets() + 1);
-				infoMessage("Player 2 has collected a Rocket!!! Rockets: " + std::to_string(player2->getNumRockets()), PLAYER_2);
-			}
-			else if (listOfGameObjects[index]->getSubType() == POWER_UP_CHECKPOINT) {
-				player2->setScore(player2->getScore() + listOfGameObjects[index]->getScore());
-				infoMessage("Checkpoint Reached!!!");
-				std::cout << "Checkpoint reached!\n";
-				countdownTimer += 20;
-			}
-			else if (listOfGameObjects[index]->getSubType() == POWER_UP_LIVES) {
-				player2->setScore(player2->getScore() + listOfGameObjects[index]->getScore());
-				if (player2->getNumLives() < MAX_NUM_LIVES) {
-					player2->setNumLives(player2->getNumLives() + 1);
-					infoMessage("Player 2 has increased their number of lives!!!", PLAYER_2);
-				}
-				else
-					infoMessage("Player 2 has already has the max number of lives!!!", PLAYER_2);
-			}
-			else if (listOfGameObjects[index]->getSubType() == ENEMY_SHIP_LASER || listOfGameObjects[index]->getSubType() == BLUE_VIRUS_BULLET || listOfGameObjects[index]->getSubType() == VIRUS_FIREBALL) {
-				managePlayerHealth(PLAYER_2, listOfGameObjects[index]->getDamage());	// Score used to inicate amount to remove from health --> need to add damage variable
-			}
-			else if (listOfGameObjects[index]->getSubType() == ENEMY_SHIP) {
-				if (player2->getSawActive()) {
-					listOfGameObjects[index]->setAlive(false);																				// If saw is active kill that enemy
-				}
-				else
-					if (!gPlayer2Texture.getFlash()) managePlayerHealth(PLAYER_2, listOfGameObjects[index]->getDamage() / 5, "Enemy Ship");	// Take off 5 health
-			}
-			else if (listOfGameObjects[index]->getSubType() == VIRUS_GREEN || listOfGameObjects[index]->getSubType() == VIRUS_ORANGE || listOfGameObjects[index]->getSubType() == VIRUS_BLUE) {
-				if (player2->getSawActive() && listOfGameObjects[index]->getSubType() == VIRUS_GREEN) {
-					spawnEnemyVirus(listOfGameObjects[index]->getX(), listOfGameObjects[index]->getY(), VIRUS_SMALL_GREEN);
-					spawnEnemyVirus(listOfGameObjects[index]->getX(), listOfGameObjects[index]->getY(), VIRUS_SMALL_GREEN);
-					listOfGameObjects[index]->setAlive(false);						// If saw is active kill that enemy
-				}
-				//else if (player1->getSawActive() && listOfGameObjects[index]->getSubType() == VIRUS_BLUE) {
-				else if (player2->getSawActive() && listOfGameObjects[index]->getSubType() == VIRUS_ORANGE) {
-					spawnEnemyVirus(listOfGameObjects[index]->getX(), listOfGameObjects[index]->getY(), VIRUS_SMALL_ORANGE);
-					spawnEnemyVirus(listOfGameObjects[index]->getX(), listOfGameObjects[index]->getY(), VIRUS_SMALL_ORANGE);
-					listOfGameObjects[index]->setTimer(0);
-				}
-				else if (player2->getSawActive() && listOfGameObjects[index]->getSubType() == VIRUS_BLUE) {
-					spawnEnemyVirus(listOfGameObjects[index]->getX(), listOfGameObjects[index]->getY(), VIRUS_SMALL_BLUE);
-					spawnEnemyVirus(listOfGameObjects[index]->getX(), listOfGameObjects[index]->getY(), VIRUS_SMALL_BLUE);
-					listOfGameObjects[index]->setAlive(false);						// If saw is active kill that enemy
-				}
-				else if (!gPlayer2Texture.getFlash()) managePlayerHealth(PLAYER_2, listOfGameObjects[index]->getDamage() / 3, "Enemy Virus");	// If player 2 isn't flashing, Take off 5 health
-			}
-
-			if (listOfGameObjects[index]->getSubType() == LARGE_BLOOD_CELL && player2->getSawActive())	// If the player collides with a large blood cell and the player saw is active
-				listOfGameObjects[index]->setAlive(false);
-
-			if (listOfGameObjects[index]->getType() != PLAYER_WEAPON && listOfGameObjects[index]->getType() != BLOOD_CELL)
-				listOfGameObjects[index]->setAlive(false);
-		}
-	}
-
-	// Check Weapons Sub-Type For Collisions With Enemy Sub-Type
-	for (unsigned int weaponIndex = 0; weaponIndex != listOfGameObjects.size(); weaponIndex++) {
-		for (unsigned int enemyIndex = 0; enemyIndex != listOfGameObjects.size(); enemyIndex++) {
-			// If a white blood cell collides with a small virus, the small virus is destroyed
-			if (listOfGameObjects[weaponIndex]->getSubType() == WHITE_BLOOD_CELL && listOfGameObjects[enemyIndex]->getType() == SMALL_VIRUS) {
-				if (checkCollision(listOfGameObjects[weaponIndex]->getCollider(), listOfGameObjects[enemyIndex]->getCollider()) == true) {
-					listOfGameObjects[enemyIndex]->setAlive(false);	// Destroy the small virus
-					//infoMessage("DESTROY BLUE VIRUS");
-				}
-			}
-
-			// 2017/02/19 If there is a collison between ninja stars and large blood cells
-			if ((listOfGameObjects[weaponIndex]->getSubType() == NINJA_STAR_P1 || listOfGameObjects[weaponIndex]->getSubType() == NINJA_STAR_P2) && listOfGameObjects[enemyIndex]->getSubType() == LARGE_BLOOD_CELL) {
-				if (checkCollision(listOfGameObjects[weaponIndex]->getCollider(), listOfGameObjects[enemyIndex]->getCollider()) == true) {
-					listOfGameObjects[enemyIndex]->setAlive(false);
-					listOfGameObjects[weaponIndex]->setAlive(false);	// DESTROY
-				}
-			}
-
-			if (listOfGameObjects[weaponIndex]->getType() == PLAYER_WEAPON && listOfGameObjects[enemyIndex]->getType() == ENEMY_OBJECT) {
-				if (checkCollision(listOfGameObjects[weaponIndex]->getCollider(), listOfGameObjects[enemyIndex]->getCollider()) == true) {
-					// 2017/02/22 Updated messages to include name
-					if (listOfGameObjects[weaponIndex]->getSubType() == ROCKET_P1) {
-						infoMessage("Impact!!! Missile has taken out " + listOfGameObjects[enemyIndex]->getName() + "! Score +" + std::to_string(player1->getBonusScore()), PLAYER_1);
-						managePlayerScores(player1->getBonusScore(), PLAYER_1, listOfGameObjects[weaponIndex]->getSubType());
-					}
-					else if (twoPlayer && listOfGameObjects[weaponIndex]->getSubType() == ROCKET_P2) {
-						infoMessage("Impact!!! Missile has taken out" + listOfGameObjects[enemyIndex]->getName() + "! Score +" + std::to_string(player2->getBonusScore()), PLAYER_2);
-						managePlayerScores(player2->getBonusScore(), PLAYER_2, listOfGameObjects[weaponIndex]->getSubType());
-					}
-					// If a virus is cut in half, spawn 2 smaller virus
-					else if (listOfGameObjects[weaponIndex]->getSubType() == SAW1 || listOfGameObjects[weaponIndex]->getSubType() == SAW2 || listOfGameObjects[weaponIndex]->getSubType() == NINJA_STAR_P1 || listOfGameObjects[weaponIndex]->getSubType() == NINJA_STAR_P2) {
-
-						if (listOfGameObjects[enemyIndex]->getSubType() == VIRUS_GREEN) {
-							spawnEnemyVirus(listOfGameObjects[enemyIndex]->getX(), listOfGameObjects[enemyIndex]->getY(), VIRUS_SMALL_GREEN);
-							spawnEnemyVirus(listOfGameObjects[enemyIndex]->getX(), listOfGameObjects[enemyIndex]->getY(), VIRUS_SMALL_GREEN);
-							activeEnemyVirusSmall += 2;																							// Increment the number of active small enemy virus
-						}
-						else if (listOfGameObjects[enemyIndex]->getSubType() == VIRUS_ORANGE) {
-							spawnEnemyVirus(listOfGameObjects[enemyIndex]->getX(), listOfGameObjects[enemyIndex]->getY(), VIRUS_SMALL_ORANGE);
-							spawnEnemyVirus(listOfGameObjects[enemyIndex]->getX(), listOfGameObjects[enemyIndex]->getY(), VIRUS_SMALL_ORANGE);
-							activeEnemyVirusSmall += 2;																							// Increment the number of active small enemy virus
-						}
-						else if (listOfGameObjects[enemyIndex]->getSubType() == VIRUS_BLUE) {
-							spawnEnemyVirus(listOfGameObjects[enemyIndex]->getX(), listOfGameObjects[enemyIndex]->getY(), VIRUS_SMALL_BLUE);
-							spawnEnemyVirus(listOfGameObjects[enemyIndex]->getX(), listOfGameObjects[enemyIndex]->getY(), VIRUS_SMALL_BLUE);
-							activeEnemyVirusSmall += 2;																							// Increment the number of active small enemy virus
-						}
-					}
-
-					managePlayerScores(listOfGameObjects[enemyIndex]->getScore(), listOfGameObjects[weaponIndex]->getPlayer(), listOfGameObjects[weaponIndex]->getSubType());		// 2017-02-06 Add to players score
-
-					pointsValueCounter = 0;
-					displayScoreForObject(listOfGameObjects[enemyIndex]->getX(), listOfGameObjects[enemyIndex]->getY(), listOfGameObjects[enemyIndex]->getScore(), listOfGameObjects[weaponIndex]->getPlayer());	// Display Score
-
-					listOfGameObjects[enemyIndex]->setAlive(false);
-					listOfGameObjects[weaponIndex]->setAlive(false);	// DESTROY
-				}
-			}
-		}
 	}
 }
 
@@ -2189,7 +1995,7 @@ void Game::managePlayerHealth(int player, int score, std::string name) {
 	}
 
 	if (score > 0) {
-		audio1.explosionFX();
+		Audio::Instance()->explosionFX();
 		if (player == PLAYER_1) std::cout << "Player 1 has collided with " << name << "! Health: " << player1->getHealth() << std::endl;
 		if (player == PLAYER_2) std::cout << "Player 2 has collided with " << name << "! Health: " << player2->getHealth() << std::endl;
 	}
@@ -2221,6 +2027,8 @@ void Game::gameTimer() {
 void Game::resetGame(int currentLevel) {
 	frames = 0;					// Animation Frames
 
+	//gLevel.free();
+
 	// Reset the map of the professor
 	setViewport(mapViewport, (SCREEN_WIDTH - 120) / 2, 600, 120, 88);	// Reset the map to small size
 	gProfessorMapTexture.modifyAlpha(255);								// Reset the alpha value for the map texture
@@ -2229,6 +2037,9 @@ void Game::resetGame(int currentLevel) {
 	std::string gameWinners = "";										// Reset the game winner message
 
 	setCurrentLevel(currentLevel);										// Set the current level
+	//gLevel.loadFromRenderedText("Level " + std::to_string(getCurrentLevel()), { 0, 255, 0, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 20));
+	//gLevel.loadFromRenderedTextID("Level " + std::to_string(getCurrentLevel()), "levelID", { 0, 255, 0, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 20));
+	Texture::Instance()->loadFromRenderedTextID("Level " + std::to_string(getCurrentLevel()), "levelID", { 0, 255, 0, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 20));
 
 	// Reset the number of objects on screen
 	activeBloodCells = 0;
@@ -2238,8 +2049,9 @@ void Game::resetGame(int currentLevel) {
 	activeEnemyShips = 0;
 	activeEnemyVirusSmall = 0;
 
-	if (currentLevel == MENU) displayGameIntro = DISPLAY_GAME_INTRO_SCREENS;
-	displayLevelIntro = DISPLAY_LEVEL_INTRO_SCREENS;
+	//if (currentLevel == MENU)
+		displayGameIntro = DISPLAY_GAME_INTRO_SCREENS;
+	//displayLevelIntro = DISPLAY_LEVEL_INTRO_SCREENS;
 	backgroundLoopCounter = 0;
 	scrollingOffset = 0;
 	weaponScrolling = 60;
@@ -2305,4 +2117,223 @@ void Game::resetGame(int currentLevel) {
 
 	levelOver = false;
 	gameOver = false;
+}
+
+void Game::collisionCheck() {
+	// Check if Player 1 or 2 has collided with another game object
+	for (unsigned int index = 0; index != listOfGameObjects.size(); ++index) {
+		if (checkCollision(player1->getCollider(), listOfGameObjects[index]->getCollider()) == true) {
+			player1->setScore(player1->getScore() + listOfGameObjects[index]->getScore());
+
+			// Power Ups
+			if (listOfGameObjects[index]->getType() == POWER_UP) {
+				if (listOfGameObjects[index]->getSubType() == POWER_UP_HEALTH) {
+					managePlayerHealth(PLAYER_1, -listOfGameObjects[index]->getDamage());
+					infoMessage("Player 1 has increased their health!!!", PLAYER_1);
+				}
+				else if (listOfGameObjects[index]->getSubType() == POWER_UP_LASER) {
+					player1->setScore(player1->getScore() + listOfGameObjects[index]->getScore());
+					player1->setLaserGrade(player1->getLaserGrade() + 1);
+					Laser1 = true;
+					infoMessage("Player 1 has upgraded their laser!!!", PLAYER_1);
+				}
+				else if (listOfGameObjects[index]->getSubType() == POWER_UP_ROCKET) {
+					player1->setScore(player1->getScore() + listOfGameObjects[index]->getScore());
+					player1->setNumRockets(player1->getNumRockets() + 1);
+					infoMessage("Player 1 has collected a Rocket!!! Rockets: " + std::to_string(player1->getNumRockets()), PLAYER_1);
+				}
+				else if (listOfGameObjects[index]->getSubType() == POWER_UP_CHECKPOINT) {
+					player1->setScore(player1->getScore() + listOfGameObjects[index]->getScore());
+					infoMessage("Checkpoint Reached!!!");
+					std::cout << "Checkpoint reached!\n";
+					countdownTimer += 20;
+				}
+				else if (listOfGameObjects[index]->getSubType() == POWER_UP_LIVES) {
+					player1->setScore(player1->getScore() + listOfGameObjects[index]->getScore());
+					if (player1->getNumLives() < MAX_NUM_LIVES) {
+						player1->setNumLives(player1->getNumLives() + 1);
+						infoMessage("Player 1 has increased their number of lives!!!", PLAYER_1);
+					}
+					else
+						infoMessage("Player 1 has already has the max number of lives!!!", PLAYER_1);
+				}
+
+				listOfGameObjects[index]->setAlive(false);
+			}
+			// Enemies
+			else if (listOfGameObjects[index]->getSubType() == ENEMY_SHIP_LASER || listOfGameObjects[index]->getSubType() == BLUE_VIRUS_BULLET || listOfGameObjects[index]->getSubType() == VIRUS_FIREBALL) {
+				managePlayerHealth(PLAYER_1, listOfGameObjects[index]->getDamage());															// Score used to inicate amount to remove from health --> need to add damage variable
+			}
+			else if (listOfGameObjects[index]->getSubType() == ENEMY_SHIP) {
+				if (player1->getSawActive()) {
+					listOfGameObjects[index]->setAlive(false);																				// If saw is active kill that enemy
+				}
+				else
+					if (!gPlayer1Texture.getFlash()) managePlayerHealth(PLAYER_1, listOfGameObjects[index]->getDamage() / 5, "Enemy Ship");	// Take off 5 health
+			}
+			else if (listOfGameObjects[index]->getSubType() == VIRUS_GREEN || listOfGameObjects[index]->getSubType() == VIRUS_ORANGE || listOfGameObjects[index]->getSubType() == VIRUS_BLUE) {
+				//if (player1->getSawActive() && listOfGameObjects[index]->getSubType() == VIRUS_GREEN) {
+				if (listOfGameObjects[index]->getSubType() == VIRUS_GREEN) {
+					spawnEnemyVirus(listOfGameObjects[index]->getX(), listOfGameObjects[index]->getY(), VIRUS_SMALL_GREEN);
+					spawnEnemyVirus(listOfGameObjects[index]->getX(), listOfGameObjects[index]->getY(), VIRUS_SMALL_GREEN);
+					listOfGameObjects[index]->setAlive(false);						// If saw is active kill that enemy
+				}
+				//else if (player1->getSawActive() && listOfGameObjects[index]->getSubType() == VIRUS_BLUE) {
+				else if (listOfGameObjects[index]->getSubType() == VIRUS_ORANGE) {
+					spawnEnemyVirus(listOfGameObjects[index]->getX(), listOfGameObjects[index]->getY(), VIRUS_SMALL_ORANGE);
+					spawnEnemyVirus(listOfGameObjects[index]->getX(), listOfGameObjects[index]->getY(), VIRUS_SMALL_ORANGE);
+					listOfGameObjects[index]->setTimer(0);
+				}
+				else if (listOfGameObjects[index]->getSubType() == VIRUS_BLUE) {
+					spawnEnemyVirus(listOfGameObjects[index]->getX(), listOfGameObjects[index]->getY(), VIRUS_SMALL_BLUE);
+					spawnEnemyVirus(listOfGameObjects[index]->getX(), listOfGameObjects[index]->getY(), VIRUS_SMALL_BLUE);
+					listOfGameObjects[index]->setAlive(false);						// If saw is active kill that enemy
+				}
+				else if (!gPlayer1Texture.getFlash()) managePlayerHealth(PLAYER_1, listOfGameObjects[index]->getDamage() / 3, "Enemy Virus");	// If player 1 isn't flashing, Take off 5 health
+			}
+
+			// Make sure the player isn't colliding with it's own weapon or a blood cell
+			if (listOfGameObjects[index]->getType() != PLAYER_WEAPON && listOfGameObjects[index]->getType() != BLOOD_CELL)
+				listOfGameObjects[index]->setAlive(false);	// If it's not a collision between a player and a player weapon or a blood cell
+
+			if (listOfGameObjects[index]->getSubType() == LARGE_BLOOD_CELL && player1->getSawActive())
+				listOfGameObjects[index]->setAlive(false);	// If the players saw is active and it collides with a large blood cell, the blood cell is destroyed
+		}
+		else if (twoPlayer && checkCollision(player2->getCollider(), listOfGameObjects[index]->getCollider()) == true) {
+			player2->setScore(player2->getScore() + listOfGameObjects[index]->getScore());
+
+			if (listOfGameObjects[index]->getType() == POWER_UP) {
+				if (listOfGameObjects[index]->getSubType() == POWER_UP_HEALTH) {
+					managePlayerHealth(PLAYER_2, -listOfGameObjects[index]->getDamage());
+					infoMessageP2Counter = 0;
+					infoMessage("Player 2 has increased their health!!!", PLAYER_2);
+				}
+				else if (listOfGameObjects[index]->getSubType() == POWER_UP_LASER) {
+					player2->setScore(player2->getScore() + listOfGameObjects[index]->getScore());
+					player2->setLaserGrade(player2->getLaserGrade() + 1);
+					Laser2 = true;
+					infoMessage("Player 2 has upgraded their laser!!!", PLAYER_2);
+				}
+				else if (listOfGameObjects[index]->getSubType() == POWER_UP_ROCKET) {
+					player2->setScore(player2->getScore() + listOfGameObjects[index]->getScore());
+					player2->setNumRockets(player2->getNumRockets() + 1);
+					infoMessage("Player 2 has collected a Rocket!!! Rockets: " + std::to_string(player2->getNumRockets()), PLAYER_2);
+				}
+				else if (listOfGameObjects[index]->getSubType() == POWER_UP_CHECKPOINT) {
+					player2->setScore(player2->getScore() + listOfGameObjects[index]->getScore());
+					infoMessage("Checkpoint Reached!!!");
+					std::cout << "Checkpoint reached!\n";
+					countdownTimer += 20;
+				}
+				else if (listOfGameObjects[index]->getSubType() == POWER_UP_LIVES) {
+					player2->setScore(player2->getScore() + listOfGameObjects[index]->getScore());
+					if (player2->getNumLives() < MAX_NUM_LIVES) {
+						player2->setNumLives(player2->getNumLives() + 1);
+						infoMessage("Player 2 has increased their number of lives!!!", PLAYER_2);
+					}
+					else
+						infoMessage("Player 2 has already has the max number of lives!!!", PLAYER_2);
+				}
+
+				listOfGameObjects[index]->setAlive(false);
+			}
+			else if (listOfGameObjects[index]->getSubType() == ENEMY_SHIP_LASER || listOfGameObjects[index]->getSubType() == BLUE_VIRUS_BULLET || listOfGameObjects[index]->getSubType() == VIRUS_FIREBALL) {
+				managePlayerHealth(PLAYER_2, listOfGameObjects[index]->getDamage());	// Score used to inicate amount to remove from health --> need to add damage variable
+			}
+			else if (listOfGameObjects[index]->getSubType() == ENEMY_SHIP) {
+				if (player2->getSawActive()) {
+					listOfGameObjects[index]->setAlive(false);																				// If saw is active kill that enemy
+				}
+				else
+					if (!gPlayer2Texture.getFlash()) managePlayerHealth(PLAYER_2, listOfGameObjects[index]->getDamage() / 5, "Enemy Ship");	// Take off 5 health
+			}
+			else if (listOfGameObjects[index]->getSubType() == VIRUS_GREEN || listOfGameObjects[index]->getSubType() == VIRUS_ORANGE || listOfGameObjects[index]->getSubType() == VIRUS_BLUE) {
+				if (player2->getSawActive() && listOfGameObjects[index]->getSubType() == VIRUS_GREEN) {
+					spawnEnemyVirus(listOfGameObjects[index]->getX(), listOfGameObjects[index]->getY(), VIRUS_SMALL_GREEN);
+					spawnEnemyVirus(listOfGameObjects[index]->getX(), listOfGameObjects[index]->getY(), VIRUS_SMALL_GREEN);
+					listOfGameObjects[index]->setAlive(false);						// If saw is active kill that enemy
+				}
+				//else if (player1->getSawActive() && listOfGameObjects[index]->getSubType() == VIRUS_BLUE) {
+				else if (player2->getSawActive() && listOfGameObjects[index]->getSubType() == VIRUS_ORANGE) {
+					spawnEnemyVirus(listOfGameObjects[index]->getX(), listOfGameObjects[index]->getY(), VIRUS_SMALL_ORANGE);
+					spawnEnemyVirus(listOfGameObjects[index]->getX(), listOfGameObjects[index]->getY(), VIRUS_SMALL_ORANGE);
+					listOfGameObjects[index]->setTimer(0);
+				}
+				else if (player2->getSawActive() && listOfGameObjects[index]->getSubType() == VIRUS_BLUE) {
+					spawnEnemyVirus(listOfGameObjects[index]->getX(), listOfGameObjects[index]->getY(), VIRUS_SMALL_BLUE);
+					spawnEnemyVirus(listOfGameObjects[index]->getX(), listOfGameObjects[index]->getY(), VIRUS_SMALL_BLUE);
+					listOfGameObjects[index]->setAlive(false);						// If saw is active kill that enemy
+				}
+				else if (!gPlayer2Texture.getFlash()) managePlayerHealth(PLAYER_2, listOfGameObjects[index]->getDamage() / 3, "Enemy Virus");	// If player 2 isn't flashing, Take off 5 health
+			}
+
+			if (listOfGameObjects[index]->getSubType() == LARGE_BLOOD_CELL && player2->getSawActive())	// If the player collides with a large blood cell and the player saw is active
+				listOfGameObjects[index]->setAlive(false);
+
+			if (listOfGameObjects[index]->getType() != PLAYER_WEAPON && listOfGameObjects[index]->getType() != BLOOD_CELL)
+				listOfGameObjects[index]->setAlive(false);
+		}
+	}
+
+	// Check Weapons Sub-Type For Collisions With Enemy Sub-Type
+	for (unsigned int weaponIndex = 0; weaponIndex != listOfGameObjects.size(); weaponIndex++) {
+		for (unsigned int enemyIndex = 0; enemyIndex != listOfGameObjects.size(); enemyIndex++) {
+			// If a white blood cell collides with a small virus, the small virus is destroyed
+			if (listOfGameObjects[weaponIndex]->getSubType() == WHITE_BLOOD_CELL && listOfGameObjects[enemyIndex]->getType() == SMALL_VIRUS) {
+				if (checkCollision(listOfGameObjects[weaponIndex]->getCollider(), listOfGameObjects[enemyIndex]->getCollider()) == true) {
+					listOfGameObjects[enemyIndex]->setAlive(false);	// Destroy the small virus
+																	//infoMessage("DESTROY BLUE VIRUS");
+				}
+			}
+
+			// 2017/02/19 If there is a collison between ninja stars and large blood cells
+			if ((listOfGameObjects[weaponIndex]->getSubType() == NINJA_STAR_P1 || listOfGameObjects[weaponIndex]->getSubType() == NINJA_STAR_P2) && listOfGameObjects[enemyIndex]->getSubType() == LARGE_BLOOD_CELL) {
+				if (checkCollision(listOfGameObjects[weaponIndex]->getCollider(), listOfGameObjects[enemyIndex]->getCollider()) == true) {
+					listOfGameObjects[enemyIndex]->setAlive(false);
+					listOfGameObjects[weaponIndex]->setAlive(false);	// DESTROY
+				}
+			}
+
+			if (listOfGameObjects[weaponIndex]->getType() == PLAYER_WEAPON && listOfGameObjects[enemyIndex]->getType() == ENEMY_OBJECT) {
+				if (checkCollision(listOfGameObjects[weaponIndex]->getCollider(), listOfGameObjects[enemyIndex]->getCollider()) == true) {
+					// 2017/02/22 Updated messages to include name
+					if (listOfGameObjects[weaponIndex]->getSubType() == ROCKET_P1) {
+						infoMessage("Impact!!! Missile has taken out " + listOfGameObjects[enemyIndex]->getName() + "! Score +" + std::to_string(player1->getBonusScore()), PLAYER_1);
+						managePlayerScores(player1->getBonusScore(), PLAYER_1, listOfGameObjects[weaponIndex]->getSubType());
+					}
+					else if (twoPlayer && listOfGameObjects[weaponIndex]->getSubType() == ROCKET_P2) {
+						infoMessage("Impact!!! Missile has taken out" + listOfGameObjects[enemyIndex]->getName() + "! Score +" + std::to_string(player2->getBonusScore()), PLAYER_2);
+						managePlayerScores(player2->getBonusScore(), PLAYER_2, listOfGameObjects[weaponIndex]->getSubType());
+					}
+					// If a virus is cut in half, spawn 2 smaller virus
+					else if (listOfGameObjects[weaponIndex]->getSubType() == SAW1 || listOfGameObjects[weaponIndex]->getSubType() == SAW2 || listOfGameObjects[weaponIndex]->getSubType() == NINJA_STAR_P1 || listOfGameObjects[weaponIndex]->getSubType() == NINJA_STAR_P2) {
+
+						if (listOfGameObjects[enemyIndex]->getSubType() == VIRUS_GREEN) {
+							spawnEnemyVirus(listOfGameObjects[enemyIndex]->getX(), listOfGameObjects[enemyIndex]->getY(), VIRUS_SMALL_GREEN);
+							spawnEnemyVirus(listOfGameObjects[enemyIndex]->getX(), listOfGameObjects[enemyIndex]->getY(), VIRUS_SMALL_GREEN);
+							activeEnemyVirusSmall += 2;																							// Increment the number of active small enemy virus
+						}
+						else if (listOfGameObjects[enemyIndex]->getSubType() == VIRUS_ORANGE) {
+							spawnEnemyVirus(listOfGameObjects[enemyIndex]->getX(), listOfGameObjects[enemyIndex]->getY(), VIRUS_SMALL_ORANGE);
+							spawnEnemyVirus(listOfGameObjects[enemyIndex]->getX(), listOfGameObjects[enemyIndex]->getY(), VIRUS_SMALL_ORANGE);
+							activeEnemyVirusSmall += 2;																							// Increment the number of active small enemy virus
+						}
+						else if (listOfGameObjects[enemyIndex]->getSubType() == VIRUS_BLUE) {
+							spawnEnemyVirus(listOfGameObjects[enemyIndex]->getX(), listOfGameObjects[enemyIndex]->getY(), VIRUS_SMALL_BLUE);
+							spawnEnemyVirus(listOfGameObjects[enemyIndex]->getX(), listOfGameObjects[enemyIndex]->getY(), VIRUS_SMALL_BLUE);
+							activeEnemyVirusSmall += 2;																							// Increment the number of active small enemy virus
+						}
+					}
+
+					managePlayerScores(listOfGameObjects[enemyIndex]->getScore(), listOfGameObjects[weaponIndex]->getPlayer(), listOfGameObjects[weaponIndex]->getSubType());		// 2017-02-06 Add to players score
+
+					pointsValueCounter = 0;
+					displayScoreForObject(listOfGameObjects[enemyIndex]->getX(), listOfGameObjects[enemyIndex]->getY(), listOfGameObjects[enemyIndex]->getScore(), listOfGameObjects[weaponIndex]->getPlayer());	// Display Score
+
+					listOfGameObjects[enemyIndex]->setAlive(false);
+					listOfGameObjects[weaponIndex]->setAlive(false);	// DESTROY
+				}
+			}
+		}
+	}
 }

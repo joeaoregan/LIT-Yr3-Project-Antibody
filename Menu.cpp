@@ -17,7 +17,7 @@
 bool Menu::loadMediaMenu() {
 	bool success = true;
 
-	gFont = TTF_OpenFont("Fonts/Lazy.ttf", 30);	// Open the font
+	gFont = TTF_OpenFont("Fonts/Retro.ttf", 16);	// Open the font
 	if (gFont == NULL) {
 		printf("XXX Failed to load lazy font! SDL_ttf Error: %s\n", TTF_GetError());
 		success = false;
@@ -25,27 +25,31 @@ bool Menu::loadMediaMenu() {
 	else {
 		SDL_Color textColour = { 0,0,0 };
 
-		if (!gMenuTextTexture1.loadFromRenderedText("ANTIBODY", textColour, gFont)) {
+		if (!gMenuTextTexture1.loadFromRenderedText("ANTIBODY", textColour, TTF_OpenFont("Fonts/Retro.ttf", 100))) {
 			printf("Failed to render text texture!\n");
 			success = false;
 		}
-		if (!gMenuTextTexture2.loadFromRenderedText("1 Player", textColour, gFont)) {	// can take out the new textColor objects
+		if (!gMenuTextTexture2.loadFromRenderedText("Story", textColour, gFont)) {	// can take out the new textColor objects
 			printf("Failed to render text texture!\n");
 			success = false;
 		}
-		if (!gMenuTextTexture3.loadFromRenderedText("2 Player", textColour, gFont)) {
+		if (!gMenuTextTexture3.loadFromRenderedText("1 Player", textColour, gFont)) {
 			printf("Failed to render text texture!\n");
 			success = false;
 		}
-		if (!gMenuTextTexture4.loadFromRenderedText("Settings", textColour, gFont)) {
+		if (!gMenuTextTexture4.loadFromRenderedText("2 Player", textColour, gFont)) {
 			printf("Failed to render text texture!\n");
 			success = false;
 		}
-		if (!gMenuTextTexture5.loadFromRenderedText("High Scores", textColour, gFont)) {
+		if (!gMenuTextTexture5.loadFromRenderedText("Settings", textColour, gFont)) {
 			printf("Failed to render text texture!\n");
 			success = false;
 		}
-		if (!gMenuTextTexture6.loadFromRenderedText("Quit", textColour, gFont)) {
+		if (!gMenuTextTexture6.loadFromRenderedText("High Scores", textColour, gFont)) {
+			printf("Failed to render text texture!\n");
+			success = false;
+		}
+		if (!gMenuTextTexture7.loadFromRenderedText("Quit", textColour, gFont)) {
 			printf("Failed to render text texture!\n");
 			success = false;
 		}
@@ -55,12 +59,14 @@ bool Menu::loadMediaMenu() {
 		gMenuTextTexture4.setX((SCREEN_WIDTH - gMenuTextTexture4.getWidth()) / 2);
 		gMenuTextTexture5.setX((SCREEN_WIDTH - gMenuTextTexture5.getWidth()) / 2);
 		gMenuTextTexture6.setX((SCREEN_WIDTH - gMenuTextTexture6.getWidth()) / 2);
+		gMenuTextTexture7.setX((SCREEN_WIDTH - gMenuTextTexture7.getWidth()) / 2);
 
 		gMenuTextTexture2.setY(200);
 		gMenuTextTexture3.setY(250);
 		gMenuTextTexture4.setY(300);
 		gMenuTextTexture5.setY(350);
 		gMenuTextTexture6.setY(400);
+		gMenuTextTexture7.setY(450);
 	}
 
 	//Load sprites
@@ -82,6 +88,7 @@ bool Menu::loadMediaMenu() {
 		gMenuButtons[2].setPosition((SCREEN_WIDTH - BUTTON_WIDTH) / 2, gMenuTextTexture4.getY());
 		gMenuButtons[3].setPosition((SCREEN_WIDTH - BUTTON_WIDTH) / 2, gMenuTextTexture5.getY());
 		gMenuButtons[4].setPosition((SCREEN_WIDTH - BUTTON_WIDTH) / 2, gMenuTextTexture6.getY());
+		gMenuButtons[5].setPosition((SCREEN_WIDTH - BUTTON_WIDTH) / 2, gMenuTextTexture7.getY());
 	}
 
 	return success;
@@ -105,10 +112,11 @@ void Menu::closeMenu() {
 	gMenuTextTexture4.free();
 	gMenuTextTexture5.free();
 	gMenuTextTexture6.free();
+	gMenuTextTexture7.free();
 }
 
 void Menu::draw() {
-	SDL_SetRenderDrawColor(Game::Instance()->getRenderer(), 0xFF, 0x00, 0x00, 0xFF);
+	SDL_SetRenderDrawColor(Game::Instance()->getRenderer(), 117, 10, 10, 255);
 	SDL_RenderClear(Game::Instance()->getRenderer());
 
 	for (int i = 0; i < TOTAL_BUTTONS; ++i) {
@@ -122,6 +130,7 @@ void Menu::draw() {
 	gMenuTextTexture4.render(gMenuTextTexture4.getX(), gMenuTextTexture4.getY());
 	gMenuTextTexture5.render(gMenuTextTexture5.getX(), gMenuTextTexture5.getY());
 	gMenuTextTexture6.render(gMenuTextTexture6.getX(), gMenuTextTexture6.getY());
+	gMenuTextTexture7.render(gMenuTextTexture7.getX(), gMenuTextTexture7.getY());
 
 	SDL_RenderPresent(Game::Instance()->getRenderer());			// Update screen
 }

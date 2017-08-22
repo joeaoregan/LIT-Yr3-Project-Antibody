@@ -22,9 +22,9 @@ void FPS::fpsinit() {
 	frametimelast = SDL_GetTicks();
 }
 
-void FPS::fpsclose() {
-	gFPSTextTexture.free();
-}
+//void FPS::fpsclose() {
+//	gFPSTextTexture.free();
+//}
 
 void FPS::rendFPS(std::string fpsText) {
 //void FPS::rendFPS(std::string fpsText, SDL_Renderer *rend) {

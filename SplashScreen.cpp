@@ -154,12 +154,14 @@ void SplashScreen::scrollCreatedBySplashScreen(int startAt, int seconds) {
 	SDL_Delay(seconds * 1000);					// Pause with image on screen for a number of seconds
 }
 
-void SplashScreen::scrollDownL1Logo(int startAt) {
+void SplashScreen::scrollDownLogo(int level, int startAt) {
 	SDL_SetRenderDrawColor(Game::Instance()->getRenderer(), 117, 12, 77, 255);			// Purple
 	SDL_RenderClear(Game::Instance()->getRenderer());
 
 	while (startAt <= 0) {				// While less than or equal to zero
-		Texture::Instance()->renderMap("level1ID", 0, startAt, SCREEN_WIDTH, SCREEN_HEIGHT);
+		if (level == LEVEL_1) Texture::Instance()->renderMap("level1ID", 0, startAt, SCREEN_WIDTH, SCREEN_HEIGHT);
+		else if (level == LEVEL_2) Texture::Instance()->renderMap("level2ID", 0, startAt, SCREEN_WIDTH, SCREEN_HEIGHT);
+		else if (level == LEVEL_3) Texture::Instance()->renderMap("level3ID", 0, startAt, SCREEN_WIDTH, SCREEN_HEIGHT);
 		startAt += 15;
 
 		SDL_RenderPresent(Game::Instance()->getRenderer());			// Update screen
@@ -202,78 +204,198 @@ void SplashScreen::scrollVerticalLogo(Texture &texture, int seconds, int rate, i
 												//texture.free();							// Free Logo 2 from memory --> NEEDS TO STAY IN BACKGROUND, DON'T FREE
 }
 //	Level 1 background with scrolling text
-bool SplashScreen::level1IntroScreens() {
+bool SplashScreen::level1IntroScreens(int level) {
 	gFont = TTF_OpenFont("Fonts/Retro.ttf", 20);
 	textColour = { 0, 255, 0, 255 };
-
-	std::string levelObjective = "Destroy enemy virus and ships      \nThe player with the highest score\nIs the winner";
+	gLevelObjectiveTextTexture.free();
+	if (level == 1) levelObjective = "Destroy the enemy virus and nano bots\nThe player with the highest score is the winner\n\nBeat the clock to complete the level!";
+	else if (level == 2) levelObjective = "Destroy the enemy virus and nano bots\nThe player with the highest score is the winner\n\nBeat the clock to complete the level!";
+	else if (level == 3) levelObjective = "Destroy the enemy virus and nano bots\nThe player with the highest score is the winner\n\nBeat the clock to complete the level!";
 	
-	if (!gLevelObjectiveTextTexture.loadFromRenderedText(levelObjective, textColour, gFont, true)) {	// Green text for level objectives
+	if (!gLevelObjectiveTextTexture.loadFromRenderedText(levelObjective, textColour, TTF_OpenFont("Fonts/Retro.ttf", 32), true)) {	// Green text for level objectives
 		printf("Unable to render level game objective texture!\n");
 	}
 
-	scrollDownL1Logo(-SCREEN_HEIGHT);
-
-	//enemyInformationSplashScreenL1(rend);
-	infoScreenL1Enemies(2, SCREEN_HEIGHT, gStoryA);
-	infoScreenL1PowerUps(2, SCREEN_HEIGHT, gStoryB);
-
-	// Objectives
-	scrollDownL1Logo(-SCREEN_HEIGHT);
-
-	//scrollL1Objectives(rend, gLevelObjectiveTextTexture);
+	scrollDownLogo(level, -SCREEN_HEIGHT);								// Level logo for background
+	infoScreenEnemies(level, 2, SCREEN_HEIGHT);							// Give info on the enemies in the current level
+	if (level == LEVEL_1) infoScreenPowerUps(level, 2, SCREEN_HEIGHT);	// Give info on power ups in the current level
+	infoScreenStory(level, 8, SCREEN_HEIGHT);							// Display the story
+	scrollDownLogo(level, -SCREEN_HEIGHT);								// Scroll the background logo
 	scrollUpText("level1ID", gLevelObjectiveTextTexture);
 	
 	return false;	// set display screens boolean to false so it stops, will continue repeating over and over if true
 }
 
-// Scroll text and image up the screen with information about the enemies in Level 1
-void SplashScreen::infoScreenL1Enemies(int seconds, int startAt, Texture &story) {
-	storyPage1 = "Enemies:\n\nThe player must avoid contact with Enemy Viruses\nThe Viruses will move towards the nearest player\n\n\nThe Orange Virus moves towards the nearest player\nAnd explodes when its timer has run out\n\n\nThe Enemy Ship fires lasers\nAs it crosses the screen right to left";
 
-	if (!gStoryA.loadFromRenderedText(storyPage1, { 255,255,255,255 }, TTF_OpenFont("Fonts/Retro.ttf", 20), true)) {
+// Scroll text and image up the screen with information about the enemies in Level 1
+void SplashScreen::infoScreenEnemies(int level, int seconds, int startAt) {
+	std::string levelID, en1, en2, en3;
+	storyPage1 = "Enemies:\n\nThe player must avoid contact with Enemy Viruses\nThe Viruses will move towards the nearest player\n\n\nThe Orange Virus moves towards the nearest player\nAnd explodes when its timer has run out\n\n\nThe Enemy Ship fires lasers\nAs it crosses the screen right to left";
+	gStoryA.free();
+	if (!gStoryA.loadFromRenderedText(storyPage1, { 255,255,255,255 }, TTF_OpenFont("Fonts/Retro.ttf", 22), true)) {
 		printf("Unable to render gStoryA level game objective texture!\n");
 	}
 
-	while (startAt >= 300) {																				// First Part of story
-		SDL_RenderClear(Game::Instance()->getRenderer());																				// Clear the screen		NEED TO CLEAR THE SCREEN EACH TIME OR GET STREAKY TEXT
-		Texture::Instance()->renderMap("level1ID", 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);				// Static background	AND THE BACKGROUND NEEDS TO BE BEHIND THE TEXT EACH TIME
+	if (level == LEVEL_1) {
+		levelID = "level1ID";
+		en1 = "greenVirusID";
+		en2 = "orangeVirusID";
+		en3 = "enemyShipID";
+	}
+	else if (level == LEVEL_2) {
+		levelID = "level2ID";
+		en1 = "greenVirusID";
+		en2 = "orangeVirusID";
+		en3 = "enemyShipID";
+	}
+	else if (level == LEVEL_3) {
+		levelID = "level3ID";
+		en1 = "greenVirusID";
+		en2 = "orangeVirusID";
+		en3 = "blueVirusID";
+	}
 
-		startAt -= 5;																						// Decrement the scrolling offset move the texture up the screen
-		story.render((SCREEN_WIDTH - story.getWidth()) / 2, startAt);									// FOR TESTING
+	while (startAt >= 300) {																// First Part of story
+		SDL_RenderClear(Game::Instance()->getRenderer());									// Clear the screen		NEED TO CLEAR THE SCREEN EACH TIME OR GET STREAKY TEXT
+		Texture::Instance()->renderMap(levelID, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);			// Static background	AND THE BACKGROUND NEEDS TO BE BEHIND THE TEXT EACH TIME
+		
+		startAt -= 10;																		// Decrement the scrolling offset move the texture up the screen
+		gStoryA.render((SCREEN_WIDTH - gStoryA.getWidth()) / 2, startAt);					// FOR TESTING
 
-		Texture::Instance()->renderMap("greenVirusID", SCREEN_WIDTH - 175, startAt + 40, 75, 75);		// Static background	AND THE BACKGROUND NEEDS TO BE BEHIND THE TEXT EACH TIME
-		Texture::Instance()->renderMap("orangeVirusID", SCREEN_WIDTH - 175, startAt + 140, 75, 75);	// Static background	AND THE BACKGROUND NEEDS TO BE BEHIND THE TEXT EACH TIME
-		Texture::Instance()->renderMap("enemyShipID", SCREEN_WIDTH - 175, startAt + 250, 75, 75);		// Static background	AND THE BACKGROUND NEEDS TO BE BEHIND THE TEXT EACH TIME
+		Texture::Instance()->renderMap(en1, SCREEN_WIDTH - 175, startAt + 50, 75, 75);		// Static background	AND THE BACKGROUND NEEDS TO BE BEHIND THE TEXT EACH TIME
+		Texture::Instance()->renderMap(en2, SCREEN_WIDTH - 175, startAt + 170, 75, 75);		// Static background	AND THE BACKGROUND NEEDS TO BE BEHIND THE TEXT EACH TIME
+		Texture::Instance()->renderMap(en3, SCREEN_WIDTH - 175, startAt + 280, 75, 75);		// Static background	AND THE BACKGROUND NEEDS TO BE BEHIND THE TEXT EACH TIME
+
+		SDL_RenderPresent(Game::Instance()->getRenderer());									// Update screen
+	}
+
+	SDL_Delay(seconds * 1000);
+}
+
+void SplashScreen::infoScreenPowerUps(int level, int seconds, int startAt) {
+	storyPage1 = "Power Ups:\n\nGather golden ships to boost\nThe number of lives\n\n\nTo increase the time remaining\ngather the checkpoints!";
+	storyPage2 = "More Power Ups:\n\nPlayers can collect power ups\nTo increase health\n\n\nAnd to upgrade weapons such as the laser\n\n\nAnd collect projectiles such as missiles";
+	gStoryB.free();
+
+	if (!gStoryA.loadFromRenderedText(storyPage1, { 255,255,255,255 }, TTF_OpenFont("Fonts/Retro.ttf", 28), true)) {
+		printf("Failed to render gStoryB text texture!\n");
+	}
+	if (!gStoryB.loadFromRenderedText(storyPage2, { 255,255,255,255 }, TTF_OpenFont("Fonts/Retro.ttf", 27), true)) {
+		printf("Failed to render gStoryB text texture!\n");
+	}
+
+	while (startAt >= 300) {															// First Part of story
+		SDL_RenderClear(Game::Instance()->getRenderer());								// Clear the screen		NEED TO CLEAR THE SCREEN EACH TIME OR GET STREAKY TEXT
+		Texture::Instance()->renderMap("level1ID", 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);	// Static background	AND THE BACKGROUND NEEDS TO BE BEHIND THE TEXT EACH TIME
+
+		startAt -= 10;																	// Decrement the scrolling offset move the texture up the screen
+
+		gStoryA.render((SCREEN_WIDTH - gStoryA.getWidth()) / 2, startAt);				// FOR TESTING
+
+		Texture::Instance()->renderMap("lifePowerUpID", SCREEN_WIDTH - 200, startAt + 70, 60, 60);
+		Texture::Instance()->renderMap("checkpointPowerUpID", SCREEN_WIDTH - 200, startAt + 225, 60, 48);
+
+		SDL_RenderPresent(Game::Instance()->getRenderer());															// Update screen
+	}
+
+	SDL_Delay(seconds * 1000);
+
+	startAt = SCREEN_HEIGHT;
+
+	while (startAt >= 300) {															// First Part of story
+		SDL_RenderClear(Game::Instance()->getRenderer());								// Clear the screen		NEED TO CLEAR THE SCREEN EACH TIME OR GET STREAKY TEXT
+		Texture::Instance()->renderMap("level1ID", 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);	// Static background	AND THE BACKGROUND NEEDS TO BE BEHIND THE TEXT EACH TIME
+
+		startAt -= 10;																	// Decrement the scrolling offset move the texture up the screen
+
+		gStoryB.render((SCREEN_WIDTH - gStoryB.getWidth()) / 2, startAt);				// FOR TESTING
+
+		Texture::Instance()->renderMap("healthPowerUpID", SCREEN_WIDTH - 200, startAt + 70, 60, 60);
+		Texture::Instance()->renderMap("laserPowerUpID", SCREEN_WIDTH - 200, startAt + 210, 60, 48);
+		Texture::Instance()->renderMap("rocketPowerUpID", SCREEN_WIDTH - 180, startAt + 300, 30, 60);
 
 		SDL_RenderPresent(Game::Instance()->getRenderer());															// Update screen
 	}
 
 	SDL_Delay(seconds * 1000);
 }
-void SplashScreen::infoScreenL1PowerUps(int seconds, int startAt, Texture &story) {
-	storyPage2 = "Power Ups:\n\nPlayers can collect power ups\nTo increase health\n\n\nAnd to upgrade weapons such as the laser\n\n\nAnd collect projectiles such as missiles";
 
-	if (!gStoryB.loadFromRenderedText(storyPage2, { 255,255,255,255 }, TTF_OpenFont("Fonts/Retro.ttf", 20), true)) {
-		printf("Failed to render gStoryB text texture!\n");
+void SplashScreen::infoScreenStory(int level, int seconds, int startAt) {
+	std::string levelID;
+
+	if (level == LEVEL_1) {
+		levelID = "level1ID";
+		storyPage1 = "Dear Friend, you have made it just in time! We have a mission on our hands that will take all of your skills to succeed!! Our friend the brilliant scientist has been infected with a terrible virus by the evil Dr.G.";
+		storyPage2 = "We will use the Shrink Ray to get into the scientists blood stream in our Antibody ships.Once inside the blood stream of our scientist friend we will have to RACE against the clock and follow the blood stream to get to the core of the virus that the evil Dr.G implanted in our friend";
+		storyPage3 = "We will face countless enemies that we will need to dispose of. We will also be up against the clock as the scientist does not have long left! We need to hurry and get to the core of this virus asap!!";
+	}
+	else if (level == LEVEL_2) {
+		levelID = "level2ID";
+		storyPage1 = "You are making progress friend! You have passed the first test. However, you have further to travel in the blood stream to find the virus planted by the evil Dr.G.";
+		storyPage2 = "You will acquire new weapons and boosts to help you on your path, you will need all the help you can get!";
+		storyPage3 = "";
+	}
+	else if (level == LEVEL_3) {
+		levelID = "level3ID";
+		storyPage1 = "You have made it to the source of the virus! Not far ahead now!\nIt has been a tough road to get here friend, but I knew we could count on you!\nThe final part of this journey awaits you!! Destroy the source of the virus to save our friend!!";
+		storyPage2 = "";
+		storyPage3 = "";
+	}
+	gStoryA.free();
+	gStoryB.free();
+	gStoryC.free();
+
+	if (!gStoryA.loadFromRenderedText(storyPage1, { 255,255,255,255 }, TTF_OpenFont("Fonts/Retro.ttf", 36), true)) {
+		printf("Failed to render gStoryA text texture!\n");
+	}
+	if (storyPage2 != "") {
+		if (!gStoryB.loadFromRenderedText(storyPage2, { 255,255,255,255 }, TTF_OpenFont("Fonts/Retro.ttf", 36), true)) {
+			printf("Failed to render gStoryB text texture!\n");
+		}
+	}
+	if (storyPage3 != "") {
+		if (!gStoryC.loadFromRenderedText(storyPage3, { 255,255,255,255 }, TTF_OpenFont("Fonts/Retro.ttf", 36), true)) {
+			printf("Failed to render gStoryC text texture!\n");
+		}
 	}
 
-	while (startAt >= 300) {												// First Part of story
-		SDL_RenderClear(Game::Instance()->getRenderer());												// Clear the screen		NEED TO CLEAR THE SCREEN EACH TIME OR GET STREAKY TEXT
-		Texture::Instance()->renderMap("level1ID", 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);	// Static background	AND THE BACKGROUND NEEDS TO BE BEHIND THE TEXT EACH TIME
-
-		startAt -= 5;														// Decrement the scrolling offset move the texture up the screen
-
-		story.render((SCREEN_WIDTH - story.getWidth()) / 2, startAt); // FOR TESTING
-
-		Texture::Instance()->renderMap("healthPowerUpID", SCREEN_WIDTH - 160, startAt + 40, 60, 60);
-		Texture::Instance()->renderMap("laserPowerUpID", SCREEN_WIDTH - 160, startAt + 140, 60, 48);
-		Texture::Instance()->renderMap("rocketPowerUpID", SCREEN_WIDTH - 140, startAt + 200, 30, 60);
-
-		SDL_RenderPresent(Game::Instance()->getRenderer());															// Update screen
+	while (startAt >= 300) {															// First Part of story
+		SDL_RenderClear(Game::Instance()->getRenderer());								// Clear the screen		NEED TO CLEAR THE SCREEN EACH TIME OR GET STREAKY TEXT
+		Texture::Instance()->renderMap(levelID, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);	// Static background	AND THE BACKGROUND NEEDS TO BE BEHIND THE TEXT EACH TIME
+		startAt -= 10;																	// Decrement the scrolling offset move the texture up the screen
+		gStoryA.render((SCREEN_WIDTH - gStoryA.getWidth()) / 2, startAt);				// FOR TESTING
+		SDL_RenderPresent(Game::Instance()->getRenderer());								// Update screen
 	}
 
 	SDL_Delay(seconds * 1000);
+
+	if (storyPage2 != "") {
+		startAt = SCREEN_HEIGHT;
+
+		while (startAt >= 300) {															// Second Part of story
+			SDL_RenderClear(Game::Instance()->getRenderer());								// Clear the screen		NEED TO CLEAR THE SCREEN EACH TIME OR GET STREAKY TEXT
+			Texture::Instance()->renderMap(levelID, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);	// Static background	AND THE BACKGROUND NEEDS TO BE BEHIND THE TEXT EACH TIME
+			startAt -= 10;																	// Decrement the scrolling offset move the texture up the screen
+			gStoryB.render((SCREEN_WIDTH - gStoryB.getWidth()) / 2, startAt);				// FOR TESTING
+			SDL_RenderPresent(Game::Instance()->getRenderer());								// Update screen
+		}
+
+		SDL_Delay(seconds * 1000);
+	}
+
+	if (storyPage3 != "") {
+		startAt = SCREEN_HEIGHT;
+
+		while (startAt >= 300) {															// Third Part of story
+			SDL_RenderClear(Game::Instance()->getRenderer());								// Clear the screen		NEED TO CLEAR THE SCREEN EACH TIME OR GET STREAKY TEXT
+			Texture::Instance()->renderMap(levelID, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);	// Static background	AND THE BACKGROUND NEEDS TO BE BEHIND THE TEXT EACH TIME
+			startAt -= 10;																	// Decrement the scrolling offset move the texture up the screen
+			gStoryC.render((SCREEN_WIDTH - gStoryC.getWidth()) / 2, startAt);				// FOR TESTING
+			SDL_RenderPresent(Game::Instance()->getRenderer());								// Update screen
+		}
+
+		SDL_Delay(seconds * 1000);
+	}
 }
 
 /*	2017/02/26: Edited to take an ID string to search texture map in texture class 
@@ -370,7 +492,7 @@ bool SplashScreen::level3IntroScreens(SDL_Renderer *rend) {
 
 // Final Score For Level 1 to 3
 void SplashScreen::level1FinalScore() {
-	scrollDownL1Logo(-SCREEN_HEIGHT);
+	scrollDownLogo(LEVEL_1, -SCREEN_HEIGHT);
 }
 void SplashScreen::level2FinalScore() {
 	scrollVerticalLogo(gLevel2, 1, 15, -SCREEN_HEIGHT);
@@ -380,6 +502,9 @@ void SplashScreen::level3FinalScore() {
 }
 
 void SplashScreen::endOfGame(int level, std::string finalScore, std::string winner) {
+	gFinalScoreTextTexture.free();
+	gGameWinnerTextTexture.free();
+
 	gFont = TTF_OpenFont("Fonts/Retro.ttf", 40);										// Retro font size 40
 	textColour = {0, 255, 0, 255};														// Green text colour
 	TTF_SetFontStyle(gFont, TTF_STYLE_BOLD);											// Use bold font

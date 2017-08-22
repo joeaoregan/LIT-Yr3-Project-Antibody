@@ -9,7 +9,7 @@
 //Button constants
 const int BUTTON_WIDTH = 160;
 const int BUTTON_HEIGHT = 40;
-const int TOTAL_BUTTONS = 5;
+const int TOTAL_BUTTONS = 6;
 
 enum ButtonSprite {
 	BUTTON_SPRITE_MOUSE_OUT = 0,

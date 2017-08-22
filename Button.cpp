@@ -15,7 +15,7 @@
 /*
 	2017/02/27:	User game singleton to access renderer
 */
-enum { GAME_1PLAYER, GAME_2PLAYER, SETTINGS, HIGH_SCORES, QUIT };
+enum { STORY, GAME_1PLAYER, GAME_2PLAYER, SETTINGS, HIGH_SCORES, QUIT };
 
 //SDL_Rect gSpriteClipsMenu[BUTTON_SPRITE_TOTAL];
 
@@ -32,7 +32,7 @@ void Button::setPosition(int x, int y) {
 }
 
 void Button::handleEvent(SDL_Event* e, int buttonSelected) {
-	SDL_Color textColorOne = { 255, 255, 255 };
+//	SDL_Color textColorOne = { 255, 255, 255 };
 	//If mouse event happened
 	if (e->type == SDL_MOUSEMOTION || e->type == SDL_MOUSEBUTTONDOWN || e->type == SDL_MOUSEBUTTONUP) {
 		//Get mouse position
@@ -76,7 +76,7 @@ void Button::handleEvent(SDL_Event* e, int buttonSelected) {
 				std::cout << "Mouse Button Down" << std::endl;
 				//std::cout << "Level: " << game.getCurrentLevel() << std::endl;
 
-				if (buttonSelected == GAME_1PLAYER) {
+				if (buttonSelected == STORY) {
 					std::cout << "Selected: 1 Player Game!" << std::endl;
 					//game.setCurrentLevel(1);
 					//std::cout << "Level: " << game.getCurrentLevel() << std::endl;
@@ -85,6 +85,20 @@ void Button::handleEvent(SDL_Event* e, int buttonSelected) {
 					Game::Instance()->setCurrentLevel(1);
 					std::cout << "Level: " << Game::Instance()->getCurrentLevel() << std::endl;
 					Game::Instance()->twoPlayer = false;
+					Game::Instance()->displayLevelIntro = true;
+					Game::Instance()->update();
+					// Call a function in Game.cpp in the Main Project
+				}
+				else if (buttonSelected == GAME_1PLAYER) {
+					std::cout << "Selected: 1 Player Game!" << std::endl;
+					//game.setCurrentLevel(1);
+					//std::cout << "Level: " << game.getCurrentLevel() << std::endl;
+					//game.twoPlayer = false;
+					//game.update();
+					Game::Instance()->setCurrentLevel(1);
+					std::cout << "Level: " << Game::Instance()->getCurrentLevel() << std::endl;
+					Game::Instance()->twoPlayer = false;
+					Game::Instance()->displayLevelIntro = false;
 					Game::Instance()->update();
 					// Call a function in Game.cpp in the Main Project
 				}
@@ -135,7 +149,7 @@ void Button::handleEvent(SDL_Event* e, int buttonSelected) {
 }
 
 // Render the current button sprite at the button position
-// 
+//
 void Button::render(Texture &texture, SDL_Rect *currentClip) {
 	texture.render(mPosition.x, mPosition.y, currentClip);	// Show current button spriteCHANGED - RENDERER IS ADDED
 //void Button::render(Texture &texture, SDL_Renderer *rend, SDL_Rect *currentClip) {

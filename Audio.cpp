@@ -17,6 +17,16 @@
 #include "Audio.h"
 #include <iostream>
 
+Audio* Audio::s_pInstance;
+
+Audio::Audio() {
+	Mix_OpenAudio(22050, AUDIO_S16, 2, (4096 / 2));
+}
+
+Audio::~Audio() {
+	Mix_CloseAudio();
+}
+
 bool Audio::loadMediaAudio() {
 	bool success = true;
 

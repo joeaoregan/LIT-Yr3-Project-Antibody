@@ -17,6 +17,8 @@ public:
 	~ScoreValueText();
 
 	void movement(int x, int y);
+
+	Texture m_Texture;
 };
 
 #endif

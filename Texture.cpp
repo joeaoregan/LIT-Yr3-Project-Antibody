@@ -57,7 +57,7 @@ bool Texture::load(std::string fileName, std::string id) {
 
 void Texture::draw(std::string id, int x, int y, int width, int height, SDL_RendererFlip flip) {
 //void Texture::draw(std::string id, int x, int y, int width, int height, SDL_Renderer* rend, SDL_RendererFlip flip) {
-	SDL_Rect renderQuad = { x, y, mWidth, mHeight };	// Set rendering space and render to screen
+//	SDL_Rect renderQuad = { x, y, mWidth, mHeight };	// Set rendering space and render to screen
 	SDL_Rect srcRect;
 	SDL_Rect destRect;
 
@@ -71,22 +71,26 @@ void Texture::draw(std::string id, int x, int y, int width, int height, SDL_Rend
 	SDL_RenderCopyEx(Game::Instance()->getRenderer(), m_textureMap[id], &srcRect, &destRect, 0, 0, flip);
 }
 
-
 void Texture::renderMap() {
 	//void Texture::renderMap(SDL_Renderer* rend) {
 	SDL_RenderCopy(Game::Instance()->getRenderer(), mTexture, NULL, NULL);
 }
 void Texture::renderMap(std::string id, int x, int y, int width, int height) {
-//void Texture::renderMap(std::string id, int x, int y, int width, int height, SDL_Renderer* rend) {
+	//void Texture::renderMap(std::string id, int x, int y, int width, int height, SDL_Renderer* rend) {
 	SDL_Rect renderQuad = { x, y, width, height };	// Set rendering space and render to screen
 
 
 	SDL_RenderCopyEx(Game::Instance()->getRenderer(), m_textureMap[id], NULL, &renderQuad, 0, NULL, SDL_FLIP_NONE);	// Render to screen
 }
+void Texture::render(std::string id, int x, int y, SDL_Rect* clip, double angle, SDL_Point* center, SDL_RendererFlip flip) {
+	SDL_Rect renderQuad = { x, y, mWidth, mHeight };	// Set rendering space and render to screen
 
-void Texture::weaponIndicator(std::string textureID, int x) {
-//void Texture::weaponIndicator(std::string textureID, int x, SDL_Renderer* rend) {
-	renderMap(textureID, x + 5, 5, 50, 48);
+	if (clip != NULL) {									// Set clip rendering dimensions
+		renderQuad.w = clip->w;
+		renderQuad.h = clip->h;
+	}
+
+	SDL_RenderCopyEx(Game::Instance()->getRenderer(), m_textureMap[id], clip, &renderQuad, angle, center, flip);	// Render to screen
 }
 
 void Texture::render(int x, int y, SDL_Rect* clip, double angle, SDL_Point* center, SDL_RendererFlip flip) {
@@ -108,14 +112,6 @@ void Texture::renderP(int x, int y) {
 	SDL_RenderCopyEx(Game::Instance()->getRenderer(), mTexture, NULL, &renderQuad, 0, NULL, SDL_FLIP_NONE);	// Render to screen
 }
 
-/*
-SDL_Color Texture::getFontColour() {
-	return txtColour;
-}
-void Texture::setFontColour(SDL_Color f) {
-	txtColour = f;
-}
-*/
 SDL_Texture* Texture::loadTexture(std::string path) {
 //SDL_Texture* Texture::loadTexture(std::string path, SDL_Renderer *rend) {
 	//The final texture
@@ -169,18 +165,8 @@ bool Texture::loadFromFile(std::string path) {
 	return mTexture != NULL;
 }
 
-void Texture::loadInputText(std::string input) {
-//void Texture::loadInputText(std::string input, SDL_Renderer* rend) {
-	SDL_Texture* inputTextTexture = 0;
-	loadFromRenderedTextID(inputTextTexture, input, "inputTextID", { 255, 255, 255, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 20), true);		// Lives in top left corner
-}
-void Texture::loadEnterNameText(std::string nameText) {
-//void Texture::loadEnterNameText(std::string nameText, SDL_Renderer* rend) {
-	SDL_Texture* enterName = 0;	// The actual hardware texture
-	loadFromRenderedTextID(enterName, nameText, "enterNameID", { 255, 255, 255, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 20), true);		// Lives in top left corner
-}
-
-bool Texture::loadFromRenderedTextID(SDL_Texture* text, std::string textureText, std::string id, SDL_Color textColor, TTF_Font* font, bool textWrapped) {
+bool Texture::loadFromRenderedTextID(std::string textureText, std::string id, SDL_Color textColor, TTF_Font* font, bool textWrapped) {
+	//SDL_Texture* textXXX = 0;
 //bool Texture::loadFromRenderedTextID(SDL_Texture* text, std::string textureText, std::string id, SDL_Color textColor, TTF_Font* font, SDL_Renderer* renderer, bool textWrapped) {
 	free();	//Get rid of preexisting texture
 
@@ -208,16 +194,15 @@ bool Texture::loadFromRenderedTextID(SDL_Texture* text, std::string textureText,
 	}
 
 	//if (mTexture != 0) {
-	if (text != 0) {
+	if (mTexture != 0) {
 		//m_textureMap[id] = mTexture;	// Add to texture map
-		m_textureMap[id] = text;	// Add to texture map
+		m_textureMap[id] = mTexture;	// Add to texture map
 		return true;
 	}
 
 	//std::cout << "NOT WORKING" << std::endl;
 	return false;
 }
-
 #ifdef _SDL_TTF_H
 bool Texture::loadFromRenderedText(std::string textureText, SDL_Color textColor, TTF_Font* font, bool textWrapped) {
 //bool Texture::loadFromRenderedText(std::string textureText, SDL_Color textColor, TTF_Font* font, SDL_Renderer* renderer, bool textWrapped) {
@@ -249,6 +234,8 @@ bool Texture::loadFromRenderedText(std::string textureText, SDL_Color textColor,
 	return mTexture != NULL;	// Return success
 }
 #endif
+
+
 void Texture::free() {
 	// Free texture if it exists
 	if (mTexture != NULL) {
@@ -307,7 +294,7 @@ void Texture::modifyAlpha(Uint8 alpha) {
 */
 //void Texture::createdByText(SDL_Renderer* rend) {
 void Texture::createdByText() {
-
+	free();
 	std::string textureText = "ANTIBODY";
 	SDL_Color txtColour = { 0, 255, 0, 255 };
 
@@ -320,7 +307,7 @@ void Texture::createdByText() {
 		txtColour = { 0, 255, 0, 255 };
 	}
 	else if (SDL_GetTicks() > lastTime + 3000 && SDL_GetTicks() < lastTime + 4500) {
-		textureText = "A game by Seán Horgan and Joe O'Regan";
+		textureText = "Seán Horgan and Joe O'Regan";
 		txtColour = { 0, 255, 0, 255 };
 	}
 	else if (SDL_GetTicks() >= lastTime + 4500)
@@ -336,6 +323,7 @@ void Texture::createdByText() {
 	Function to indicate if a speed boost is active or not
 */
 void Texture::speedBoostText(std::string textureText) {
+	free();
 //void Texture::speedBoostText(std::string textureText, SDL_Renderer* rend) {
 	if (!loadFromRenderedText(textureText, { 0, 255, 0, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 13), true)) {		// Green Text
 		printf("speedBoostText(): Unable to render Speed Boost User Interface Text Texture!\n");
@@ -346,6 +334,7 @@ void Texture::speedBoostText(std::string textureText) {
 	Function to indicate how many rockets a player has left
 */
 void Texture::numRocketsLeft(std::string textureText) {
+	free();
 //void Texture::numRocketsLeft(std::string textureText, SDL_Renderer* rend) {
 	if (!loadFromRenderedText(textureText, { 0, 255, 0, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 36))) {		// Green Text
 		printf("numRocketsLeft(): Unable to render Num Rockets Left User Interface Text Texture!\n");
@@ -356,7 +345,9 @@ void Texture::numRocketsLeft(std::string textureText) {
 	Function to render the players scores, the FPS, and the current game level
 */
 void Texture::UIText(std::string textureText, int fontSize) {
+	free();
 //void Texture::UIText(std::string textureText, SDL_Renderer* rend) {
+	free();
 	if (!loadFromRenderedText(textureText, { 0, 255, 0, 255 }, TTF_OpenFont("Fonts/Retro.ttf", fontSize))) {		// Green Text
 		printf("Unable to render UIText() User Interface Text Texture!\n");
 	}
@@ -368,6 +359,7 @@ void Texture::UIText(std::string textureText, int fontSize) {
 	Like the UIText function, only it alters font colour depending on if the timer is running out or not
 */
 void Texture::UITextTimer(std::string timerText, unsigned int Timer) {
+	free();
 //void Texture::UITextTimer(std::string timerText, SDL_Renderer* rend, unsigned int Timer) {
 	// Time running out change colour to red
 	if (Timer >= 0 && Timer <= 5) {
@@ -391,6 +383,7 @@ void Texture::UITextTimer(std::string timerText, unsigned int Timer) {
 	Independent messages for player 1 and 2, for picking up objects and upgrading weapons etc
 */
 void Texture::UITextPlayerMessage(std::string playerMessage, int type) {
+	free();
 //void Texture::UITextPlayerMessage(std::string playerMessage, SDL_Renderer* rend, int type) {
 	if (type == 0) {
 		if (!loadFromRenderedText(playerMessage, { 65, 210, 240, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 20))) {	// Blue Text For General Message
@@ -408,7 +401,32 @@ void Texture::UITextPlayerMessage(std::string playerMessage, int type) {
 		}
 	}
 }
-
+void Texture::weaponIndicator(std::string textureID, int x) {
+	//void Texture::weaponIndicator(std::string textureID, int x, SDL_Renderer* rend) {
+	renderMap(textureID, x + 5, 5, 50, 48);
+}
+void Texture::loadInputText(std::string input) {
+	free();
+	//void Texture::loadInputText(std::string input, SDL_Renderer* rend) {
+	//SDL_Texture* inputTextTexture = 0;
+	Texture* inputTextTexture = 0;
+	inputTextTexture->loadFromRenderedTextID(input, "inputTextID", { 255, 255, 255, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 20), true);		// Lives in top left corner
+}
+void Texture::loadEnterNameText(std::string nameText) {
+	free();
+	//void Texture::loadEnterNameText(std::string nameText, SDL_Renderer* rend) {
+	//SDL_Texture enterName = 0;	// The actual hardware texture
+	Texture* enterName = 0;	// The actual hardware texture
+	enterName->loadFromRenderedTextID(nameText, "enterNameID", { 255, 255, 255, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 20), true);		// Lives in top left corner
+}
+/*
+SDL_Color Texture::getFontColour() {
+return txtColour;
+}
+void Texture::setFontColour(SDL_Color f) {
+txtColour = f;
+}
+*/
 void Texture::clearMedia() {
 
 }

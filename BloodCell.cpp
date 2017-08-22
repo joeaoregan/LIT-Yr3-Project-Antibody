@@ -27,6 +27,18 @@ BloodCell::BloodCell(int subType) {
 	//setColliderR(getWidth() / 2);		// Set circular collider
 	//setScore(5);
 	//shiftColliders();
+
+
+	if (subType == LARGE_BLOOD_CELL) {
+		setName("Large Blood Cell");
+	}
+	else if (subType == SMALL_BLOOD_CELL) {
+		setName("Small Blood Cell");
+	}
+	else if (subType == WHITE_BLOOD_CELL) {
+		setName("White Blood Cell");
+	}
+
 	int randomRotationDirection = rand() % 3 + 1;
 	setType(BLOOD_CELL);
 	setSubType(subType);

@@ -15,6 +15,7 @@ public:
 	Texture gMenuTextTexture4;
 	Texture gMenuTextTexture5;
 	Texture gMenuTextTexture6;
+	Texture gMenuTextTexture7;
 
 	//Buttons objects
 	Button gButtons[TOTAL_BUTTONS];

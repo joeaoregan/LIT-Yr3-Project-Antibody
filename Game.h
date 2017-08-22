@@ -88,6 +88,8 @@ public:
 	//void enterName();
 
 	bool twoPlayer;
+	bool displayGameIntro;				// False means off - set in _TestData.h
+	bool displayLevelIntro;				// Display the information splash screen at the start of a level - set in _TestData.h
 
 
 	int gamerOverMessageDisplayCounter;	// Length of time to display game over message

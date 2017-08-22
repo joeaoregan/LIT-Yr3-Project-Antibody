@@ -11,11 +11,14 @@ public:
 	void scrollCreatedBySplashScreen(int startAt = 0, int seconds = 1);
 
 	// Level 1 Logo & Info Screens
-	bool level1IntroScreens();
-	void scrollDownL1Logo(int startAt);
-	void infoScreenL1Enemies(int seconds, int startAt, Texture &story);
-	void infoScreenL1PowerUps(int seconds, int startAt, Texture &story);
+	bool level1IntroScreens(int level);
+	void scrollDownLogo(int level, int startAt);
+	void infoScreenEnemies(int level, int seconds, int startAt);
+	void infoScreenPowerUps(int level, int seconds, int startAt);
+	void infoScreenStory(int level, int seconds, int startAt);
 	void level1FinalScore();
+
+	std::string levelObjective;
 	
 	// Scroll text up the screen, from a start point to an end point
 	void scrollUpText(std::string backgroundID, Texture & text, int seconds = 0, int rate = 15, int startAt = SCREEN_HEIGHT, int stopAt = 300); // 2017/02/26 Edited to take an ID. Change rate to increase speed, higher number = faster
@@ -26,10 +29,6 @@ public:
 	// Level 2 Logo & Info Screens
 	//bool level2IntroScreens(SDL_Renderer *rend);
 	void scrollRightL2Logo(int startAt);
-
-
-
-
 
 
 	Texture gFinalScoreTextTexture;		// Final score displayed at end of level / end of game

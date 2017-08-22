@@ -43,19 +43,15 @@ void HUD::resetHUD() {
 
 void HUD::closeLevelStuff() {
 	gLevelTextTexture.free();
-
-	//gTimeTextTexture.free();
+	gSpeedBoostTextTexture.free();
+	gPowerUpRocketTexture2.free();
+	gNumRocketsTextTexture1.free();
 	gCreatedByTextTexture.free();
-
 	gP1LivesTexture.free();
 	gP2LivesTexture.free();
 	gP1ScoreTextTexture.free();
 	gP2ScoreTextTexture.free();
-
-	gSpeedBoostTextTexture.free();
-
-	gPowerUpRocketTexture2.free();
-	gNumRocketsTextTexture1.free();
+	//gTimeTextTexture.free();
 	//gNumRocketsTextTexture2.free();
 }
 
@@ -89,6 +85,8 @@ void HUD::gameTime(int currentTime, SDL_Renderer *rend) {
 */
 void HUD::playerScore(bool twoPlayer, int scoreP1, int scoreP2) {
 	std::stringstream score1Text, score2Text;
+	gP1ScoreTextTexture.free();
+	gP2ScoreTextTexture.free();
 
 	score1Text << "P1: " << scoreP1;															// Player 1 score
 	gP1ScoreTextTexture.UIText(score1Text.str().c_str());										// Render text - Use a string to render the current P1 Score to a texture
@@ -102,6 +100,8 @@ void HUD::playerScore(bool twoPlayer, int scoreP1, int scoreP2) {
 
 void HUD::percentageNinjaStarKills(bool twoPlayer, int ninja1, int ninja2) {
 	Texture gNinja1, gNinja2;
+	gNinja1.free();
+	gNinja2.free();
 
 	std::stringstream ninjaStarKillsP1, ninjaStarKillsP2;
 
@@ -128,6 +128,9 @@ void HUD::playerScoresCounter(bool twoPlayer, int scoreP1, int scoreP2) {
 		gScoreText2.UIText(ninjaStarKillsP2.str().c_str(), 10);								// Render text - Use a string to render the current P2 Score to a texture
 		gScoreText2.render(SCREEN_WIDTH - gScoreText2.getWidth() - 10 - 200, 15);		// Score for Player 2
 	}
+
+	gScoreText1.free();
+	gScoreText2.free();
 }
 
 /*	2017/02/21: Moved from Game.cpp
@@ -141,6 +144,7 @@ int scroll = 60;
 
 void HUD::speedBoostIndicator(bool boost) {
 	if (scroll > 0) scroll--;
+	gSpeedBoostTextTexture.free();
 
 	gSpeedBoostTextTexture.speedBoostText("Speed\nBoost");// Create the text
 
@@ -157,6 +161,7 @@ void HUD::speedBoostIndicator(bool boost) {
 	Indicates number of rockets each player has remaining
 */
 void HUD::rocketIndicator(int numRockets, int player, bool alive) {
+	gPowerUpRocketTexture2.free();
 	gPowerUpRocketTexture2.modifyAlpha(255);								// Keep alpha values independent, show bright if alive
 	if (numRockets <= 0 || !alive) gPowerUpRocketTexture2.modifyAlpha(50);	// Fade out the rocket image if player has no rockets
 	gPowerUpRocketTexture2.render(scroll + 15, -2, NULL, 45);			// 1st //weaponScrolling = 60;
@@ -171,6 +176,7 @@ void HUD::rocketIndicator(int numRockets, int player, bool alive) {
 	Display the created by text at bottom of heads up display
 */
 void HUD::createdByText() {
+	gCreatedByTextTexture.free();
 	gCreatedByTextTexture.createdByText();
 	gCreatedByTextTexture.render((SCREEN_WIDTH - gCreatedByTextTexture.getWidth()) / 2, 120 - gCreatedByTextTexture.getHeight() - 8);
 }
@@ -180,17 +186,18 @@ void HUD::createdByText() {
 	Render the players lives to the player dashboard
 */
 void HUD::rendPlayerLives(int livesP1, int livesP2) {
-		if (livesP1 > 0)
-			gP1LivesTexture.render(10, 120 - gP1LivesTexture.getHeight() - 10);
-		if (livesP1 > 1)
-			gP1LivesTexture.render(20 + gP1LivesTexture.getWidth(), 120 - gP1LivesTexture.getHeight() - 10);
-		if (livesP1 > 2)
-			gP1LivesTexture.render(30 + (gP1LivesTexture.getWidth() * 2), 120 - gP1LivesTexture.getHeight() - 10);
+	if (livesP1 > 0)
+		gP1LivesTexture.render(10, 120 - gP1LivesTexture.getHeight() - 10);
+	if (livesP1 > 1)
+		gP1LivesTexture.render(20 + gP1LivesTexture.getWidth(), 120 - gP1LivesTexture.getHeight() - 10);
+	if (livesP1 > 2)
+		gP1LivesTexture.render(30 + (gP1LivesTexture.getWidth() * 2), 120 - gP1LivesTexture.getHeight() - 10);
 
-		if (livesP2 > 0)
-			gP2LivesTexture.render(SCREEN_WIDTH - gP2LivesTexture.getWidth() - 10, 120 - gP2LivesTexture.getHeight() - 10);
-		if (livesP2 > 1)
-			gP2LivesTexture.render(SCREEN_WIDTH - (gP2LivesTexture.getWidth() * 2) - 20, 120 - gP2LivesTexture.getHeight() - 10);
-		if (livesP2 > 2)
-			gP2LivesTexture.render(SCREEN_WIDTH - (gP2LivesTexture.getWidth() * 3) - 30, 120 - gP2LivesTexture.getHeight() - 10);
+	if (livesP2 > 0)
+		gP2LivesTexture.render(SCREEN_WIDTH - gP2LivesTexture.getWidth() - 10, 120 - gP2LivesTexture.getHeight() - 10);
+	if (livesP2 > 1)
+		gP2LivesTexture.render(SCREEN_WIDTH - (gP2LivesTexture.getWidth() * 2) - 20, 120 - gP2LivesTexture.getHeight() - 10);
+	if (livesP2 > 2)
+		gP2LivesTexture.render(SCREEN_WIDTH - (gP2LivesTexture.getWidth() * 3) - 30, 120 - gP2LivesTexture.getHeight() - 10);
+
 }
