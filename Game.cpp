@@ -475,8 +475,7 @@ bool Game::loadMedia() {
 		printf("Failed to load Player 1 texture!\n");
 		success = false;
 	}
-//	if (!gPlayer2Texture.loadFromFile("Art/Player2Ship.png")) {					// Player 2 Ship Texture
-	if (!gPlayer2Texture.loadFromFile("Art/Player2ShipOld.png")) {					// Player 2 Ship Texture
+	if (!gPlayer2Texture.loadFromFile("Art/Player2Ship.png")) {					// Player 2 Ship Texture
 		printf("Failed to load Player 2 texture!\n");
 		success = false;
 	}

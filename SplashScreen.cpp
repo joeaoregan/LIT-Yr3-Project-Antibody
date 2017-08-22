@@ -367,8 +367,11 @@ void SplashScreen::infoScreenStory(int level, int seconds, int startAt) {
 	}
 
 	scrollUpText(chooseBackground(level), gStoryA, 1, 10, SCREEN_HEIGHT, 300);							// Story page 1
+	SDL_Delay(seconds * 1000);									// Pause with image on screen
 	if (storyPage2 != "") scrollUpText(chooseBackground(level), gStoryB, 1, 10, SCREEN_HEIGHT, 300);	// Story page 2
+	SDL_Delay(seconds * 1000);									// Pause with image on screen
 	if (storyPage3 != "") scrollUpText(chooseBackground(level), gStoryC, 1, 10, SCREEN_HEIGHT, 300);	// Story page 3
+	SDL_Delay(seconds * 1000);									// Pause with image on screen
 }
 
 /*	2017/02/26: Edited to take an ID string to search texture map in texture class
@@ -386,7 +389,12 @@ void SplashScreen::scrollUpText(std::string backgroundID, Texture &text, int sec
 		SDL_RenderPresent(Game::Instance()->getRenderer());	// Update screen
 	}
 
-	SDL_Delay(seconds * 1000);								// Pause with image on screen
+	SDL_RenderClear(Game::Instance()->getRenderer());
+	Texture::Instance()->renderMap(backgroundID, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);	// Static background	AND THE BACKGROUND NEEDS TO BE BEHIND THE TEXT EACH TIME									// Clear the screen		NEED TO CLEAR THE SCREEN EACH TIME OR GET STREAKY TEXT
+	text.render((SCREEN_WIDTH - text.getWidth()) / 2, startAt); // FOR TESTING
+	SDL_RenderPresent(Game::Instance()->getRenderer());			// Update screen
+
+	SDL_Delay(seconds * 1000);									// Pause with image on screen
 }
 
 std::string SplashScreen::chooseBackground(int level) {

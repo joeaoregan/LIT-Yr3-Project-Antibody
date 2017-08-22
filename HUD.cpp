@@ -45,8 +45,7 @@ bool HUD::loadLevelStuff() {
 		printf("Failed to load Player 1 Small Ship texture!\n");
 		success = false;
 	}
-//	if (!gP2LivesTexture.loadFromFile("Art/Player2ShipSmall.png")) {				// Player 2 Lives Texture
-	if (!gP2LivesTexture.loadFromFile("Art/Player2ShipSmallOld.png")) {				// Player 2 Lives Texture
+	if (!gP2LivesTexture.loadFromFile("Art/Player2ShipSmall.png")) {				// Player 2 Lives Texture
 		printf("Failed to load Player 2 Small Ship texture!\n");
 		success = false;
 	}
