@@ -12,7 +12,7 @@ Rocket::Rocket() {
 	setColliderWidth(getWidth());
 	setColliderHeight(getHeight());
 
-	//setAngle(0);	// Fire straight
+	setAngle(0);	// Fire straight
 	//setGrade(0);	// Basic Rocket = 0
 
 	setAlive(true);	// Make sure Rocket is alive from the beginning

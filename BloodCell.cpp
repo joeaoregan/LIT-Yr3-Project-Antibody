@@ -5,6 +5,7 @@ BloodCell::BloodCell(int type) {
 	//setColliderR(getWidth() / 2);		// Set circular collider
 	//setScore(5);
 	//shiftColliders();
+
 	int randomRotationDirection = rand() % 3 + 1;
 
 	setType(type);
@@ -26,6 +27,7 @@ BloodCell::BloodCell(int type) {
 		setWidth(70);
 		setHeight(70);
 	}
+
 	// Set 1 out of 3 (ish) Blood Cells rotating backwards
 	if (randomRotationDirection == 1)
 		setRotationDirection(-1);

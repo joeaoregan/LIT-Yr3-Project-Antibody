@@ -9,8 +9,8 @@ Add Ninja Star weapon class
 
 class NinjaStar : public Weapon {
 public:
-	NinjaStar();							// Initializes the variables
-	~NinjaStar();
+	NinjaStar();					// Initializes the variables
+	~NinjaStar();					// Deconstructor
 };
 
 #endif

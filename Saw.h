@@ -12,7 +12,9 @@ public:
 	Saw(int player);									// Initializes the variables
 	~Saw();									// Deconstructor
 
-	virtual void movement(int x, int y);	// Moves the Saw
+	virtual void movement(int x, int y);	// Moves the Saw	
+
+	//virtual void spawn(int x, int y);		// Spawn the saw
 };
 
 #endif

@@ -11,7 +11,7 @@ Added enemy laser projectile, velocity is a minus value as it is travelling righ
 
 // LaserEnemy Constructor
 LaserEnemy::LaserEnemy(int type) {
-	std::cout << "Enemy Laser constuctor called.\n";
+	//std::cout << "Enemy Laser constuctor called.\n";
 	setWidth(50);
 	setHeight(5);
 	setVelocity(-15);
@@ -42,7 +42,7 @@ void LaserEnemy::movement() {
 	setY(getY() + getVelY());
 
 	// destroy laser beam once it is offscreen
-	//if (getY() < 40) setAlive(false);			// Once it reaches the pink border
-	//else if (getY() > (SCREEN_HEIGHT_GAME - 40)) setAlive(false);	// 600 - 40 for pink border
-	//else setAlive(true);
+	if (getY() < 40) setAlive(false);			// Once it reaches the pink border
+	else if (getY() > (SCREEN_HEIGHT_GAME - 40)) setAlive(false);	// 600 - 40 for pink border
+	else setAlive(true);
 }

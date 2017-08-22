@@ -15,9 +15,9 @@ void Weapon::handleEvent(SDL_Event& e, int player) {
 			switch (e.key.keysym.sym) {
 			case SDLK_PLUS:													// +/= or + on keypad
 			case SDLK_KP_PLUS:
-			case SDLK_EQUALS: setVelY(getVelY() - getVelocity()); setAngle(-10); break;	// Up
+			case SDLK_EQUALS: setVelY(getVelY() - getVelocity()); break;	// Up
 			case SDLK_KP_MINUS:
-			case SDLK_MINUS: setVelY(getVelY() + getVelocity()); setAngle(10); break;		// Down
+			case SDLK_MINUS: setVelY(getVelY() + getVelocity()); break;		// Down
 			}
 		}
 		else if (e.type == SDL_KEYUP && e.key.repeat == 0) {
@@ -25,9 +25,9 @@ void Weapon::handleEvent(SDL_Event& e, int player) {
 			switch (e.key.keysym.sym) {
 			case SDLK_PLUS:													// +/= or + on keypad
 			case SDLK_KP_PLUS:
-			case SDLK_EQUALS: setVelY(getVelY() + getVelocity()); setAngle(0); break;	// Up
+			case SDLK_EQUALS: setVelY(getVelY() + getVelocity()); break;	// Up
 			case SDLK_KP_MINUS:
-			case SDLK_MINUS: setVelY(getVelY() - getVelocity()); setAngle(0); break;		// undo move down 
+			case SDLK_MINUS: setVelY(getVelY() - getVelocity()); break;		// undo move down 
 			}
 		}
 	}

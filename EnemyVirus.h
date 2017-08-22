@@ -8,7 +8,7 @@ class EnemyVirus : public Enemy {
 public:
 	float bombTimer;
 
-	EnemyVirus(int type = 0, float time = 0);							// Initializes the variables
+	EnemyVirus(int type = 0, float time = 3.0);							// Initializes the variables
 	~EnemyVirus();							// Destructor
 	
 	virtual void movement(int playerX, int playerY);

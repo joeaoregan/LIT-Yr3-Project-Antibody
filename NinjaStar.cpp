@@ -9,7 +9,7 @@ NinjaStar::NinjaStar() {
 	//std::cout << "NinjaStar constuctor called.\n";
 	setWidth(25);
 	setHeight(25);
-	setVelX(10);						// Set velocity on X axis as 10
+	setVelX(10);
 
 	setColliderWidth(getWidth());
 	setColliderHeight(getHeight());
@@ -17,7 +17,7 @@ NinjaStar::NinjaStar() {
 	setAlive(true);
 }
 
-// Laser Destructor
+// Ninja Star Destructor
 NinjaStar::~NinjaStar() {
 	std::cout << "NinjaStar destructor called.\n";
 }

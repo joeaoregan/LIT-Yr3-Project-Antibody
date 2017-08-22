@@ -51,8 +51,8 @@ public:
 	int smallBloodCellsActive;
 
 	enum levels { MENU, LEVEL_1, LEVEL_2, LEVEL_3 };
-	enum powerUpTypes { HEALTH = 1, LASER };
-	enum virusType { GREEN, ORANGE };
+	enum powerUpTypes { HEALTH = 1, LASER, TIMER, SPEED_BOOST, SHOCKER };
+	enum enemyType { GREEN_VIRUS, ORANGE_VIRUS, ENEMY_SHIP };
 	enum playerWeapons {NINJA_STAR_P1, NINJA_STAR_P2, LASER_P1, LASER_P2, SAW_P1, SAW_P2, LASER_V2_P1, LASER_V2_P2, ROCKET};
 
 	int getCurrentLevel() { return mCurrentLevel; }

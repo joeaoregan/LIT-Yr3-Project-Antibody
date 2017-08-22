@@ -4,6 +4,8 @@ JOE: Moved functionality common to game objects to GameObjects class reducing th
 #ifndef GAME_OBJECTS_H
 #define GAME_OBJECTS_H
 
+#define MAX_HEALTH 100
+
 #include <SDL.h>
 #include <SDL_image.h>
 #include "LTexture.h"
@@ -14,9 +16,8 @@ public:
 	GameObject();
 	~GameObject();												// Deconstructor
 
-	void spawn(int x, int y, int vx = 0, int vy = 0);
-	void spawn(int x, int y, int vx, SDL_Rect collider);
-	void spawn(int x, int y, int vx, int vy, SDL_Rect collider, int type = 0);
+	void spawn(int x, int y);									// Player
+	void spawn(int x, int y, int vx, int vy = 0, int type = 0);	// Virus, PowerUp, BloodCell, Explosion, NinjaStar, EnemyLaser
 
 	virtual void movement();
 
@@ -35,7 +36,7 @@ public:
 	int getHeight() { return m_Height; }			// return the objects height
 	std::string getName() { return m_Name; }		// return the objects name
 	int getHealth() { return m_Health; }			// return the objects health
-	int getMaxHealth();
+	int getMaxHealth() { return MAX_HEALTH; }
 	int getNumLives() { return m_NumLives; }
 	int getType() { return m_Type; }				// 2017/01/25 Return the objects type
 	int getAngle() { return m_Angle; }				// 2017/02/07 Return the objects angle
@@ -54,7 +55,7 @@ public:
 	void setNumLives(int n) { m_NumLives = n; }		// Set the number of lives for the object
 
 	//SDL_Rect getCollider() { return m_Collider; }
-	SDL_Rect* getCollider() { return &m_Collider; }
+	SDL_Rect * getCollider() { return &m_Collider; }
 	void setCollider(SDL_Rect collider) { m_Collider = collider; }			// 2017/01/19 Added as Sean keeps doing dumb things with the colliders
 	void setColliderWidth(int w) { m_Collider.w = w; }
 	void setColliderHeight(int h) { m_Collider.h = h; }
@@ -66,13 +67,13 @@ public:
 	//SDL_Color getFontColour();
 	//void setFontColour(SDL_Color f);
 
-	int getStartTime();
-	int getEndTime();
-	void setStartTime(int t);
-	void setEndTime(int t);
+	int getStartTime() { return m_StartTime; }
+	int getEndTime() { return m_EndTime; }
+	void setStartTime(int t) { m_StartTime = t; }
+	void setEndTime(int t) { m_EndTime = t; }
 
-	LTexture getTexture();
-	void setTexture(LTexture texture);
+	LTexture getTexture() { return m_Texture; }
+	void setTexture(LTexture texture) { m_Texture = texture; }
 
 private:
 	// GameObject Variables
