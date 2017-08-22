@@ -36,9 +36,7 @@
 #include "CollisionStuff.h"			// 2017/02/09
 #include "Gamepad.h"				// 2017/02/09
 #include "Audio.h"					// 2017/02/09
-
 #include <math.h>
-
 
 /***************************************************************************************************************************/
 /******************************************** TURN STUFF ON AND OFF FOR TESTING ********************************************/
@@ -61,6 +59,8 @@ bool Laser2 = false;
 
 void setViewport(SDL_Rect &rect, int x, int y, int w, int h);	// These classes are giving errors when they are moved to the header file
 bool checkCollision(SDL_Rect *a, SDL_Rect *b);
+//void setupAnimationClip(SDL_Rect rect, int frames, int amount, bool type2 = false);
+void setupAnimationClip(SDL_Rect rect[], int frames, int amount, bool type2 = false);
 
 // Classes
 Menu menu1;
@@ -87,12 +87,18 @@ SDL_Rect gSmallGreenVirusSpriteClips[6];					// Sprite frames for Small Green Vi
 SDL_Rect gSmallOrangeVirusSpriteClips[6];					// Sprite frames for Small Orange Virus animation
 SDL_Rect gSmallBlueVirusSpriteClips[6];						// Sprite frames for Small Blue Virus animation
 
-SDL_Rect gExplosionClips[EXPLOSION_ANIMATION_FRAMES];		// Sprite frames for Explosion animation
-SDL_Rect gBloodExplosionClips[BLOOD_EXP_ANIMATION_FRAMES];	// Sprite frames for Explosion animation
+SDL_Rect gExplosionClips[EXPLOSION_ANIMATION_FRAMES];				// Sprite frames for Explosion animation
+SDL_Rect gBloodExplosionClips[BLOOD_EXP_ANIMATION_FRAMES];			// Sprite frames for Blood Explosion animation
+SDL_Rect gVirusGreenExplosionClips[BLOOD_EXP_ANIMATION_FRAMES];		// Sprite frames for Green Virus Explosion animation
+SDL_Rect gVirusOrangeExplosionClips[BLOOD_EXP_ANIMATION_FRAMES];	// Sprite frames for Orange Virus Explosion animation
+SDL_Rect gVirusBlueExplosionClips[BLOOD_EXP_ANIMATION_FRAMES];		// Sprite frames for Blue Virus Explosion animation
 
 Texture gEnemySpriteSheetTexture;			// Enemy sprite sheet
 Texture gExplosionSpriteSheetTexture;		// Explosion sprite sheet
 Texture gBloodExplosionSpriteSheetTexture;	// Blood explosion sprite sheet
+Texture gVirusGreenExplosionSpriteSheetTexture;		// Green Virus explosion sprite sheet
+Texture gVirusOrangeExplosionSpriteSheetTexture;	// Orange Virus explosion sprite sheet
+Texture gVirusBlueExplosionSpriteSheetTexture;		// Blue Virus explosion sprite sheet
 
 Texture gGreenVirusSpriteSheetTexture;		// Green Virus sprite sheet
 Texture gOrangeVirusSpriteSheetTexture;		// Orange Virus sprite sheet
@@ -448,7 +454,7 @@ bool Game::loadMedia() {
 		success = false;
 	}
 	else {
-		//Set sprite clips
+		/*Set sprite clips
 		for (unsigned int i = 0; i < 6; ++i) {
 			if (i < 4) gGreenVirusSpriteClips[i].x = i * 75;
 			if (i == 5) gGreenVirusSpriteClips[i].x = 2 * 75;
@@ -457,13 +463,15 @@ bool Game::loadMedia() {
 			gGreenVirusSpriteClips[i].w = 75;
 			gGreenVirusSpriteClips[i].h = 75;
 		}
+		*/
+		setupAnimationClip(gGreenVirusSpriteClips, 6, 75, true);	// Set sprite clips
 	}
 	if (!gOrangeVirusSpriteSheetTexture.loadFromFile("Art/EnemyVirus_SpriteSheet_Orange.png", gRenderer)) {	// Sprite sheet for Enemy Orange Virus
 		printf("Failed to load Orange Virus animation texture!\n");
 		success = false;
 	}
 	else {
-		//Set sprite clips
+		/*Set sprite clips
 		for (unsigned int i = 0; i < 6; ++i) {
 			if (i < 4) gOrangeVirusSpriteClips[i].x = i * 75;
 			if (i == 5) gOrangeVirusSpriteClips[i].x = 2 * 75;
@@ -472,6 +480,8 @@ bool Game::loadMedia() {
 			gOrangeVirusSpriteClips[i].w = 75;
 			gOrangeVirusSpriteClips[i].h = 75;
 		}
+		*/
+		setupAnimationClip(gOrangeVirusSpriteClips, 6, 75, true);	// Set sprite clips
 	}
 
 	if (!gBlueVirusSpriteSheetTexture.loadFromFile("Art/EnemyVirus_SpriteSheet_Blue.png", gRenderer)) {	// Sprite sheet for Enemy Blue Virus
@@ -479,6 +489,7 @@ bool Game::loadMedia() {
 		success = false;
 	}
 	else {
+		/*
 		//Set sprite clips
 		for (unsigned int i = 0; i < 6; ++i) {
 			if (i < 4) gBlueVirusSpriteClips[i].x = i * 75;
@@ -488,12 +499,15 @@ bool Game::loadMedia() {
 			gBlueVirusSpriteClips[i].w = 75;
 			gBlueVirusSpriteClips[i].h = 75;
 		}
+		*/
+		setupAnimationClip(gBlueVirusSpriteClips, 6, 75, true);	// Set sprite clips
 	}
 	if (!gSmallGreenVirusSpriteSheetTexture.loadFromFile("Art/EnemyVirus_SpriteSheet_Green_Small.png", gRenderer)) {	// Sprite sheet for Enemy Blue Virus
 		printf("Failed to load Small Blue Virus animation texture!\n");
 		success = false;
 	}
 	else {
+		/*
 		//Set sprite clips
 		for (unsigned int i = 0; i < 6; ++i) {
 			if (i < 4) gSmallGreenVirusSpriteClips[i].x = i * 40;
@@ -503,12 +517,15 @@ bool Game::loadMedia() {
 			gSmallGreenVirusSpriteClips[i].w = 40;
 			gSmallGreenVirusSpriteClips[i].h = 40;
 		}
+		*/
+		setupAnimationClip(gSmallGreenVirusSpriteClips, 6, 40, true);	// Set sprite clips
 	}
 	if (!gSmallOrangeVirusSpriteSheetTexture.loadFromFile("Art/EnemyVirus_SpriteSheet_Orange_Small.png", gRenderer)) {	// Sprite sheet for Enemy Blue Virus
 		printf("Failed to load Small Blue Virus animation texture!\n");
 		success = false;
 	}
 	else {
+		/*
 		//Set sprite clips
 		for (unsigned int i = 0; i < 6; ++i) {
 			if (i < 4) gSmallOrangeVirusSpriteClips[i].x = i * 40;
@@ -518,12 +535,15 @@ bool Game::loadMedia() {
 			gSmallOrangeVirusSpriteClips[i].w = 40;
 			gSmallOrangeVirusSpriteClips[i].h = 40;
 		}
+		*/
+		setupAnimationClip(gSmallOrangeVirusSpriteClips, 6, 40, true);	// Set sprite clips
 	}
 	if (!gSmallBlueVirusSpriteSheetTexture.loadFromFile("Art/EnemyVirus_SpriteSheet_Blue_Small.png", gRenderer)) {	// Sprite sheet for Enemy Blue Virus
 		printf("Failed to load Small Blue Virus animation texture!\n");
 		success = false;
 	}
 	else {
+		/*
 		//Set sprite clips
 		for (unsigned int i = 0; i < 6; ++i) {
 			if (i < 4) gSmallBlueVirusSpriteClips[i].x = i * 40;
@@ -533,6 +553,8 @@ bool Game::loadMedia() {
 			gSmallBlueVirusSpriteClips[i].w = 40;
 			gSmallBlueVirusSpriteClips[i].h = 40;
 		}
+		*/
+		setupAnimationClip(gSmallBlueVirusSpriteClips, 6, 40, true);	// Set sprite clips
 	}
 
 	if (!gExplosionSpriteSheetTexture.loadFromFile("Art/Explosion.png", gRenderer)) {	// Sprite sheet for Explosions
@@ -540,33 +562,62 @@ bool Game::loadMedia() {
 		success = false;
 	}
 	else {
-		//Set sprite clips
-		for (unsigned int i = 0; i < EXPLOSION_ANIMATION_FRAMES; ++i) {
-			gExplosionClips[i].x = i * 96;
-			gExplosionClips[i].y = 0;
-			gExplosionClips[i].w = 96;
-			gExplosionClips[i].h = 96;
-		}
+		setupAnimationClip(gExplosionClips, EXPLOSION_ANIMATION_FRAMES, 96);	// Set sprite clips
 	}
-//	if (!gBloodExplosionSpriteSheetTexture.loadFromFile("Art/BloodExplosion.png", gRenderer)) {	// Sprite sheet for Explosions
 	if (!gBloodExplosionSpriteSheetTexture.loadFromFile("Art/ExplosionBlood.png", gRenderer)) {	// Sprite sheet for Explosions
 		printf("Failed to load Blood Explosion animation texture!\n");
 		success = false;
 	}
 	else {
-		//Set sprite clips
-		for (unsigned int i = 0; i < BLOOD_EXP_ANIMATION_FRAMES; ++i) {
-			gBloodExplosionClips[i].x = i * 128;
-			gBloodExplosionClips[i].y = 0;
-			gBloodExplosionClips[i].w = 128;
-			gBloodExplosionClips[i].h = 128;
-		}
+		setupAnimationClip(gBloodExplosionClips, BLOOD_EXP_ANIMATION_FRAMES, 128);	// Set sprite clips
+	}
+	if (!gVirusGreenExplosionSpriteSheetTexture.loadFromFile("Art/ExplosionVirusGreen.png", gRenderer)) {	// Sprite sheet for Explosions
+		printf("Failed to load Green Virus Explosion animation texture!\n");
+		success = false;
+	}
+	else {
+		setupAnimationClip(gVirusGreenExplosionClips, BLOOD_EXP_ANIMATION_FRAMES, 128);	// Set sprite clips
+	}
+	if (!gVirusOrangeExplosionSpriteSheetTexture.loadFromFile("Art/ExplosionVirusOrange.png", gRenderer)) {	// Sprite sheet for Explosions
+		printf("Failed to load Orange Virus Explosion animation texture!\n");
+		success = false;
+	}
+	else {
+		setupAnimationClip(gVirusOrangeExplosionClips, BLOOD_EXP_ANIMATION_FRAMES, 128);	// Set sprite clips
+	}
+	if (!gVirusBlueExplosionSpriteSheetTexture.loadFromFile("Art/ExplosionVirusBlue.png", gRenderer)) {	// Sprite sheet for Explosions
+		printf("Failed to load Blue Virus Explosion animation texture!\n");
+		success = false;
+	}
+	else {
+		setupAnimationClip(gVirusBlueExplosionClips, BLOOD_EXP_ANIMATION_FRAMES, 128);	// Set sprite clips
 	}
 
 	//if (MUSIC_ON) audio.music();		// EDIT IN _TestData.h
 	audio.music();		// EDIT IN _TestData.h
 
 	return success;
+}
+
+void setupAnimationClip(SDL_Rect rect[], int frames, int amount, bool type2) {
+	if (!type2) {
+		for (int i = 0; i < frames; ++i) {
+			rect[i].x = i * amount;
+			rect[i].y = 0;
+			rect[i].w = amount;
+			rect[i].h = amount;
+		}
+	}
+	else {
+		for (unsigned int i = 0; i < 6; ++i) {
+			if (i < 4) rect[i].x = i * amount;
+			else if (i == 5) rect[i].x = 2 * amount;
+			else if (i == 6) rect[i].x = 1 * amount;
+			rect[i].y = 0;
+			rect[i].w = amount;
+			rect[i].h = amount;
+		}
+	}
 }
 
 void Game::close() {
@@ -954,10 +1005,11 @@ void Game::renderGameObjects() {
 
 		//if (gameOver == false) {
 			SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
-			SDL_RenderDrawRect(gRenderer, player1->getCollider());
+			//SDL_RenderDrawRect(gRenderer, &player1->getCollider());
+			//SDL_RenderDrawRect(gRenderer, &player2->getCollider());
 
 			for (unsigned int index = 0; index != listOfGameObjects.size(); ++index) {
-				SDL_RenderDrawRect(gRenderer, listOfGameObjects[index]->getCollider());
+				//SDL_RenderDrawRect(gRenderer, &listOfGameObjects[index]->getCollider());
 				frames = listOfGameObjects[index]->getFrames();		// 2017/02/09 Fixed the explosion animations, they are now assigned to indiviual objects with the game object frame attribute
 
 				// Render Saws
@@ -974,7 +1026,7 @@ void Game::renderGameObjects() {
 				else if (listOfGameObjects[index]->getSubType() == EXPLOSION) {
 					//frames = listOfGameObjects[index]->getFrames();		// 2017/02/09 Fixed the explosion animations, they are now assigned to indiviual objects with the game object frame attribute
 					listOfGameObjects[index]->render(gExplosionSpriteSheetTexture, gRenderer, &gExplosionClips[frames / EXPLOSION_ANIMATION_FRAMES], frames, EXPLOSION_ANIMATION_FRAMES);
-					listOfGameObjects[index]->setFrames(frames);
+					//listOfGameObjects[index]->setFrames(frames);
 					if (frames / 8 >= EXPLOSION_ANIMATION_FRAMES) {		// If the explosion reaches the last frame
 						frames = 0;										// reset animation frames
 						listOfGameObjects[index]->setAlive(false);
@@ -985,10 +1037,38 @@ void Game::renderGameObjects() {
 				else if (listOfGameObjects[index]->getSubType() == BLOOD_EXPLOSION) {
 					gBloodExplosionSpriteSheetTexture.setAlpha(100);
 					gBloodExplosionSpriteSheetTexture.modifyAlpha(gBloodExplosionSpriteSheetTexture.getAlpha());
-					//frames = listOfGameObjects[index]->getFrames();		// 2017/02/09 Fixed the explosion animations, they are now assigned to indiviual objects with the game object frame attribute
-					listOfGameObjects[index]->render(gBloodExplosionSpriteSheetTexture, gRenderer, &gBloodExplosionClips[frames / BLOOD_EXP_ANIMATION_FRAMES], frames, BLOOD_EXP_ANIMATION_FRAMES);
-					listOfGameObjects[index]->setFrames(frames);
-					if (frames / 8 >= BLOOD_EXP_ANIMATION_FRAMES) {		// If the explosion reaches the last frame
+					listOfGameObjects[index]->render(gBloodExplosionSpriteSheetTexture, gRenderer, &gBloodExplosionClips[frames / 5], frames, BLOOD_EXP_ANIMATION_FRAMES);
+					//listOfGameObjects[index]->setFrames(frames);
+					if (frames / 5 >= BLOOD_EXP_ANIMATION_FRAMES) {		// If the explosion reaches the last frame
+						frames = 0;										// reset animation frames
+						listOfGameObjects[index]->setAlive(false);
+					}
+				}
+				else if (listOfGameObjects[index]->getSubType() == GREEN_VIRUS_EXPLOSION) {
+					gVirusGreenExplosionSpriteSheetTexture.setAlpha(125);
+					gVirusGreenExplosionSpriteSheetTexture.modifyAlpha(gVirusGreenExplosionSpriteSheetTexture.getAlpha());
+					listOfGameObjects[index]->render(gVirusGreenExplosionSpriteSheetTexture, gRenderer, &gVirusGreenExplosionClips[frames / 5], frames, BLOOD_EXP_ANIMATION_FRAMES);
+					//listOfGameObjects[index]->setFrames(frames);
+					if (frames / 5 >= BLOOD_EXP_ANIMATION_FRAMES) {		// If the explosion reaches the last frame
+						frames = 0;										// reset animation frames
+						listOfGameObjects[index]->setAlive(false);
+					}
+				}
+				else if (listOfGameObjects[index]->getSubType() == ORANGE_VIRUS_EXPLOSION) {
+					gVirusOrangeExplosionSpriteSheetTexture.setAlpha(125);
+					gVirusOrangeExplosionSpriteSheetTexture.modifyAlpha(gVirusOrangeExplosionSpriteSheetTexture.getAlpha());
+					listOfGameObjects[index]->render(gVirusOrangeExplosionSpriteSheetTexture, gRenderer, &gVirusOrangeExplosionClips[frames / 5], frames, BLOOD_EXP_ANIMATION_FRAMES);
+					if (frames / 5 >= BLOOD_EXP_ANIMATION_FRAMES) {		// If the explosion reaches the last frame
+						frames = 0;										// reset animation frames
+						listOfGameObjects[index]->setAlive(false);
+					}
+				}
+				else if (listOfGameObjects[index]->getSubType() == BLUE_VIRUS_EXPLOSION) {
+					gVirusBlueExplosionSpriteSheetTexture.setAlpha(125);
+					gVirusBlueExplosionSpriteSheetTexture.modifyAlpha(gVirusBlueExplosionSpriteSheetTexture.getAlpha());
+					listOfGameObjects[index]->render(gVirusBlueExplosionSpriteSheetTexture, gRenderer, &gVirusBlueExplosionClips[frames / 5], frames, BLOOD_EXP_ANIMATION_FRAMES);
+					//listOfGameObjects[index]->setFrames(frames);
+					if (frames / 5 >= BLOOD_EXP_ANIMATION_FRAMES) {		// If the explosion reaches the last frame
 						frames = 0;										// reset animation frames
 						listOfGameObjects[index]->setAlive(false);
 					}
@@ -1131,8 +1211,6 @@ void Game::renderGameObjects() {
 					}
 				}
 
-
-
 				gPlayer1Texture.modifyAlpha(gPlayer1Texture.getAlpha());
 				player1->render(gPlayer1Texture, gRenderer);
 
@@ -1171,7 +1249,7 @@ void Game::renderGameObjects() {
 					// Explode!!!
 					if (listOfGameObjects[index]->getTimer() <= 0) {
 						spawnEnemyLaser(listOfGameObjects[index]->getX(), listOfGameObjects[index]->getY(), VIRUS_FIREBALL);										// x, y, and type
-						spawnExplosion(listOfGameObjects[index]->getX() - listOfGameObjects[index]->getWidth(), listOfGameObjects[index]->getY() + 10, EXPLOSION);// Create an explosion when it dies
+						//spawnExplosion(listOfGameObjects[index]->getX() - listOfGameObjects[index]->getWidth(), listOfGameObjects[index]->getY() + 10, EXPLOSION);// Create an explosion when it dies
 						listOfGameObjects[index]->setAlive(false);																					// When timer runs out kill the virus
 					}
 				}
@@ -1192,7 +1270,7 @@ void Game::renderGameObjects() {
 
 					// Explode Orange Virus!!!
 					if (listOfGameObjects[index]->getTimer() <= 0) {
-						spawnExplosion(listOfGameObjects[index]->getX() - listOfGameObjects[index]->getWidth(), listOfGameObjects[index]->getY() + 10, EXPLOSION);// Create an explosion when it dies
+						//spawnExplosion(listOfGameObjects[index]->getX() - listOfGameObjects[index]->getWidth(), listOfGameObjects[index]->getY() + 10, EXPLOSION);// Create an explosion when it dies
 						listOfGameObjects[index]->setAlive(false);																					// When timer runs out kill the virus
 					}
 
@@ -1362,13 +1440,28 @@ void Game::destroyGameObjects() {
 
 		if (!listOfGameObjects[index]->getAlive()) {
 			// Decrement the number active on screen
-			if (listOfGameObjects[index]->getSubType() == LARGE_BLOOD_CELL) activeBloodCells--;				// Decrement active blood cells when one is deleted
+			if (listOfGameObjects[index]->getSubType() == LARGE_BLOOD_CELL) {
+				activeBloodCells--;				// Decrement active blood cells when one is deleted
+				spawnExplosion(listOfGameObjects[index]->getX(), listOfGameObjects[index]->getY(), BLOOD_EXPLOSION);	// Expode Blood Cell when it is destroyed
+			}
 			else if (listOfGameObjects[index]->getSubType() == SMALL_BLOOD_CELL) activeSmallBloodCells--;	// Decrement active small blood cells when one is deleted
 			else if (listOfGameObjects[index]->getSubType() == WHITE_BLOOD_CELL) activeWhiteBloodCells--;	// Decrement active white blood cells when one is deleted
-			else if (listOfGameObjects[index]->getSubType() == ENEMY_SHIP) activeEnemyShips--;				// Decrement active enemy ships when one is deleted
-			else if (listOfGameObjects[index]->getSubType() == VIRUS_GREEN) activeEnemyVirus--;				// Decrement active enemy Virus when one is deleted
-			else if (listOfGameObjects[index]->getSubType() == VIRUS_ORANGE) activeEnemyVirus--;			// Decrement active enemy Virus when one is deleted
-			else if (listOfGameObjects[index]->getSubType() == VIRUS_BLUE) activeEnemyVirus--;				// Decrement active enemy Virus when one is deleted
+			else if (listOfGameObjects[index]->getSubType() == ENEMY_SHIP) {
+				activeEnemyShips--;				// Decrement active enemy ships when one is deleted
+				spawnExplosion(listOfGameObjects[index]->getX(), listOfGameObjects[index]->getY(), EXPLOSION);			// Expode Player Weapon when it is destroyed
+			}
+			else if (listOfGameObjects[index]->getSubType() == VIRUS_GREEN) {
+				activeEnemyVirus--;				// Decrement active enemy Virus when one is deleted
+				spawnExplosion(listOfGameObjects[index]->getX() - 25, listOfGameObjects[index]->getY(), GREEN_VIRUS_EXPLOSION);	// Expode Blood Cell when it is destroyed
+			}
+			else if (listOfGameObjects[index]->getSubType() == VIRUS_ORANGE) {
+				activeEnemyVirus--;			// Decrement active enemy Virus when one is deleted
+				spawnExplosion(listOfGameObjects[index]->getX() - 25, listOfGameObjects[index]->getY(), ORANGE_VIRUS_EXPLOSION);	// Expode Blood Cell when it is destroyed
+			}
+			else if (listOfGameObjects[index]->getSubType() == VIRUS_BLUE) {
+				activeEnemyVirus--;				// Decrement active enemy Virus when one is deleted
+				spawnExplosion(listOfGameObjects[index]->getX() - 25, listOfGameObjects[index]->getY(), BLUE_VIRUS_EXPLOSION);	// Expode Blood Cell when it is destroyed
+			}
 			else if (listOfGameObjects[index]->getSubType() == ROCKET_P1) {
 				player1->setRocketActive(false);
 			}
@@ -1377,13 +1470,13 @@ void Game::destroyGameObjects() {
 			}
 			else if (listOfGameObjects[index]->getType() == SMALL_VIRUS) activeEnemyVirusSmall--;
 
-			if (listOfGameObjects[index]->getType() == PLAYER_WEAPON && listOfGameObjects[index]->getSubType() != SAW1 && listOfGameObjects[index]->getSubType() != SAW2) { // 201702/19 Added check for saws
-				spawnExplosion(listOfGameObjects[index]->getX(), listOfGameObjects[index]->getY(), EXPLOSION);			// Expode Player Weapon when it is destroyed
-			}
+			//else if (listOfGameObjects[index]->getType() == PLAYER_WEAPON && listOfGameObjects[index]->getSubType() != SAW1 && listOfGameObjects[index]->getSubType() != SAW2) { // 201702/19 Added check for saws
+			//	spawnExplosion(listOfGameObjects[index]->getX(), listOfGameObjects[index]->getY(), EXPLOSION);			// Expode Player Weapon when it is destroyed
+			//}
 
-			if (listOfGameObjects[index]->getType() == BLOOD_CELL && listOfGameObjects[index]->getX() > 0) { // 2017/02/19 Added explosion for blood cells
-				spawnExplosion(listOfGameObjects[index]->getX(), listOfGameObjects[index]->getY(), BLOOD_EXPLOSION);	// Expode Blood Cell when it is destroyed
-			}
+			//if (listOfGameObjects[index]->getType() == BLOOD_CELL && listOfGameObjects[index]->getX() > 0) { // 2017/02/19 Added explosion for blood cells
+			//	spawnExplosion(listOfGameObjects[index]->getX(), listOfGameObjects[index]->getY(), BLOOD_EXPLOSION);	// Expode Blood Cell when it is destroyed
+			//}
 
 			// Erase The Object From The List
 			if (!listOfGameObjects[index]->getAlive()) {
@@ -1460,13 +1553,17 @@ void Game::spawnEnemyShip() {
 void Game::spawnEnemyVirus(int x, int y, int subType) {
 	int smallX = x, smallY = y, randomSpeed;
 	spawnRandom(x, y, randomSpeed, 150);
-	int randomX = rand() % 60 + smallX - 15;	// Somewhere between - 15 and 45 of original position
-	int randomY = rand() % 60 + smallY - 15;
 
 	if (subType == VIRUS_GREEN_SMALL || subType == VIRUS_ORANGE_SMALL || subType == VIRUS_BLUE_SMALL) {
+		int randomX = rand() % 60 + smallX - 15;	// Somewhere between - 15 and 45 of original position
+		int randomY = rand() % 60 + smallY - 15;
+		int randomSpeed = rand() % 4 + 1;
+
 		GameObject* p_SmallVirus = new EnemyVirus(subType);
-		p_SmallVirus->spawn(randomX, randomY, -2, -1, p_SmallVirus->getCollider(), subType);
+		p_SmallVirus->spawn(randomX, randomY, -randomSpeed, -1, p_SmallVirus->getCollider(), subType);
 		p_SmallVirus->setType(SMALL_VIRUS);
+		p_SmallVirus->setColliderHeight(40);
+		p_SmallVirus->setColliderWidth(40);
 		listOfGameObjects.push_back(p_SmallVirus);
 	}
 	else {
@@ -1805,7 +1902,7 @@ void Game::collisionCheck() {
 	// Check Weapons Sub-Type For Collisions With Enemy Sub-Type
 	for (unsigned int weaponIndex = 0; weaponIndex != listOfGameObjects.size(); weaponIndex++) {
 		for (unsigned int enemyIndex = 0; enemyIndex != listOfGameObjects.size(); enemyIndex++) {
-			//if (checkCollision(listOfGameObjects[weaponIndex]->getCollider(), listOfGameObjects[enemyIndex]->getCollider()) == true) {
+			//if (checkCollision(&listOfGameObjects[weaponIndex]->getCollider(), &listOfGameObjects[enemyIndex]->getCollider()) == true) {
 
 				// If a white blood cell collides with a small virus, the small virus is destroyed
 				if (listOfGameObjects[weaponIndex]->getSubType() == WHITE_BLOOD_CELL && listOfGameObjects[enemyIndex]->getType() == SMALL_VIRUS) {

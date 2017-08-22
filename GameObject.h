@@ -17,7 +17,8 @@ enum GameObjectTypes {
 	PLAYER, PLAYER1, PLAYER2,
 	PLAYER1_SCORE, PLAYER2_SCORE,																		// Scores
 	POWER_UP_HEALTH, POWER_UP_LASER, POWER_UP_ROCKET, POWER_UP_CHECKPOINT,								// Power ups
-	ENEMY_SHIP_LASER, BLUE_VIRUS_BULLET, VIRUS_FIREBALL, EXPLOSION, BLOOD_EXPLOSION,					// Bullets & Explosions
+	ENEMY_SHIP_LASER, BLUE_VIRUS_BULLET, VIRUS_FIREBALL,												// Bullets
+	EXPLOSION, BLOOD_EXPLOSION,	GREEN_VIRUS_EXPLOSION, ORANGE_VIRUS_EXPLOSION, BLUE_VIRUS_EXPLOSION,	// Explosions
 	SAW1, SAW2,																							// Saw
 	LARGE_BLOOD_CELL, SMALL_BLOOD_CELL, WHITE_BLOOD_CELL,												// Blood Cells
 	ENEMY_SHIP,																							// Enemies
@@ -87,7 +88,6 @@ public:
 	void setHealth(int health);						// set the health
 	void setNumLives(int n) { m_NumLives = n; }		// Set the number of lives for the object
 
-//	SDL_Rect getCollider() { return m_Collider; }
 	SDL_Rect* getCollider() { return &m_Collider; }
 	void setCollider(SDL_Rect collider) { m_Collider = collider; }	// 2017/01/19 Added as Sean keeps doing dumb things with the colliders
 	void setColliderWidth(int w) { m_Collider.w = w; }

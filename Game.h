@@ -137,6 +137,9 @@ public:
 
 	//void setViewport(SDL_Rect &rect, int x, int y, int w, int h);
 
+	//void setupAnimationClip(SDL_Rect &rect, int frames, int amount, bool type2 = false);
+
+
 private:
 	int mNumPlayers;
 	int mCurrentLevel = MENU;							// The current level of the game, 0 = menu, 1 = level 1 etc.

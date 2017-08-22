@@ -33,7 +33,7 @@ WeaponEnLaser::WeaponEnLaser(int subType, int rotateCenter) {
 		std::cout << "BLUE VIRUS BULLET CONSTRUCTOR" << std::endl;
 	}
 
-	if (getSubType() == 0) {
+	if (getSubType() == ENEMY_SHIP_LASER) {
 		setColliderWidth(getWidth());
 		setColliderHeight(getHeight());
 	}
