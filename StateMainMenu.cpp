@@ -40,7 +40,7 @@ bool StateMainMenu::onExit() {
 
 void StateMainMenu::update() {
 	for (unsigned int i = 0; i < m_gameObjects.size(); i++) {
-		m_gameObjects[i]->movement();
+		m_gameObjects[i]->move();
 	}
 }
 

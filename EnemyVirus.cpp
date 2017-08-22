@@ -75,7 +75,7 @@ EnemyVirus::~EnemyVirus() {
 
 }
 
-void EnemyVirus::movement(int shipX, int shipY) {
+void EnemyVirus::move(int shipX, int shipY) {
 	if (getType() != SMALL_VIRUS && getX() < SCREEN_WIDTH - getWidth() && getX() > shipX) {
 			if (getY() - shipY >= 0) {
 				if (getY() - shipY >= getVelocity())
@@ -92,5 +92,5 @@ void EnemyVirus::movement(int shipX, int shipY) {
 			GameObject::destroy();		// Destroy the object when it moves off screen
 		}	
 	else
-		GameObject::movement();			// Normal right to left movement
+		GameObject::move();			// Normal right to left movement
 }

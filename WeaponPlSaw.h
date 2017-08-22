@@ -9,10 +9,11 @@
 
 class WeaponPlSaw : public Weapon {
 public:
-	WeaponPlSaw(int player);									// Initializes the variables
-	~WeaponPlSaw();									// Deconstructor
+	WeaponPlSaw(int player);			// Initializes the variables
+	~WeaponPlSaw();						// Deconstructor
 
-	virtual void movement(int x, int y);	// Moves the Saw
+	virtual void move();
+	virtual void move(int x, int y);	// Moves the Saw
 };
 
 #endif

@@ -26,14 +26,13 @@ public:
 
 	void rendPlayerLives(Texture &lives, int player);
 	void render(Texture &player);
-
 	void renderParticles();
 
 	void spawnPlayerSaw(int x, int y, int type);
 	
 	//void handleEvent(SDL_Event& e);
 	void handleEvent(SDL_Event& e, int player);	// Takes key presses and adjusts the ship's velocity
-	virtual void movement();					// Moves the ship	
+	virtual void move();					// Moves the ship	
 	void gameControllerDPad(SDL_Event& e);
 	void gameControllerButton(SDL_Event& e);
 	void resetPreviousDirection();
@@ -47,7 +46,6 @@ public:
 	void moveRight();
 	int moveDiagonal();
 
-	//void initialiseRocket(bool active, bool barActive, int timer, int numRockets);	// 2017/02/19 Move rocket reset parameters here
 	bool initialiseRocket();	// 2017/02/19 Move rocket reset parameters here
 	void resetRocket();			// 2017/02/19 Reset the player rocket and rocket power bar
 	void rocketScore();			// 2017/02/19 set the timer and score for the rocket

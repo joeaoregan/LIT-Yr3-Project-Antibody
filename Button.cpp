@@ -1,4 +1,5 @@
 /*
+	2017/02/27:	User game singleton to access renderer
 	2017/01/19 Started working on menu functionality with buttons
 */
 /*
@@ -9,12 +10,6 @@
 #include "Button.h"
 #include "Game.h"
 
-
-//Game game;
-
-/*
-	2017/02/27:	User game singleton to access renderer
-*/
 enum { STORY, GAME_1PLAYER, GAME_2PLAYER, SETTINGS, HIGH_SCORES, QUIT };
 
 //SDL_Rect gSpriteClipsMenu[BUTTON_SPRITE_TOTAL];

@@ -56,3 +56,7 @@ PowerUp::PowerUp(int type, int score) {
 PowerUp::~PowerUp() {
 
 }
+
+void PowerUp::move() {
+	GameObject::move();
+}

@@ -21,7 +21,7 @@ public:
 	std::vector<StateGameAbstract*>& getGameStates() { return m_gameStates; }
 
 private:
-	std::vector<StateGameAbstract*> m_gameStates;
+	std::vector<StateGameAbstract*> m_gameStates; // P106 A place to store states
 };
 
 

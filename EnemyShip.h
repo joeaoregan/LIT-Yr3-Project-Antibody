@@ -7,6 +7,8 @@ class EnemyShip : public Enemy {
 public:
 	EnemyShip();							// Initializes the variables
 	~EnemyShip();
+
+	virtual void move();
 };
 
 #endif

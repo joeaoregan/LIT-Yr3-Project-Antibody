@@ -35,7 +35,6 @@ public:
 
 	~Texture();										// Deallocates memory
 
-
 	//bool loadFromRenderedTextIO(std::string id, std::string textureText, SDL_Color textColor, TTF_Font* font, SDL_Renderer* renderer, bool textWrapped);
 
 	void loadInputText(std::string input);

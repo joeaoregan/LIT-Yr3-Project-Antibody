@@ -15,6 +15,7 @@
 
 #define ROCKET_TIMER 3.0
 
+#include "GameObjectAbstract.h"
 #include <SDL.h>
 //#include <SDL_image.h>
 #include "Texture.h"
@@ -31,7 +32,7 @@ enum GameObjectTypes {
 	EXPLOSION, BLOOD_EXPLOSION,	GREEN_VIRUS_EXPLOSION, ORANGE_VIRUS_EXPLOSION, BLUE_VIRUS_EXPLOSION,	// Explosions
 	SAW1, SAW2,																							// Saw
 	LARGE_BLOOD_CELL, SMALL_BLOOD_CELL, WHITE_BLOOD_CELL,												// Blood Cells
-	ENEMY_SHIP,																							// Enemies
+	ENEMY_SHIP,	ENEMY_BOSS,																				// Enemies
 	VIRUS_GREEN, VIRUS_ORANGE, VIRUS_BLUE, VIRUS_SMALL_GREEN, VIRUS_SMALL_ORANGE, VIRUS_SMALL_BLUE,		// Virus
 	LASER_P1, LASER_P2, LASER_V2_P1, LASER_V2_P2, LASER_V3_P1, LASER_V3_P2,								// Player Laser
 	NINJA_STAR_P1, NINJA_STAR_P2, ROCKET_P1, ROCKET_P2,													// Misc Weapons
@@ -43,39 +44,27 @@ enum GameObjectSubTypes {
 enum weaponsGrades { LASER_SINGLE, LASER_DOUBLE, LASER_TRIPLE };
 enum laserAngles { STRAIGHT, LASER2_TOP, LASER2_BOTTOM, LASER3_TOP, LASER3_BOTTOM };
 
-class GameObject {
+class GameObject : public GameObjectAbstract {
 public:
 	GameObject();
 	~GameObject();												// Deconstructor
 
 	virtual void handleEvent(SDL_Event& e, int player) {}
 
-	void spawn(int x, int y, int vx = 0, int vy = 0);
-
+	virtual void spawn(int x, int y, int vx = 0, int vy = 0);
 	virtual void spawn(int x, int y, int vx, SDL_Rect* collider);
-
 	virtual void spawn(int x, int y, int velocity, int player, int type = 0) {}			// Player laser
-
 	virtual void spawn(int x, int y, SDL_Rect* collider, int player = 1, int type = 9);	// Spawn the object at the dimensions provided --> Rocket
-
 	virtual void spawn(int x, int y, int vx, int vy, SDL_Rect* collider, int type = 0);
 
-	virtual void movement();
-	void movement(int centerX, int centerY, float timer);
-	virtual void movement(int x, int y) {
-		//setY(getY() - 5);
-				//if (getY() <= 40) setAlive(false);
-	};
-	//virtual void movement(int x, int y, int z) {};
+	virtual void move(int x = 0, int y = 0);
+	virtual void orbit(int centerX, int centerY, float timer);
 
 	void destroy();
 
 	virtual void render();
 	virtual void render(Texture &texture, int degrees = 0);
 	void render(Texture &texture,  SDL_Rect *currentClip, int &currentframe, int frames);
-	//void render(Texture &texture, SDL_Renderer *rend, int degrees = 0);
-	//void render(LTexture &texture, SDL_Renderer *rend);	// Shows the Enemy on the screen
-	//void render(Texture &texture, SDL_Renderer *rend, SDL_Rect *currentClip, int &currentframe, int frames);
 
 	int getX() { return m_x; }						// Get GameObject X coord
 	int getY() { return m_y; }						// Get GameObject Y coord
@@ -191,7 +180,7 @@ public:
 	float getBoostPercent() { return boostPercent; }
 	void setBoostPercent(float speed) { boostPercent = speed; }
 
-private:
+protected:
 	// GameObject Variables
 	std::string m_Name;				// Name of the object
 	int m_Health;					// Value between 0 and 160

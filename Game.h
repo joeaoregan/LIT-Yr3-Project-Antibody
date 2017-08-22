@@ -96,7 +96,7 @@ public:
 	int frames;							// Frame count for speed of Enemy animation
 
 	// Time
-	unsigned int lastTime, currentTime, countdownTimer;	// TEST TIMING
+	unsigned int lastTime, currentTime, countdownTimer, gameOverTimer, lastTime2;	// TEST TIMING
 
 	// Game Over Messages
 	std::string finalScores, gameWinners;
@@ -120,6 +120,7 @@ public:
 	int activeEnemyShips;
 	int activeEnemyVirus;
 	int activeEnemyVirusSmall;
+	int activeEnemyBoss;
 
 	enum levels { MENU, LEVEL_1, LEVEL_2, LEVEL_3 };
 
@@ -151,6 +152,7 @@ public:
 
 	void spawnMovingObjects();
 	void spawnPlayer(int player);
+	void spawnEnemyBoss();									// 2017/03/02 JOE: Added function to create Enemy Boss objects at random times and coords
 	void spawnEnemyShip();									// 2017/01/09 JOE: added function to create enemy ships at random times and random y coord
 	void spawnEnemyVirus(int x = 0, int y = 0, int type = 0);						// 2017/01/10 JOE: added function to create enemy virus at random times and random y coord
 	void spawnBloodCell(int type = 0);						// 2017/01/10 JOE: add function to create blood cells
@@ -162,7 +164,8 @@ public:
 	void spawnRocket(int x, int y, int player, int type, bool launch);	// 2017-02-06
 
 	void gameProgress();
-	void gameTimer();										// 2017-02-15
+	//void gameTimer(unsigned int &timer);					// 2017-03-02
+	//void gameTimer();										// 2017-02-15
 
 	//void gamepadInfo();									// 2017/01/17: Separate gamepad information
 
@@ -174,7 +177,11 @@ public:
 	void collisionCheck();
 
 	bool playerInput(bool quit);							// 2017/01/09 JOE: Handle input from player
-	void renderGameObjects();								// 2017-01-09 JOE: Render the game objects to the screen
+	void render();
+	void renderGamePlay();									// 2017-01-09 JOE: Render the game objects to the screen
+	void renderGameOver();									// 2017/03/02 JOE: Render the game objects for Game Over state
+	void renderTimer(unsigned int &timer);					// 2017/03/02 JOE: Separate the game timer to its own function
+	//void renderTimer();					// 2017/03/02 JOE: Separate the game timer to its own function
 	void moveGameObjects();									// 2017-01-09 JOE: Move the game objects on the screen
 	void destroyGameObjects();								// 2017-01-09 JOE: Destroy the game objects when finished on the screen
 
