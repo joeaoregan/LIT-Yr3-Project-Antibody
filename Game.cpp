@@ -563,7 +563,7 @@ bool Game::loadMedia() {
 
 void setupAnimationClip(SDL_Rect rect[], int frames, int amount, bool type2) {
 	if (!type2) {
-		for (unsigned int i = 0; i < frames; ++i) {
+		for (int i = 0; i < frames; ++i) {
 			rect[i].x = i * amount;
 			rect[i].y = 0;
 			rect[i].w = amount;

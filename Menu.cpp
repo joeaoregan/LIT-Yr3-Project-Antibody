@@ -171,8 +171,8 @@ void Menu::closeMenuMedia() {
 // Name: Draw()
 // Role: Render the menu buttons#
 void Menu::draw() {
-	//SDL_SetRenderDrawColor(Game::Instance()->getRenderer(), 117, 10, 10, 255);
-	randomBackgroundColour();
+	SDL_SetRenderDrawColor(Game::Instance()->getRenderer(), 117, 10, 10, 255);
+	//randomBackgroundColour();
 	SDL_RenderClear(Game::Instance()->getRenderer());
 
 	SDL_SetTextureAlphaMod(Texture::Instance()->getTexture("shipOutlineID"), 100);					// Lower the alpha value of the ship outline image

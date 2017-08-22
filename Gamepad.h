@@ -14,10 +14,10 @@
 */
 #ifndef GAMEPAD_H
 #define GAMEPAD_H
-#include <string.h>
 
 #include <SDL.h>
 #include <iostream>
+#include <string.h>
 
 void commonGamepadInfo(SDL_Joystick* gController1);
 

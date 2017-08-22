@@ -43,7 +43,7 @@ public:
 		The Enemy boss spawns once the background (or distance on map) has looped the required times
 	*/
 	virtual void move(int x = 0, int y = 0) {
-	//	int bgCounter = Game::Instance()->backgroundLoopCounter;
+//		int bgCounter = Game::Instance()->backgroundLoopCounter;
 
 		if (Game::Instance()->backgroundLoopCounter <= BACKGROUND_SCROLL_TIMES) scrollingOffset -= BACKGROUND_SCROLL_SPEED;	// Scroll for a fixed number of times
 		if (scrollingOffset < -SCREEN_WIDTH) {
