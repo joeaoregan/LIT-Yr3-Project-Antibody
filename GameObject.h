@@ -15,8 +15,8 @@ public:
 	~GameObject();												// Deconstructor
 
 	void spawn(int x, int y, int vx = 0, int vy = 0);
-	void spawn(int x, int y, int vx, SDL_Rect* collider);
-	void spawn(int x, int y, int vx, int vy, SDL_Rect* collider, int type = 0);
+	void spawn(int x, int y, int vx, SDL_Rect collider);
+	void spawn(int x, int y, int vx, int vy, SDL_Rect collider, int type = 0);
 
 	virtual void movement();
 
@@ -36,7 +36,7 @@ public:
 	std::string getName() { return m_Name; }		// return the objects name
 	int getHealth() { return m_Health; }			// return the objects health
 	int getMaxHealth();
-	int getNumLives() { return m_NumLives; }
+	int getNumLives() { return m_NumLives; }	
 	int getType() { return m_Type; }				// 2017/01/25 Return the objects type
 	int getAngle() { return m_Angle; }				// 2017/02/07 Return the objects angle
 
@@ -53,7 +53,7 @@ public:
 	void setHealth(int health);						// set the health
 	void setNumLives(int n) { m_NumLives = n; }		// Set the number of lives for the object
 
-	SDL_Rect* getCollider() { return &m_Collider; }
+	SDL_Rect getCollider() { return m_Collider; }
 	void setCollider(SDL_Rect collider) { m_Collider = collider; }			// 2017/01/19 Added as Sean keeps doing dumb things with the colliders
 	void setColliderWidth(int w) { m_Collider.w = w; }
 	void setColliderHeight(int h) { m_Collider.h = h; }
@@ -145,5 +145,5 @@ private:
 //void setRandomCoords(int x, int y); // NEVER USED X OR Y
 //void setRandomCoords();
 //void checkCoords();
-//void checkCoords(GameObject* objectToCheck);	// MOVED TO GAME as uniqueCoords
+//void checkCoords(GameObject* objectToCheck);	// MOVED TO GAME as uniqueCoords	
 */

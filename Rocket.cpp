@@ -32,7 +32,7 @@ void Rocket::handleEvent(SDL_Event& e, int player) {
 			case SDLK_KP_PLUS:
 			case SDLK_EQUALS:
 				setAngle(getAngle() + 10);
-				setVelY(getVelY() - getVelocity());
+				setVelY(getVelY() - getVelocity()); 
 				break;		// Up
 			case SDLK_KP_MINUS:
 			case SDLK_MINUS:
@@ -52,7 +52,7 @@ void Rocket::handleEvent(SDL_Event& e, int player) {
 			case SDLK_KP_MINUS:
 			case SDLK_MINUS: setVelY(getVelY() - getVelocity());
 				setAngle(0);
-				break;		// undo move down
+				break;		// undo move down 
 			}
 		}
 	}
@@ -60,7 +60,7 @@ void Rocket::handleEvent(SDL_Event& e, int player) {
 
 void Rocket::movement() {
 	GameObject::movement();
-	setY(getY() + getVelY());							// Up direction
+	setY(getY() + getVelY());							// Up direction	
 }
 
 /*
@@ -73,13 +73,12 @@ void Rocket::spawn(int x, int y, int velocity, int player, int type) {
 	setType(type);
 }
 */
-void Rocket::spawn(int x, int y, SDL_Rect* collider, int player, int type) {
+void Rocket::spawn(int x, int y, SDL_Rect collider, int player, int type) {
 	setX(x + 57);
 	setY(y + 13);
 	setVelX(getVelocity());
 	setVelY(0);
-//	setCollider(collider);
-	setCollider((*collider));
+	setCollider(collider);
 	setPlayer(player);
 	setType(type);
 }

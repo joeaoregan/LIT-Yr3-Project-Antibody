@@ -13,7 +13,7 @@ public:
 
 	virtual void movement();						// Moves the laser
 
-	virtual void spawn(int x, int y, SDL_Rect* collider);	// Spawn the object at the dimensions provided
+	virtual void spawn(int x, int y, SDL_Rect collider);	// Spawn the object at the dimensions provided
 };
 
 #endif

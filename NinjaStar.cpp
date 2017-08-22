@@ -22,11 +22,10 @@ NinjaStar::~NinjaStar() {
 	//std::cout << "NinjaStar destructor called.\n";
 }
 
-void NinjaStar::spawn(int x, int y, SDL_Rect* collider) {
+void NinjaStar::spawn(int x, int y, SDL_Rect collider) {
 	setX(x + 65);
 	setY(y + 25);
 	setVelX(getVelocity());
 	setVelY(0);
-//	setCollider(collider);
-	setCollider((*collider));
+	setCollider(collider);
 }

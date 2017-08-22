@@ -51,22 +51,20 @@ void GameObject::spawn(int x, int y, int vx, int vy) {
 	m_yVel = vy;	// 2017-01-10 JOE: use same velocity for x and y
 }
 
-void GameObject::spawn(int x, int y, int vx, SDL_Rect* collider) {
+void GameObject::spawn(int x, int y, int vx, SDL_Rect collider) {
 	m_x = x;
 	m_y = y;
 	m_xVel = vx;
 	m_yVel = vx;	// 2017-01-10 JOE: use same velocity for x and y
-//	m_Collider = collider;
-	setCollider((*collider));
+	m_Collider = collider;
 }
 
-void GameObject::spawn(int x, int y, int vx, int vy, SDL_Rect* collider, int type) {
+void GameObject::spawn(int x, int y, int vx, int vy, SDL_Rect collider, int type) {
 	m_x = x;
 	m_y = y;
 	m_xVel = vx;
 	m_yVel = vy;	// 2017-01-10 JOE: use same velocity for x and y
-//	m_Collider = collider;
-	setCollider((*collider));
+	m_Collider = collider;
 	m_Type = type;
 }
 
@@ -76,7 +74,7 @@ void GameObject::movement() {
 
 	setColliderX(getX());
 	setColliderY(getY());
-
+	
 	// destroy game object once it is offscreen
 	if ((getX() > SCREEN_WIDTH && getVelX() > 0) || getX() < -getWidth()) setAlive(false); // 2017/02/08 Need to check if velocity is negative, or power ups & blood cells don't appear on screen
 	else  setAlive(true);

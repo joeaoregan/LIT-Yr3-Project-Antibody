@@ -11,8 +11,8 @@ class NinjaStar : public Weapon {
 public:
 	NinjaStar();							// Initializes the variables
 	~NinjaStar();
-
-	virtual void spawn(int x, int y, SDL_Rect* collider);
+	
+	virtual void spawn(int x, int y, SDL_Rect collider);
 };
 
 #endif

@@ -44,11 +44,10 @@ void LaserEnemy::movement() {
 	else setAlive(true);
 }
 
-void LaserEnemy::spawn(int x, int y, SDL_Rect* collider) {
+void LaserEnemy::spawn(int x, int y, SDL_Rect collider) {
 	setX(x - 20);
 	setY(y + 30);
 	setVelX(-getVelocity());	// Minus value as travelling right to left
 	setVelY(0);
-//	setCollider(collider);
-	setCollider((*collider));
+	setCollider(collider);
 }
