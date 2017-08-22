@@ -168,7 +168,7 @@
 #include "WeaponPlSaw.h"			// 2017/01/17 JOE: Added Saw Weapon
 #include "BloodCell.h"				// 2017/01/10 JOE: Added Blood Cell obstacle
 #include "PowerUp.h"				// 2017/01/10 SEAN/JOE: Added Power Up
-#include "Menu.h"					// 2017/02/14 BRIAN/JOE: Class for handling menus. Includes button.h
+#include "Menu.h"					// 2017/02/14 JOE: Class for handling menus. Includes button.h
 #include "Explosion.h"				// 2017/01/25 JOE: Added explosions for Player Laser colliding with Enemy Ships and Virus
 #include "FPS.h"					// 2017/02/01 SEAN/JOE: Class for handling frames for second
 #include "SplashScreen.h"			// 2017/02/08 JOE: Class for displaying splash screens
@@ -870,7 +870,7 @@ void Game::renderGameOver() {
 
 	SDL_RenderSetViewport(getRenderer(), NULL);						// Clear the current viewport to render to full window / screen
 	splash.endOfGame(getCurrentLevel(), finalScores, gameWinners);	// Call end of game splash screens
-	renderTimer(gameOverTimer);										// Render returning to menu timer
+	//renderTimer(gameOverTimer);										// Render returning to menu timer
 	SDL_RenderPresent(getRenderer());								// Update screen
 }
 
@@ -905,7 +905,7 @@ void Game::displayLevelIntroScreens(int level) {
 	if (level <= MAX_NUM_LEVELS) splash.pressButtonToContinue(e);
 }
 
-void Game::renderTimer(unsigned int &timer) {
+/*void Game::renderTimer(unsigned int &timer) {
 	std::stringstream timeText;
 	timeText.str("");
 
@@ -924,6 +924,15 @@ void Game::renderTimer(unsigned int &timer) {
 	//gTimeTextTexture.flashGameObject(8);
 	//gTimeTextTexture.modifyAlpha(gTimeTextTexture.getAlpha());					// Flash the timer
 	gTimeTextTexture.render(SCREEN_WIDTH - gTimeTextTexture.getWidth() - 10, 8);	// LAZY
+}*/
+
+void Game::gameTimer() {
+	currentTime = SDL_GetTicks();
+	if (currentTime > lastTime + 1000) {								// Decrement countdown timer
+		lastTime = currentTime;
+		countdownTimer--;
+		//std::cout << "Time: " << countdownTimer << " lastTime: " << lastTime << " currentTime: " << currentTime << std::endl;
+	}
 }
 
 std::string previous1, previous2, previous3, previous4;
@@ -941,8 +950,8 @@ void Game::displayText() {
 	else if(twoPlayer)
 		finalScores = "Player 1: " + std::to_string(player1Score) + " Player 2: " + std::to_string(player2Score);	// End of game Player 1 and Player 2 scores
 
-	//std::stringstream timeText;
-	//timeText.str("");
+	std::stringstream timeText;
+	timeText.str("");
 	// Set text to be rendered - string stream - print the time since timer last started - initialise empty
 
 	if (!levelOver && !gameOver) {
@@ -951,12 +960,7 @@ void Game::displayText() {
 			if (getCurrentLevel() == MAX_NUM_LEVELS) gameOver = true;
 		}
 		else if (countdownTimer > 0 && countdownTimer <= GAME_TIMER) {
-			//timeText << "Time: " << countdownTimer;								// Set the game timer
-
-			renderTimer(countdownTimer);
-
-			//gFPSTextTexture.UIText(framesPerSec.str().c_str());						// Render text - Use a string to render the current FPS to a texture
-
+			timeText << "Time: " << countdownTimer;								// Set the game timer
 			levelOver = false;
 		}
 		else if (countdownTimer <= 0 || countdownTimer > GAME_TIMER + 5) {
@@ -964,11 +968,24 @@ void Game::displayText() {
 			if (getCurrentLevel() == MAX_NUM_LEVELS) gameOver = true;
 		}
 
-		//gameTimer();																// Set the count down timer - decrement by 1 second
+		gameTimer();	// Set the count down timer - decrement by 1 second
+
+						// Time running out change colour to red
+		if (countdownTimer >= 0 && countdownTimer <= 5) {
+			textColour = { 255, 0, 0, 255 };
+			gTimeTextTexture.setFlash(true);
+		}
+		else {
+			textColour = { 0, 255, 0, 255 };			// Green text for timer
+			gTimeTextTexture.setFlash(false);
+		}
+		if (!gTimeTextTexture.loadFromRenderedText(timeText.str().c_str(), textColour, gFontRetro20, gRenderer)) {
+			printf("Unable to render time texture!\n");
+		}
 
 		//headsUpDisplay.gameTime(countdownTimer);	// NOT WORKING
 
-		//gTimeTextTexture.UITextTimer(timeText.str().c_str(), countdownTimer);	// Render Text - Use a string to render the current Game Time to a Texture
+		gTimeTextTexture.UITextTimer(timeText.str().c_str(), countdownTimer);	// Render Text - Use a string to render the current Game Time to a Texture
 
 		//gFPSTextTexture.render((SCREEN_WIDTH - 150) / 2, 8);
 
@@ -1987,7 +2004,7 @@ void Game::spawnPowerUp() {
 	listOfGameObjects.push_back(p_PowerUp);
 }
 void Game::spawnRandomAttributes(int &x, int &y, int &randomSpeed, int xMuliplier, int yPadding, int speed) {	// 2017-01-20 Separate out common randomness of game object spawning
-	int randomX = rand() % 5 + 1;
+	int randomX = rand() % 2 + 1;
 	int randomY = rand() % 8 + 1;												// A number between 1 and 8
 	randomSpeed = rand() % 4 + speed;
 

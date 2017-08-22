@@ -1,7 +1,7 @@
 #ifndef TEST_DATA_H
 #define TEST_DATA_H
 
-#define GAME_TIMER 50					// Time to start counting down from, in seconds
+#define GAME_TIMER 30					// Time to start counting down from, in seconds
 
 #define NUM_PLAYERS 2					// The number of players
 
