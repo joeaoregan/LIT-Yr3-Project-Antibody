@@ -212,6 +212,8 @@ void Menu::draw() {
 	SDL_RenderSetViewport(Game::Instance()->getRenderer(), NULL);									// Clear the current viewport to render to full window / screen
 
 	SDL_RenderPresent(Game::Instance()->getRenderer());												// Update screen
+
+
 }
 
 
@@ -261,6 +263,8 @@ void Menu::drawPause() {
 	SDL_RenderSetViewport(Game::Instance()->getRenderer(), NULL);									// Clear the current viewport to render to full window / screen
 	SDL_RenderPresent(Game::Instance()->getRenderer());												// Update screen
 }
+
+bool changeMenuBGColour = true;
 
 // Name: randomBackgroundColour()
 // Role: Select a random background image for the menu

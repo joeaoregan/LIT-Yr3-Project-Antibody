@@ -101,7 +101,7 @@ void Button::handleEvent(SDL_Event* e, int buttonSelected) {
 					}
 					else if (buttonSelected == GAME_1PLAYER) {
 						std::cout << "Selected: 1 Player Game!" << std::endl;
-						Game::Instance()->setCurrentLevel(LEVEL_1);					// TEST ENTER NAME
+						Game::Instance()->setCurrentLevel(LEVEL_1);								// TEST ENTER NAME
 						//Game::Instance()->setCurrentLevel(ENTER_NAME);
 						Game::Instance()->twoPlayer = false;
 						Game::Instance()->displayLevelIntro = false;
@@ -117,14 +117,13 @@ void Button::handleEvent(SDL_Event* e, int buttonSelected) {
 						Game::Instance()->setCurrentLevel(SETTINGS);
 					}
 					else if (buttonSelected == MENU_TO_HIGH_SCORES) {
-						//highScoresButton.loadMedia();								// Load the media for High Scores
 						Game::Instance()->setCurrentLevel(HIGH_SCORES);
 						std::cout << "Selected: View High Scores" << std::endl;
 					}
 					else if (buttonSelected == QUIT) {
 						std::cout << "Selected: Quit The Game" << std::endl;
 						Game::Instance()->close();
-						//Game::Instance()->setCurrentLevel(ENTER_NAME);			// TEST ENTER NAME
+						//Game::Instance()->setCurrentLevel(ENTER_NAME);		// TEST ENTER NAME
 					}
 				}
 
@@ -175,7 +174,7 @@ void Button::handleEvent(SDL_Event* e, int buttonSelected) {
 						//Game::Instance()->highScoresLoaded = false;			// High Scores media not loaded after clearing NEED TO SET CLEAR
 					}
 				}
-				/*
+
 				// Handle button events for Enter Name menu
 				else if (Game::Instance()->getCurrentLevel() == ENTER_NAME) {
 					if (buttonSelected == RESET) {
@@ -184,11 +183,10 @@ void Button::handleEvent(SDL_Event* e, int buttonSelected) {
 					}
 					if (buttonSelected == NAME_TO_MENU) {
 						Game::Instance()->setCurrentLevel(MENU);
-						//Game::Instance()->enterName1->closeNameMedia();
 						//Game::Instance()->highScoresLoaded = false;		// High Scores media not loaded after clearing NEED TO SET CLEAR
 					}
 				}
-				*/
+
 				std::cout << "Level: " << Game::Instance()->getCurrentLevel() << std::endl; // Display current level
 
 				// USE THIS ONE TO HIGHLIGHT

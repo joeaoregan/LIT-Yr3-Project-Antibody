@@ -29,7 +29,7 @@ public:
 	SDL_Rect gSpriteClipsScoresMenu[1];				// The current frame of button animation
 	Texture gButtonSpriteSheetTexture3;				// Button animation sprite sheet
 
-	bool loadMedia();						// Load high scores media including button sprites, and rendering text to textures
+	bool loadHighScoresMedia();						// Load high scores media including button sprites, and rendering text to textures
 	void closeHighScoresMedia();					// Free the High Scores media from memory
 	void handleHighScoresEvents(SDL_Event& e);		// Handle events for each button
 	void draw();									// Render the buttons and text textures

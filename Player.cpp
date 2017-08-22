@@ -110,7 +110,7 @@ Player::Player(int subType) {				// 2017/03/22
 
 // 2017/01/22 Separated player render() from game.cpp
 void Player::render(Texture &player) {
-	if (getAlive()) {						// 2017/01/22 If the player is alive render the player, with particles
+	if (getAlive()) {																			// 2017/01/22 If the player is alive render the player, with particles
 		renderParticles();
 		player.render(getX(), getY());
 	}
@@ -502,10 +502,6 @@ float Player::boostTimer() {
 }
 
 void Player::move() {
-	setCollider({getX(), getY(), getWidth(), getHeight()}); //2017/03/28
-	//setColliderX(getX());					// 2017/03/22 Set the enemy collider closer to its face
-	//setColliderY(getY());
-
 	curTime = SDL_GetTicks();
 
 	if (getVelY() > 0 && getVelY() < getVelocity()) setVelY(0);
