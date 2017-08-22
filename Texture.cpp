@@ -1,5 +1,3 @@
-//#include <SDL.h>
-//#include <SDL_ttf.h>
 #include "Texture.h"
 
 Texture* Texture::s_pInstance = 0;
@@ -18,8 +16,7 @@ Texture::~Texture() {
 	free();						// Deallocate
 }
 
-bool Texture::load(std::string fileName, std::string id) {
-//bool Texture::load(std::string fileName, std::string id, SDL_Renderer* rend) {
+bool Texture::load(std::string fileName, std::string id, SDL_Renderer* rend) {
 	SDL_Surface* pTempSurface = IMG_Load(fileName.c_str());
 
 	if (pTempSurface == 0) {
@@ -27,7 +24,7 @@ bool Texture::load(std::string fileName, std::string id) {
 		return false;
 	}
 
-	SDL_Texture* pTexture = SDL_CreateTextureFromSurface(Game::Instance()->getRenderer(), pTempSurface);
+	SDL_Texture* pTexture = SDL_CreateTextureFromSurface(rend, pTempSurface);
 
 	SDL_FreeSurface(pTempSurface);
 
@@ -39,9 +36,8 @@ bool Texture::load(std::string fileName, std::string id) {
 	return false;
 }
 
-void Texture::draw(std::string id, int x, int y, int width, int height, SDL_RendererFlip flip) {
-//void Texture::draw(std::string id, int x, int y, int width, int height, SDL_Renderer* rend, SDL_RendererFlip flip) {
-//	SDL_Rect renderQuad = { x, y, mWidth, mHeight };	// Set rendering space and render to screen
+void Texture::draw(std::string id, int x, int y, int width, int height, SDL_Renderer* rend, SDL_RendererFlip flip) {
+	SDL_Rect renderQuad = { x, y, mWidth, mHeight };	// Set rendering space and render to screen
 	SDL_Rect srcRect;
 	SDL_Rect destRect;
 
@@ -52,25 +48,22 @@ void Texture::draw(std::string id, int x, int y, int width, int height, SDL_Rend
 	destRect.x = x;
 	destRect.y = y;
 
-	SDL_RenderCopyEx(Game::Instance()->getRenderer(), m_textureMap[id], &srcRect, &destRect, 0, 0, flip);
+	SDL_RenderCopyEx(rend, m_textureMap[id], &srcRect, &destRect, 0, 0, flip);
 }
 
-void Texture::renderMap(std::string id, int x, int y, int width, int height) {
-//void Texture::renderMap(std::string id, int x, int y, int width, int height, SDL_Renderer* rend) {
+void Texture::renderMap(std::string id, int x, int y, int width, int height, SDL_Renderer* rend) {
 	SDL_Rect renderQuad = { x, y, width, height };	// Set rendering space and render to screen
 
 
-	SDL_RenderCopyEx(Game::Instance()->getRenderer(), m_textureMap[id], NULL, &renderQuad, 0, NULL, SDL_FLIP_NONE);	// Render to screen
+	SDL_RenderCopyEx(rend, m_textureMap[id], NULL, &renderQuad, 0, NULL, SDL_FLIP_NONE);	// Render to screen
 }
 
-void Texture::weaponIndicator(std::string textureID, int x) {
-//void Texture::weaponIndicator(std::string textureID, int x, SDL_Renderer* rend) {
-	renderMap(textureID, x + 5, 5, 50, 48);
+void Texture::weaponIndicator(std::string textureID, int x, SDL_Renderer* rend) {
+	renderMap(textureID, x + 5, 5, 50, 48, rend);
 }
 
-void Texture::render(int x, int y, SDL_Rect* clip, double angle, SDL_Point* center, SDL_RendererFlip flip) {
 // render(int x, int y, SDL_Renderer *rend, SDL_Rect* clip = NULL, double angle = 0.0, SDL_Point* center = NULL, SDL_RendererFlip flip = SDL_FLIP_NONE);
-//void Texture::render(int x, int y, SDL_Renderer *rend, SDL_Rect* clip, double angle, SDL_Point* center, SDL_RendererFlip flip) {
+void Texture::render(int x, int y, SDL_Renderer *rend, SDL_Rect* clip, double angle, SDL_Point* center, SDL_RendererFlip flip) {
 	SDL_Rect renderQuad = { x, y, mWidth, mHeight };	// Set rendering space and render to screen
 
 	if (clip != NULL) {									// Set clip rendering dimensions
@@ -78,7 +71,7 @@ void Texture::render(int x, int y, SDL_Rect* clip, double angle, SDL_Point* cent
 		renderQuad.h = clip->h;
 	}
 
-	SDL_RenderCopyEx(Game::Instance()->getRenderer(), mTexture, clip, &renderQuad, angle, center, flip);	// Render to screen
+	SDL_RenderCopyEx(rend, mTexture, clip, &renderQuad, angle, center, flip);	// Render to screen
 }
 
 
@@ -90,8 +83,7 @@ void Texture::setFontColour(SDL_Color f) {
 	txtColour = f;
 }
 
-SDL_Texture* Texture::loadTexture(std::string path) {
-//SDL_Texture* Texture::loadTexture(std::string path, SDL_Renderer *rend) {
+SDL_Texture* Texture::loadTexture(std::string path, SDL_Renderer *rend) {
 	//The final texture
 	SDL_Texture* newTexture = NULL;
 
@@ -102,7 +94,7 @@ SDL_Texture* Texture::loadTexture(std::string path) {
 	}
 	else {
 		//Create texture from surface pixels
-		newTexture = SDL_CreateTextureFromSurface(Game::Instance()->getRenderer(), loadedSurface);
+		newTexture = SDL_CreateTextureFromSurface(rend, loadedSurface);
 		if (newTexture == NULL) {
 			printf("Unable to create texture from %s! SDL Error: %s\n", path.c_str(), SDL_GetError());
 		}
@@ -116,8 +108,7 @@ SDL_Texture* Texture::loadTexture(std::string path) {
 
 
 
-bool Texture::loadFromFile(std::string path) {
-//bool Texture::loadFromFile(std::string path, SDL_Renderer *rend) {
+bool Texture::loadFromFile(std::string path, SDL_Renderer *rend) {
 	free();	// Get rid of preexisting texture
 
 	SDL_Texture* newTexture = NULL;							// The final texture
@@ -129,7 +120,7 @@ bool Texture::loadFromFile(std::string path) {
 	else {
 		//SDL_SetColorKey(loadedSurface, SDL_TRUE, SDL_MapRGB(loadedSurface->format, 0, 0xFF, 0xFF));	// Color key image TURNED OFF FOR BLUE VIRUS
 
-		newTexture = SDL_CreateTextureFromSurface(Game::Instance()->getRenderer(), loadedSurface);								// Create texture from surface pixels
+		newTexture = SDL_CreateTextureFromSurface(rend, loadedSurface);								// Create texture from surface pixels
 		if (newTexture == NULL) {
 			printf("Unable to create texture from %s! SDL Error: %s\n", path.c_str(), SDL_GetError());
 		}
@@ -146,19 +137,18 @@ bool Texture::loadFromFile(std::string path) {
 	return mTexture != NULL;
 }
 
-void Texture::loadInputText(std::string input) {
-//void Texture::loadInputText(std::string input, SDL_Renderer* rend) {
+
+
+void Texture::loadInputText(std::string input, SDL_Renderer* rend) {
 	SDL_Texture* inputTextTexture = 0;
-	Texture::Instance()->loadFromRenderedTextID(inputTextTexture, input, "inputTextID", { 255, 255, 255, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 20), true);		// Lives in top left corner
+	Texture::Instance()->loadFromRenderedTextID(inputTextTexture, input, "inputTextID", { 255, 255, 255, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 20), rend, true);		// Lives in top left corner
 }
-void Texture::loadEnterNameText(std::string nameText) {
-//void Texture::loadEnterNameText(std::string nameText, SDL_Renderer* rend) {
+void Texture::loadEnterNameText(std::string nameText, SDL_Renderer* rend) {
 	SDL_Texture* enterName = 0;	// The actual hardware texture
-	Texture::Instance()->loadFromRenderedTextID(enterName, nameText, "enterNameID", { 255, 255, 255, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 20), true);		// Lives in top left corner
+	Texture::Instance()->loadFromRenderedTextID(enterName, nameText, "enterNameID", { 255, 255, 255, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 20), rend, true);		// Lives in top left corner
 }
 
-bool Texture::loadFromRenderedTextID(SDL_Texture* text, std::string textureText, std::string id, SDL_Color textColor, TTF_Font* font, bool textWrapped) {
-//bool Texture::loadFromRenderedTextID(SDL_Texture* text, std::string textureText, std::string id, SDL_Color textColor, TTF_Font* font, SDL_Renderer* renderer, bool textWrapped) {
+bool Texture::loadFromRenderedTextID(SDL_Texture* text, std::string textureText, std::string id, SDL_Color textColor, TTF_Font* font, SDL_Renderer* renderer, bool textWrapped) {
 	free();	//Get rid of preexisting texture
 
 	if (!textWrapped)
@@ -168,7 +158,7 @@ bool Texture::loadFromRenderedTextID(SDL_Texture* text, std::string textureText,
 
 	if (textSurface != NULL) {
 		//Create texture from surface pixels
-		mTexture = SDL_CreateTextureFromSurface(Game::Instance()->getRenderer(), textSurface);
+		mTexture = SDL_CreateTextureFromSurface(renderer, textSurface);
 		if (mTexture == NULL) {
 			printf("Unable to create texture from rendered text! SDL Error: %s\n", SDL_GetError());
 		}
@@ -196,8 +186,7 @@ bool Texture::loadFromRenderedTextID(SDL_Texture* text, std::string textureText,
 }
 
 #ifdef _SDL_TTF_H
-bool Texture::loadFromRenderedText(std::string textureText, SDL_Color textColor, TTF_Font* font, bool textWrapped) {
-//bool Texture::loadFromRenderedText(std::string textureText, SDL_Color textColor, TTF_Font* font, SDL_Renderer* renderer, bool textWrapped) {
+bool Texture::loadFromRenderedText(std::string textureText, SDL_Color textColor, TTF_Font* font, SDL_Renderer* renderer, bool textWrapped) {
 	free();	//Get rid of preexisting texture
 
 	if (!textWrapped)
@@ -207,7 +196,7 @@ bool Texture::loadFromRenderedText(std::string textureText, SDL_Color textColor,
 
 	if (textSurface != NULL) {
 		//Create texture from surface pixels
-		mTexture = SDL_CreateTextureFromSurface(Game::Instance()->getRenderer(), textSurface);
+		mTexture = SDL_CreateTextureFromSurface(renderer, textSurface);
 		if (mTexture == NULL) {
 			printf("Unable to create texture from rendered text! SDL Error: %s\n", SDL_GetError());
 		}
@@ -282,8 +271,7 @@ void Texture::modifyAlpha(Uint8 alpha) {
 	2017/02/20:
 	Function to show who created the game
 */
-//void Texture::createdByText(SDL_Renderer* rend) {
-void Texture::createdByText() {
+void Texture::createdByText(SDL_Renderer* rend) {
 	std::string textureText = "ANTIBODY";
 	SDL_Color txtColour = { 0, 255, 0, 255 };
 
@@ -302,8 +290,7 @@ void Texture::createdByText() {
 	else if (SDL_GetTicks() >= lastTime + 4500)
 		lastTime = SDL_GetTicks();
 
-	if (!loadFromRenderedText(textureText, txtColour, TTF_OpenFont("Fonts/Retro.ttf", 16), true)) {		// Green Text
-	//if (!loadFromRenderedText(textureText, txtColour, TTF_OpenFont("Fonts/Retro.ttf", 16), rend, true)) {		// Green Text
+	if (!loadFromRenderedText(textureText, txtColour, TTF_OpenFont("Fonts/Retro.ttf", 16), rend, true)) {		// Green Text
 		printf("createdByText(): Unable to render Created By Text Texture!\n");
 	}
 }
@@ -311,9 +298,8 @@ void Texture::createdByText() {
 	2017/02/19:
 	Function to indicate if a speed boost is active or not
 */
-void Texture::speedBoostText(std::string textureText) {
-//void Texture::speedBoostText(std::string textureText, SDL_Renderer* rend) {
-	if (!loadFromRenderedText(textureText, { 0, 255, 0, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 13), true)) {		// Green Text
+void Texture::speedBoostText(std::string textureText, SDL_Renderer* rend) {
+	if (!loadFromRenderedText(textureText, { 0, 255, 0, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 13), rend, true)) {		// Green Text
 		printf("speedBoostText(): Unable to render Speed Boost User Interface Text Texture!\n");
 	}
 }
@@ -321,9 +307,8 @@ void Texture::speedBoostText(std::string textureText) {
 	2017/02/19:
 	Function to indicate how many rockets a player has left
 */
-void Texture::numRocketsLeft(std::string textureText) {
-//void Texture::numRocketsLeft(std::string textureText, SDL_Renderer* rend) {
-	if (!loadFromRenderedText(textureText, { 0, 255, 0, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 36))) {		// Green Text
+void Texture::numRocketsLeft(std::string textureText, SDL_Renderer* rend) {
+	if (!loadFromRenderedText(textureText, { 0, 255, 0, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 36), rend)) {		// Green Text
 		printf("numRocketsLeft(): Unable to render Num Rockets Left User Interface Text Texture!\n");
 	}
 }
@@ -331,9 +316,8 @@ void Texture::numRocketsLeft(std::string textureText) {
 	2017-02-15:
 	Function to render the players scores, the FPS, and the current game level
 */
-void Texture::UIText(std::string textureText) {
-//void Texture::UIText(std::string textureText, SDL_Renderer* rend) {
-	if (!loadFromRenderedText(textureText, { 0, 255, 0, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 20))) {		// Green Text
+void Texture::UIText(std::string textureText, SDL_Renderer* rend) {
+	if (!loadFromRenderedText(textureText, { 0, 255, 0, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 20), rend)) {		// Green Text
 		printf("Unable to render UIText() User Interface Text Texture!\n");
 	}
 
@@ -343,20 +327,19 @@ void Texture::UIText(std::string textureText) {
 	2017-02-15:
 	Like the UIText function, only it alters font colour depending on if the timer is running out or not
 */
-void Texture::UITextTimer(std::string timerText, unsigned int Timer) {
-//void Texture::UITextTimer(std::string timerText, SDL_Renderer* rend, unsigned int Timer) {
+void Texture::UITextTimer(std::string timerText, SDL_Renderer* rend, unsigned int Timer) {
 	// Time running out change colour to red
 	if (Timer >= 0 && Timer <= 5) {
 		setFlash(true);
 
-		if (!loadFromRenderedText(timerText, { 255, 0, 0, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 20))) {		// Red Text
+		if (!loadFromRenderedText(timerText, { 255, 0, 0, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 20), rend)) {		// Red Text
 			printf("Unable to render UITextTimer() User Interface Timer Text Texture!\n");
 		}
 	}
 	else {
 		setFlash(false);
 
-		if (!loadFromRenderedText(timerText, { 0, 255, 0, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 20))) {		// Green Text
+		if (!loadFromRenderedText(timerText, { 0, 255, 0, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 20), rend)) {		// Green Text
 			printf("Unable to render loadFromRenderedText() User Interface Timer Text Texture!\n");
 		}
 	}
@@ -366,123 +349,142 @@ void Texture::UITextTimer(std::string timerText, unsigned int Timer) {
 	2017/02/15:
 	Independent messages for player 1 and 2, for picking up objects and upgrading weapons etc
 */
-void Texture::UITextPlayerMessage(std::string playerMessage, int type) {
-//void Texture::UITextPlayerMessage(std::string playerMessage, SDL_Renderer* rend, int type) {
+void Texture::UITextPlayerMessage(std::string playerMessage, SDL_Renderer* rend, int type) {
 	if (type == 0) {
-		if (!loadFromRenderedText(playerMessage, { 65, 210, 240, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 20))) {	// Blue Text For General Message
+		if (!loadFromRenderedText(playerMessage, { 65, 210, 240, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 20), rend)) {	// Blue Text For General Message
 			printf("Unable to render General Info Message text texture!\n");
 		}
 	}
 	else if (type == 1) {
-		if (!loadFromRenderedText(playerMessage, { 240, 210, 65, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 20))) {	// Gold Text For Player 1
+		if (!loadFromRenderedText(playerMessage, { 240, 210, 65, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 20), rend)) {	// Gold Text For Player 1
 			printf("Unable to render player 1 Message text texture!\n");
 		}
 	}
 	else if (type == 2) {
-		if (!loadFromRenderedText(playerMessage, { 0, 255, 150, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 20))) {	// Green Text For Player 2
+		if (!loadFromRenderedText(playerMessage, { 0, 255, 150, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 20), rend)) {	// Green Text For Player 2
 			printf("Unable to render player 2 Message text texture!\n");
 		}
 	}
 }
 
-void Texture::renderMap() {
-//void Texture::renderMap(SDL_Renderer* rend) {
-	SDL_RenderCopy(Game::Instance()->getRenderer(), mTexture, NULL, NULL);
+void Texture::renderMap( SDL_Renderer* rend) {
+	SDL_RenderCopy(rend, mTexture, NULL, NULL);
 }
 
-bool Texture::loadTextureMedia() {
-//bool Texture::loadTextureMedia(SDL_Renderer* rend) {
+bool Texture::loadTextureMedia(SDL_Renderer* rend) {
 	bool success = true;
-
+	/*
+	// Players
+	if (Texture::Instance()->load("Art/Player1Ship.png", "player1ID", rend)) {			// Player 1 Ship Texture
+		printf("Failed to load Player 1 texture!\n");
+		success = false;
+	}
+	if (Texture::Instance()->load("Art/Player2Ship.png", "player2ID", rend)) {			// Player 2 Ship Texture
+		printf("Failed to load Player 2 texture!\n");
+		success = false;
+	}
+	*/
+	// Backgrounds
+	if (Texture::Instance()->load("Art/bgBegin720a.png", "startBG", rend)) {			// 09/01 Edited background to be 800 x 600 instead of 600 * 480
+		printf("Failed to load background texture!\n");
+		success = false;
+	}
+	if (Texture::Instance()->load("Art/Background720.png", "middleBG", rend)) {
+		printf("Failed to load start background texture!\n");
+		success = false;
+	}
+	if (Texture::Instance()->load("Art/bgEnd720a.png", "endBG", rend)) {
+		printf("Failed to load end background texture!\n");
+		success = false;
+	}
 	// Init the game title and credit screens
-	if (Texture::Instance()->load("Art/Logo1720.png", "logoL1ID")) {
+	if (Texture::Instance()->load("Art/Logo1720.png", "logoL1ID", rend)) {
 		printf("Failed to load Logo 1 - Game Logo texture!\n");
 		success = false;
 	}
-	if (Texture::Instance()->load("Art/Logo2720.png", "creatorL1ID")) {
-	//if (!gGameCreatorsTexture.loadFromFile("Art/Logo2720.png", rend)) {						// Load the Game Creators Logo
+	if (Texture::Instance()->load("Art/Logo2720.png", "creatorL1ID", rend)) {
+	//if (!gGameCreatorsTexture.loadFromFile("Art/Logo2720.png", rend)) {				// Load the Game Creators Logo
 		printf("Failed to load Logo 2 - Game Creators texture!\n");
 		success = false;
 	}
-
-	// Level backdrops
-	if (Texture::Instance()->load("Art/Level1720.png", "level1ID")) {
+	// Level Intro backdrops
+	if (Texture::Instance()->load("Art/Level1720.png", "level1ID", rend)) {
 		printf("Failed to load Level 1 texture!\n");
 		success = false;
 	}
-	if (Texture::Instance()->load("Art/Level2720.png", "level2ID")) {
+	if (Texture::Instance()->load("Art/Level2720.png", "level2ID", rend)) {
 		printf("Failed to load Level 2 texture!\n");
 		success = false;
 	}
-	if (Texture::Instance()->load("Art/Level3720.png", "level3ID")) {
+	if (Texture::Instance()->load("Art/Level3720.png", "level3ID", rend)) {
 		printf("Failed to load Level 3 texture!\n");
 		success = false;
 	}
 
 	// Init the objects to give information on
-	if (Texture::Instance()->load("Art/EnemyShip.png", "enemyShipID")) {
+	if (Texture::Instance()->load("Art/EnemyShip.png", "enemyShipID", rend)) {
 		printf("Failed to load Enemy Ship texture!\n");
 		success = false;
 	}
-	if (Texture::Instance()->load("Art/VirusGreen.png", "greenVirusID")) {
+	if (Texture::Instance()->load("Art/VirusGreen.png", "greenVirusID", rend)) {
 		printf("Failed to load Green Enemy Virus texture!\n");
 		success = false;
 	}
-	if (Texture::Instance()->load("Art/VirusOrange.png", "orangeVirusID")) {
+	if (Texture::Instance()->load("Art/VirusOrange.png", "orangeVirusID", rend)) {
 		printf("Failed to load Orange Enemy Virus texture!\n");
 		success = false;
 	}
-	if (Texture::Instance()->load("Art/VirusBlue.png", "blueVirusID")) {
+	if (Texture::Instance()->load("Art/VirusBlue.png", "blueVirusID", rend)) {
 		printf("Failed to load Orange Enemy Virus texture!\n");
 		success = false;
 	}
-
 
 	// Weapons
-	if (Texture::Instance()->load("Art/VirusFireball.png", "fireballID")) {
+	if (Texture::Instance()->load("Art/VirusFireball.png", "fireballID", rend)) {
 		printf("Failed to load Enemy Virus Orange Fireball texture!\n");
 		success = false;
 	}
-	if (Texture::Instance()->load("Art/EnemyVirusSatellite.png", "satelliteID")) {
+	if (Texture::Instance()->load("Art/EnemyVirusSatellite.png", "satelliteID", rend)) {
 		printf("Failed to load Enemy Virus Orange Fireball texture!\n");
 		success = false;
 	}
-	if (Texture::Instance()->load("Art/LaserGreen.png", "greenLaserID")) {
+	if (Texture::Instance()->load("Art/LaserGreen.png", "greenLaserID", rend)) {
 		printf("Failed to load Green Laser texture!\n");
 		success = false;
 	}
-	if (Texture::Instance()->load("Art/LaserOrange.png", "orangeLaserID")) {
+	if (Texture::Instance()->load("Art/LaserOrange.png", "orangeLaserID", rend)) {
 		printf("Failed to load Orange Laser texture!\n");
 		success = false;
 	}
-	if (Texture::Instance()->load("Art/LaserBlue.png", "blueLaserID")) {
+	if (Texture::Instance()->load("Art/LaserBlue.png", "blueLaserID", rend)) {
 		printf("Failed to load Blue Laser texture!\n");
 		success = false;
 	}
 
 	// Power Ups
-	if (Texture::Instance()->load("Art/PowerUpLife.png", "lifePowerUpID")) {
+	if (Texture::Instance()->load("Art/PowerUpLife.png", "lifePowerUpID", rend)) {
 		printf("Failed to load New Life texture!\n");
 		success = false;
 	}
-	if (Texture::Instance()->load("Art/PowerUpClock.png", "checkpointPowerUpID")) {
+//	if (Texture::Instance()->load("Art/PowerUpClock.png", "checkpointPowerUpID", rend)) {
+	if (Texture::Instance()->load("Art/PowerUpClockOld.png", "checkpointPowerUpID", rend)) {
 		printf("Failed to load Checkpoint texture!\n");
 		success = false;
 	}
-	if (Texture::Instance()->load("Art/PowerUpRocket.png", "rocketPowerUpID")) {
+	if (Texture::Instance()->load("Art/PowerUpRocket.png", "rocketPowerUpID", rend)) {
 		printf("Failed to load Power Up - Rocket texture!\n");
 		success = false;
 	}
-	if (Texture::Instance()->load("Art/PowerUpHealthBox.png", "healthPowerUpID")) {
+	if (Texture::Instance()->load("Art/PowerUpHealthBox.png", "healthPowerUpID", rend)) {
 		printf("Failed to load Health Power Up texture!\n");
 		success = false;
 	}
-	if (Texture::Instance()->load("Art/PowerUpLaser.png", "laserPowerUpID")) {
+	if (Texture::Instance()->load("Art/PowerUpLaser.png", "laserPowerUpID", rend)) {
 		printf("Failed to load Laser Power Up texture!\n");
 		success = false;
 	}
-//	if (Texture::Instance()->load("Art/LaserGunV2.png", "laserV2PowerUpID")) {
-	if (Texture::Instance()->load("Art/LaserGunV3.png", "laserV2PowerUpID")) {
+//	if (Texture::Instance()->load("Art/LaserGunV2.png", "laserV2PowerUpID", rend)) {
+	if (Texture::Instance()->load("Art/LaserGunV3.png", "laserV2PowerUpID", rend)) {
 		printf("Failed to load Laser V2 Power Up texture!\n");
 		success = false;
 	}

@@ -8,11 +8,11 @@ JOE: Moved functionality common to game objects to GameObjects class reducing th
 
 #define ROCKET_TIMER 3.0
 
-#include <SDL.h>
-//#include <SDL_image.h>
+#include <SDL_image.h>
 #include "Texture.h"
 #include <iostream>
 #include "Particle.h"
+#include <string.h>
 
 const int TOTAL_PARTICLES2 = 20;	// Particle count
 
@@ -58,12 +58,9 @@ public:
 
 	void destroy();
 
-	void render();
-	void render(Texture &texture, int degrees = 0);
-	void render(Texture &texture,  SDL_Rect *currentClip, int &currentframe, int frames);
-	//void render(Texture &texture, SDL_Renderer *rend, int degrees = 0);
 	//void render(LTexture &texture, SDL_Renderer *rend);	// Shows the Enemy on the screen
-	//void render(Texture &texture, SDL_Renderer *rend, SDL_Rect *currentClip, int &currentframe, int frames);
+	void render(Texture &texture, SDL_Renderer *rend, int degrees = 0);
+	void render(Texture &texture, SDL_Renderer *rend, SDL_Rect *currentClip, int &currentframe, int frames);
 
 	int getX() { return m_x; }						// Get GameObject X coord
 	int getY() { return m_y; }						// Get GameObject Y coord
@@ -170,7 +167,8 @@ public:
 	// Particles
 	bool getDrawParticle() { return drawParticle; }
 	void setDrawParticle(bool p) { drawParticle = p; }
-	void renderParticles(Texture &one, Texture &two, Texture &three, Texture &four);
+
+	void renderParticles(Texture &one, Texture &two, Texture &three, Texture &four, SDL_Renderer *rend);
 
 	// Speed boost
 	bool getSpeedBoost() { return mSpeedBoost; }

@@ -21,7 +21,7 @@ public:
 	
 	virtual void movement();								// Moves the laser	
 
-	void render(int player, Texture &orange, Texture &green);	// 2017/01/22 added textures to renderer
+	void render(int player, Texture &orange, Texture &green, SDL_Renderer *rend);	// 2017/01/22 added textures to renderer
 
 	virtual void spawn(int x, int y, int velocity, int player, int type = 0);
 };

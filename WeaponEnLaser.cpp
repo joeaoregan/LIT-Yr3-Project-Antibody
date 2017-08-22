@@ -7,7 +7,7 @@
 Added enemy laser projectile, velocity is a minus value as it is travelling right to left
 */
 #include "WeaponEnLaser.h"
-//#include "EnemyShip.h"
+#include "EnemyShip.h"
 #include <math.h>
 
 // LaserEnemy Constructor

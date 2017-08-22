@@ -1,6 +1,3 @@
-#include <SDL.h>
-#include "Texture.h"
-
 #include "Explosion.h"
 
 Explosion::Explosion(int x, int y, int subType) {

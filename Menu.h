@@ -1,8 +1,7 @@
 #ifndef MENU_H
 #define MENU_H
 
-#include "Button.h"
-#include "Texture.h"
+#include "Button.h"		// Don't need to include in Game.h
 
 class Menu {
 public:
@@ -25,8 +24,8 @@ public:
 	
 	void closeMenu();
 	void handleMenuEvents(SDL_Event& e);
-	bool loadMediaMenu();
-	void draw();
+	bool loadMediaMenu(SDL_Renderer *rend);
+	void draw(SDL_Renderer *rend);
 
 
 	//Menu(int x, int y);							// Initializes the variables

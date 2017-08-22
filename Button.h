@@ -1,6 +1,6 @@
 #ifndef LBUTTON_H
 #define LBUTTON_H
-#include <SDL.h>
+
 #include <SDL_image.h>
 #include <stdio.h>
 #include <string>
@@ -22,9 +22,6 @@ enum ButtonSprite {
 //The mouse button
 class Button {
 public:
-	void setCallback(void(*callback)()) { m_callback = callback; }
-	int getCallbackID() { return m_callbackID; }
-
 	//Initializes internal variables
 	Button();
 
@@ -35,8 +32,7 @@ public:
 	//void handleEvent(SDL_Event* e, LTexture test);
 	void handleEvent(SDL_Event* e, int buttonSelected);
 
-	void render(Texture &texture, SDL_Rect *currentClip);						// Rendering function
-	//void render(Texture &texture, SDL_Renderer *rend, SDL_Rect *currentClip);						// Rendering function
+	void render(Texture &texture, SDL_Renderer *rend, SDL_Rect *currentClip);						// Rendering function
 	//void init();
 	SDL_Point mPosition;
 
@@ -44,14 +40,6 @@ public:
 	void setButtonSprite(ButtonSprite bs) { mCurrentSprite = bs; }
 
 	ButtonSprite mCurrentSprite;		// Currently used global sprite - Sprite enumeration
-
-private:
-	void(*m_callback)();
-
-	int m_callbackID;
-
-	bool m_bReleased;
-
 };
 
 #endif

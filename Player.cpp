@@ -1,6 +1,6 @@
 ﻿/*
-	2017/02/27:	User game singleton to access renderer
-	2017/01/04: Added asdw keyboard movement
+2017-01-04:
+Added asdw keyboard movement
 */
 #include "Player.h"
 #include "Game.h"
@@ -53,7 +53,7 @@ Player::Player() {
 
 	setDrawParticle(true);
 
-	setProjectileActive(false);				// Player can spawn a rocket straight away
+	setProjectileActive(false);					// Player can spawn a rocket straight away
 	setNumRockets(3);						// The number of rockets a player has
 
 	setTimer(ROCKET_TIMER);
@@ -62,23 +62,22 @@ Player::Player() {
 	setLaserGrade(LASER_SINGLE);
 }
 
-bool Player::loadMediaPlayer() {
-//bool Player::loadMediaPlayer(SDL_Renderer *rend) {
+bool Player::loadMediaPlayer(SDL_Renderer *rend) {
 	bool success = true;
 	// Particles
-	if (!gDarkBlueParticleTexture.loadFromFile("Art/particleDarkBlue.bmp")) {	// Load Dark Particle texture
+	if (!gDarkBlueParticleTexture.loadFromFile("Art/particleDarkBlue.bmp", rend)) {	// Load Dark Particle texture
 		printf("Failed to load red texture!\n");
 		success = false;
 	}
-	if (!gMediumBlueParticlTexture.loadFromFile("Art/particleMediumBlue.bmp")) {	// Load Medium Particle texture
+	if (!gMediumBlueParticlTexture.loadFromFile("Art/particleMediumBlue.bmp", rend)) {	// Load Medium Particle texture
 		printf("Failed to load green texture!\n");
 		success = false;
 	}
-	if (!gLightBlueParticleTexture.loadFromFile("Art/particleLightBlue.bmp")) {	// Load Light Particle texture
+	if (!gLightBlueParticleTexture.loadFromFile("Art/particleLightBlue.bmp", rend)) {	// Load Light Particle texture
 		printf("Failed to load blue texture!\n");
 		success = false;
 	}
-	if (!gShimmerTexture.loadFromFile("Art/shimmer.bmp")) {						// Load shimmer texture
+	if (!gShimmerTexture.loadFromFile("Art/shimmer.bmp", rend)) {						// Load shimmer texture
 		printf("Failed to load shimmer texture!\n");
 		success = false;
 	}
@@ -96,8 +95,7 @@ void Player::closePlayer() {
 }
 
 // 2017/01/22 Separated player render() from game.cpp
-void Player::render(Texture &player) {
-//void Player::render(Texture &player, SDL_Renderer *rend) {
+void Player::render(Texture &player, SDL_Renderer *rend) {
 	//Set texture transparency
 	gDarkBlueParticleTexture.modifyAlpha(100);	// Alpha of 192 gives particles a semi transparent look
 	gMediumBlueParticlTexture.modifyAlpha(100);
@@ -105,13 +103,13 @@ void Player::render(Texture &player) {
 	gShimmerTexture.modifyAlpha(150);
 
 	if (getAlive()) {																			// 2017/01/22 If the player is alive render the player, with particles
-		renderParticles(gDarkBlueParticleTexture, gMediumBlueParticlTexture, gLightBlueParticleTexture, gShimmerTexture);
-		player.render(getX(), getY());
+		renderParticles(gDarkBlueParticleTexture, gMediumBlueParticlTexture, gLightBlueParticleTexture, gShimmerTexture, rend);
+		player.render(getX(), getY(), rend);
 	}
 }
 
 // 2017/01/22 Separated player render() from game.cpp
-void Player::render(Texture &player, Texture &dark, Texture &medium, Texture &light, Texture &shimmer) {
+void Player::render(Texture &player, Texture &dark, Texture &medium, Texture &light, Texture &shimmer, SDL_Renderer *rend) {
 	//Set texture transparency
 	dark.modifyAlpha(100);	// Alpha of 192 gives particles a semi transparent look
 	medium.modifyAlpha(100);
@@ -119,40 +117,38 @@ void Player::render(Texture &player, Texture &dark, Texture &medium, Texture &li
 	shimmer.modifyAlpha(150);
 
 	if (getAlive()) {																			// 2017/01/22 If the player is alive render the player, with particles
-		renderParticles(dark, medium, light, shimmer);
-		player.render(getX(), getY());
+		renderParticles(dark, medium, light, shimmer, rend);
+		player.render(getX(), getY(), rend);
 	}
 }
 
-void Player::rendPlayerLives(Texture &lives, int player) {
-//void Player::rendPlayerLives(Texture &lives, int player, SDL_Renderer *rend) {
+void Player::rendPlayerLives(Texture &lives, int player, SDL_Renderer *rend) {
 	if (player == 1) {
 		if (getNumLives() > 0)
 			//lives.render(10, SCREEN_HEIGHT - lives.getHeight() - 10, rend);
-			lives.render(10, 120 - lives.getHeight() - 10);
+			lives.render(10, 120 - lives.getHeight() - 10, rend);
 		if (getNumLives() > 1)
 			//lives.render(10 + lives.getWidth(), SCREEN_HEIGHT - lives.getHeight() - 10, rend);
-			lives.render(20 + lives.getWidth(), 120 - lives.getHeight() - 10);
+			lives.render(20 + lives.getWidth(), 120 - lives.getHeight() - 10, rend);
 		if (getNumLives() > 2)
 			//lives.render(10 + (lives.getWidth() * 2), SCREEN_HEIGHT - lives.getHeight() - 10, rend);
-			lives.render(30 + (lives.getWidth() * 2), 120 - lives.getHeight() - 10);
+			lives.render(30 + (lives.getWidth() * 2), 120 - lives.getHeight() - 10, rend);
 	}
 
 	if (player == 2) {
 		if (getNumLives() > 0)
 			//lives.render(SCREEN_WIDTH - lives.getWidth() - 10, SCREEN_HEIGHT - lives.getHeight() - 10, rend);
-			lives.render(SCREEN_WIDTH - lives.getWidth() - 10, 120 - lives.getHeight() - 10);
+			lives.render(SCREEN_WIDTH - lives.getWidth() - 10, 120 - lives.getHeight() - 10, rend);
 		if (getNumLives() > 1)
 			//lives.render(SCREEN_WIDTH - (lives.getWidth() * 2) - 10, SCREEN_HEIGHT - lives.getHeight() - 10, rend);
-			lives.render(SCREEN_WIDTH - (lives.getWidth() * 2) - 20, 120 - lives.getHeight() - 10);
+			lives.render(SCREEN_WIDTH - (lives.getWidth() * 2) - 20, 120 - lives.getHeight() - 10, rend);
 		if (getNumLives() > 2)
 			//lives.render(SCREEN_WIDTH - (lives.getWidth() * 3) - 10, SCREEN_HEIGHT - lives.getHeight() - 10, rend);
-			lives.render(SCREEN_WIDTH - (lives.getWidth() * 3) - 30, 120 - lives.getHeight() - 10);
+			lives.render(SCREEN_WIDTH - (lives.getWidth() * 3) - 30, 120 - lives.getHeight() - 10, rend);
 	}
 }
 
-void Player::renderParticles(Texture &one, Texture &two, Texture &three, Texture &four) {
-//void Player::renderParticles(Texture &one, Texture &two, Texture &three, Texture &four, SDL_Renderer *rend) {
+void Player::renderParticles(Texture &one, Texture &two, Texture &three, Texture &four, SDL_Renderer *rend) {
 	//Go through particles
 	for (int i = 0; i < TOTAL_PARTICLES; ++i) {
 		//Delete and replace dead particles
@@ -164,7 +160,7 @@ void Player::renderParticles(Texture &one, Texture &two, Texture &three, Texture
 
 	//Show particles
 	for (int i = 0; i < TOTAL_PARTICLES; ++i) {
-		particles[i]->render(four);
+		particles[i]->render(four, rend);
 	}
 }
 
@@ -193,10 +189,15 @@ void Player::handleEvent(SDL_Event& e, int player) {
 		else if (e.type == SDL_KEYUP && e.key.repeat == 0) {
 			// Adjust the velocity
 			switch (e.key.keysym.sym) {
-			case SDLK_w: moveDown(); break;		// undo move up
-			case SDLK_s: moveUp(); break;		// undo move down
-			case SDLK_a: moveRight(); break;	// undo move left
-			case SDLK_d: moveLeft(); break;		// undo move right
+			//case SDLK_w: setVelY(0); break;		// undo move up
+			//case SDLK_s: setVelY(0); break;		// undo move down
+			//case SDLK_a: setVelX(0); break;	// undo move left
+			//case SDLK_d: setVelX(0); break;		// undo move right
+
+			case SDLK_w: if (getVelY() < 0) moveDown(); break;		// undo move up
+			case SDLK_s: if (getVelY() > 0) moveUp(); break;		// undo move down
+			case SDLK_a: if (getVelX() < 0) moveRight(); break;	// undo move left
+			case SDLK_d: if (getVelX() > 0) moveLeft(); break;		// undo move right
 
 			case SDLK_c: Game::Instance()->spawnRocket(getX(), getY(), PLAYER_1, ROCKET_P1, true); break;
 			}
@@ -299,30 +300,51 @@ void Player::handleEvent(SDL_Event& e, int player) {
 	} // joystick present
 	*/
 }
-void Player::moveUp() {
-	//if (getVelY() > 0) setVelY(0);						// If moving down, cancel downward movement
-	//setVelY(0);
+
+void Player::movement() {
+	curTime = SDL_GetTicks();
+
 	if (getVelY() > 0 && getVelY() < getVelocity()) setVelY(0);
 	if (getVelY() < 0 && getVelY() > -getVelocity()) setVelY(0);
+	if (getVelX() > 0 && getVelX() < getVelocity()) setVelX(0);
+	if (getVelX() < 0 && getVelX() > -getVelocity()) setVelX(0);
 
-	if (getSpeedBoost() && getVelocity() != 0)				// If speedboost is active, and the player is moving
-		setVelY(getVelY() - (getVelocity() + BOOST));
-	else
-		setVelY(getVelY() - getVelocity());
+	if (getSpeedBoost() && (curTime > getBoostStartTime() + ROCKET_TIMER * 1000)) {
+		setSpeedBoost(false);
+		setBoostPercent(ROCKET_TIMER);
+		std::cout << "SPEED BOOST ENDED";
+	}
+
+	GameObject::movement();
+
+	// If the ship went too far to the left or right
+	if ((getX() < 0) || ((getX() + getWidth()) > SCREEN_WIDTH)) {
+		setX(getX() - getVelX());										// Move back
+	}
+
+	setY(getY() + getVelY());											// Move the ship up or down
+
+																		// If the ship went too far up or down
+	if ((getY() < 40) || ((getY() + getHeight()) > SCREEN_HEIGHT_GAME - 40)) {
+		setY(getY() - getVelY());										// Move back
+	}
+}
+void Player::moveUp() {
+		if (getSpeedBoost() && getVelocity() != 0)				// If speedboost is active, and the player is moving
+			setVelY(getVelY() - (getVelocity() + BOOST));
+		else
+			setVelY(getVelY() - getVelocity());
 }
 
 void Player::moveDown() {
-	if (getVelY() > 0 && getVelY() < getVelocity()) setVelY(0);
-	if (getVelY() < 0 && getVelY() > -getVelocity()) setVelY(0);
-
-	if (getSpeedBoost() && getVelocity() != 0)
-		setVelY(getVelY() + (getVelocity() + BOOST));
-	else
-		setVelY(getVelY() + getVelocity());
+		if (getSpeedBoost() && getVelocity() != 0)
+			setVelY(getVelY() + (getVelocity() + BOOST));
+		else
+			setVelY(getVelY() + getVelocity());
 }
 void Player::moveLeft() {
-	if (getVelX() > 0 && getVelX() < getVelocity()) setVelX(0);
-	if (getVelX() < 0 && getVelX() > -getVelocity()) setVelX(0);
+	//if (getVelX() > 0 && getVelX() < getVelocity()) setVelX(0);
+	//if (getVelX() < 0 && getVelX() > -getVelocity()) setVelX(0);
 
 	if (getSpeedBoost() && getVelocity() != 0)
 		setVelX(getVelX() - (getVelocity() + BOOST));
@@ -330,8 +352,8 @@ void Player::moveLeft() {
 		setVelX(getVelX() - getVelocity());
 }
 void Player::moveRight() {
-	if (getVelX() > 0 && getVelX() < getVelocity()) setVelX(0);
-	if (getVelX() < 0 && getVelX() > -getVelocity()) setVelX(0);
+	//if (getVelX() > 0 && getVelX() < getVelocity()) setVelX(0);
+	//if (getVelX() < 0 && getVelX() > -getVelocity()) setVelX(0);
 
 	if (getSpeedBoost() && getVelocity() != 0)
 		setVelX(getVelX() + (getVelocity() + BOOST));
@@ -516,33 +538,4 @@ float Player::boostTimer() {
 		}
 	}
 	return boost;
-}
-
-void Player::movement() {
-	curTime = SDL_GetTicks();
-
-	if (getVelY() > 0 && getVelY() < getVelocity()) setVelY(0);
-	if (getVelY() < 0 && getVelY() > -getVelocity()) setVelY(0);
-	if (getVelX() > 0 && getVelX() < getVelocity()) setVelX(0);
-	if (getVelX() < 0 && getVelX() > -getVelocity()) setVelX(0);
-
-	if (getSpeedBoost() && (curTime > getBoostStartTime() + ROCKET_TIMER * 1000)) {
-		setSpeedBoost(false);
-		setBoostPercent(ROCKET_TIMER);
-		std::cout << "SPEED BOOST ENDED";
-	}
-
-	GameObject::movement();
-
-	// If the ship went too far to the left or right
-	if ((getX() < 0) || ((getX() + getWidth()) > SCREEN_WIDTH)) {
-		setX(getX() - getVelX());										// Move back
-	}
-
-	setY(getY() + getVelY());											// Move the ship up or down
-
-																		// If the ship went too far up or down
-	if ((getY() < 40) || ((getY() + getHeight()) > SCREEN_HEIGHT_GAME - 40)) {
-		setY(getY() - getVelY());										// Move back
-	}
 }

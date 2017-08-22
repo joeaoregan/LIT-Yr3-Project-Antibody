@@ -1,10 +1,6 @@
 #ifndef GAMEPAD_H
 #define GAMEPAD_H
 
-#include <SDL.h>
-#include <iostream>
-#include <string.h>
-
 void gamepadInfo(SDL_Joystick* gController1, SDL_Joystick* gController2, SDL_Event e) {
 	if (SDL_NumJoysticks() > 0) {
 		if (strcmp(SDL_JoystickName(gController1), "NVIDIA Shield") == 0) {

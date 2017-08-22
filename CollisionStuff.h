@@ -1,8 +1,6 @@
 #ifndef COLLISION_STUFF_H
 #define COLLISION_STUFF_H
 
-#include <SDL.h>
-
 bool checkCollision(SDL_Rect *a, SDL_Rect *b) {
 	//The sides of the rectangles
 	int leftA, leftB, rightA, rightB;

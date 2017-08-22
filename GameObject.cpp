@@ -1,5 +1,4 @@
 #include "GameObject.h"
-#include "Game.h"
 #include <math.h>
 
 // Constructor
@@ -18,17 +17,12 @@ GameObject::~GameObject() {
 }
 
 // Render the Game Objects to the screen
-
-void GameObject::render() {
-	Texture mTexture;
-	mTexture.render(getX(), getY(), NULL, 0, NULL, SDL_FLIP_NONE);
-}
-void GameObject::render(Texture &texture, int degrees) {
-	texture.render(getX(), getY(), NULL, degrees, NULL, SDL_FLIP_NONE);
+void GameObject::render(Texture &texture, SDL_Renderer *rend, int degrees) {
+	texture.render(getX(), getY(), rend, NULL, degrees, NULL, SDL_FLIP_NONE);
 }
 
-void GameObject::render(Texture &texture, SDL_Rect *currentClip, int &currentframe, int frames) {	// 2017/01/22 Moved from game.cpp
-	texture.render(getX(), getY(), currentClip);
+void GameObject::render(Texture &texture, SDL_Renderer *rend, SDL_Rect *currentClip, int &currentframe, int frames) {	// 2017/01/22 Moved from game.cpp
+	texture.render(getX(), getY(), rend, currentClip);
 
 	++currentframe;						// Go to next frame
 
@@ -138,7 +132,7 @@ void GameObject::setSpeedBoost(bool boost) {
 }
 
 
-void GameObject::renderParticles(Texture &one, Texture &two, Texture &three, Texture &four) {
+void GameObject::renderParticles(Texture &one, Texture &two, Texture &three, Texture &four, SDL_Renderer *rend) {
 	//Go through particles
 	for (int i = 0; i < TOTAL_PARTICLES2; ++i) {
 		//Delete and replace dead particles
@@ -150,6 +144,6 @@ void GameObject::renderParticles(Texture &one, Texture &two, Texture &three, Tex
 
 	//Show particles
 	for (int i = 0; i < TOTAL_PARTICLES2; ++i) {
-		particles[i]->render(four);
+		particles[i]->render(four, rend);
 	}
 }

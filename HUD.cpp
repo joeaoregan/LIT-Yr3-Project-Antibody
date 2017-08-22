@@ -2,19 +2,19 @@
 #include <sstream>
 
 
-bool HUD::loadLevelStuff() {
+bool HUD::loadLevelStuff(SDL_Renderer *rend) {
 	bool success = true;
 
-	if (!gP1LivesTexture.loadFromFile("Art/Player1ShipSmall.png")) {				// Player 1 Lives Texture
+	if (!gP1LivesTexture.loadFromFile("Art/Player1ShipSmall.png", rend)) {				// Player 1 Lives Texture
 		printf("Failed to load Player 1 Small Ship texture!\n");
 		success = false;
 	}
-//	if (!gP2LivesTexture.loadFromFile("Art/Player2ShipSmall.png")) {				// Player 2 Lives Texture
-	if (!gP2LivesTexture.loadFromFile("Art/Player2ShipSmallOld.png")) {				// Player 1 Lives Texture
+//	if (!gP2LivesTexture.loadFromFile("Art/Player2ShipSmall.png", rend)) {				// Player 2 Lives Texture
+	if (!gP2LivesTexture.loadFromFile("Art/Player2ShipSmallOld.png", rend)) {				// Player 2 Lives Texture
 		printf("Failed to load Player 2 Small Ship texture!\n");
 		success = false;
 	}
-	if (!gPowerUpRocketTexture2.loadFromFile("Art/PowerUpRocket.png")) {			// Rocket Power Up Texture
+	if (!gPowerUpRocketTexture2.loadFromFile("Art/PowerUpRocket.png", rend)) {			// Rocket Power Up Texture
 		printf("Failed to load Power Up - Rocket texture!\n");
 		success = false;
 	}
@@ -44,9 +44,9 @@ void HUD::closeLevelStuff() {
 	//gNumRocketsTextTexture2.free();
 }
 
-void HUD::displayLevelNum(int levelNum) {
-	gLevelTextTexture.UIText("Level " + std::to_string(levelNum));	// Render text - Use a string to render the current Level to a texture
-	gLevelTextTexture.render(10, 8);
+void HUD::displayLevelNum(int levelNum, SDL_Renderer *rend) {
+	gLevelTextTexture.UIText("Level " + std::to_string(levelNum), rend);	// Render text - Use a string to render the current Level to a texture
+	gLevelTextTexture.render(10, 8, rend);
 }
 
 /*
@@ -72,16 +72,16 @@ void HUD::gameTime(int currentTime, SDL_Renderer *rend) {
 
 	Display the score for each player
 */
-void HUD::playerScore(bool twoPlayer, int scoreP1, int scoreP2) {
+void HUD::playerScore(SDL_Renderer *rend, bool twoPlayer, int scoreP1, int scoreP2) {
 	std::stringstream score1Text, score2Text;
 
 	score1Text << "P1: " << scoreP1;															// Player 1 score
-	gP1ScoreTextTexture.UIText(score1Text.str().c_str());									// Render text - Use a string to render the current P1 Score to a texture
-	gP1ScoreTextTexture.render(10, 55);													// Score for Player 1
+	gP1ScoreTextTexture.UIText(score1Text.str().c_str(), rend);									// Render text - Use a string to render the current P1 Score to a texture
+	gP1ScoreTextTexture.render(10, 55, rend);													// Score for Player 1
 	if (twoPlayer) {
 		score2Text << "P2: " << scoreP2;															// Player 2 score
-		gP2ScoreTextTexture.UIText(score2Text.str().c_str());									// Render text - Use a string to render the current P2 Score to a texture
-		gP2ScoreTextTexture.render(SCREEN_WIDTH - gP2ScoreTextTexture.getWidth() - 10, 55);	// Score for Player 2
+		gP2ScoreTextTexture.UIText(score2Text.str().c_str(), rend);									// Render text - Use a string to render the current P2 Score to a texture
+		gP2ScoreTextTexture.render(SCREEN_WIDTH - gP2ScoreTextTexture.getWidth() - 10, 55, rend);	// Score for Player 2
 	}
 }
 
@@ -94,16 +94,16 @@ void HUD::playerScore(bool twoPlayer, int scoreP1, int scoreP2) {
 
 int scroll = 60;
 
-void HUD::speedBoostIndicator(bool boost) {
+void HUD::speedBoostIndicator(bool boost, SDL_Renderer *rend) {
 	if (scroll > 0) scroll--;
 
-	gSpeedBoostTextTexture.speedBoostText("Speed\nBoost");// Create the text
+	gSpeedBoostTextTexture.speedBoostText("Speed\nBoost", rend);// Create the text
 
 	gSpeedBoostTextTexture.modifyAlpha(150);					// Keep alpha values independent
 	if (boost) gSpeedBoostTextTexture.modifyAlpha(255);			// Keep alpha values independent
 
 	//gSpeedBoostTextTexture.render((60 - gSpeedBoostTextTexture.getWidth()) / 2, (60 - gSpeedBoostTextTexture.getHeight()) / 2, gRenderer);
-	gSpeedBoostTextTexture.render(scroll + 3, 5);
+	gSpeedBoostTextTexture.render(scroll + 3, 5, rend);
 }
 
 /*	2017/02/21: Moved from Game.cpp
@@ -111,41 +111,41 @@ void HUD::speedBoostIndicator(bool boost) {
 	Display the rocket indicator,
 	Indicates number of rockets each player has remaining
 */
-void HUD::rocketIndicator(int numRockets, int player, bool alive) {
+void HUD::rocketIndicator(int numRockets, int player, bool alive, SDL_Renderer *rend) {
 	gPowerUpRocketTexture2.modifyAlpha(255);								// Keep alpha values independent, show bright if alive
 	if (numRockets <= 0 || !alive) gPowerUpRocketTexture2.modifyAlpha(50);	// Fade out the rocket image if player has no rockets
-	gPowerUpRocketTexture2.render(scroll + 15, -2, NULL, 45);			// 1st //weaponScrolling = 60;
+	gPowerUpRocketTexture2.render(scroll + 15, -2, rend, NULL, 45);			// 1st //weaponScrolling = 60;
 
-	gNumRocketsTextTexture1.numRocketsLeft(std::to_string(numRockets));
+	gNumRocketsTextTexture1.numRocketsLeft(std::to_string(numRockets), rend);
 	gNumRocketsTextTexture1.modifyAlpha(150);
-	gNumRocketsTextTexture1.render((60 - gNumRocketsTextTexture1.getWidth()) / 2, (60 - gNumRocketsTextTexture1.getHeight()) / 2);
+	gNumRocketsTextTexture1.render((60 - gNumRocketsTextTexture1.getWidth()) / 2, (60 - gNumRocketsTextTexture1.getHeight()) / 2, rend);
 }
 
 /*	2017/02/21: Moved from Game.cpp
 
 	Display the created by text at bottom of heads up display
 */
-void HUD::createdByText() {
-	gCreatedByTextTexture.createdByText();
-	gCreatedByTextTexture.render((SCREEN_WIDTH - gCreatedByTextTexture.getWidth()) / 2, 120 - gCreatedByTextTexture.getHeight() - 8);
+void HUD::createdByText(SDL_Renderer *rend) {
+	gCreatedByTextTexture.createdByText(rend);
+	gCreatedByTextTexture.render((SCREEN_WIDTH - gCreatedByTextTexture.getWidth()) / 2, 120 - gCreatedByTextTexture.getHeight() - 8, rend);
 }
 
 /*	2017/02/21: Moved from Game.cpp
 
 	Render the players lives to the player dashboard
 */
-void HUD::rendPlayerLives(int livesP1, int livesP2) {
+void HUD::rendPlayerLives(SDL_Renderer *rend, int livesP1, int livesP2) {
 		if (livesP1 > 0)
-			gP1LivesTexture.render(10, 120 - gP1LivesTexture.getHeight() - 10);
+			gP1LivesTexture.render(10, 120 - gP1LivesTexture.getHeight() - 10, rend);
 		if (livesP1 > 1)
-			gP1LivesTexture.render(20 + gP1LivesTexture.getWidth(), 120 - gP1LivesTexture.getHeight() - 10);
+			gP1LivesTexture.render(20 + gP1LivesTexture.getWidth(), 120 - gP1LivesTexture.getHeight() - 10, rend);
 		if (livesP1 > 2)
-			gP1LivesTexture.render(30 + (gP1LivesTexture.getWidth() * 2), 120 - gP1LivesTexture.getHeight() - 10);
+			gP1LivesTexture.render(30 + (gP1LivesTexture.getWidth() * 2), 120 - gP1LivesTexture.getHeight() - 10, rend);
 
 		if (livesP2 > 0)
-			gP2LivesTexture.render(SCREEN_WIDTH - gP2LivesTexture.getWidth() - 10, 120 - gP2LivesTexture.getHeight() - 10);
+			gP2LivesTexture.render(SCREEN_WIDTH - gP2LivesTexture.getWidth() - 10, 120 - gP2LivesTexture.getHeight() - 10, rend);
 		if (livesP2 > 1)
-			gP2LivesTexture.render(SCREEN_WIDTH - (gP2LivesTexture.getWidth() * 2) - 20, 120 - gP2LivesTexture.getHeight() - 10);
+			gP2LivesTexture.render(SCREEN_WIDTH - (gP2LivesTexture.getWidth() * 2) - 20, 120 - gP2LivesTexture.getHeight() - 10, rend);
 		if (livesP2 > 2)
-			gP2LivesTexture.render(SCREEN_WIDTH - (gP2LivesTexture.getWidth() * 3) - 30, 120 - gP2LivesTexture.getHeight() - 10);
+			gP2LivesTexture.render(SCREEN_WIDTH - (gP2LivesTexture.getWidth() * 3) - 30, 120 - gP2LivesTexture.getHeight() - 10, rend);
 }

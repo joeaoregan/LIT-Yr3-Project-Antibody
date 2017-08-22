@@ -10,12 +10,17 @@
 #ifndef GAME_H
 #define GAME_H
 
-#include "GameStateMachine.h"
-#include <SDL.h>
+//#include <SDL.h>
+//#include <SDL_ttf.h>
+//#include "Texture.h"
+
 #include <cstdlib>		// For Random Numbers
 #include <ctime>		// For Random Numbers
 #include <list>
-//#include <vector>
+#include <vector>
+#include <sstream>		// For timer
+
+#include "_TestData.h"	// 2017/02/09
 
 // Other Symbolic Constants
 #define PLAYER_1 1
@@ -28,10 +33,24 @@ const int BLOOD_EXP_ANIMATION_FRAMES = 12;
 
 //enum playerWeapons { NINJA_STAR_P1, NINJA_STAR_P2, LASER_P1, LASER_P2, SAW_P1, SAW_P2, LASER_V2_P1, LASER_V2_P2, ROCKET_P1, ROCKET_P2 };
 
+
 class Game {
 public:
-	SDL_Window* gWindow = NULL;			// The window we'll be rendering to
+	/*
+	// Text
+	SDL_Color textColour;					// Set the text colour
+	TTF_Font *gFontRetro20;					// Globally used font 2017-01-25 Changed to Retro font which is more readable
 
+	SDL_Event e;							// Event handler
+
+	// Joystick
+	SDL_Joystick* gController1 = NULL;		// Game Controller 1 handler - Data type for a game controller is SDL_Joystick
+	SDL_Joystick* gController2 = NULL;		// Game Controller 1 handler - Data type for a game controller is SDL_Joystick
+	SDL_Haptic*	gControllerHaptic = NULL;	// 2017/01/18 Haptic (Force Feedback) added
+
+	SDL_Window* gWindow = NULL;				// The window we'll be rendering to
+	SDL_Renderer* gRenderer = NULL;			// The window renderer
+	*/
 	// 27/02/2017 Game Singleton
 	static Game* Instance() {
 		if (s_pInstance == 0) {
@@ -42,20 +61,13 @@ public:
 		return s_pInstance;
 	}
 
-	SDL_Renderer* gRenderer;		// P65 2017/02/27 Renderer  ----- SHOULD BE PRIVATE
-	//SDL_Renderer* getRenderer() const { return m_pRenderer; }
-	SDL_Renderer* getRenderer() const { return gRenderer; }
-
-	int player1Score, player2Score;		// need variables to store score in case player dies
-
-	GameStateMachine* getStateMachine() { return m_pGameStateMachine; }
+	//SDL_Renderer* gRenderer;			// The window renderer
 
 	bool nameEntered;
 	bool enterName();
 	//void enterName();
 
 	bool twoPlayer;
-
 
 	int gamerOverMessageDisplayCounter;	// Length of time to display game over message
 	int frames;							// Frame count for speed of Enemy animation
@@ -85,7 +97,7 @@ public:
 	int activeEnemyShips;
 	int activeEnemyVirus;
 	int activeEnemyVirusSmall;
-
+	
 	enum levels { MENU, LEVEL_1, LEVEL_2, LEVEL_3 };
 
 	void setRotatingAngle();	// 2017/02/22 Moved here. Set the angle for rotating objects
@@ -97,7 +109,7 @@ public:
 	//int counter = 0;		// counter for changing alpha for flashing
 	bool gameOver = false;
 	bool levelOver = false;
-
+	
 	bool init();								// Starts up SDL and creates window -- ERROR window won't close
 	void update();
 	void close();								// Frees media and shuts down SDL
@@ -159,18 +171,17 @@ public:
 	void managePlayerScores(int score, int player, int type);
 
 	//void setViewport(SDL_Rect &rect, int x, int y, int w, int h);
+
 	//void setupAnimationClip(SDL_Rect &rect, int frames, int amount, bool type2 = false);
 
 
+	//SDL_Renderer gRenderer;			// The window renderer
+
+
 private:
-	GameStateMachine* m_pGameStateMachine;
-
-	Game() {};						// 2017/02/27 Constructor private for singleton
-
-	//SDL_Renderer* gRenderer;		// P65 2017/02/27 Renderer
-
 	int mNumPlayers;
-	int mCurrentLevel = MENU;		// The current level of the game, 0 = menu, 1 = level 1 etc.
+	int mCurrentLevel = MENU;							// The current level of the game, 0 = menu, 1 = level 1 etc.
+	//int mCurrentLevel = LEVEL_1;						// The current level of the game, 0 = menu, 1 = level 1 etc.
 
 	static Game* s_pInstance;
 };
