@@ -114,8 +114,8 @@ public:
 	void setTimerTracker(float t) { m_TimeTracker = t; }
 	void setTimer(float t) { m_Timer = t; }
 
-	Texture getTexture() { return m_Texture; }
-	void setTexture(Texture texture) { m_Texture = texture; }
+//	Texture getTexture() { return m_Texture; }
+//	void setTexture(Texture texture) { m_Texture = texture; }
 
 	int getFrames() { return m_Frames; }		// 2017/02/09 Animation frames
 	void setFrames(int f) { m_Frames = f; }

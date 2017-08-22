@@ -3,7 +3,7 @@
 #include "Button.h"
 #include "Game.h"
 
-Game game;
+//Game game;
 
 enum { GAME_1PLAYER, GAME_2PLAYER, SETTINGS, HIGH_SCORES, QUIT };
 
@@ -22,7 +22,7 @@ void Button::setPosition(int x, int y) {
 }
 
 void Button::handleEvent(SDL_Event* e, int buttonSelected) {
-//	SDL_Color textColorOne = { 255, 255, 255 };
+	SDL_Color textColorOne = { 255, 255, 255 };
 	//If mouse event happened
 	if (e->type == SDL_MOUSEMOTION || e->type == SDL_MOUSEBUTTONDOWN || e->type == SDL_MOUSEBUTTONUP) {
 		//Get mouse position
@@ -68,33 +68,45 @@ void Button::handleEvent(SDL_Event* e, int buttonSelected) {
 
 				if (buttonSelected == GAME_1PLAYER) {
 					std::cout << "Selected: 1 Player Game!" << std::endl;
-					game.setCurrentLevel(1);
-					std::cout << "Level: " << game.getCurrentLevel() << std::endl;
-					game.twoPlayer = false;
-					game.update();
+					//game.setCurrentLevel(1);
+					//std::cout << "Level: " << game.getCurrentLevel() << std::endl;
+					//game.twoPlayer = false;
+					//game.update();
+					Game::Instance()->setCurrentLevel(1);
+					std::cout << "Level: " << Game::Instance()->getCurrentLevel() << std::endl;
+					Game::Instance()->twoPlayer = false;
+					Game::Instance()->update();
 					// Call a function in Game.cpp in the Main Project
 				}
 				else if (buttonSelected == GAME_2PLAYER) {
-					game.twoPlayer = true;
 					std::cout << "Selected: 2 Player Game!" << std::endl;
-					game.setCurrentLevel(1);
-					std::cout << "Level: " << game.getCurrentLevel() << std::endl;
-					game.update();
+					//game.twoPlayer = true;
+					//game.setCurrentLevel(1);
+					//game.update();
+					//std::cout << "Level: " << game.getCurrentLevel() << std::endl;
+					Game::Instance()->twoPlayer = true;
+					Game::Instance()->setCurrentLevel(1);
+					Game::Instance()->update();
+					std::cout << "Level: " << Game::Instance()->getCurrentLevel() << std::endl;
+
 					// Call a function in Game.cpp in the Main Project
 				}
 				else if (buttonSelected == SETTINGS) {
 					std::cout << "Selected: Go To Settings Menu" << std::endl;
-					game.init();
+					//game.init();
+					Game::Instance()->init();
 					// Call a function in Game.cpp in the Main Project
 				}
 				else if (buttonSelected == HIGH_SCORES) {
 					std::cout << "Selected: View High Scores" << std::endl;
-					game.init();
+					//game.init();
+					Game::Instance()->init();
 					// Call a function in Game.cpp in the Main Project
 				}
 				else if (buttonSelected == QUIT) {
 					std::cout << "Selected: Quit The Game" << std::endl;
-					game.close();//closes window using funciton in main - - - void LButton::close()
+					//game.close();//closes window using funciton in main - - - void LButton::close()
+					Game::Instance()->close();
 							// Call a function in Game.cpp in the Main Project
 				}
 
@@ -113,6 +125,6 @@ void Button::handleEvent(SDL_Event* e, int buttonSelected) {
 }
 
 // Render the current button sprite at the button position
-void Button::render(Texture &texture, SDL_Renderer *rend, SDL_Rect *currentClip) {
+void Button::render(Texture &texture, SDL_Renderer *rend, SDL_Rect *currentClip) {	
 	texture.render(mPosition.x, mPosition.y, rend, currentClip);							// Show current button spriteCHANGED - RENDERER IS ADDED
 }

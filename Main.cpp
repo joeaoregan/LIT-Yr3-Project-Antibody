@@ -10,11 +10,13 @@ int main() {
 
 	//menu.update();
 
-	Game game;				// Create a game object
+	//Game game;				// Create a game object
 
-	game.update();
+	//game.update();
+	//game.close();			// Free resources and close SDL
 
-	game.close();			// Free resources and close SDL
+	Game::Instance()->update();	// 2017-02-27 Game singleton
+	Game::Instance()->close();
 
 	system("pause");
 

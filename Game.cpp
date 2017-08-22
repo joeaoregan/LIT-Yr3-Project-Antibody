@@ -37,8 +37,9 @@
 #include "Gamepad.h"				// 2017/02/09
 #include "Audio.h"					// 2017/02/09
 #include "HUD.h"					// 2017/02/21
-
 #include <math.h>
+
+Game* Game::s_pInstance = 0;
 
 int player1Score, player2Score;	// need variables to store score in case player dies
 
@@ -81,9 +82,7 @@ SDL_Rect rocketViewport1;			// Indicates the currently selected main weapon
 SDL_Rect rocketViewport2;			// Indicates the currently selected main weapon
 SDL_Rect boostViewport1;			// Indicates the currently selected main weapon
 SDL_Rect boostViewport2;			// Indicates the currently selected main weapon
-
-Texture gProfessorMapTexture;		// Map texture to show the players current position inside the professor
-
+// Animation frames
 SDL_Rect gEnemySpriteClips[ANIMATION_FRAMES];				// Sprite frames for Enemy Ship animation
 SDL_Rect gGreenVirusSpriteClips[6];							// Sprite frames for Orange Virus animation
 SDL_Rect gOrangeVirusSpriteClips[6];						// Sprite frames for Orange Virus animation
@@ -91,13 +90,14 @@ SDL_Rect gBlueVirusSpriteClips[6];							// Sprite frames for Blue Virus animati
 SDL_Rect gSmallGreenVirusSpriteClips[6];					// Sprite frames for Small Green Virus animation
 SDL_Rect gSmallOrangeVirusSpriteClips[6];					// Sprite frames for Small Orange Virus animation
 SDL_Rect gSmallBlueVirusSpriteClips[6];						// Sprite frames for Small Blue Virus animation
-
+// Explosion Animations
 SDL_Rect gExplosionClips[EXPLOSION_ANIMATION_FRAMES];				// Sprite frames for Explosion animation
 SDL_Rect gBloodExplosionClips[BLOOD_EXP_ANIMATION_FRAMES];			// Sprite frames for Blood Explosion animation
 SDL_Rect gVirusGreenExplosionClips[BLOOD_EXP_ANIMATION_FRAMES];		// Sprite frames for Green Virus Explosion animation
 SDL_Rect gVirusOrangeExplosionClips[BLOOD_EXP_ANIMATION_FRAMES];	// Sprite frames for Orange Virus Explosion animation
 SDL_Rect gVirusBlueExplosionClips[BLOOD_EXP_ANIMATION_FRAMES];		// Sprite frames for Blue Virus Explosion animation
 
+Texture gProfessorMapTexture;						// Map texture to show the players current position inside the professor
 Texture gEnemySpriteSheetTexture;					// Enemy sprite sheet
 Texture gExplosionSpriteSheetTexture;				// Explosion sprite sheet
 Texture gBloodExplosionSpriteSheetTexture;			// Blood explosion sprite sheet
@@ -135,18 +135,18 @@ Texture gBGEndTexture;				// End of background scrollingc
 Texture gPlayer1Texture;			// Player 1 ship
 Texture gPlayer2Texture;			// Player 2 ship
 
-Texture gVirusFireballTexture;		// Enemy Virus Fireball
-Texture gVirusShield;				// Enemy Virus Rotating Shield
+//Texture gVirusFireballTexture;		// Enemy Virus Fireball				// 2017/02/25 MOVED TO MAP OF TEXTURES IN TEXTURE.CPP
+//Texture gVirusShield;				// Enemy Virus Rotating Shield
 
-Texture gLaserGreenTexture;			// Texture for Player 1 Laser weapon
-Texture gLaserOrangeTexture;		// Texture for Player 2 Laser weapon
-Texture gLaserBlueTexture;			// Texture for Enemy Laser weapon
-Texture gPowerUpHealthTexture;		// Texture for Health Box Power Up
-Texture gPowerUpLaserTexture;		// Texture for Laser Power Up
-Texture gPowerUpLaserTextureV2;		// Texture for Health Box Power Up
+//Texture gLaserGreenTexture;			// Texture for Player 1 Laser weapon
+//Texture gLaserOrangeTexture;		// Texture for Player 2 Laser weapon
+//Texture gLaserBlueTexture;			// Texture for Enemy Laser weapon
+//Texture gPowerUpHealthTexture;		// Texture for Health Box Power Up
+//Texture gPowerUpLaserTexture;		// Texture for Laser Power Up
+//Texture gPowerUpLaserTextureV2;		// Texture for Health Box Power Up
 Texture gPowerUpRocketTexture;		// Texture for Rocket power up
-Texture gPowerUpCheckpointTexture;	// Texture for Checkpoint power up
-Texture gPowerUpLivesTexture;		// 2017/02/21 Texture for Life Power Up
+//Texture gPowerUpCheckpointTexture;	// Texture for Checkpoint power up
+//Texture gPowerUpLivesTexture;		// 2017/02/21 Texture for Life Power Up
 // Rotating Objects and Weapons (degrees to rotate in brackets)
 Texture gRocketTexture;				// Texture for Rocket weapon
 Texture gNinjaStarBlueTexture(5);	// Texture for Ninja Star weapon
@@ -174,6 +174,8 @@ Player* player1 = new Player();
 Player* player2 = new Player();
 
 bool Game::init() {
+	nameEntered = false;
+
 	//twoPlayer = true;
 
 	resetGame(getCurrentLevel());										// Initialise variables depending on level
@@ -299,6 +301,8 @@ bool Game::init() {
 bool Game::loadMedia() {
 	bool success = true;			// Loading success flag
 
+	Texture::Instance()->loadTextureMedia(gRenderer);
+
 	menu1.loadMediaMenu(gRenderer);						// Load buttons etc
 
 	success = player1->loadMediaPlayer(gRenderer);		// Load particles for each player
@@ -334,15 +338,18 @@ bool Game::loadMedia() {
 		printf("Failed to load Player 2 texture!\n");
 		success = false;
 	}
-	if (!gVirusFireballTexture.loadFromFile("Art/VirusFireball.png", gRenderer)) {			// Enemy Virus Texture - Orange Fireball
+	/*
+	if (Texture::Instance()->load("Art/VirusFireball.png", "fireballID", gRenderer)){
+	//if (!gVirusFireballTexture.loadFromFile("Art/VirusFireball.png", gRenderer)) {			// Enemy Virus Texture - Orange Fireball
 		printf("Failed to load Enemy Virus Orange Fireball texture!\n");
 		success = false;
 	}
-	if (!gVirusShield.loadFromFile("Art/EnemyVirusSatellite.png", gRenderer)) {				// Enemy Virus Texture - Blue Fireball
+	if (Texture::Instance()->load("Art/EnemyVirusSatellite.png", "satelliteID", gRenderer)) {
+	//if (!gVirusShield.loadFromFile("Art/EnemyVirusSatellite.png", gRenderer)) {				// Enemy Virus Texture - Blue Fireball
 		printf("Failed to load Enemy Virus Orange Fireball texture!\n");
 		success = false;
 	}
-
+	*/
 	if (!gBloodCellTexture.loadFromFile("Art/BloodCell.png", gRenderer)) {					// 10/01 Added Large Blood Cell
 		printf("Failed to load Blood Cell texture!\n");
 		success = false;
@@ -368,18 +375,23 @@ bool Game::loadMedia() {
 		success = false;
 	}
 	// Weapons
-	if (!gLaserGreenTexture.loadFromFile("Art/LaserGreen.png", gRenderer)) {				// Green Laser Texture
+	/*
+	if (Texture::Instance()->load("Art/LaserGreen.png", "greenLaserID", gRenderer)) {
+	//if (!gLaserGreenTexture.loadFromFile("Art/LaserGreen.png", gRenderer)) {				// Green Laser Texture
 		printf("Failed to load Green Laser texture!\n");
 		success = false;
 	}
-	if (!gLaserOrangeTexture.loadFromFile("Art/LaserOrange.png", gRenderer)) {				// Green Laser Texture
+	if (Texture::Instance()->load("Art/LaserOrange.png", "orangeLaserID", gRenderer)) {
+	//if (!gLaserOrangeTexture.loadFromFile("Art/LaserOrange.png", gRenderer)) {				// Green Laser Texture
 		printf("Failed to load Orange Laser texture!\n");
 		success = false;
 	}
-	if (!gLaserBlueTexture.loadFromFile("Art/LaserBlue.png", gRenderer)) {					// Blue Laser Texture
+	if (Texture::Instance()->load("Art/LaserBlue.png", "blueLaserID", gRenderer)) {
+	//if (!gLaserBlueTexture.loadFromFile("Art/LaserBlue.png", gRenderer)) {					// Blue Laser Texture
 		printf("Failed to load Blue Laser texture!\n");
 		success = false;
 	}
+	*/
 	if (!gNinjaStarBlueTexture.loadFromFile("Art/NinjaStarBlue.png", gRenderer)) {			// Ninja Star Texture
 		printf("Failed to load Blue Ninja Star texture!\n");
 		success = false;
@@ -397,15 +409,24 @@ bool Game::loadMedia() {
 		success = false;
 	}
 	// Power Ups
-	if (!gPowerUpLivesTexture.loadFromFile("Art/PowerUpLife.png", gRenderer)) {								// 10/01 Added Power Up - Load Power Up texture
+	/*
+	if (Texture::Instance()->load("Art/PowerUpLife.png", "lifePowerUpID", gRenderer)) {
+	//if (!gPowerUpLivesTexture.loadFromFile("Art/PowerUpLife.png", gRenderer)) {								// 10/01 Added Power Up - Load Power Up texture
 		printf("Failed to load New Life texture!\n");
 		success = false;
 	}
-	if (!gPowerUpCheckpointTexture.loadFromFile("Art/PowerUpClock.png", gRenderer)) {								// 10/01 Added Power Up - Load Power Up texture
+	if (Texture::Instance()->load("Art/PowerUpClock.png", "checkpointPowerUpID", gRenderer)) {
+	//if (!gPowerUpCheckpointTexture.loadFromFile("Art/PowerUpClock.png", gRenderer)) {								// 10/01 Added Power Up - Load Power Up texture
 		printf("Failed to load Checkpoint texture!\n");
 		success = false;
 	}
+	*/
 	if (!gPowerUpRocketTexture.loadFromFile("Art/PowerUpRocket.png", gRenderer)) {			// Rocket Power Up Texture
+		printf("Failed to load Power Up - Rocket texture!\n");
+		success = false;
+	}
+	/*
+	if (Texture::Instance()->load("Art/PowerUpRocket.png", "rocketPowerUpID", gRenderer)) {
 		printf("Failed to load Power Up - Rocket texture!\n");
 		success = false;
 	}
@@ -413,16 +434,16 @@ bool Game::loadMedia() {
 		printf("Failed to load Health Power Up texture!\n");
 		success = false;
 	}
+
 	if (!gPowerUpLaserTexture.loadFromFile("Art/PowerUpLaser.png", gRenderer)) {				// 10/01 Added Power Up - Laser Power Up texture
 		printf("Failed to load Laser Power Up texture!\n");
 		success = false;
 	}
-//	if (!gPowerUpLaserTextureV2.loadFromFile("Art/LaserGunV2.png", gRenderer)) {			// 10/01 Added Power Up - Laser V2 Power Up texture
-	if (!gPowerUpLaserTextureV2.loadFromFile("Art/LaserGunV3.png", gRenderer)) {			// 10/01 Added Power Up - Laser V2 Power Up texture
+	if (!gPowerUpLaserTextureV2.loadFromFile("Art/LaserGunV2.png", gRenderer)) {			// 10/01 Added Power Up - Laser V2 Power Up texture
 		printf("Failed to load Laser V2 Power Up texture!\n");
 		success = false;
 	}
-
+	*/
 	success = splash.initSplashScreens(gRenderer);											// Initialise the splash screens
 
 	if (!gEnemySpriteSheetTexture.loadFromFile("Art/EnemySpriteSheet2.png", gRenderer)) {	// Sprite sheet for Enemy Ship
@@ -552,15 +573,15 @@ void Game::close() {
 	// Free loaded images
 	gPlayer1Texture.free();
 	gPlayer2Texture.free();
-	gVirusFireballTexture.free(); //
-	gVirusShield.free();
+	//gVirusFireballTexture.free(); //
+	//gVirusShield.free();
 	gBGTexture.free();
 	gBGStartTexture.free();
 	gBGEndTexture.free();
 
-	gLaserGreenTexture.free();
-	gLaserOrangeTexture.free();
-	gLaserBlueTexture.free();
+	//gLaserGreenTexture.free();
+	//gLaserOrangeTexture.free();
+	//gLaserBlueTexture.free();
 	gNinjaStarBlueTexture.free();
 	gNinjaStarYellowTexture.free();
 	gSawTexture.free();
@@ -568,12 +589,12 @@ void Game::close() {
 	gBloodCellTexture.free();
 	gBloodCellSmallTexture.free();
 	gWhiteBloodCellTexture.free();
-	gPowerUpHealthTexture.free();
-	gPowerUpLaserTexture.free();
-	gPowerUpLaserTextureV2.free();
+	//gPowerUpHealthTexture.free();
+	//gPowerUpLaserTexture.free();
+	//gPowerUpLaserTextureV2.free();
 	gPowerUpRocketTexture.free();
-	gPowerUpCheckpointTexture.free();
-	gPowerUpLivesTexture.free();
+	//gPowerUpCheckpointTexture.free();
+	//gPowerUpLivesTexture.free();
 	// free animations
 	gEnemySpriteSheetTexture.free();
 	gExplosionSpriteSheetTexture.free();
@@ -653,34 +674,118 @@ void Game::update(){
 
 				if (getCurrentLevel() == MENU) menu1.draw(gRenderer);		// New
 
-				if (getCurrentLevel() != 0) playLevel(getCurrentLevel());
-				//playLevel(1);	// Test start at level 2
+				//if (!nameEntered) enterName();
 
-				if (getCurrentLevel() > 0) fps.fpsthink();					// Update the FPS
+				if(getCurrentLevel() == 1) enterName();
+				//else {
 
-				destroyGameObjects();										// 2017-01-09 JOE: Destroy the game objects when finished on the screen
+					if (getCurrentLevel() != 0) playLevel(getCurrentLevel());
+					//playLevel(1);	// Test start at level 2
+
+					if (getCurrentLevel() > 0) fps.fpsthink();					// Update the FPS
+
+					destroyGameObjects();										// 2017-01-09 JOE: Destroy the game objects when finished on the screen
+				//}
 			}
 		}
 	}
 }
 
-void Game::playLevel(int levelNum) {
-	if (displayLevelIntro) displayLevelIntroScreens(levelNum);	// Set true or false in _test.cpp
 
-	if (!gameOver) {
-		spawnMovingObjects();	// 2017/01/10 JOE: Spawn enemies and obstacles at random coords & distances apart
-		moveGameObjects();		// 2017-01-09 JOE: Move the game objects on the screen
-		collisionCheck();		// Check collisions between 2 objects
+bool renderText;
+std::string inputText = "Name";
+
+//bool Game::enterName() {
+bool Game::enterName() {
+	SDL_SetRenderDrawColor(gRenderer, 0x00, 0x00, 0x00, 0xFF);								// Clear background
+	Texture::Instance()->draw("enterNameID", 50, 100, 400, 20, gRenderer);		// Display enter name message
+	Texture::Instance()->loadInputText(inputText, gRenderer);
+	//Texture::Instance()->drawText("inputTextID", 50, 150, gRenderer);
+	Texture::Instance()->renderMap("inputTextID", 50, 150, 100, 100, gRenderer);
+
+	renderText = false;		// flag that keeps track of whether we need to update the texture
+
+	while (SDL_PollEvent(&e) != 0) {
+		//User requests quit
+		if (e.type == SDL_QUIT) {
+			quit = true;
+		}
+		//Special key input
+		else if (e.type == SDL_KEYDOWN) {
+			//Handle backspace
+			if (e.key.keysym.sym == SDLK_BACKSPACE && inputText.length() > 0)	// backspace -> remove the last character from the string
+			{
+				//lop off character
+				inputText.pop_back();
+				renderText = true;		// Set the text update flag
+			}
+			//Handle copy
+			else if (e.key.keysym.sym == SDLK_c && SDL_GetModState() & KMOD_CTRL)	// Ctrl + c -> copy the text to the clip board
+			{
+				SDL_SetClipboardText(inputText.c_str());
+			}
+			//Handle paste
+			else if (e.key.keysym.sym == SDLK_v && SDL_GetModState() & KMOD_CTRL)	// Ctrl + v -> get the text from the clipboard
+			{
+				inputText = SDL_GetClipboardText();
+				renderText = true;		// Set the text update flag
+			}
+			else if (e.key.keysym.sym == SDLK_RETURN) {
+				player1->setName(inputText);
+				//TheGame::Instance()->setName(inputText);
+				//readyTextTimer = SDL_GetTicks();
+				nameEntered = true;
+			}
+		}
+		//Special text input event
+		else if (e.type == SDL_TEXTINPUT) {
+			//Not copy or pasting
+			if (!((e.text.text[0] == 'c' || e.text.text[0] == 'C') && (e.text.text[0] == 'v' || e.text.text[0] == 'V') && SDL_GetModState() & KMOD_CTRL)) {
+				//Append character
+				inputText += e.text.text;
+				renderText = true;
+			}
+		}
 	}
 
-	renderGameObjects();		// 2017-01-09 JOE: Render the game objects to the screen
+
+	//Rerender text if needed
+	if (renderText) {
+		//Text is not empty
+		if (inputText != "") {
+			Texture::Instance()->loadInputText(inputText, gRenderer);
+		}
+		//Text is empty
+		else {
+			Texture::Instance()->loadInputText(" ", gRenderer);
+		}
+	}
+
+	return nameEntered;
+}
+
+
+void Game::playLevel(int levelNum) {
+	//if (!nameEntered)
+		nameEntered = enterName();
+	//else
+	if (displayLevelIntro)displayLevelIntroScreens(levelNum);	// Set true or false in _test.cpp
+	{
+		if (!gameOver) {
+			spawnMovingObjects();	// 2017/01/10 JOE: Spawn enemies and obstacles at random coords & distances apart
+			moveGameObjects();		// 2017-01-09 JOE: Move the game objects on the screen
+			collisionCheck();		// Check collisions between 2 objects
+		}
+
+		renderGameObjects();		// 2017-01-09 JOE: Render the game objects to the screen
+	}
 }
 
 void Game::displayLevelIntroScreens(int level) {
 	// STORY - INSTRUCTIONS - OBJECTIVES - INFORMATION screens, pass in all the textures to give information about for each level
-	if (level == 1) displayLevelIntro = splash.level1IntroScreens(gRenderer, gPowerUpHealthTexture, gPowerUpLaserTexture, gPowerUpRocketTexture);		// Display level story and info screens
-	if (level == 2) displayLevelIntro = splash.level2IntroScreens(gRenderer);
-	if (level == 3) displayLevelIntro = splash.level3IntroScreens(gRenderer);
+	if (level == 1) displayLevelIntro = splash.level1IntroScreens(gRenderer);		// Display level story and info screens
+	//if (level == 2) displayLevelIntro = splash.level2IntroScreens(gRenderer);
+	//if (level == 3) displayLevelIntro = splash.level3IntroScreens(gRenderer);
 
 	if (level <= MAX_NUM_LEVELS) splash.pressButtonToContinue(gRenderer, e);
 }
@@ -971,11 +1076,15 @@ void Game::renderGameObjects() {
 			if (listOfGameObjects[index]->getSubType() == SAW1) listOfGameObjects[index]->render(gSawTexture, gRenderer, gSawTexture.getDegrees());
 			else if (listOfGameObjects[index]->getSubType() == SAW2) listOfGameObjects[index]->render(gSawTexture, gRenderer, gSawTexture.getDegrees());
 			// Render Power Ups
-			else if (listOfGameObjects[index]->getSubType() == POWER_UP_HEALTH) listOfGameObjects[index]->render(gPowerUpHealthTexture, gRenderer);			// Health Texture
-			else if (listOfGameObjects[index]->getSubType() == POWER_UP_LASER) listOfGameObjects[index]->render(gPowerUpLaserTexture, gRenderer);			// Laser Texture
+			//else if (listOfGameObjects[index]->getSubType() == POWER_UP_HEALTH) listOfGameObjects[index]->render(gPowerUpHealthTexture, gRenderer);			// Health Texture
+			else if (listOfGameObjects[index]->getSubType() == POWER_UP_HEALTH) Texture::Instance()->renderMap("healthPowerUpID", listOfGameObjects[index]->getX(), listOfGameObjects[index]->getY(), listOfGameObjects[index]->getWidth(), listOfGameObjects[index]->getHeight(), gRenderer);
+			//else if (listOfGameObjects[index]->getSubType() == POWER_UP_LASER) listOfGameObjects[index]->render(gPowerUpLaserTexture, gRenderer);			// Laser Texture
+			else if (listOfGameObjects[index]->getSubType() == POWER_UP_LASER) Texture::Instance()->renderMap("laserPowerUpID", listOfGameObjects[index]->getX(), listOfGameObjects[index]->getY(), listOfGameObjects[index]->getWidth(), listOfGameObjects[index]->getHeight(), gRenderer);
 			else if (listOfGameObjects[index]->getSubType() == POWER_UP_ROCKET) listOfGameObjects[index]->render(gPowerUpRocketTexture, gRenderer);			// Rocket Texture
-			else if (listOfGameObjects[index]->getSubType() == POWER_UP_CHECKPOINT) listOfGameObjects[index]->render(gPowerUpCheckpointTexture, gRenderer);	// Checkpoint Texture
-			else if (listOfGameObjects[index]->getSubType() == POWER_UP_LIVES) listOfGameObjects[index]->render(gPowerUpLivesTexture, gRenderer);			// Checkpoint Texture
+			//else if (listOfGameObjects[index]->getSubType() == POWER_UP_CHECKPOINT) listOfGameObjects[index]->render(gPowerUpCheckpointTexture, gRenderer);	// Checkpoint Texture
+			else if (listOfGameObjects[index]->getSubType() == POWER_UP_CHECKPOINT) Texture::Instance()->renderMap("checkpointPowerUpID", listOfGameObjects[index]->getX(), listOfGameObjects[index]->getY(), listOfGameObjects[index]->getWidth(), listOfGameObjects[index]->getHeight(), gRenderer);
+			//else if (listOfGameObjects[index]->getSubType() == POWER_UP_LIVES) listOfGameObjects[index]->render(gPowerUpLivesTexture, gRenderer);			// Checkpoint Texture
+			else if (listOfGameObjects[index]->getSubType() == POWER_UP_LIVES) Texture::Instance()->renderMap("lifePowerUpID", listOfGameObjects[index]->getX(), listOfGameObjects[index]->getY(), listOfGameObjects[index]->getWidth(), listOfGameObjects[index]->getHeight(), gRenderer);
 			// Render Explosions
 			else if (listOfGameObjects[index]->getSubType() == EXPLOSION) {
 				listOfGameObjects[index]->render(gExplosionSpriteSheetTexture, gRenderer, &gExplosionClips[frames / EXPLOSION_ANIMATION_FRAMES], frames, EXPLOSION_ANIMATION_FRAMES);
@@ -1037,9 +1146,12 @@ void Game::renderGameObjects() {
 				else listOfGameObjects[index]->setAlive(false);
 			}
 			// Render Enemy Lasers
-			else if (listOfGameObjects[index]->getSubType() == VIRUS_FIREBALL) listOfGameObjects[index]->render(gVirusFireballTexture, gRenderer); //
-			else if (listOfGameObjects[index]->getSubType() == BLUE_VIRUS_BULLET) listOfGameObjects[index]->render(gVirusShield, gRenderer); //
-			else if (listOfGameObjects[index]->getSubType() == ENEMY_SHIP_LASER) listOfGameObjects[index]->render(gLaserBlueTexture, gRenderer);
+			//else if (listOfGameObjects[index]->getSubType() == VIRUS_FIREBALL) listOfGameObjects[index]->render(gVirusFireballTexture, gRenderer); //
+			else if (listOfGameObjects[index]->getSubType() == VIRUS_FIREBALL) Texture::Instance()->renderMap("fireballID", listOfGameObjects[index]->getX(), listOfGameObjects[index]->getY(), listOfGameObjects[index]->getWidth(), listOfGameObjects[index]->getHeight(), gRenderer); //
+			//else if (listOfGameObjects[index]->getSubType() == BLUE_VIRUS_BULLET) listOfGameObjects[index]->render(gVirusShield, gRenderer); //
+			else if (listOfGameObjects[index]->getSubType() == BLUE_VIRUS_BULLET) Texture::Instance()->renderMap("satelliteID", listOfGameObjects[index]->getX(), listOfGameObjects[index]->getY(), listOfGameObjects[index]->getWidth(), listOfGameObjects[index]->getHeight(), gRenderer);
+			//else if (listOfGameObjects[index]->getSubType() == ENEMY_SHIP_LASER) listOfGameObjects[index]->render(gLaserBlueTexture, gRenderer);
+			else if (listOfGameObjects[index]->getSubType() == ENEMY_SHIP_LASER) Texture::Instance()->renderMap("blueLaserID", listOfGameObjects[index]->getX(), listOfGameObjects[index]->getY(), listOfGameObjects[index]->getWidth(), listOfGameObjects[index]->getHeight(), gRenderer);
 			// Render Blood Cells
 			else if (listOfGameObjects[index]->getSubType() == LARGE_BLOOD_CELL)
 				listOfGameObjects[index]->render(gBloodCellTexture, gRenderer, -gBloodCellTexture.getDegrees() * listOfGameObjects[index]->getRotationDirection());				// Render the Blood Cell, with random rotation direction
@@ -1064,14 +1176,14 @@ void Game::renderGameObjects() {
 				listOfGameObjects[index]->render(gNinjaStarYellowTexture, gRenderer, gNinjaStarYellowTexture.getDegrees());	// Yellow ninja star for player 1
 			else if (listOfGameObjects[index]->getSubType() == NINJA_STAR_P2)
 				listOfGameObjects[index]->render(gNinjaStarBlueTexture, gRenderer, gNinjaStarBlueTexture.getDegrees());		// Blue ninja star for player 2
-			else if (listOfGameObjects[index]->getSubType() == LASER_P1)
-				listOfGameObjects[index]->render(gLaserOrangeTexture, gRenderer);
-			else if (listOfGameObjects[index]->getSubType() == LASER_P2)
-				listOfGameObjects[index]->render(gLaserGreenTexture, gRenderer);
-			else if (listOfGameObjects[index]->getSubType() == LASER_V2_P1)
-				listOfGameObjects[index]->render(gLaserOrangeTexture, gRenderer);
-			else if (listOfGameObjects[index]->getSubType() == LASER_V2_P2)
-				listOfGameObjects[index]->render(gLaserGreenTexture, gRenderer);
+			//else if (listOfGameObjects[index]->getSubType() == LASER_P1) listOfGameObjects[index]->render(gLaserOrangeTexture, gRenderer);
+			else if (listOfGameObjects[index]->getSubType() == LASER_P1) Texture::Instance()->renderMap("orangeLaserID", listOfGameObjects[index]->getX(), listOfGameObjects[index]->getY(), listOfGameObjects[index]->getWidth(), listOfGameObjects[index]->getHeight(), gRenderer);
+			//else if (listOfGameObjects[index]->getSubType() == LASER_P2) listOfGameObjects[index]->render(gLaserGreenTexture, gRenderer);
+			else if (listOfGameObjects[index]->getSubType() == LASER_P2) Texture::Instance()->renderMap("greenLaserID", listOfGameObjects[index]->getX(), listOfGameObjects[index]->getY(), listOfGameObjects[index]->getWidth(), listOfGameObjects[index]->getHeight(), gRenderer);
+			//else if (listOfGameObjects[index]->getSubType() == LASER_V2_P1) listOfGameObjects[index]->render(gLaserOrangeTexture, gRenderer);
+			else if (listOfGameObjects[index]->getSubType() == LASER_V2_P1) Texture::Instance()->renderMap("orangeLaserID", listOfGameObjects[index]->getX(), listOfGameObjects[index]->getY(), listOfGameObjects[index]->getWidth(), listOfGameObjects[index]->getHeight(), gRenderer);
+			//else if (listOfGameObjects[index]->getSubType() == LASER_V2_P2) listOfGameObjects[index]->render(gLaserGreenTexture, gRenderer);
+			else if (listOfGameObjects[index]->getSubType() == LASER_V2_P2) Texture::Instance()->renderMap("greenLaserID", listOfGameObjects[index]->getX(), listOfGameObjects[index]->getY(), listOfGameObjects[index]->getWidth(), listOfGameObjects[index]->getHeight(), gRenderer);
 			else if (listOfGameObjects[index]->getSubType() == ROCKET_P1)
 				listOfGameObjects[index]->render(gRocketTexture, gRenderer, listOfGameObjects[index]->getAngle());
 			else if (listOfGameObjects[index]->getSubType() == ROCKET_P2)
@@ -1257,8 +1369,10 @@ void Game::renderGameObjects() {
 		if (!levelOver) gProfessorMapTexture.renderMap(gRenderer);
 
 		SDL_RenderSetViewport(gRenderer, &weaponViewport1);								// UIViewport
-		if (player1->getLaserGrade() == LASER_SINGLE) gPowerUpLaserTexture.render(weaponScrolling, 5, gRenderer);			// 1st
-		else if (player1->getLaserGrade() == LASER_TRIPLE) gPowerUpLaserTextureV2.render(weaponScrolling, 5, gRenderer);	// 1st //weaponScrolling = 60;
+		//if (player1->getLaserGrade() == LASER_SINGLE) gPowerUpLaserTexture.render(weaponScrolling, 5, gRenderer);			// 1st
+		if (player1->getLaserGrade() == LASER_SINGLE) Texture::Instance()->weaponIndicator("laserPowerUpID", weaponScrolling, gRenderer);
+		//else if (player1->getLaserGrade() == LASER_TRIPLE) gPowerUpLaserTextureV2.render(weaponScrolling, 5, gRenderer);	// 1st //weaponScrolling = 60;
+		else if (player1->getLaserGrade() == LASER_TRIPLE) Texture::Instance()->weaponIndicator("laserV2PowerUpID", weaponScrolling, gRenderer);
 
 		SDL_RenderSetViewport(gRenderer, &rocketViewport1);								// UIViewport
 
@@ -1273,8 +1387,10 @@ void Game::renderGameObjects() {
 		bar.speedBoostBar(player1->boostTimer(), gRenderer);
 
 		SDL_RenderSetViewport(gRenderer, &weaponViewport2);  // UIViewport
-		if (twoPlayer && player2->getLaserGrade() == LASER_SINGLE) gPowerUpLaserTexture.render(weaponScrolling, 5, gRenderer);			// 1st
-		else if (twoPlayer && player2->getLaserGrade() == LASER_TRIPLE) gPowerUpLaserTextureV2.render(weaponScrolling, 5, gRenderer);	// 1st
+		//if (twoPlayer && player2->getLaserGrade() == LASER_SINGLE) gPowerUpLaserTexture.render(weaponScrolling, 5, gRenderer);			// 1st
+		if (twoPlayer && player2->getLaserGrade() == LASER_SINGLE) Texture::Instance()->weaponIndicator("laserPowerUpID", weaponScrolling, gRenderer);
+		//else if (twoPlayer && player2->getLaserGrade() == LASER_TRIPLE) gPowerUpLaserTextureV2.render(weaponScrolling, 5, gRenderer);	// 1st
+		else if (twoPlayer && player2->getLaserGrade() == LASER_TRIPLE) Texture::Instance()->weaponIndicator("laserV2PowerUpID", weaponScrolling, gRenderer);
 
 		SDL_RenderSetViewport(gRenderer, &rocketViewport2);								// UIViewport
 		if (twoPlayer && player2->getAlive()) {
@@ -1557,7 +1673,7 @@ void Game::spawnEnemyVirus(int x, int y, int subType) {
 	}
 	else {
 		int randomExplodingVirus = rand() % 4 + 1;								// 1 in 4 chance of Orange Exploding Virus
-		randomExplodingVirus = 2; // Test blue virus
+		//randomExplodingVirus = 2; // Test blue virus
 		if (randomExplodingVirus == 1) subType = VIRUS_ORANGE;
 		else if (randomExplodingVirus == 2) subType = VIRUS_BLUE;
 		else subType = VIRUS_GREEN;
@@ -1583,7 +1699,7 @@ void Game::spawnBloodCell(int subType) {
 void Game::spawnPowerUp() {
 	int x, y, randomSpeed, powerUpType = 0;
 	int randomPowerup = rand() % 5 + 1;											// Number between 1 and 4
-	randomPowerup = 4;
+	//randomPowerup = 4;
 
 	if (countdownTimer <= 10) {
 		powerUpType = POWER_UP_CHECKPOINT;										// if the timer is less than or equal 10, spawn the Checkpoint power up
@@ -2114,6 +2230,7 @@ void Game::resetGame(int currentLevel) {
 	if (currentLevel <= 1) {				// If the level isn't progressing
 		player1->setScore(0);				// Reset player 1 score
 		player1->setNumLives(MAX_NUM_LIVES);
+		nameEntered = false;
 	}
 
 	player1->setSawActive(false);

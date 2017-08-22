@@ -3,6 +3,7 @@
 #include <SDL.h>
 #include <SDL_image.h>
 #include <string>
+#include <map>
 #include <SDL_ttf.h>
 
 // Texture wrapper class
@@ -14,9 +15,34 @@
 
 class Texture {
 public:		
+	static Texture* Instance() {
+		if (s_pInstance == 0) {
+			s_pInstance = new Texture();
+			return s_pInstance;
+		}
+
+		return s_pInstance;							// Make sure the texture manager only exists once
+	}
+	// Need to be private for singleton
 	Texture(int degrees = 0);										// Initializes variables
-		
+
 	~Texture();														// Deallocates memory
+
+
+	void loadInputText(std::string input, SDL_Renderer* rend);
+	void loadEnterNameText(std::string nameText, SDL_Renderer* rend);
+	bool loadFromRenderedTextID(SDL_Texture* text, std::string textureText, std::string id, SDL_Color textColor, TTF_Font* font, SDL_Renderer* renderer, bool textWrapped);
+	//bool loadFromRenderedTextIO(std::string id, std::string textureText, SDL_Color textColor, TTF_Font* font, SDL_Renderer* renderer, bool textWrapped);
+
+	bool loadTextureMedia(SDL_Renderer* rend); // 2017/02/26
+
+	bool load(std::string fileName, std::string id, SDL_Renderer* pRenderer);
+
+	void draw(std::string id, int x, int y, int width, int height, SDL_Renderer* pRenderer, SDL_RendererFlip flip = SDL_FLIP_NONE);
+	
+	void weaponIndicator(std::string textureID, int x, SDL_Renderer* rend);	// 2017/02/26 Function to render weapon indicators
+	
+
 
 	SDL_Texture* loadTexture(std::string path, SDL_Renderer *rend);	// Loads individual image as texture
 
@@ -41,6 +67,7 @@ public:
 	int getAlpha() { return mAlpha; }		
 	void setAlpha(int a) { mAlpha = a; }
 
+	void renderMap(std::string id, int x, int y, int width, int height, SDL_Renderer* rend);
 	//void render(int x, int y, SDL_Rect* clip = NULL, double angle = 0.0, SDL_Point* center = NULL, SDL_RendererFlip flip = SDL_FLIP_NONE);	// Renders texture at given point
 	void render(int x, int y, SDL_Renderer *rend, SDL_Rect* clip = NULL, double angle = 0.0, SDL_Point* center = NULL, SDL_RendererFlip flip = SDL_FLIP_NONE);
 
@@ -73,7 +100,16 @@ public:
 
 	unsigned int lastTime;
 
-private:	
+	std::map<std::string, SDL_Texture*> getTextureMap() { return m_textureMap; }
+
+	SDL_Surface* textSurface;
+
+private:
+
+	std::map<std::string, SDL_Texture*> m_textureMap;
+
+	static Texture* s_pInstance;
+
 	// 31/01/2017 display score value of killed enemy, at enemy coords
 	int timeToDisplay;
 	int Xcoord;

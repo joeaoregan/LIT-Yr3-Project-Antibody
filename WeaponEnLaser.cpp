@@ -13,8 +13,6 @@ Added enemy laser projectile, velocity is a minus value as it is travelling righ
 // LaserEnemy Constructor
 WeaponEnLaser::WeaponEnLaser(int subType, int rotateCenter) {
 	//std::cout << "Enemy Laser constuctor called.\n";
-	setWidth(50);
-	setHeight(5);
 	setVelocity(-15);
 	setVelX(-15);
 	//setVelY(0);
@@ -27,15 +25,21 @@ WeaponEnLaser::WeaponEnLaser(int subType, int rotateCenter) {
 	if (subType == ENEMY_SHIP_LASER) {
 		setName("Enemy Laser");
 		setDamage(5);						// 2017/02/21 Player health is decreased by 5 health points
+		setWidth(50);
+		setHeight(5);
 	}
 	else if (subType == VIRUS_FIREBALL) {
 		setName("Virus Fireball");
 		setDamage(10);						// 2017/02/21 Player health is decreased by 5 health points
+		setWidth(25);
+		setHeight(25);
 	}
 	else if (subType == BLUE_VIRUS_BULLET) {
 		setProjectileActive(false);
 		setName("Blue Virus Bullet");
 		setDamage(15);						// 2017/02/21 Player health is decreased by 5 health points
+		setWidth(25);
+		setHeight(25);
 		std::cout << "BLUE VIRUS BULLET CONSTRUCTOR" << std::endl;
 	}
 

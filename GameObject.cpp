@@ -59,6 +59,7 @@ void GameObject::spawn(int x, int y, int vx, int vy, SDL_Rect* collider, int sub
 	setAlive(true);
 }
 
+
 void GameObject::movement() {
 	m_x += m_xVel;
 	//m_y += m_yVel;

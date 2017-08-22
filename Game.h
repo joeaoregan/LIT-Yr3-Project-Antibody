@@ -29,6 +29,19 @@ const int BLOOD_EXP_ANIMATION_FRAMES = 12;
 
 class Game {
 public:
+	// 27/02/2017 Game Singleton
+	static Game* Instance() {
+		if (s_pInstance == 0) {
+			s_pInstance = new Game();
+			return s_pInstance;
+		}
+
+		return s_pInstance;
+	}
+
+	bool nameEntered;
+	bool enterName();
+	//void enterName();
 
 	bool twoPlayer;
 
@@ -133,14 +146,6 @@ public:
 	void setNumPlayers(int n) { mNumPlayers = n; }
 	void managePlayerHealth(int player, int score, std::string name = "Game Object");
 	void managePlayerScores(int score, int player, int type);
-
-	static Game* Instance() {
-		if (s_pInstance == 0) {
-			s_pInstance = new Game();
-			return s_pInstance;
-		}
-		return s_pInstance;
-	}
 
 	//void setViewport(SDL_Rect &rect, int x, int y, int w, int h);
 
