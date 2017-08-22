@@ -1,27 +1,33 @@
 #include <SDL.h>
 #include <iostream>
-#include "LButton.h"
+#include "Button.h"
 #include "Game.h"
+//#include "MainMenu.h"
+
+Game game;
 
 enum { NEW_GAME, SETTINGS, HIGH_SCORES, QUIT };
 
-LButton::LButton() {
+//SDL_Rect gSpriteClipsMenu[BUTTON_SPRITE_TOTAL];
+
+Button::Button() {
 	mPosition.x = 0;
 	mPosition.y = 0;
 
 	mCurrentSprite = BUTTON_SPRITE_MOUSE_OUT;
 }
 
-void LButton::setPosition(int x, int y) {
+void Button::setPosition(int x, int y) {
 	mPosition.x = x;
 	mPosition.y = y;
 }
 
-void LButton::handleEvent(SDL_Event* e, int buttonSelected) {
-//	SDL_Color textColorOne = { 255, 255, 255 };
+void Button::handleEvent(SDL_Event* e, int buttonSelected) {
+	SDL_Color textColorOne = { 255, 255, 255 };
 	//If mouse event happened
 	if (e->type == SDL_MOUSEMOTION || e->type == SDL_MOUSEBUTTONDOWN || e->type == SDL_MOUSEBUTTONUP) {
 		//Get mouse position
+		//MainMenu menu;
 		int x, y;
 		SDL_GetMouseState(&x, &y);
 
@@ -60,28 +66,31 @@ void LButton::handleEvent(SDL_Event* e, int buttonSelected) {
 			case SDL_MOUSEBUTTONDOWN:
 				mCurrentSprite = BUTTON_SPRITE_MOUSE_DOWN;			// Set sprite mouse down 2
 				std::cout << "Mouse Button Down" << std::endl;
+				//std::cout << "Level: " << game.getCurrentLevel() << std::endl;
 
 				if (buttonSelected == NEW_GAME) {
 					std::cout << "Selected: Start A New Game!" << std::endl;
-					Game game;
+					game.setCurrentLevel(1);
+					std::cout << "Level: " << game.getCurrentLevel() << std::endl;
+					//game.close();
+					//game.init();
 					game.update();
-					game.close();
+					//menu.close();
 					// Call a function in Game.cpp in the Main Project
 				}
-
 				else if (buttonSelected == SETTINGS) {
 					std::cout << "Selected: Go To Settings Menu" << std::endl;
-					init();
+					game.init();
 					// Call a function in Game.cpp in the Main Project
 				}
 				else if (buttonSelected == HIGH_SCORES) {
 					std::cout << "Selected: View High Scores" << std::endl;
-					init();
+					game.init();
 					// Call a function in Game.cpp in the Main Project
 				}
 				else if (buttonSelected == QUIT) {
 					std::cout << "Selected: Quit The Game" << std::endl;
-					close();//closes window using funciton in main - - - void LButton::close()
+					game.close();//closes window using funciton in main - - - void LButton::close()
 							// Call a function in Game.cpp in the Main Project
 				}
 
@@ -97,4 +106,16 @@ void LButton::handleEvent(SDL_Event* e, int buttonSelected) {
 			}
 		}
 	}
+}
+
+// Render the current button sprite at the button position
+void Button::render(LTexture &texture, SDL_Renderer *rend, SDL_Rect *currentClip) {	
+	texture.render(mPosition.x, mPosition.y, rend, currentClip);							// Show current button spriteCHANGED - RENDERER IS ADDED
+}
+
+ButtonSprite Button::getButtonSprite() {
+	return mCurrentSprite;
+}
+void Button::setButtonSprite(ButtonSprite bs){
+	mCurrentSprite = bs;
 }

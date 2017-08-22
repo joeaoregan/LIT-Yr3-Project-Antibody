@@ -50,7 +50,10 @@ public:
 	void setHealth(int health);			// set the health
 	void setNumLives(int n);
 
-	SDL_Rect getCollider();
+	//SDL_Rect getCollider();
+    //SDL_Rect * getCollider(){ return &m_Collider; }
+    SDL_Rect getCollider(){ return m_Collider; }
+
 	void setCollider(SDL_Rect collider);	// 2017/01/19 Added as Sean keeps doing dumb things with the colliders
 	void setColliderWidth(int w);
 	void setColliderHeight(int h);
@@ -122,4 +125,4 @@ private:
 //void setRandomCoords(int x, int y); // NEVER USED X OR Y
 //void setRandomCoords();
 //void checkCoords();
-//void checkCoords(GameObject* objectToCheck);	// MOVED TO GAME as uniqueCoords	
+//void checkCoords(GameObject* objectToCheck);	// MOVED TO GAME as uniqueCoords

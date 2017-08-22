@@ -2,12 +2,14 @@
 #include <SDL_ttf.h>
 #include "LTexture.h"
 
-LTexture::LTexture() {
+LTexture::LTexture(int degrees) {
 	// Initialize
 	mTexture = NULL;
 	mWidth = 0;
 	mHeight = 0;
-	mAlpha = 255;
+	mAlpha = 255;				// Default alpha is fully solid colour
+	mDegrees = degrees;
+	mFlash = false;
 }
 
 LTexture::~LTexture() {
@@ -99,6 +101,38 @@ int LTexture::getAlpha() {
 void LTexture::setAlpha(int a) {
 	mAlpha = a;
 }
+
+int counter = 0;		// counter for changing alpha for flashing
+int alphaUp = 5, alphaDown = 5;		// turn the alpha value up or down
+
+//void LTexture::flashGameObject(int &alpha, bool &flash, int rate, int times) {
+void LTexture::flashGameObject(int rate, int times) {
+	if (getFlash()) {
+		if (alphaDown > 5) {
+			alphaDown -= rate;
+			if (getAlpha() < 5) setAlpha(5);
+			else setAlpha(alphaDown);
+			if (alphaDown <= 5) alphaUp = 5;
+		}
+		if (alphaUp < 255) {
+			alphaUp += rate;
+			if (getAlpha() > 255) setAlpha(255);
+			else setAlpha(alphaUp);
+			if (alphaUp >= 255) alphaDown = 255;
+		}
+
+		if (times != 0 && counter > times * 50) {	// takes 25 decrements of 10 to set alpha to 5, and 25 increments to set alpha back to 255, 50 = 1 flash approx.
+			setFlash(false);
+			counter = 0;
+			setAlpha(255);
+		}
+	}
+	else setAlpha(255);	// Set visibility back to maximum
+
+	counter++;
+}
+
+
 void LTexture::modifyAlpha(Uint8 alpha) {
 	SDL_SetTextureAlphaMod(mTexture, alpha);			// Modulate texture alpha
 }
@@ -134,4 +168,19 @@ void LTexture::setX(int x) {
 }
 void LTexture::setY(int y) {
 	m_Y = y;
+}
+
+int LTexture::getDegrees() {
+	return mDegrees;
+}
+void LTexture::setDegrees(int d){
+	mDegrees = d % 360;					// returns degrees from 0 to 360
+}
+
+
+bool LTexture::getFlash() {
+	return mFlash;
+}
+void LTexture::setFlash(bool flash) {
+	mFlash = flash;
 }

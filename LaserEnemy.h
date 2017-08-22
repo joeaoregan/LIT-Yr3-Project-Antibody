@@ -8,7 +8,7 @@ JOE: Added Laser For Enemy ship
 
 class LaserEnemy : public Weapon {
 public:
-	LaserEnemy();						// Initializes the variables
+	LaserEnemy(int type = 0);						// Initializes the variables
 	~LaserEnemy();						// Destructor
 
 	virtual void movement();			// Moves the laser

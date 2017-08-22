@@ -4,13 +4,14 @@
 #include <SDL_image.h>
 #include <stdio.h>
 #include <string>
+#include "LTexture.h"
 
 //Button constants
 const int BUTTON_WIDTH = 160;
 const int BUTTON_HEIGHT = 40;
 const int TOTAL_BUTTONS = 4;
 
-enum LButtonSprite {
+enum ButtonSprite {
 	BUTTON_SPRITE_MOUSE_OUT = 0,
 	BUTTON_SPRITE_MOUSE_OVER_MOTION = 1,
 	BUTTON_SPRITE_MOUSE_DOWN = 2,
@@ -19,10 +20,10 @@ enum LButtonSprite {
 };
 
 //The mouse button
-class LButton {
+class Button {
 public:
 	//Initializes internal variables
-	LButton();
+	Button();
 
 	//Sets top left position
 	void setPosition(int x, int y);
@@ -31,12 +32,14 @@ public:
 	//void handleEvent(SDL_Event* e, LTexture test);
 	void handleEvent(SDL_Event* e, int buttonSelected);
 
-	void render();						// Rendering function
-	void init();
-	void close();
+	void render(LTexture &texture, SDL_Renderer *rend, SDL_Rect *currentClip);						// Rendering function
+	//void init();
 	SDL_Point mPosition;
 
-	LButtonSprite mCurrentSprite;		// Currently used global sprite - Sprite enumeration
+	ButtonSprite getButtonSprite();
+	void setButtonSprite(ButtonSprite bs);
+
+	ButtonSprite mCurrentSprite;		// Currently used global sprite - Sprite enumeration
 };
 
 #endif

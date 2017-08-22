@@ -1,16 +1,38 @@
 #include "BloodCell.h"
-#define MOVEMENT 250
-int up = 0, down = MOVEMENT;
+//#define MOVEMENT 250
+int up = 0, down = 250;
 
-BloodCell::BloodCell() {
+
+BloodCell::BloodCell(int type) {
 	//setColliderR(getWidth() / 2);		// Set circular collider
-
-	setScore(5);
-
+	//setScore(5);
 	//shiftColliders();
-	setWidth(100);
-	setHeight(55);
+	int randomRotationDirection = rand() % 3 + 1;
+
+	setType(type);
 	setVelocity(1);
+	setMovement(200);
+	setDistanceBetween(100);
+
+	if (getType() == BLOOD_CELL) {
+		setWidth(100);
+		setHeight(55);
+	}
+	else if (getType() == SMALL_BLOOD_CELL) {
+		setWidth(59);
+		setHeight(66);
+	}
+	else if (getType() == WHITE_BLOOD_CELL) {
+		setMovement(250);
+		setDistanceBetween(150);
+		setWidth(70);
+		setHeight(70);
+	}
+	// Set 1 out of 3 (ish) Blood Cells rotating backwards
+	if (randomRotationDirection == 1)
+		setRotationDirection(-1);
+	else
+		setRotationDirection(1);
 }
 
 BloodCell::~BloodCell() {
@@ -21,15 +43,15 @@ BloodCell::~BloodCell() {
 void BloodCell::movement() {
 	GameObject::movement();
 
-	if (up < MOVEMENT) {
+	if (up < getMovement()) {
 		setY(getY() - getVelocity());
 		up += 1;
-		if (up >= MOVEMENT) down = 0;
+		if (up >= getMovement()) down = 0;
 	}
-	if (down < MOVEMENT) {
+	if (down < getMovement()) {
 		setY(getY() + getVelocity());
 		down += 1;
-		if (down >= MOVEMENT) up = 0;
+		if (down >= getMovement()) up = 0;
 	}
 
 	// destroy blood cell once it is offscreen
@@ -39,4 +61,26 @@ void BloodCell::movement() {
 
 void BloodCell::render(LTexture &texture, SDL_Renderer *rend, int degrees) {
 	texture.render(getX(), getY(), rend, NULL, degrees, NULL, SDL_FLIP_NONE);
+}
+
+int BloodCell::getMovement() {
+	return mMovement;
+}
+void BloodCell::setMovement(int move) {
+	mMovement = move;
+}
+
+int BloodCell::getDistanceBetween() {
+	return mDistanceBetween;
+}
+void BloodCell::setDistanceBetween(int d) {
+	mDistanceBetween = d;
+}
+
+// Rotate the object
+int BloodCell::getRotationDirection() {
+	return mRotationDirection;
+}
+void BloodCell::setRotationDirection(int d) {
+	mRotationDirection = d;
 }

@@ -73,6 +73,12 @@ Player::Player(LTexture &dark, LTexture &medium, LTexture &light) {
 
 // 2017/01/22 Separated player render() from game.cpp
 void Player::render(LTexture &player, LTexture &dark, LTexture &medium, LTexture &light, LTexture &shimmer, SDL_Renderer *rend) {
+	//Set texture transparency
+	dark.modifyAlpha(100);	// Alpha of 192 gives particles a semi transparent look
+	medium.modifyAlpha(100);
+	light.modifyAlpha(100);
+	shimmer.modifyAlpha(150);
+
 	if (getAlive()) {																			// 2017/01/22 If the player is alive render the player, with particles
 		renderParticles(dark, medium, light, shimmer, rend);
 		player.render(getX(), getY(), rend);
@@ -150,7 +156,7 @@ void Player::handleEvent(SDL_Event& e, int player) {
 			case SDLK_d: moveRight(); break;
 
 			// FIRE WEAPON
-			case SDLK_SPACE: game1.spawnLaser(getX(), getY(), 1, 20, 1); break;	// TEST NEW WEAPON
+			case SDLK_SPACE: game1.spawnLaser(getX(), getY(), 1); break;	// TEST NEW WEAPON
 			case SDLK_n: game1.spawnNinjaStar(getX(), getY(), 1); break;
 			//case SDLK_e: game1.spawnSaw(getX(), getY(), 1, getSawActive()); break;			// 2017/01/17 Saw Weapon added, check saw is active with if statement in spawn Saw, and activate/deactivate the weapon
 			case SDLK_e: game1.spawnSaw(getX(), getY(), 1); break;			// 2017/01/17 Saw Weapon added, check saw is active with if statement in spawn Saw, and activate/deactivate the weapon

@@ -13,7 +13,7 @@
 
 class LTexture {
 public:		
-	LTexture();													// Initializes variables
+	LTexture(int degrees = 0);									// Initializes variables
 		
 	~LTexture();												// Deallocates memory
 
@@ -31,6 +31,9 @@ public:
 	void setBlendMode(SDL_BlendMode blending);					// Set blending
 		
 	void modifyAlpha(Uint8 alpha);								// Set alpha modulation
+
+	//void flashGameObject(int &alpha, bool &flash, int rate = 10, int times = 0);
+	void flashGameObject(int rate = 10, int times = 0);
 
 	int getAlpha();
 		
@@ -54,13 +57,22 @@ public:
 	int getWidth();
 	int getHeight();
 
+	// Rotation Angle
+	int getDegrees();
+	void setDegrees(int d);
+
+	bool getFlash();
+	void setFlash(bool flash);
+
 private:	
-	SDL_Texture* mTexture;										// The actual hardware texture
+	SDL_Texture* mTexture;	// The actual hardware texture
 
 	//Image dimensions
 	int mWidth;
 	int mHeight;
 	int mAlpha;
+	int mDegrees;
+	bool mFlash;
 };
 
 #endif

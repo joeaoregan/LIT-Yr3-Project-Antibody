@@ -6,7 +6,7 @@ Ninja Star Weapon
 
 // Ninja Star Constructor
 NinjaStar::NinjaStar() {
-	std::cout << "NinjaStar constuctor called.\n";
+	//std::cout << "NinjaStar constuctor called.\n";
 	setWidth(25);
 	setHeight(25);
 	setVelocity(10);
@@ -14,13 +14,15 @@ NinjaStar::NinjaStar() {
 	setColliderWidth(getWidth());
 	setColliderHeight(getHeight());
 
+	setAlive(true);
+
 	//mNinjaStarCollider.w = getWidth();
 	//mNinjaStarCollider.h = getHeight();
 }
 
 // Laser Destructor
 NinjaStar::~NinjaStar() {
-	std::cout << "NinjaStar destructor called.\n";
+	//std::cout << "NinjaStar destructor called.\n";
 }
 
 void NinjaStar::movement() {

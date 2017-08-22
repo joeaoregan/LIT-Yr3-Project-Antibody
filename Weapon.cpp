@@ -35,3 +35,10 @@ int Weapon::getGrade() {
 void Weapon::setGrade(int g) {
 	mGrade = g;
 }
+
+
+
+// Render the Ninja Star objects to the screen
+void Weapon::render(LTexture &texture, SDL_Renderer *rend, int degrees) {
+	texture.render(getX(), getY(), rend, NULL, degrees, NULL, SDL_FLIP_NONE);
+}

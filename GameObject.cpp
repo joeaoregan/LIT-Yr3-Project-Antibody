@@ -150,9 +150,9 @@ void GameObject::setNumLives(int n) {
 	m_NumLives = n;
 }
 
-SDL_Rect GameObject::getCollider(){
-	return m_Collider;
-}
+//SDL_Rect GameObject::getCollider(){
+//	return m_Collider;
+//}
 void GameObject::setCollider(SDL_Rect collider) {
 	m_Collider = collider;
 }

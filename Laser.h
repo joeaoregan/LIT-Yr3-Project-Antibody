@@ -17,6 +17,7 @@ JOE: Moved functionality common to game objects to GameObjects class reducing th
 class Laser : public Weapon {
 public:
 	Laser();												// Initializes the variables
+	Laser(int angle, int grade);
 	Laser(int type);										// Initializes the variables
 	~Laser();												// Destructor
 	

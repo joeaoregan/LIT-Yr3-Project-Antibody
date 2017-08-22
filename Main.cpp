@@ -1,19 +1,21 @@
 #include "Game.h"
-#include "MainMenu.h"
+//#include "MainMenu.h"
 
 //#define GAME_LOOPS 20		// Number of times to loop the game
 
 int main()
 {
-	MainMenu menu;	//create menu object
+	srand(static_cast<unsigned int>(time(0)));	// Seed the random number
 
-	menu.update();
+	//MainMenu menu;	//create menu object
 
-	//Game game;				// Create a game object
+	//menu.update();
 
-	//game.update();
+	Game game;				// Create a game object
 
-	//game.close();			// Free resources and close SDL
+	game.update();
+
+	game.close();			// Free resources and close SDL
 
 	system("pause");
 

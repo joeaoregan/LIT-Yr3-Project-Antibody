@@ -10,11 +10,13 @@ Added enemy laser projectile, velocity is a minus value as it is travelling righ
 #include "EnemyShip.h"
 
 // LaserEnemy Constructor
-LaserEnemy::LaserEnemy() {
+LaserEnemy::LaserEnemy(int type) {
 	//std::cout << "Enemy Laser constuctor called.\n";
 	setWidth(50);
 	setHeight(5);
 	setVelocity(15);
+	setType(type);
+
 	if (getType() == 0) {
 		setColliderWidth(getWidth());
 		setColliderHeight(getHeight());

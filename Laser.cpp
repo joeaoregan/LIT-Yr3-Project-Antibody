@@ -19,7 +19,7 @@ JOE: Moved functionality common to game objects to GameObjects class reducing th
 
 // Laser Constructor
 Laser::Laser() {
-	std::cout << "Laser constuctor called.\n";
+	//std::cout << "Laser constuctor called.\n";
 
 	setWidth(50);
 	setHeight(5);
@@ -30,9 +30,26 @@ Laser::Laser() {
 
 	setAngle(0);	// Fire straight
 	setGrade(0);	// Basic Laser = 0, Triple Laser = 1
+
+	setAlive(true);
+}
+Laser::Laser(int angle, int grade) {
+	//std::cout << "Laser constuctor called.\n";
+
+	setWidth(50);
+	setHeight(5);
+	setVelocity(15);
+
+	setColliderWidth(getWidth());
+	setColliderHeight(getHeight());
+
+	setAngle(angle);	// Fire straight
+	setGrade(grade);	// Basic Laser = 0, Triple Laser = 1
+
+	setAlive(true);
 }
 Laser::Laser(int type) {
-	std::cout << "Laser constuctor called.\n";
+	//std::cout << "Laser constuctor called.\n";
 
 	setWidth(50);
 	setHeight(5);
@@ -44,6 +61,8 @@ Laser::Laser(int type) {
 	setAngle(0);	// Fire straight
 	setGrade(0);	// Basic Laser = 0, Triple Laser = 1
 	setType(type);
+
+	setAlive(true);
 }
 
 
