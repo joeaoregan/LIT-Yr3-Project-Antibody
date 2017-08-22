@@ -1,4 +1,5 @@
 #include "GameObject.h"
+#include "Game.h"
 #include <math.h>
 
 // Constructor
@@ -17,12 +18,17 @@ GameObject::~GameObject() {
 }
 
 // Render the Game Objects to the screen
-void GameObject::render(Texture &texture, SDL_Renderer *rend, int degrees) {
-	texture.render(getX(), getY(), rend, NULL, degrees, NULL, SDL_FLIP_NONE);
+
+void GameObject::render() {
+	Texture mTexture;
+	mTexture.render(getX(), getY(), NULL, 0, NULL, SDL_FLIP_NONE);
+}
+void GameObject::render(Texture &texture, int degrees) {
+	texture.render(getX(), getY(), NULL, degrees, NULL, SDL_FLIP_NONE);
 }
 
-void GameObject::render(Texture &texture, SDL_Renderer *rend, SDL_Rect *currentClip, int &currentframe, int frames) {	// 2017/01/22 Moved from game.cpp
-	texture.render(getX(), getY(), rend, currentClip);
+void GameObject::render(Texture &texture, SDL_Rect *currentClip, int &currentframe, int frames) {	// 2017/01/22 Moved from game.cpp
+	texture.render(getX(), getY(), currentClip);
 
 	++currentframe;						// Go to next frame
 
@@ -45,7 +51,7 @@ void GameObject::spawn(int x, int y, int vx, SDL_Rect* collider) {
 	m_xVel = vx;
 	m_yVel = vx;	// 2017-01-10 JOE: use same velocity for x and y
 //	m_Collider = collider;
-    setCollider((*collider));
+	setCollider((*collider));
 }
 
 void GameObject::spawn(int x, int y, int vx, int vy, SDL_Rect* collider, int subType) {
@@ -54,7 +60,7 @@ void GameObject::spawn(int x, int y, int vx, int vy, SDL_Rect* collider, int sub
 	m_xVel = vx;
 	m_yVel = vy;	// 2017-01-10 JOE: use same velocity for x and y
 //	m_Collider = collider;
-    setCollider((*collider));
+	setCollider((*collider));
 	m_SubType = subType;
 	setAlive(true);
 }
@@ -114,8 +120,7 @@ void GameObject::spawn(int x, int y, SDL_Rect* collider, int player, int type) {
 	setY(y + 13);
 	setVelX(getVelocity());
 	setVelY(0);
-//	m_Collider = collider;
-    setCollider((*collider));
+	setCollider((*collider));
 	setPlayer(player);
 	setSubType(type);
 }
@@ -133,7 +138,7 @@ void GameObject::setSpeedBoost(bool boost) {
 }
 
 
-void GameObject::renderParticles(Texture &one, Texture &two, Texture &three, Texture &four, SDL_Renderer *rend) {
+void GameObject::renderParticles(Texture &one, Texture &two, Texture &three, Texture &four) {
 	//Go through particles
 	for (int i = 0; i < TOTAL_PARTICLES2; ++i) {
 		//Delete and replace dead particles
@@ -145,6 +150,6 @@ void GameObject::renderParticles(Texture &one, Texture &two, Texture &three, Tex
 
 	//Show particles
 	for (int i = 0; i < TOTAL_PARTICLES2; ++i) {
-		particles[i]->render(four, rend);
+		particles[i]->render(four);
 	}
 }

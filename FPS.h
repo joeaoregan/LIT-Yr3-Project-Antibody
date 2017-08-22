@@ -1,3 +1,7 @@
+/*
+	2017/02/27:	User game singleton to access renderer
+*/
+
 #ifndef FPS_H
 #define FPS_H
 
@@ -24,7 +28,8 @@ public:
 	float getFPS();
 	void setFPS(float fps);
 
-	void rendFPS(std::string fpsText, SDL_Renderer *rend);
+	void rendFPS(std::string fpsText);
+	//void rendFPS(std::string fpsText, SDL_Renderer *rend);
 };
 
 #endif

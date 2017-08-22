@@ -1,7 +1,7 @@
 #include "Menu.h"
 #include <SDL_ttf.h>
 
-bool Menu::loadMediaMenu(SDL_Renderer *rend) {
+bool Menu::loadMediaMenu() {
 	bool success = true;
 
 	gFont = TTF_OpenFont("Fonts/Lazy.ttf", 30);	// Open the font
@@ -12,27 +12,27 @@ bool Menu::loadMediaMenu(SDL_Renderer *rend) {
 	else {
 		SDL_Color textColour = { 0,0,0 };
 
-		if (!gMenuTextTexture1.loadFromRenderedText("ANTIBODY", textColour, gFont, rend)) {
+		if (!gMenuTextTexture1.loadFromRenderedText("ANTIBODY", textColour, gFont)) {
 			printf("Failed to render text texture!\n");
 			success = false;
 		}
-		if (!gMenuTextTexture2.loadFromRenderedText("1 Player", textColour, gFont, rend)) {	// can take out the new textColor objects
+		if (!gMenuTextTexture2.loadFromRenderedText("1 Player", textColour, gFont)) {	// can take out the new textColor objects
 			printf("Failed to render text texture!\n");
 			success = false;
 		}
-		if (!gMenuTextTexture3.loadFromRenderedText("2 Player", textColour, gFont, rend)) {
+		if (!gMenuTextTexture3.loadFromRenderedText("2 Player", textColour, gFont)) {
 			printf("Failed to render text texture!\n");
 			success = false;
 		}
-		if (!gMenuTextTexture4.loadFromRenderedText("Settings", textColour, gFont, rend)) {
+		if (!gMenuTextTexture4.loadFromRenderedText("Settings", textColour, gFont)) {
 			printf("Failed to render text texture!\n");
 			success = false;
 		}
-		if (!gMenuTextTexture5.loadFromRenderedText("High Scores", textColour, gFont, rend)) {
+		if (!gMenuTextTexture5.loadFromRenderedText("High Scores", textColour, gFont)) {
 			printf("Failed to render text texture!\n");
 			success = false;
 		}
-		if (!gMenuTextTexture6.loadFromRenderedText("Quit", textColour, gFont, rend)) {
+		if (!gMenuTextTexture6.loadFromRenderedText("Quit", textColour, gFont)) {
 			printf("Failed to render text texture!\n");
 			success = false;
 		}
@@ -51,7 +51,7 @@ bool Menu::loadMediaMenu(SDL_Renderer *rend) {
 	}
 
 	//Load sprites
-	if (!gButtonSpriteSheetTexture.loadFromFile("Art/buttonOne.png", rend)) {		// CHANGED ADDED RENDERER TO FUNCTION
+	if (!gButtonSpriteSheetTexture.loadFromFile("Art/buttonOne.png")) {		// CHANGED ADDED RENDERER TO FUNCTION
 		printf("Failed to load button sprite texture!\n");
 		success = false;
 	}
@@ -94,20 +94,21 @@ void Menu::closeMenu() {
 	gMenuTextTexture6.free();
 }
 
-void Menu::draw(SDL_Renderer *rend) {
-	SDL_SetRenderDrawColor(rend, 0xFF, 0x00, 0x00, 0xFF);
-	SDL_RenderClear(rend);
+void Menu::draw() {
+	SDL_SetRenderDrawColor(Game::Instance()->getRenderer(), 0xFF, 0x00, 0x00, 0xFF);
+	SDL_RenderClear(Game::Instance()->getRenderer());
 
 	for (int i = 0; i < TOTAL_BUTTONS; ++i) {
-		gMenuButtons[i].render(gButtonSpriteSheetTexture, rend, &gSpriteClipsMenu[gMenuButtons[i].mCurrentSprite]);
+		gMenuButtons[i].render(gButtonSpriteSheetTexture, &gSpriteClipsMenu[gMenuButtons[i].mCurrentSprite]);
+		//gMenuButtons[i].render(gButtonSpriteSheetTexture, rend, &gSpriteClipsMenu[gMenuButtons[i].mCurrentSprite]);
 	}
 
-	gMenuTextTexture1.render((SCREEN_WIDTH - gMenuTextTexture1.getWidth()) / 2, (SCREEN_HEIGHT - gMenuTextTexture1.getHeight()) / 12, rend);
-	gMenuTextTexture2.render(gMenuTextTexture2.getX(), gMenuTextTexture2.getY(), rend);
-	gMenuTextTexture3.render(gMenuTextTexture3.getX(), gMenuTextTexture3.getY(), rend);
-	gMenuTextTexture4.render(gMenuTextTexture4.getX(), gMenuTextTexture4.getY(), rend);
-	gMenuTextTexture5.render(gMenuTextTexture5.getX(), gMenuTextTexture5.getY(), rend);
-	gMenuTextTexture6.render(gMenuTextTexture6.getX(), gMenuTextTexture6.getY(), rend);
+	gMenuTextTexture1.render((SCREEN_WIDTH - gMenuTextTexture1.getWidth()) / 2, (SCREEN_HEIGHT - gMenuTextTexture1.getHeight()) / 12);
+	gMenuTextTexture2.render(gMenuTextTexture2.getX(), gMenuTextTexture2.getY());
+	gMenuTextTexture3.render(gMenuTextTexture3.getX(), gMenuTextTexture3.getY());
+	gMenuTextTexture4.render(gMenuTextTexture4.getX(), gMenuTextTexture4.getY());
+	gMenuTextTexture5.render(gMenuTextTexture5.getX(), gMenuTextTexture5.getY());
+	gMenuTextTexture6.render(gMenuTextTexture6.getX(), gMenuTextTexture6.getY());
 
-	SDL_RenderPresent(rend);			// Update screen
+	SDL_RenderPresent(Game::Instance()->getRenderer());			// Update screen
 }

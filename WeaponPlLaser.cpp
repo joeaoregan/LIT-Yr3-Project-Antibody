@@ -68,9 +68,9 @@ void WeaponPlLaser::spawn(int x, int y, int velocity, int player, int type) {
 }
 
 // Render the laser objects to the screen // 2017/01/22 Moved from game.cpp
-void WeaponPlLaser::render(int player, Texture &orange, Texture &green, SDL_Renderer *rend) {
+void WeaponPlLaser::render(int player, Texture &orange, Texture &green) {
 	if (player == 1)
-		orange.render(getX(), getY(), rend);
+		orange.render(getX(), getY());
 	else if (player == 2)
-		green.render(getX(), getY(), rend);
+		green.render(getX(), getY());
 }

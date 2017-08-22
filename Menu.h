@@ -25,8 +25,8 @@ public:
 	
 	void closeMenu();
 	void handleMenuEvents(SDL_Event& e);
-	bool loadMediaMenu(SDL_Renderer *rend);
-	void draw(SDL_Renderer *rend);
+	bool loadMediaMenu();
+	void draw();
 
 
 	//Menu(int x, int y);							// Initializes the variables

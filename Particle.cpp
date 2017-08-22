@@ -21,12 +21,12 @@ and then every other frame we render a semitransparent shimmer texture over it
 to make it look like the particle is shining. We then update the frame of
 animation.
 */
-void Particle::render(Texture &texture, SDL_Renderer *rend) {
-	mTexture->render(mPosX, mPosY, rend);				//Show image
+void Particle::render(Texture &texture) {
+	mTexture->render(mPosX, mPosY);				//Show image
 
 	//Show shimmer
 	if (mFrame % 3 == 0) {
-		texture.render(mPosX, mPosY, rend);
+		texture.render(mPosX, mPosY);
 	}
 
 	mFrame++;	// Animate

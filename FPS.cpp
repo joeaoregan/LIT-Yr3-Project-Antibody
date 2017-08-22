@@ -1,6 +1,7 @@
 #include <SDL.h>
 #include "FPS.h"
 #include <string.h>
+#include "Game.h"
 
 // 2017/02/01 Separated to its own class
 
@@ -17,9 +18,10 @@ void FPS::fpsclose() {
 	gFPSTextTexture.free();
 }
 
-void FPS::rendFPS(std::string fpsText, SDL_Renderer *rend) {
-	gFPSTextTexture.UIText(fpsText, rend);						// Render text - Use a string to render the current FPS to a texture
-	gFPSTextTexture.render((SCREEN_WIDTH - 150) / 2, 8, rend);
+void FPS::rendFPS(std::string fpsText) {
+//void FPS::rendFPS(std::string fpsText, SDL_Renderer *rend) {
+	gFPSTextTexture.UIText(fpsText);						// Render text - Use a string to render the current FPS to a texture
+	gFPSTextTexture.render((SCREEN_WIDTH - 150) / 2, 8);
 }
 
 float FPS::getFPS() { return framespersecond; }

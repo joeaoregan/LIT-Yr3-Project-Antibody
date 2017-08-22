@@ -1,31 +1,31 @@
 #ifndef SPLASH_SCREEN_H
 #define SPLASH_SCREEN_H
 
-#include <SDL_ttf.h>
+//#include <SDL_ttf.h>
 #include "Texture.h"
 
 class SplashScreen {
 public:
 	// Game Title & Created By SplashScreens
-	bool displayGameIntroSplashScreens(SDL_Renderer *rend);
-	void scrollCreatedBySplashScreen(SDL_Renderer *rend, int startAt = 0, int seconds = 1);
+	bool displayGameIntroSplashScreens();
+	void scrollCreatedBySplashScreen(int startAt = 0, int seconds = 1);
 
 	// Level 1 Logo & Info Screens
-	bool level1IntroScreens(SDL_Renderer *rend);
-	void scrollDownL1Logo(SDL_Renderer *rend, int startAt);
-	void infoScreenL1Enemies(SDL_Renderer *rend, int seconds, int startAt, Texture &story);
-	void infoScreenL1PowerUps(SDL_Renderer *rend, int seconds, int startAt, Texture &story);
-	void level1FinalScore(SDL_Renderer *rend);
+	bool level1IntroScreens();
+	void scrollDownL1Logo(int startAt);
+	void infoScreenL1Enemies(int seconds, int startAt, Texture &story);
+	void infoScreenL1PowerUps(int seconds, int startAt, Texture &story);
+	void level1FinalScore();
 	
 	// Scroll text up the screen, from a start point to an end point
-	void scrollUpText(SDL_Renderer *rend, std::string backgroundID, Texture & text, int seconds = 0, int rate = 15, int startAt = SCREEN_HEIGHT, int stopAt = 300); // 2017/02/26 Edited to take an ID. Change rate to increase speed, higher number = faster
+	void scrollUpText(std::string backgroundID, Texture & text, int seconds = 0, int rate = 15, int startAt = SCREEN_HEIGHT, int stopAt = 300); // 2017/02/26 Edited to take an ID. Change rate to increase speed, higher number = faster
 
 	// Press Any Key To Continue
-	void pressButtonToContinue(SDL_Renderer *rend, SDL_Event e);
+	void pressButtonToContinue(SDL_Event e);
 
 	// Level 2 Logo & Info Screens
 	//bool level2IntroScreens(SDL_Renderer *rend);
-	void scrollRightL2Logo(SDL_Renderer *rend, int startAt);
+	void scrollRightL2Logo(int startAt);
 
 
 
@@ -68,11 +68,11 @@ public:
 	std::string storyPage2;
 	std::string storyPage3;
 	
-	bool initSplashScreens(SDL_Renderer *rend);
+	bool initSplashScreens();
 	void closeSplashScreens();
-	void level2FinalScore(SDL_Renderer *rend);
-	void level3FinalScore(SDL_Renderer *rend);
-	void endOfGame(SDL_Renderer *rend, int level, std::string finalScore = "", std::string winner = "");
+	void level2FinalScore();
+	void level3FinalScore();
+	void endOfGame(int level, std::string finalScore = "", std::string winner = "");
 
 	SDL_Rect gPressButtonToContinueSpriteClips[6];			// Sprite frames for Press Button to Continue animation
 
@@ -89,7 +89,7 @@ public:
 	//void displayLevelSplashScreen(std::string objective, SDL_Renderer *rend, int level);
 
 	//void scrollUpLogo(SDL_Renderer *rend, Texture &texture, int seconds = 1, int rate = 5); 
-	void scrollVerticalLogo(SDL_Renderer *rend, Texture &texture, int seconds = 1, int rate = 10, int startAt = -SCREEN_HEIGHT, int stopAt = 0);	// Default is scroll down from top, -600 starts above the screen
+	void scrollVerticalLogo(Texture &texture, int seconds = 1, int rate = 10, int startAt = -SCREEN_HEIGHT, int stopAt = 0);	// Default is scroll down from top, -600 starts above the screen
 
 	//void scrollUpText(SDL_Renderer *rend, Texture &background, Texture & text, int seconds, int rate = 15, int startAt = SCREEN_HEIGHT, int stopAt = 300); // Change rate to increase speed, higher number = faster
 

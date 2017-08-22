@@ -10,11 +10,12 @@
 #ifndef GAME_H
 #define GAME_H
 
+#include "GameStateMachine.h"
+#include <SDL.h>
 #include <cstdlib>		// For Random Numbers
 #include <ctime>		// For Random Numbers
 #include <list>
-#include <vector>
-#include <string>
+//#include <vector>
 
 // Other Symbolic Constants
 #define PLAYER_1 1
@@ -29,6 +30,8 @@ const int BLOOD_EXP_ANIMATION_FRAMES = 12;
 
 class Game {
 public:
+	SDL_Window* gWindow = NULL;			// The window we'll be rendering to
+
 	// 27/02/2017 Game Singleton
 	static Game* Instance() {
 		if (s_pInstance == 0) {
@@ -38,6 +41,14 @@ public:
 
 		return s_pInstance;
 	}
+
+	SDL_Renderer* gRenderer;		// P65 2017/02/27 Renderer  ----- SHOULD BE PRIVATE
+	//SDL_Renderer* getRenderer() const { return m_pRenderer; }
+	SDL_Renderer* getRenderer() const { return gRenderer; }
+
+	int player1Score, player2Score;		// need variables to store score in case player dies
+
+	GameStateMachine* getStateMachine() { return m_pGameStateMachine; }
 
 	bool nameEntered;
 	bool enterName();
@@ -148,14 +159,18 @@ public:
 	void managePlayerScores(int score, int player, int type);
 
 	//void setViewport(SDL_Rect &rect, int x, int y, int w, int h);
-
 	//void setupAnimationClip(SDL_Rect &rect, int frames, int amount, bool type2 = false);
 
 
 private:
+	GameStateMachine* m_pGameStateMachine;
+
+	Game() {};						// 2017/02/27 Constructor private for singleton
+
+	//SDL_Renderer* gRenderer;		// P65 2017/02/27 Renderer
+
 	int mNumPlayers;
-	int mCurrentLevel = MENU;							// The current level of the game, 0 = menu, 1 = level 1 etc.
-	//int mCurrentLevel = LEVEL_1;						// The current level of the game, 0 = menu, 1 = level 1 etc.
+	int mCurrentLevel = MENU;		// The current level of the game, 0 = menu, 1 = level 1 etc.
 
 	static Game* s_pInstance;
 };
