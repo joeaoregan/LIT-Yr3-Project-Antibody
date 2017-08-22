@@ -19,37 +19,17 @@
 // Other Symbolic Constants
 #define PLAYER_1 1
 #define PLAYER_2 2
-
-//enum playerWeapons { NINJA_STAR_P1, NINJA_STAR_P2, LASER_P1, LASER_P2, SAW_P1, SAW_P2, LASER_V2_P1, LASER_V2_P2, ROCKET_P1, ROCKET_P2 };
+#define NUMBER_OF_SONGS = 3;			// Total number of songs in the playlist
 
 class Game {
 public:
-	// Time
-	unsigned int lastTime, currentTime, countdownTimer;	// TEST TIMING
-
-	// Game Over Messages
-	std::string finalScores, gameWinners;
-
-	// Scrolling
-	int backgroundLoopCounter;							// Number of times the background image has looped
-	int scrollingOffset;								// 2017/01/10 JOE: Declare the background scrolling offset (Moved as stops background scrolling when in the render function)
-	int weaponScrolling;								// Scroll the image for current default laser weapon
-
-	// Game Messages
-	int pointsValueCounter;								// Time to display score for killing Enemy message
-	std::string pointsValue;							// Player notification messages, Yellow writing appearing in the middle of the game screen
-	int infoMessageP1Counter, infoMessageP2Counter, infoMessageCounter;		// Time to display notification messages
-	std::string infoMessageP1, infoMessageP2, infoMessageGeneral;			// Player notification messages, Yellow writing appearing in the middle of the game screen
-
-	// Number of Game Objects currently on the screen
-	int activeBloodCells;
-	int activeWhiteBloodCells;
-	int activeSmallBloodCells;
-	int activePowerUps;
-	int activeEnemyShips;
-	int activeEnemyVirus;
+	// Number of Blood Cells currently on the screen
+	int BloodCellsActive;
+	int whiteBloodCellsActive;
+	int smallBloodCellsActive;
 
 	enum levels { MENU, LEVEL_1, LEVEL_2, LEVEL_3 };
+	enum playerWeapons {NINJA_STAR_P1, NINJA_STAR_P2, LASER_P1, LASER_P2, SAW_P1, SAW_P2, LASER_V2_P1, LASER_V2_P2, ROCKET};
 
 	int getCurrentLevel() { return mCurrentLevel; }
 	void setCurrentLevel(int l) { mCurrentLevel = l; }
@@ -84,17 +64,17 @@ public:
 	void spawnNinjaStar(int x, int y, int player);			// 2017/01/09 JOE: added function to create ninja star weapons - 2017/01/17 added player decision - player to spawn for and their coords
 	void spawnSaw(int x, int y, int player);				// 2017/01/20: Saw Weapon for player
 	void spawnPowerUp();
-	void spawnRocket(int x, int y, int player, int type, bool launch);	// 2017-02-06
+	void spawnRocket(int x, int y, int player, int type = ROCKET);				// 2017-02-06
 
 	void gameProgress();
 	void gameTimer();										// 2017-02-15
 
 	//void gamepadInfo();									// 2017/01/17: Separate gamepad information
 
+
+
 	void displayText();										// 2017/01/17: Display game text
 	//void pressButtonToContinue();							// 2017/01/18
-
-	void infoMessage(std::string message, int type = 0, int timer = 0);
 
 	void collisionCheck();
 	//bool checkCollision(SDL_Rect *a, SDL_Rect *b);
@@ -109,7 +89,6 @@ public:
 	// Music
 	void musicTrackForward();								// FOR SOME REASON, CONTROLLER DOESNT LIKE THE AUDIO CLASS -> SO PLAYING THROUGH GAME
 	void musicTrackBackward();
-	void identifyTrack(int songName);						// 2017/02/17 Identify the song playing
 
 	void spawnRandom(int &x, int &y, int &randomSpeed, int xMuliplier = 0, int yPadding = 80, int speed = 1);
 

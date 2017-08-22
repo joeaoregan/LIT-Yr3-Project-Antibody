@@ -19,11 +19,6 @@ PowerUp::PowerUp(int type, int score) {
 		setWidth(30);
 		setName("Rocket Power Up");
 	}
-	if (type == POWER_UP_CHECKPOINT) {
-		setHeight(60);
-		setWidth(60);
-		setName("Checkpoint Power Up");
-	}
 
 	setVelocity(1);
 

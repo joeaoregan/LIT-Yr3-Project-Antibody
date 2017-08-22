@@ -5,13 +5,13 @@
 #include "Player.h"
 #include "WeaponEnLaser.h"
 
-//enum virusType { VIRUS_GREEN, VIRUS_ORANGE, VIRUS_BLUE };
+enum virusType { GREEN, ORANGE, BLUE };
 
 class EnemyVirus : public Enemy {
 public:
 	float bombTimer;
 
-	EnemyVirus(int type = VIRUS_GREEN, float time = 0);							// Initializes the variables
+	EnemyVirus(int type = 0, float time = 0);							// Initializes the variables
 	~EnemyVirus();							// Destructor
 	
 	virtual void movement(int playerX, int playerY);

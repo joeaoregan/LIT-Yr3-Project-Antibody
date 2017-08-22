@@ -22,7 +22,7 @@ WeaponEnLaser::WeaponEnLaser(int type, int rotateCenter) {
 	setAlive(true);
 
 	// Set the name
-	if (type == ENEMY_SHIP_LASER)
+	if (type == ENEMY_LASER)
 		setName("Enemy Laser");
 	else if (type == VIRUS_FIREBALL)
 		setName("Virus Fireball");
@@ -71,7 +71,7 @@ void WeaponEnLaser::movement() {
 	//else if (getY() > (SCREEN_HEIGHT_GAME - 40)) setAlive(false);	// 600 - 40 for pink border
 	//else setAlive(true);
 }
-/*
+
 void WeaponEnLaser::movement(int centerX, int centerY, float timer) {	
 	if (centerX < SCREEN_WIDTH) {
 		rotateCounter %= 360;
@@ -85,4 +85,3 @@ void WeaponEnLaser::movement(int centerX, int centerY, float timer) {
 			GameObject::movement();					// Fire the satellite bullet object
 	}
 }
-*/
