@@ -46,6 +46,8 @@ public:
 	// Speed boost
 	bool getSpeedBoost() { return mSpeedBoost; }
 	unsigned int getBoostStartTime() { return mBoostStartTime; }
+	void setBoostStartTime(unsigned int time) { mBoostStartTime = time; }
+	float boostTimer();
 	void setSpeedBoost(bool boost);
 
 	// Movement
@@ -55,10 +57,6 @@ public:
 	void moveRight();
 	int moveDiagonal();
 	
-	// Laser
-	int getLaserGrade() { return mLaserGrade; }
-	void setLaserGrade(int grade) { mLaserGrade = grade; }
-
 	void render(Texture &player, Texture &dark, Texture &medium, Texture &light, Texture &shimmer, SDL_Renderer *rend);	// Shows the ship with particles on the screen
 	void rendPlayerLives(Texture &lives, int player, SDL_Renderer *rend);
 	bool getDrawParticle() { return drawParticle; }
@@ -66,6 +64,12 @@ public:
 
 	//void initialiseRocket(bool active, bool barActive, int timer, int numRockets);	// 2017/02/19 Move rocket reset parameters here
 	bool initialiseRocket();	// 2017/02/19 Move rocket reset parameters here
+	void resetRocket();			// 2017/02/19 Reset the player rocket and rocket power bar
+	void rocketScore();			// 2017/02/19 set the timer and score for the rocket
+
+
+	float boostPercent = 3.0;
+	unsigned int lastTime = 0.0;
 
 private:
 	bool mSpeedBoost;
@@ -76,9 +80,6 @@ private:
 	void renderParticles(Texture &one, Texture &two, Texture &three, Texture &four, SDL_Renderer *rend);
 
 	bool drawParticle;
-
-	int mLaserGrade;
-
 };
 
 #endif

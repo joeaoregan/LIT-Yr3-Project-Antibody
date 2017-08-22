@@ -6,12 +6,16 @@ StatusBar::StatusBar() {
 StatusBar::~StatusBar() {
 }
 
+void StatusBar::speedBoostBar(float percent, SDL_Renderer *rend, int startFrom) {
+	if (ROCKET_TIMER_SET - percent == 0) createStatusBar(0, 50, 60, 10, percent / ROCKET_TIMER_SET, { 36, 136, 36, 255 }, bgColour, rend, HORIZONTAL, startFrom);	// -10 Places 10 pixels above Player Ship
+	else createStatusBar(0, 50, 60, 10, percent / ROCKET_TIMER_SET, { 0, 255, 0, 255 }, bgColour, rend, HORIZONTAL, startFrom);	// -10 Places 10 pixels above Player Ship
+}
 void StatusBar::playerHealthBar(int x, int y, int w, float health, SDL_Renderer *rend) {
 	createStatusBar(x + (w / 4), y - 10, w / 2, 5, health / MAX_HEALTH, fgColour, bgColour, rend, HORIZONTAL);	// -10 Places 10 pixels above Player Ship
 }
 
 void StatusBar::rocketPowerBar(int x, int y, int w, float time, SDL_Renderer *rend) {
-	createStatusBar(x + (w / 4), y + 57, w / 2, 5, time / ROCKET_TIMER, {125,125,125,255}, bgColour, rend, HORIZONTAL, START_RIGHT);	// +57 Places 10 pixels below Player Ship (height = 47)
+	createStatusBar(x + (w / 4), y + 57, w / 2, 5, time / ROCKET_TIMER_SET, {125,125,125,255}, bgColour, rend, HORIZONTAL, START_RIGHT);	// +57 Places 10 pixels below Player Ship (height = 47)
 }
 
 void StatusBar::virusTimer(int x, int y, int w, float virusTimer, SDL_Renderer *rend) {

@@ -6,7 +6,7 @@ JOE: Moved functionality common to game objects to GameObjects class reducing th
 
 #define MAX_HEALTH 100
 
-#define ROCKET_TIMER 2.0
+#define ROCKET_TIMER 3.0
 
 #include <SDL.h>
 #include <SDL_image.h>
@@ -26,6 +26,7 @@ enum GameObjectTypes {
 	NINJA_STAR_P1, NINJA_STAR_P2, LASER_P1, LASER_P2, LASER_V2_P1, LASER_V2_P2, ROCKET_P1, ROCKET_P2,	// Weapons
 	BLOOD_CELL, PLAYER_WEAPON, ENEMY_WEAPON, ENEMY_OBJECT, POWER_UP, SMALL_VIRUS						// Main type of object
 };
+enum weaponsGrades {LASER_SINGLE, LASER_TRIPLE};
 
 class GameObject {
 public:
@@ -88,6 +89,7 @@ public:
 	void setHealth(int health);						// set the health
 	void setNumLives(int n) { m_NumLives = n; }		// Set the number of lives for the object
 
+//	SDL_Rect getCollider() { return m_Collider; }
 	SDL_Rect* getCollider() { return &m_Collider; }
 	void setCollider(SDL_Rect collider) { m_Collider = collider; }	// 2017/01/19 Added as Sean keeps doing dumb things with the colliders
 	void setColliderWidth(int w) { m_Collider.w = w; }
@@ -121,7 +123,7 @@ public:
 	int rotateCounter;	// degrees the satellite object has rotated
 	//int rotateCenter;
 	bool satelliteObjectAlive;
-	unsigned int whichVirusAssignedTo;
+	int whichVirusAssignedTo;
 
 	bool getRocketBarActive() { return m_RocketBarActive; }
 	void setRocketBarActive(bool rocket) { m_RocketBarActive = rocket; }
@@ -140,12 +142,19 @@ public:
 	// Weapons
 	int getPlayer() { return mPlayer; }
 	void setPlayer(int p = 0) { mPlayer = p; }
+	bool getKillRocket() { return killRocket; }
+	void setKillRocket(bool kill = 0) { killRocket = kill; }
+	int getBonusScore() { return rocketBonusScore; }
+	void setBonusScore(int bonus = 0) { rocketBonusScore = bonus; }
 	// Saw
 	bool getSawActive() { return sawActive; }
 	bool setSawActive(bool active) {
 		sawActive = active;			// Set the saw active
 		return true;				// Return true value to create the saw
 	}
+	// Laser
+	int getLaserGrade() { return mLaserGrade; }
+	void setLaserGrade(int grade) { mLaserGrade = grade; }
 
 private:
 	// GameObject Variables
@@ -183,6 +192,9 @@ private:
 	// Weapons
 	int mPlayer;
 	bool sawActive;
+	int rocketBonusScore;
+	bool killRocket;
+	int mLaserGrade;
 };
 
 #endif

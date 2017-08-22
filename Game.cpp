@@ -50,8 +50,6 @@ bool displayLevelIntro;				// Display the information splash screen at the start
 /***************************************************************************************************************************/
 
 // Weapons
-int rocket1BonusScore;
-int rocket2BonusScore;
 bool killRocket1 = false;
 bool killRocket2 = false;
 bool Laser1 = false;
@@ -75,6 +73,10 @@ SDL_Rect UIViewport;				// Menu below main game screen view port
 SDL_Rect mapViewport;				// Map indicating the ships current location in the professors body
 SDL_Rect weaponViewport1;			// Indicates the currently selected main weapon
 SDL_Rect weaponViewport2;			// Indicates the currently selected main weapon
+SDL_Rect rocketViewport1;			// Indicates the currently selected main weapon
+SDL_Rect rocketViewport2;			// Indicates the currently selected main weapon
+SDL_Rect boostViewport1;			// Indicates the currently selected main weapon
+SDL_Rect boostViewport2;			// Indicates the currently selected main weapon
 Texture gProfessorMapTexture;		// Map texture to show the players current position inside the professor
 //Texture gWeapon;					// Background texture
 
@@ -154,6 +156,9 @@ Texture gBloodCellTexture(1);		// Texture for Blood Cell obstacle (classed as en
 Texture gBloodCellSmallTexture(2);	// Texture for Smaller Blood Cell
 Texture gWhiteBloodCellTexture(2);	// Texture for White Blood Cell
 // UI
+Texture gNumRocketsTextTexture1;	// Indicate the number of rockets for player 1
+Texture gNumRocketsTextTexture2;	// Indicate the number of rockets for player 2
+Texture gSpeedBoostTextTexture;
 Texture gTimeTextTexture;			// Countdown time displayed in game screen
 Texture gCreatedByTextTexture;		// Created by message at bottom of screen for demo
 Texture gLevelTextTexture;			// Current level displayed at top of game screen
@@ -180,10 +185,14 @@ bool Game::init() {
 	setViewport(gameViewport, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT_GAME);	// Main Game Screen
 	setViewport(UIViewport, 0, 600, SCREEN_WIDTH, 120);					// Bottom of screen UI / Info
 	setViewport(weaponViewport1, 10, 600, 60, 60);						// Current Main Weapon Selected
-	setViewport(weaponViewport2, SCREEN_WIDTH - 60 - 10, 600, 60, 60);	// Current Main Weapon Selected
+	setViewport(rocketViewport1, 70, 600, 60, 60);						// Current Main Weapon Selected
+	setViewport(boostViewport1, 130, 600, 60, 60);						// Current Main Weapon Selected
+	setViewport(weaponViewport2, SCREEN_WIDTH - 70, 600, 60, 60);	// Current Main Weapon Selected
+	setViewport(rocketViewport2, SCREEN_WIDTH - 130, 600, 60, 60);						// Current Main Weapon Selected
+	setViewport(boostViewport2, SCREEN_WIDTH - 190, 600, 60, 60);						// Current Main Weapon Selected
 
 	// Game Console Title
-	std::cout << "16//02/2017 - Fixed Player Movement, edited rockets, added info message function, fixed Map size & alpha\n" << std::endl;
+	std::cout << "19//02/2017 - Added more to User Interface, White Virus does something,\n\t\tDifferent colour explosions,\n\t\tVirus split in 2 with ninja stars\n" << std::endl;
 	std::cout << "Player 1 Health: " << player1->getHealth() << " " << "Player 2 Health: " << player2->getHealth() << std::endl;		// Player health at start of game
 	std::cout << "Player 1 Lives: " << player1->getNumLives() << " " << "Player 2 Lives: " << player2->getNumLives() << std::endl;
 	player1->setName("Player 1");	// Names for players
@@ -343,16 +352,19 @@ bool Game::loadMedia() {
 		printf("Failed to load Enemy Ship texture!\n");
 		success = false;
 	}
+
 //	if (!gEnemyVirusTexture.loadFromFile("Art/EnemyVirus.png", gRenderer)) {				// Enemy Virus Texture - Green
 	if (!gEnemyVirusTexture.loadFromFile("Art/VirusGreen.png", gRenderer)) {				// Enemy Virus Texture - Green
-		printf("Failed to load Enemy Virus texture!\n");
+		printf("Failed to load Green Enemy Virus texture!\n");
 		success = false;
 	}
 //	if (!gEnemyVirusOrangeTexture.loadFromFile("Art/EnemyVirusOrange.png", gRenderer)) {	// Enemy Virus Texture - Orange
 	if (!gEnemyVirusOrangeTexture.loadFromFile("Art/VirusOrange.png", gRenderer)) {	// Enemy Virus Texture - Orange
-		printf("Failed to load Enemy Virus Orange texture!\n");
+		printf("Failed to load Orange Enemy Virus texture!\n");
 		success = false;
 	}
+
+
 	if (!gBloodCellTexture.loadFromFile("Art/BloodCell.png", gRenderer)) {					// 10/01 Added Large Blood Cell
 		printf("Failed to load Blood Cell texture!\n");
 		success = false;
@@ -454,16 +466,6 @@ bool Game::loadMedia() {
 		success = false;
 	}
 	else {
-		/*Set sprite clips
-		for (unsigned int i = 0; i < 6; ++i) {
-			if (i < 4) gGreenVirusSpriteClips[i].x = i * 75;
-			if (i == 5) gGreenVirusSpriteClips[i].x = 2 * 75;
-			if (i == 6) gGreenVirusSpriteClips[i].x = 1 * 75;
-			gGreenVirusSpriteClips[i].y = 0;
-			gGreenVirusSpriteClips[i].w = 75;
-			gGreenVirusSpriteClips[i].h = 75;
-		}
-		*/
 		setupAnimationClip(gGreenVirusSpriteClips, 6, 75, true);	// Set sprite clips
 	}
 	if (!gOrangeVirusSpriteSheetTexture.loadFromFile("Art/EnemyVirus_SpriteSheet_Orange.png", gRenderer)) {	// Sprite sheet for Enemy Orange Virus
@@ -471,16 +473,6 @@ bool Game::loadMedia() {
 		success = false;
 	}
 	else {
-		/*Set sprite clips
-		for (unsigned int i = 0; i < 6; ++i) {
-			if (i < 4) gOrangeVirusSpriteClips[i].x = i * 75;
-			if (i == 5) gOrangeVirusSpriteClips[i].x = 2 * 75;
-			if (i == 6) gOrangeVirusSpriteClips[i].x = 1 * 75;
-			gOrangeVirusSpriteClips[i].y = 0;
-			gOrangeVirusSpriteClips[i].w = 75;
-			gOrangeVirusSpriteClips[i].h = 75;
-		}
-		*/
 		setupAnimationClip(gOrangeVirusSpriteClips, 6, 75, true);	// Set sprite clips
 	}
 
@@ -489,17 +481,6 @@ bool Game::loadMedia() {
 		success = false;
 	}
 	else {
-		/*
-		//Set sprite clips
-		for (unsigned int i = 0; i < 6; ++i) {
-			if (i < 4) gBlueVirusSpriteClips[i].x = i * 75;
-			if (i == 5) gBlueVirusSpriteClips[i].x = 2 * 75;
-			if (i == 6) gBlueVirusSpriteClips[i].x = 1 * 75;
-			gBlueVirusSpriteClips[i].y = 0;
-			gBlueVirusSpriteClips[i].w = 75;
-			gBlueVirusSpriteClips[i].h = 75;
-		}
-		*/
 		setupAnimationClip(gBlueVirusSpriteClips, 6, 75, true);	// Set sprite clips
 	}
 	if (!gSmallGreenVirusSpriteSheetTexture.loadFromFile("Art/EnemyVirus_SpriteSheet_Green_Small.png", gRenderer)) {	// Sprite sheet for Enemy Blue Virus
@@ -507,17 +488,6 @@ bool Game::loadMedia() {
 		success = false;
 	}
 	else {
-		/*
-		//Set sprite clips
-		for (unsigned int i = 0; i < 6; ++i) {
-			if (i < 4) gSmallGreenVirusSpriteClips[i].x = i * 40;
-			if (i == 5) gSmallGreenVirusSpriteClips[i].x = 2 * 40;
-			if (i == 6) gSmallGreenVirusSpriteClips[i].x = 1 * 40;
-			gSmallGreenVirusSpriteClips[i].y = 0;
-			gSmallGreenVirusSpriteClips[i].w = 40;
-			gSmallGreenVirusSpriteClips[i].h = 40;
-		}
-		*/
 		setupAnimationClip(gSmallGreenVirusSpriteClips, 6, 40, true);	// Set sprite clips
 	}
 	if (!gSmallOrangeVirusSpriteSheetTexture.loadFromFile("Art/EnemyVirus_SpriteSheet_Orange_Small.png", gRenderer)) {	// Sprite sheet for Enemy Blue Virus
@@ -525,17 +495,6 @@ bool Game::loadMedia() {
 		success = false;
 	}
 	else {
-		/*
-		//Set sprite clips
-		for (unsigned int i = 0; i < 6; ++i) {
-			if (i < 4) gSmallOrangeVirusSpriteClips[i].x = i * 40;
-			if (i == 5) gSmallOrangeVirusSpriteClips[i].x = 2 * 40;
-			if (i == 6) gSmallOrangeVirusSpriteClips[i].x = 1 * 40;
-			gSmallOrangeVirusSpriteClips[i].y = 0;
-			gSmallOrangeVirusSpriteClips[i].w = 40;
-			gSmallOrangeVirusSpriteClips[i].h = 40;
-		}
-		*/
 		setupAnimationClip(gSmallOrangeVirusSpriteClips, 6, 40, true);	// Set sprite clips
 	}
 	if (!gSmallBlueVirusSpriteSheetTexture.loadFromFile("Art/EnemyVirus_SpriteSheet_Blue_Small.png", gRenderer)) {	// Sprite sheet for Enemy Blue Virus
@@ -543,17 +502,6 @@ bool Game::loadMedia() {
 		success = false;
 	}
 	else {
-		/*
-		//Set sprite clips
-		for (unsigned int i = 0; i < 6; ++i) {
-			if (i < 4) gSmallBlueVirusSpriteClips[i].x = i * 40;
-			if (i == 5) gSmallBlueVirusSpriteClips[i].x = 2 * 40;
-			if (i == 6) gSmallBlueVirusSpriteClips[i].x = 1 * 40;
-			gSmallBlueVirusSpriteClips[i].y = 0;
-			gSmallBlueVirusSpriteClips[i].w = 40;
-			gSmallBlueVirusSpriteClips[i].h = 40;
-		}
-		*/
 		setupAnimationClip(gSmallBlueVirusSpriteClips, 6, 40, true);	// Set sprite clips
 	}
 
@@ -601,7 +549,7 @@ bool Game::loadMedia() {
 
 void setupAnimationClip(SDL_Rect rect[], int frames, int amount, bool type2) {
 	if (!type2) {
-		for (int i = 0; i < frames; ++i) {
+		for (unsigned int i = 0; i < frames; ++i) {
 			rect[i].x = i * amount;
 			rect[i].y = 0;
 			rect[i].w = amount;
@@ -768,6 +716,10 @@ void Game::displayText() {
 		gameTimer();													// Set the count down timer
 
 		gTimeTextTexture.UITextTimer(timeText.str().c_str(), gRenderer, countdownTimer);	// Render Text - Use a string to render the current Game Time to a Texture
+
+		gNumRocketsTextTexture1.numRocketsLeft(std::to_string(player1->getNumRockets()), gRenderer);
+		gNumRocketsTextTexture2.numRocketsLeft(std::to_string(player2->getNumRockets()), gRenderer);
+		gSpeedBoostTextTexture.speedBoostText("Speed\nBoost", gRenderer);
 
 		gP1ScoreTextTexture.UIText(score1Text.str().c_str(), gRenderer);					// Render text - Use a string to render the current P1 Score to a texture
 		gP2ScoreTextTexture.UIText(score2Text.str().c_str(), gRenderer);					// Render text - Use a string to render the current P2 Score to a texture
@@ -1008,6 +960,8 @@ void Game::renderGameObjects() {
 			//SDL_RenderDrawRect(gRenderer, &player1->getCollider());
 			//SDL_RenderDrawRect(gRenderer, &player2->getCollider());
 
+			gPowerUpRocketTexture.modifyAlpha(255);											// Keep alpha values independent
+
 			for (unsigned int index = 0; index != listOfGameObjects.size(); ++index) {
 				//SDL_RenderDrawRect(gRenderer, &listOfGameObjects[index]->getCollider());
 				frames = listOfGameObjects[index]->getFrames();		// 2017/02/09 Fixed the explosion animations, they are now assigned to indiviual objects with the game object frame attribute
@@ -1135,8 +1089,6 @@ void Game::renderGameObjects() {
 			}
 
 			// Render Text
-			SDL_RenderSetViewport(gRenderer, &UIViewport);
-			gCreatedByTextTexture.render((SCREEN_WIDTH - gCreatedByTextTexture.getWidth()) / 2, 120 - gCreatedByTextTexture.getHeight() - 8, gRenderer);
 			SDL_RenderSetViewport(gRenderer, &gameViewport);
 			gLevelTextTexture.render(10, 8, gRenderer);
 
@@ -1160,82 +1112,46 @@ void Game::renderGameObjects() {
 			if (player1->getAlive()) {
 				bar.playerHealthBar(player1->getX(), player1->getY(), player1->getWidth(), player1->getHealth(), gRenderer);
 
-				if (killRocket1) {
-					for (unsigned int index = 0; index != listOfGameObjects.size(); ++index) {
-						if (listOfGameObjects[index]->getSubType() == ROCKET_P1) listOfGameObjects[index]->setAlive(false);		// Kill the rocket
-					}
-				}
-				if (killRocket2) {
-					for (unsigned int index = 0; index != listOfGameObjects.size(); ++index) {
-						if (listOfGameObjects[index]->getSubType() == ROCKET_P2) listOfGameObjects[index]->setAlive(false);		// Kill the rocket
-					}
-				}
-
 				if (player1->getRocketBarActive()) {
-					rocket1BonusScore = 50;									// RESET ROCKET BONUS SCORE
-					killRocket1 = false;										// Reset Kill rocket
-					if (SDL_GetTicks() >= player1->getTimerTracker() + 200) {
-						player1->setTimerTracker(SDL_GetTicks());				// start the timer
-						player1->setTimer(player1->getTimer() - 0.2);
-					}
+					player1->rocketScore();				// Set the score for the rocket
 
-					rocket1BonusScore -= rocket1BonusScore * (player1->getTimer() / ROCKET_TIMER);
 					bar.rocketPowerBar(player1->getX(), player1->getY(), player1->getWidth(), player1->getTimer(), gRenderer);
 
 					if (player1->getTimer() <= 0) {
 						spawnExplosion(player1->getX(), player1->getY(), EXPLOSION);
-						player1->setRocketActive(false);
-						player1->setRocketBarActive(false);
-						killRocket1 = true;
+						player1->resetRocket();			// reset the rocket, returns boolean value
 						//for (unsigned int index = 0; index != listOfPlayerWeapons.size(); ++index) {
 						//	if (listOfPlayerWeapons[index]->getType() == ROCKET_P1) listOfPlayerWeapons[index]->setAlive(false);		// Kill the rocket
 						//}
 					}
 				}
-				if (player2->getRocketBarActive()) {
-					rocket2BonusScore = 50;									// RESET ROCKET BONUS SCORE
-					killRocket2 = false;										// Reset Kill rocket
-					if (SDL_GetTicks() >= player2->getTimerTracker() + 200) {
-						player2->setTimerTracker(SDL_GetTicks());				// start the timer
-						player2->setTimer(player2->getTimer() - 0.2);
-					}
 
-					rocket2BonusScore -= rocket2BonusScore * (player2->getTimer() / ROCKET_TIMER);
+				gPlayer1Texture.modifyAlpha(gPlayer1Texture.getAlpha());
+				player1->render(gPlayer1Texture, gRenderer);
+			}// render the ship over the background
+			if (player2->getAlive()) {
+				bar.playerHealthBar(player2->getX(), player2->getY(), player2->getWidth(), player2->getHealth(), gRenderer);
+
+				if (player2->getRocketBarActive()) {
+					player2->rocketScore();	// return true
+
 					bar.rocketPowerBar(player2->getX(), player2->getY(), player2->getWidth(), player2->getTimer(), gRenderer);
 
 					if (player2->getTimer() <= 0) {
 						spawnExplosion(player2->getX(), player2->getY(), EXPLOSION);
-						player2->setRocketActive(false);
-						player2->setRocketBarActive(false);
-						killRocket2 = true;
+						player2->resetRocket();
 					}
 				}
 
-				gPlayer1Texture.modifyAlpha(gPlayer1Texture.getAlpha());
-				player1->render(gPlayer1Texture, gRenderer);
-
-				SDL_RenderSetViewport(gRenderer, &UIViewport);
-				player1->rendPlayerLives(gP1LivesTexture, 1, gRenderer);											// Player Lives
-				gP1ScoreTextTexture.render(10, 50, gRenderer);														// Score for Player 1
-				gP2ScoreTextTexture.render(SCREEN_WIDTH - gP2ScoreTextTexture.getWidth() - 10, 50, gRenderer);		// Score for Player 2
-				SDL_RenderSetViewport(gRenderer, &gameViewport);
-			}// render the ship over the background
-			if (player2->getAlive()) {
-				bar.playerHealthBar(player2->getX(), player2->getY(), player2->getWidth(), player2->getHealth(), gRenderer);
 				gPlayer2Texture.modifyAlpha(gPlayer2Texture.getAlpha());
 				player2->render(gPlayer2Texture, gRenderer);
-
-				SDL_RenderSetViewport(gRenderer, &UIViewport);
-				player2->rendPlayerLives(gP2LivesTexture, 2, gRenderer);											// render the ship over the background
-				SDL_RenderSetViewport(gRenderer, &gameViewport);
 			}
 
 			for (unsigned int index = 0; index != listOfGameObjects.size(); ++index) {
-				if (listOfGameObjects[index]->getSubType() == VIRUS_ORANGE) {													// 2017/01/25 If the type of virus is an Orange Exploding Virus
-
-					if (SDL_GetTicks() >= listOfGameObjects[index]->getTimerTracker() + 500) {						// Every .5 seconds
-						listOfGameObjects[index]->setTimerTracker(SDL_GetTicks());									// reset the start time
-						listOfGameObjects[index]->setTimer(listOfGameObjects[index]->getTimer() - 0.5);				// Decrement the timer
+				if (listOfGameObjects[index]->getSubType() == VIRUS_ORANGE) {								// 2017/01/25 If the type of virus is an Orange Exploding Virus
+					if (SDL_GetTicks() >= listOfGameObjects[index]->getTimerTracker() + 500) {				// Every .5 seconds
+						listOfGameObjects[index]->setTimerTracker(SDL_GetTicks());							// reset the start time
+						listOfGameObjects[index]->setTimer(listOfGameObjects[index]->getTimer() - 0.5);		// Decrement the timer
 					}
 
 					// Start the timer
@@ -1294,30 +1210,73 @@ void Game::renderGameObjects() {
 				}
 			}
 
+			// User Interface / Player Information Panel
+			SDL_RenderSetViewport(gRenderer, &UIViewport);
+			player1->rendPlayerLives(gP1LivesTexture, 1, gRenderer);											// Player Lives
+			gP1ScoreTextTexture.render(10, 55, gRenderer);														// Score for Player 1
+			player2->rendPlayerLives(gP2LivesTexture, 2, gRenderer);											// render the ship over the background
+			gP2ScoreTextTexture.render(SCREEN_WIDTH - gP2ScoreTextTexture.getWidth() - 10, 55, gRenderer);		// Score for Player 2
+			gCreatedByTextTexture.render((SCREEN_WIDTH - gCreatedByTextTexture.getWidth()) / 2, 120 - gCreatedByTextTexture.getHeight() - 8, gRenderer);
+
 			/* Professor Mini Map */
 			/* Weapon Scrolling will work of trigger buttons, press left and right to select main weapon */
-			SDL_RenderSetViewport(gRenderer, &mapViewport);								// UIViewport	// SDL_RenderSetViewport(gRenderer, &gameViewport);  // UIViewport
-			//if (!levelOver) SDL_RenderCopy(gRenderer, gTest, NULL, NULL);				// Render texture to screen
+			SDL_RenderSetViewport(gRenderer, &mapViewport);									// UIViewport	// SDL_RenderSetViewport(gRenderer, &gameViewport);  // UIViewport
+			//if (!levelOver) SDL_RenderCopy(gRenderer, gTest, NULL, NULL);					// Render texture to screen
 			if (!levelOver) gProfessorMapTexture.renderMap(gRenderer);
 			//if (!levelOver) gTest.render(NULL, NULL, gRenderer);
-																						// gCreatedByTextTexture.render(scrollingOffset, 10, gRenderer);
-			SDL_RenderSetViewport(gRenderer, &weaponViewport1);							// UIViewport
-																						//if (!levelOver) SDL_RenderCopy(gRenderer, gWeapon, NULL, NULL);	// Render texture to screen
-			if (Laser1) {
-				//gPowerUpLaserTexture.render(0, 0, gRenderer);							// 1st
-				gPowerUpLaserTextureV2.render(weaponScrolling, 0, gRenderer);			// 1st //weaponScrolling = 60;
-			}
-			else
-				gPowerUpLaserTexture.render(weaponScrolling, 0, gRenderer);				// 1st
+																							// gCreatedByTextTexture.render(scrollingOffset, 10, gRenderer);
+			SDL_RenderSetViewport(gRenderer, &weaponViewport1);								// UIViewport
+			if (player1->getLaserGrade() == LASER_SINGLE) gPowerUpLaserTexture.render(weaponScrolling, 5, gRenderer);			// 1st
+			else if (player1->getLaserGrade() == LASER_TRIPLE) gPowerUpLaserTextureV2.render(weaponScrolling, 5, gRenderer);	// 1st //weaponScrolling = 60;
+
+			SDL_RenderSetViewport(gRenderer, &rocketViewport1);								// UIViewport
+			gPowerUpRocketTexture.modifyAlpha(255);											// Keep alpha values independent
+			if (player1->getNumRockets() <= 0) gPowerUpRocketTexture.modifyAlpha(50);		// Fade out the rocket image if player has no rockets
+			gPowerUpRocketTexture.render(weaponScrolling + 15, -2, gRenderer, NULL, 45);	// 1st //weaponScrolling = 60;
+			gNumRocketsTextTexture1.modifyAlpha(150);
+			gNumRocketsTextTexture1.render((60 - gNumRocketsTextTexture1.getWidth())/2, (60 - gNumRocketsTextTexture1.getHeight()) / 2, gRenderer);								// Number of rockets for Player 1
 
 			SDL_RenderSetViewport(gRenderer, &weaponViewport2);  // UIViewport
-			if (Laser2) gPowerUpLaserTextureV2.render(weaponScrolling, 0, gRenderer);	// 1st
-			else gPowerUpLaserTexture.render(weaponScrolling, 0, gRenderer);			// 1st
-			SDL_RenderSetViewport(gRenderer, NULL);										// Reset Viewport
+			if (player1->getLaserGrade() == LASER_SINGLE) gPowerUpLaserTexture.render(weaponScrolling, 5, gRenderer);			// 1st
+			else if (player1->getLaserGrade() == LASER_TRIPLE) gPowerUpLaserTextureV2.render(weaponScrolling, 5, gRenderer);	// 1st
 
+			SDL_RenderSetViewport(gRenderer, &rocketViewport2);								// UIViewport
+			gPowerUpRocketTexture.modifyAlpha(255);											// Keep alpha values independent
+			if (player2->getNumRockets() <= 0) gPowerUpRocketTexture.modifyAlpha(50);		// Fade out the rocket image if player has no rockets
+			gPowerUpRocketTexture.render(weaponScrolling + 15, -2, gRenderer, NULL, 45);	// 1st //weaponScrolling = 60;
+			gNumRocketsTextTexture2.modifyAlpha(150);
+			gNumRocketsTextTexture2.render((60 - gNumRocketsTextTexture2.getWidth()) / 2, (60 - gNumRocketsTextTexture2.getHeight()) / 2, gRenderer);
+
+			SDL_RenderSetViewport(gRenderer, &boostViewport1);								// UIViewport
+
+			gSpeedBoostTextTexture.modifyAlpha(100);											// Keep alpha values independent
+			if(player1->getSpeedBoost())
+				gSpeedBoostTextTexture.modifyAlpha(255);											// Keep alpha values independent
+
+			//gSpeedBoostTextTexture.render((60 - gSpeedBoostTextTexture.getWidth()) / 2, (60 - gSpeedBoostTextTexture.getHeight()) / 2, gRenderer);
+			gSpeedBoostTextTexture.render(3, 5, gRenderer);
+			bar.speedBoostBar(player1->boostTimer(), gRenderer);
+			SDL_RenderSetViewport(gRenderer, &boostViewport2);									// UIViewport
+
+			gSpeedBoostTextTexture.modifyAlpha(100);											// Keep alpha values independent
+			if (player2->getSpeedBoost())
+				gSpeedBoostTextTexture.modifyAlpha(255);										// Keep alpha values independent
+
+			//gSpeedBoostTextTexture.render((60 - gSpeedBoostTextTexture.getWidth()) / 2, (60 - gSpeedBoostTextTexture.getHeight()) / 2, gRenderer);
+			gSpeedBoostTextTexture.render(3, 5, gRenderer);
+			bar.speedBoostBar(player2->boostTimer(), gRenderer, START_RIGHT);
+
+			SDL_RenderSetViewport(gRenderer, NULL);											// Reset Viewport
+			SDL_SetRenderDrawColor(gRenderer, 0, 255, 0, 255);								// Set Colour for squares around viewports to green
+			SDL_RenderDrawRect(gRenderer, &weaponViewport1);								// Draw squares around the viewports
+			SDL_RenderDrawRect(gRenderer, &weaponViewport2);
+			SDL_RenderDrawRect(gRenderer, &rocketViewport1);
+			SDL_RenderDrawRect(gRenderer, &rocketViewport2);
+			SDL_RenderDrawRect(gRenderer, &boostViewport1);
+			SDL_RenderDrawRect(gRenderer, &boostViewport2);
 		}
 		else if (levelOver == true) {
-			SDL_RenderSetViewport(gRenderer, NULL);										// UIViewport   gameViewport
+			SDL_RenderSetViewport(gRenderer, NULL);											// UIViewport   gameViewport
 
 			splash.endOfGame(gRenderer, getCurrentLevel(), finalScores);
 
@@ -1464,11 +1423,14 @@ void Game::destroyGameObjects() {
 			}
 			else if (listOfGameObjects[index]->getSubType() == ROCKET_P1) {
 				player1->setRocketActive(false);
+				if (player1->getKillRocket()) listOfGameObjects[index]->setAlive(false);
 			}
 			else if (listOfGameObjects[index]->getSubType() == ROCKET_P2) {
 				player2->setRocketActive(false);
+				if (player2->getKillRocket()) listOfGameObjects[index]->setAlive(false);
 			}
 			else if (listOfGameObjects[index]->getType() == SMALL_VIRUS) activeEnemyVirusSmall--;
+
 
 			//else if (listOfGameObjects[index]->getType() == PLAYER_WEAPON && listOfGameObjects[index]->getSubType() != SAW1 && listOfGameObjects[index]->getSubType() != SAW2) { // 201702/19 Added check for saws
 			//	spawnExplosion(listOfGameObjects[index]->getX(), listOfGameObjects[index]->getY(), EXPLOSION);			// Expode Player Weapon when it is destroyed
@@ -1626,7 +1588,7 @@ void Game::spawnExplosion(int x, int y, int subType) {
 	p_Explosion->spawn(x, y - 30);								// Spawn the explosion at the given x & y coords
 	listOfGameObjects.push_back(p_Explosion);					// Add explosion to list of game objects
 
-	if (subType == EXPLOSION) audio.explosionFX();				// Play explosion sound effect
+	if (subType = EXPLOSION) audio.explosionFX();				// Play explosion sound effect
 }
 
 void Game::spawnLaser(int x, int y, int player, int velocity, int grade) {
@@ -1643,7 +1605,7 @@ void Game::spawnLaser(int x, int y, int player, int velocity, int grade) {
 
 	listOfGameObjects.push_back(p_Laser1);
 
-	if (grade == 1) {		// FIRE 2 MORE LASERS AT ANGLES
+	if (grade == LASER_TRIPLE) {		// FIRE 2 MORE LASERS AT ANGLES
 		GameObject* p_Laser2 = new WeaponPlLaser(player, 1, 1);	// Angled laser
 		GameObject* p_Laser3 = new WeaponPlLaser(player, 2, 1);
 
@@ -1797,7 +1759,7 @@ void Game::collisionCheck() {
 			}
 			else if (listOfGameObjects[index]->getSubType() == POWER_UP_LASER) {
 				player1->setScore(player1->getScore() + listOfGameObjects[index]->getScore());
-				player1->setLaserGrade(1);
+				player1->setLaserGrade(LASER_TRIPLE);
 				Laser1 = true;
 				infoMessage("Player 1 has upgraded their laser!!!", PLAYER_1);
 			}
@@ -1852,7 +1814,7 @@ void Game::collisionCheck() {
 			}
 			else if (listOfGameObjects[index]->getSubType() == POWER_UP_LASER) {
 				player2->setScore(player2->getScore() + listOfGameObjects[index]->getScore());
-				player2->setLaserGrade(1);
+				player2->setLaserGrade(LASER_TRIPLE);
 				Laser2 = true;
 				infoMessage("Player 2 has upgraded their laser!!!", PLAYER_2);
 			}
@@ -1923,12 +1885,12 @@ void Game::collisionCheck() {
 				if (listOfGameObjects[weaponIndex]->getType() == PLAYER_WEAPON && listOfGameObjects[enemyIndex]->getType() == ENEMY_OBJECT) {
 					if (checkCollision(listOfGameObjects[weaponIndex]->getCollider(), listOfGameObjects[enemyIndex]->getCollider()) == true) {
 						if (listOfGameObjects[weaponIndex]->getSubType() == ROCKET_P1) {
-							infoMessage("Impact!!! Missile has taken out an Enemy Virus! Score +" + std::to_string(rocket1BonusScore), PLAYER_1);
-							managePlayerScores(rocket1BonusScore, PLAYER_1, listOfGameObjects[weaponIndex]->getSubType());
+							infoMessage("Impact!!! Missile has taken out an Enemy Virus! Score +" + std::to_string(player1->getBonusScore()), PLAYER_1);
+							managePlayerScores(player1->getBonusScore(), PLAYER_1, listOfGameObjects[weaponIndex]->getSubType());
 						}
 						else if (listOfGameObjects[weaponIndex]->getSubType() == ROCKET_P2) {
-							infoMessage("Impact!!! Missile has taken out an Enemy Virus! Score +" + std::to_string(rocket2BonusScore), PLAYER_2);
-							managePlayerScores(rocket2BonusScore, PLAYER_2, listOfGameObjects[weaponIndex]->getSubType());
+							infoMessage("Impact!!! Missile has taken out an Enemy Virus! Score +" + std::to_string(player2->getBonusScore()), PLAYER_2);
+							managePlayerScores(player2->getBonusScore(), PLAYER_2, listOfGameObjects[weaponIndex]->getSubType());
 						}
 
 						managePlayerScores(listOfGameObjects[enemyIndex]->getScore(), listOfGameObjects[weaponIndex]->getPlayer(), listOfGameObjects[weaponIndex]->getSubType());		// 2017-02-06 Add to players score
@@ -2035,9 +1997,6 @@ void Game::gameTimer() {
 // Reset a level or the game
 void Game::resetGame(int currentLevel) {
 	frames = 0;					// Animation Frames
-
-	rocket1BonusScore = 50;		// The score that is generated for a successful strike by a player rocket
-	rocket2BonusScore = 50;
 
 	// Reset the map of the professor
 	setViewport(mapViewport, (SCREEN_WIDTH - 120) / 2, 600, 120, 88);	// Reset the map to small size

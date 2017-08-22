@@ -9,7 +9,7 @@ Added asdw keyboard movement
 #include <math.h>
 
 #define VELOCITY 10
-#define BOOST 2
+#define BOOST 5
 #define MAX_HEALTH 100
 
 //Analog joystick dead zone
@@ -58,6 +58,8 @@ Player::Player() {
 
 	setTimer(ROCKET_TIMER);
 	setTimerTracker(0.0);
+
+	setLaserGrade(LASER_SINGLE);
 }
 
 bool Player::loadMediaPlayer(SDL_Renderer *rend) {
@@ -296,26 +298,37 @@ void Player::handleEvent(SDL_Event& e, int player) {
 void Player::moveUp() {
 	//if (getVelY() > 0) setVelY(0);						// If moving down, cancel downward movement
 	//setVelY(0);
+	if (getVelY() > 0 && getVelY() < getVelocity()) setVelY(0);
+	if (getVelY() < 0 && getVelY() > -getVelocity()) setVelY(0);
 
-	if (getSpeedBoost() && getVelocity() != 0)			// If speedboost is active, and the player is moving
+	if (getSpeedBoost() && getVelocity() != 0)				// If speedboost is active, and the player is moving
 		setVelY(getVelY() - (getVelocity() + BOOST));
 	else
 		setVelY(getVelY() - getVelocity());
 }
 
 void Player::moveDown() {
+	if (getVelY() > 0 && getVelY() < getVelocity()) setVelY(0);
+	if (getVelY() < 0 && getVelY() > -getVelocity()) setVelY(0);
+
 	if (getSpeedBoost() && getVelocity() != 0)
 		setVelY(getVelY() + (getVelocity() + BOOST));
 	else
 		setVelY(getVelY() + getVelocity());
 }
 void Player::moveLeft() {
+	if (getVelX() > 0 && getVelX() < getVelocity()) setVelX(0);
+	if (getVelX() < 0 && getVelX() > -getVelocity()) setVelX(0);
+
 	if (getSpeedBoost() && getVelocity() != 0)
 		setVelX(getVelX() - (getVelocity() + BOOST));
 	else
 		setVelX(getVelX() - getVelocity());
 }
 void Player::moveRight() {
+	if (getVelX() > 0 && getVelX() < getVelocity()) setVelX(0);
+	if (getVelX() < 0 && getVelX() > -getVelocity()) setVelX(0);
+
 	if (getSpeedBoost() && getVelocity() != 0)
 		setVelX(getVelX() + (getVelocity() + BOOST));
 	else
@@ -328,28 +341,7 @@ int Player::moveDiagonal() {
 	return getVelocity() / sqrt(2);
 }
 
-void Player::movement() {
-	curTime = SDL_GetTicks();
 
-	if (getSpeedBoost() && (curTime > getBoostStartTime() + 2000)) {
-		setSpeedBoost(false);
-		std::cout << "SPEED BOOST ENDED";
-	}
-
-	GameObject::movement();
-
-	// If the ship went too far to the left or right
-	if ((getX() < 0) || ((getX() + getWidth()) > SCREEN_WIDTH)) {
-		setX(getX() - getVelX());										// Move back
-	}
-
-	setY(getY() + getVelY());											// Move the ship up or down
-
-	// If the ship went too far up or down
-	if ((getY() < 40) || ((getY() + getHeight()) > SCREEN_HEIGHT_GAME - 40)) {
-		setY(getY() - getVelY());										// Move back
-	}
-}
 
 void Player::gameControllerDPad(SDL_Event& e) {
 	if (e.jhat.value == SDL_HAT_UP) {
@@ -468,13 +460,6 @@ void Player::gameControllerButton(SDL_Event& e) {
 	}
 }
 
-void Player::setSpeedBoost(bool boost) {
-	mSpeedBoost = boost;
-	if (boost) {
-		mBoostStartTime = SDL_GetTicks();
-		std::cout << "SPEED BOOST START" << std::endl;
-	}
-}
 
 //void Player::initialiseRocket(bool active, bool barActive, int timer, int numRockets) {
 bool Player::initialiseRocket() {
@@ -484,4 +469,79 @@ bool Player::initialiseRocket() {
 	setNumRockets(getNumRockets() - 1);		// decrement the number of rockets
 
 	return true;							// Ready to create a rocket
+}
+
+void Player::resetRocket() {
+	setRocketActive(false);
+	setRocketBarActive(false);
+
+	setKillRocket(true);
+}
+
+void::Player::rocketScore() {
+	if (SDL_GetTicks() >= getTimerTracker() + 200) {
+		setTimerTracker(SDL_GetTicks());						// start the timer
+		setTimer(getTimer() - 0.2);								// Take away 10% of the timer
+	}
+
+	setBonusScore(50 - (50.0 * (getTimer() / ROCKET_TIMER)));	// Score increments by 5 (10% of 50)
+
+	setKillRocket(false);										// The rocket can be erased
+}
+
+
+
+//unsigned int currentTime = 0.0, lastTime = getBoostStartTime()
+
+void Player::setSpeedBoost(bool boost) {
+	mSpeedBoost = boost;
+
+	if (boost) {
+		mBoostStartTime = SDL_GetTicks();
+		std::cout << "SPEED BOOST START" << std::endl;
+	}
+	else
+		boostPercent = 3.0;
+}
+;
+
+float Player::boostTimer() {
+	//currentTime = SDL_GetTicks();
+	if (getSpeedBoost()) {
+		if (SDL_GetTicks() > lastTime + 100) {								// Decrement countdown timer
+			lastTime = SDL_GetTicks();
+
+			boostPercent -= 0.1;
+		}
+	}
+	return boostPercent;
+}
+
+void Player::movement() {
+	curTime = SDL_GetTicks();
+
+	if (getVelY() > 0 && getVelY() < getVelocity()) setVelY(0);
+	if (getVelY() < 0 && getVelY() > -getVelocity()) setVelY(0);
+	if (getVelX() > 0 && getVelX() < getVelocity()) setVelX(0);
+	if (getVelX() < 0 && getVelX() > -getVelocity()) setVelX(0);
+
+	if (getSpeedBoost() && (curTime > getBoostStartTime() + ROCKET_TIMER * 1000)) {
+		setSpeedBoost(false);
+		boostPercent = ROCKET_TIMER;
+		std::cout << "SPEED BOOST ENDED";
+	}
+
+	GameObject::movement();
+
+	// If the ship went too far to the left or right
+	if ((getX() < 0) || ((getX() + getWidth()) > SCREEN_WIDTH)) {
+		setX(getX() - getVelX());										// Move back
+	}
+
+	setY(getY() + getVelY());											// Move the ship up or down
+
+																		// If the ship went too far up or down
+	if ((getY() < 40) || ((getY() + getHeight()) > SCREEN_HEIGHT_GAME - 40)) {
+		setY(getY() - getVelY());										// Move back
+	}
 }

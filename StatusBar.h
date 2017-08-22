@@ -5,7 +5,7 @@
 
 #define MAX_HEALTH 100.0				// The max health for a player
 #define VIRUS_TIMER 3.0
-#define ROCKET_TIMER 2.0
+#define ROCKET_TIMER_SET 3.0
 #define START_LEFT 0
 #define START_RIGHT 1
 
@@ -29,7 +29,8 @@ public:
 	void playerHealthBar(int x, int y, int w, float Percent, SDL_Renderer *rend);
 	void virusTimer(int x, int y, int w, float Percent, SDL_Renderer *rend);
 	void virusTimerBlue(int x, int y, int w, float Percent, SDL_Renderer *rend);
-	void rocketPowerBar(int x, int y, int w, float time, SDL_Renderer *rend);		// Rocket timer -> build up power for rocket
+	void rocketPowerBar(int x, int y, int w, float time, SDL_Renderer *rend);				// Rocket timer -> build up power for rocket
+	void speedBoostBar(float health, SDL_Renderer *rend, int startFrom = START_LEFT);		// 2017/02/20 Speed boost bar
 };
 
 #endif

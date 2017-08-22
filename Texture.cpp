@@ -169,7 +169,24 @@ void Texture::render(int x, int y, SDL_Renderer *rend, SDL_Rect* clip, double an
 
 	SDL_RenderCopyEx(rend, mTexture, clip, &renderQuad, angle, center, flip);	// Render to screen
 }
-
+/*
+	2017/02/19:
+	Function to indicate if a speed boost is active or not
+*/
+void Texture::speedBoostText(std::string textureText, SDL_Renderer* rend) {
+	if (!loadFromRenderedText(textureText, { 0, 255, 0, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 13), rend, true)) {		// Green Text
+		printf("Unable to render User Interface Text Texture!\n");
+	}
+}
+/*
+	2017/02/19:
+	Function to indicate how many rockets a player has left
+*/
+void Texture::numRocketsLeft(std::string textureText, SDL_Renderer* rend) {
+	if (!loadFromRenderedText(textureText, { 0, 255, 0, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 36), rend)) {		// Green Text
+		printf("Unable to render User Interface Text Texture!\n");
+	}
+}
 /* 
 	2017-02-15:
 	Function to render the players scores, the FPS, and the current game level
