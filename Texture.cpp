@@ -383,6 +383,12 @@ void Texture::UITextPlayerMessage(std::string playerMessage, int type) {
 		//}
 		//previous3 = playerMessage;
 	}
+	//else if (type == MAP_ALERT) {
+	else if (type == 3) {
+		if (!loadFromRenderedText(playerMessage, { 0, 20, 200, 240 }, TTF_OpenFont("Fonts/Retro.ttf", 22))) {		// Blue For Map Warning
+			printf("Unable to render player 2 Message text texture!\n");
+		}
+	}
 }
 
 void Texture::weaponIndicator(std::string textureID, int x) {
@@ -426,111 +432,117 @@ bool Texture::loadTextureMedia() {
 	// Particles
 
 	// Backgrounds
-	if (!load("Art/bgBegin720a.png", "startBG")) {			// 09/01 Edited background to be 800 x 600 instead of 600 * 480
-		printf("Failed to load background texture!\n");
+	if (!load("Art/bgBegin720a.png", "startBG")) {								// 09/01 Edited background to be 800 x 600 instead of 600 * 480
+		printf("Failed to load background texture!\n");							// Start Backround
 		success = false;
 	}
-	if (!load("Art/Background720.png", "middleBG")) {
+	if (!load("Art/Background720.png", "middleBG")) {							// Middle Background
 		printf("Failed to load start background texture!\n");
 		success = false;
 	}
-	if (!Instance()->load("Art/bgEnd720a.png", "endBG")) {
+	if (!Instance()->load("Art/bgEnd720a.png", "endBG")) {						// End Background
 		printf("Failed to load end background texture!\n");
 		success = false;
 	}
 	// Init the game title and credit screens
-	if (!Instance()->load("Art/Logo1720.png", "logoL1ID")) {
+	if (!Instance()->load("Art/Logo1720.png", "logoL1ID")) {					// Game Title Logo
 		printf("Failed to load Logo 1 - Game Logo texture!\n");
 		success = false;
 	}
-	if (!Instance()->load("Art/Logo2720.png", "creatorL1ID")) {
-	//if (!gGameCreatorsTexture.loadFromFile("Art/Logo2720.png", rend)) {						// Load the Game Creators Logo
+	if (!Instance()->load("Art/Logo2720.png", "creatorL1ID")) {					// Game Creators Logo
 		printf("Failed to load Logo 2 - Game Creators texture!\n");
 		success = false;
 	}
 
 	// Level backdrops
-	if (!Instance()->load("Art/Level1720.png", "level1ID")) {
+	if (!Instance()->load("Art/Level1720.png", "level1ID")) {					// Level 1 backdrop
 		printf("Failed to load Level 1 texture!\n");
 		success = false;
 	}
-	if (!Instance()->load("Art/Level2720.png", "level2ID")) {
+	if (!Instance()->load("Art/Level2720.png", "level2ID")) {					// Level 2 backdrop
 		printf("Failed to load Level 2 texture!\n");
 		success = false;
 	}
-	if (!Instance()->load("Art/Level3720.png", "level3ID")) {
+	if (!Instance()->load("Art/Level3720.png", "level3ID")) {					// Level 3 backdrop	
 		printf("Failed to load Level 3 texture!\n");
 		success = false;
 	}
 	
 	// Init the objects to give information on
-	if (!Instance()->load("Art/EnemyShip.png", "enemyShipID")) {
+	if (!Instance()->load("Art/EnemyShip.png", "enemyShipID")) {				// Enemy Ship
 		printf("Failed to load Enemy Ship texture!\n");
 		success = false;
 	}
-	if (!Instance()->load("Art/VirusGreen.png", "greenVirusID")) {
+	if (!Instance()->load("Art/VirusGreen.png", "greenVirusID")) {				// Green Virus
 		printf("Failed to load Green Enemy Virus texture!\n");
 		success = false;
 	}
-	if (!Instance()->load("Art/VirusOrange.png", "orangeVirusID")) {
+	if (!Instance()->load("Art/VirusOrange.png", "orangeVirusID")) {			// Orange Virus
 		printf("Failed to load Orange Enemy Virus texture!\n");
 		success = false;
 	}
-	if (!Instance()->load("Art/VirusBlue.png", "blueVirusID")) {
+	if (!Instance()->load("Art/VirusBlue.png", "blueVirusID")) {				// Blue Virus
 		printf("Failed to load Orange Enemy Virus texture!\n");
 		success = false;
 	}
-
-
+	
 	// Weapons
-	if (!Instance()->load("Art/VirusFireball.png", "fireballID")) {
+	if (!Instance()->load("Art/VirusFireball.png", "fireballID")) {				// Orange Virus Projectile
 		printf("Failed to load Enemy Virus Orange Fireball texture!\n");
 		success = false;
 	}
-	if (!Instance()->load("Art/EnemyVirusSatellite.png", "satelliteID")) {
+	if (!Instance()->load("Art/EnemyVirusSatellite.png", "satelliteID")) {		// Blue Virus Projectile
 		printf("Failed to load Enemy Virus Orange Fireball texture!\n");
 		success = false;
 	}
-	if (!Instance()->load("Art/LaserGreen.png", "greenLaserID")) {
+	if (!Instance()->load("Art/LaserGreen.png", "greenLaserID")) {				// Player 2 Laser
 		printf("Failed to load Green Laser texture!\n");
 		success = false;
 	}
-	if (!Instance()->load("Art/LaserOrange.png", "orangeLaserID")) {
+	if (!Instance()->load("Art/LaserOrange.png", "orangeLaserID")) {			// Player 1 Projectile
 		printf("Failed to load Orange Laser texture!\n");
 		success = false;
 	}
-	if (!Instance()->load("Art/LaserBlue.png", "blueLaserID")) {
+	if (!Instance()->load("Art/LaserBlue.png", "blueLaserID")) {				// Enemy Ship Laser
 		printf("Failed to load Blue Laser texture!\n");
 		success = false;
 	}
 
 	// Power Ups
-	if (!Instance()->load("Art/PowerUpLife.png", "lifePowerUpID")) {
+	if (!Instance()->load("Art/PowerUpLife.png", "lifePowerUpID")) {			// New Life Power Up
 		printf("Failed to load New Life texture!\n");
 		success = false;
 	}
-	if (!Instance()->load("Art/PowerUpClock.png", "checkpointPowerUpID")) {
+	if (!Instance()->load("Art/PowerUpClock.png", "checkpointPowerUpID")) {		// Checkpoint Power Up
 		printf("Failed to load Checkpoint texture!\n");
 		success = false;
 	}
-	if (!Instance()->load("Art/PowerUpRocket.png", "rocketPowerUpID")) {
+	if (!Instance()->load("Art/PowerUpRocket.png", "rocketPowerUpID")) {		// Rocket Power Up
 		printf("Failed to load Power Up - Rocket texture!\n");
 		success = false;
 	}
-	if (!Instance()->load("Art/PowerUpHealthBox.png", "healthPowerUpID")) {
+	if (!Instance()->load("Art/PowerUpHealthBox.png", "healthPowerUpID")) {		// Health Power Up
 		printf("Failed to load Health Power Up texture!\n");
 		success = false;
 	}
-	if (!Instance()->load("Art/PowerUpLaser.png", "laserPowerUpID")) {
+	if (!Instance()->load("Art/PowerUpLaser.png", "laserPowerUpID")) {			// Laser Power Up
 		printf("Failed to load Laser Power Up texture!\n");
 		success = false;
 	}
-	if (!Instance()->load("Art/LaserGunV2.png", "laserPowerUpV2ID")) {
+
+	// Laser Grades
+	if (!Instance()->load("Art/LaserGunV2.png", "laserPowerUpV2ID")) {			// Laser Grade 2
 		printf("Failed to load Laser V2 Power Up texture!\n");
 		success = false;
 	}
-	if (!Instance()->load("Art/LaserGunV3.png", "laserPowerUpV3ID")) {
+	if (!Instance()->load("Art/LaserGunV3.png", "laserPowerUpV3ID")) {			// Laser Grade 3
 		printf("Failed to load Laser V3 Power Up texture!\n");
+		success = false;
+	}
+
+	// Obstacles
+	if (!Instance()->load("Art/Blockage.png", "blockageID")) {					// Blockage
+		printf("Failed to load Blockage texture!\n");
 		success = false;
 	}
 

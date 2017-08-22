@@ -1,4 +1,5 @@
 /*
+	2017/03/04 Set a game object texture ID variable, Player and Enemy lasers now render based on their unique texture ID
 	2017/02/18 Moved Blood Cells to game object list
 	2017/02/09 Added indpendent animation frames
 	2017/02/07 Added independent angle to rotate each object
@@ -36,7 +37,8 @@ enum GameObjectTypes {
 	VIRUS_GREEN, VIRUS_ORANGE, VIRUS_BLUE, VIRUS_SMALL_GREEN, VIRUS_SMALL_ORANGE, VIRUS_SMALL_BLUE,		// Virus
 	LASER_P1, LASER_P2, LASER_V2_P1, LASER_V2_P2, LASER_V3_P1, LASER_V3_P2,								// Player Laser
 	NINJA_STAR_P1, NINJA_STAR_P2, ROCKET_P1, ROCKET_P2,													// Misc Weapons
-	BLOOD_CELL, PLAYER_WEAPON, ENEMY_WEAPON, ENEMY_OBJECT, POWER_UP, SMALL_VIRUS						// Main type of object
+	BLOOD_CELL, PLAYER_WEAPON, ENEMY_WEAPON, ENEMY_OBJECT, POWER_UP, SMALL_VIRUS, BLOCKAGE,				// Main type of object
+	MAP_ALERT
 };
 enum GameObjectSubTypes {
 	PLAYER1_SCORE, PLAYER2_SCORE,																		// Scores
@@ -79,6 +81,8 @@ public:
 	int getSubType() { return m_SubType; }			// 2017/01/25 Return the objects type
 	int getType() { return m_Type; }				// 2017/02/18 Return the objects sub-type
 	int getAngle() { return m_Angle; }				// 2017/02/07 Return the objects angle
+	std::string getTextureID() { return m_TextureID; }		// return the texture ID
+	void setTextureID(std::string t) { m_TextureID = t; }	// Set the texture ID
 
 	void setX(int x) { m_x = x; }					// Set GameObject X coord
 	void setY(int y) { m_y = y; }					// Set GameObject Y coord
@@ -180,6 +184,7 @@ public:
 protected:
 	// GameObject Variables
 	std::string m_Name;				// Name of the object
+	std::string m_TextureID;		// ID for the texture associated with the object
 	int m_Health;					// Value between 0 and 160
 	//int m_Speed;					// Value between 1 and 4
 	int m_x, m_y;					// GameObject coords

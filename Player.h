@@ -42,8 +42,8 @@ public:
 	// Movement
 	void moveUp();
 	void moveDown();
-	void moveLeft();
-	void moveRight();
+	void moveLeft(bool blocked = false);
+	void moveRight(bool blocked = false);
 	int moveDiagonal();
 
 	bool initialiseRocket();	// 2017/02/19 Move rocket reset parameters here

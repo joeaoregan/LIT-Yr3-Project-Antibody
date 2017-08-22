@@ -299,23 +299,29 @@ void Player::moveDown() {
 	else
 		setVelY(getVelY() + getVelocity());
 }
-void Player::moveLeft() {
-	if (getVelX() > 0 && getVelX() < getVelocity()) setVelX(0);
-	if (getVelX() < 0 && getVelX() > -getVelocity()) setVelX(0);
+void Player::moveLeft(bool blocked) {
+	if (!blocked) {
+		if (getVelX() > 0 && getVelX() < getVelocity()) setVelX(0);
+		if (getVelX() < 0 && getVelX() > -getVelocity()) setVelX(0);
 
-	if (getSpeedBoost() && getVelocity() != 0)
-		setVelX(getVelX() - (getVelocity() + BOOST));
+		if (getSpeedBoost() && getVelocity() != 0)
+			setVelX(getVelX() - (getVelocity() + BOOST));
+		else
+			setVelX(getVelX() - getVelocity());
+	}
 	else
-		setVelX(getVelX() - getVelocity());
+		setX(getX() + getVelX());
 }
-void Player::moveRight() {
-	if (getVelX() > 0 && getVelX() < getVelocity()) setVelX(0);
-	if (getVelX() < 0 && getVelX() > -getVelocity()) setVelX(0);
+void Player::moveRight(bool blocked) {
+	if (!blocked) {
+		if (getVelX() > 0 && getVelX() < getVelocity()) setVelX(0);
+		if (getVelX() < 0 && getVelX() > -getVelocity()) setVelX(0);
 
-	if (getSpeedBoost() && getVelocity() != 0)
-		setVelX(getVelX() + (getVelocity() + BOOST));
-	else
-		setVelX(getVelX() + getVelocity());
+		if (getSpeedBoost() && getVelocity() != 0)
+			setVelX(getVelX() + (getVelocity() + BOOST));
+		else
+			setVelX(getVelX() + getVelocity());
+	}
 }
 int Player::moveDiagonal() {
 	//if (getSpeedBoost() && getVelocity() != 0)
@@ -323,8 +329,6 @@ int Player::moveDiagonal() {
 
 	return getVelocity() / sqrt(2);
 }
-
-
 
 void Player::gameControllerDPad(SDL_Event& e) {
 	if (e.jhat.value == SDL_HAT_UP) {
@@ -412,7 +416,7 @@ void Player::resetPreviousDirection() {
 
 void Player::gameControllerButton(SDL_Event& e) {
 	if (e.jbutton.button == 0) {
-		Game::Instance()->spawnLaser(getX(), getY(), PLAYER2, getLaserGrade());						// Fire Laser
+		Game::Instance()->spawnLaser(getX(), getY(), PLAYER2, getLaserGrade());		// Fire Laser
 		std::cout << "Laser Button: " << (int)e.jbutton.button << std::endl;		// shows which button has been pressed
 	}
 	if (e.jbutton.button == 1) {

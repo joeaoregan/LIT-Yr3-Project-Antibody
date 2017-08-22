@@ -109,8 +109,10 @@ public:
 	// Game Messages
 	int pointsValueCounter;								// Time to display score for killing Enemy message
 	std::string pointsValue;							// Player notification messages, Yellow writing appearing in the middle of the game screen
-	int infoMessageP1Counter, infoMessageP2Counter, infoMessageCounter;		// Time to display notification messages
-	std::string infoMessageP1, infoMessageP2, infoMessageGeneral;			// Player notification messages, Yellow writing appearing in the middle of the game screen
+	int infoMessageP1Counter, infoMessageP2Counter;		// Time to display notification messages
+	int infoMessageCounter, infoMessageMapCounter;
+	std::string infoMessageP1, infoMessageP2; 			// Player notification messages, Yellow writing appearing in the middle of the game screen
+	std::string infoMessageGeneral, infoMessageMap;
 
 	// Number of Game Objects currently on the screen
 	int activeBloodCells;
@@ -152,16 +154,17 @@ public:
 
 	void spawnMovingObjects();
 	void spawnPlayer(int player);
-	void spawnEnemyBoss();									// 2017/03/02 JOE: Added function to create Enemy Boss objects at random times and coords
-	void spawnEnemyShip();									// 2017/01/09 JOE: added function to create enemy ships at random times and random y coord
-	void spawnEnemyVirus(int x = 0, int y = 0, int type = 0);						// 2017/01/10 JOE: added function to create enemy virus at random times and random y coord
-	void spawnBloodCell(int type = 0);						// 2017/01/10 JOE: add function to create blood cells
+	void spawnEnemyBoss();													// 2017/03/02 JOE: Added function to create Enemy Boss objects at random times and coords
+	void spawnEnemyShip();													// 2017/01/09 JOE: added function to create enemy ships at random times and random y coord
+	void spawnEnemyVirus(int x = 0, int y = 0, int type = 0);				// 2017/01/10 JOE: added function to create enemy virus at random times and random y coord
+	void spawnBloodCell(int type = 0);										// 2017/01/10 JOE: add function to create blood cells
 	void spawnLaser(int x, int y, int player, int grade = 0, int v = 20);	// 2017/01/16 spawn a laser at coords, with velocitys 2017/01/20 added Weapons grade
-	void spawnEnemyLaser(int x, int y, int type = 0, int whichVirus = 0);						// 2017/01/10
-	void spawnNinjaStar(int x, int y, int player);			// 2017/01/09 JOE: added function to create ninja star weapons - 2017/01/17 added player decision - player to spawn for and their coords
-	void spawnSaw(int x, int y, int player);				// 2017/01/20: Saw Weapon for player
+	void spawnEnemyLaser(int x, int y, int type = 0, int whichVirus = 0);	// 2017/01/10
+	void spawnNinjaStar(int x, int y, int player);							// 2017/01/09 JOE: added function to create ninja star weapons - 2017/01/17 added player decision - player to spawn for and their coords
+	void spawnSaw(int x, int y, int player);								// 2017/01/20: Saw Weapon for player
 	void spawnPowerUp();
-	void spawnRocket(int x, int y, int player, int type, bool launch);	// 2017-02-06
+	void spawnRocket(int x, int y, int player, int type, bool launch);		// 2017-02-06
+	void spawnBlockage();
 
 	void gameProgress();
 	//void gameTimer(unsigned int &timer);					// 2017-03-02
