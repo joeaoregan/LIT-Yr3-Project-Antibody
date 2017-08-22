@@ -14,10 +14,10 @@ JOE: Moved functionality common to game objects to GameObjects class reducing th
 * Laser.cpp is where all the implementations of the function definitions in Laser.h reside.
 */
 
-#include "Laser.h"
+#include "WeaponPlLaser.h"
 #include "Player.h"
 
-Laser::Laser(int angle, int grade) {
+WeaponPlLaser::WeaponPlLaser(int angle, int grade) {
 	//std::cout << "Laser constuctor called.\n";
 
 	setWidth(50);
@@ -34,11 +34,11 @@ Laser::Laser(int angle, int grade) {
 }
 
 // Laser Destructor
-Laser::~Laser(){
+WeaponPlLaser::~WeaponPlLaser(){
 	std::cout << "Laser destructor called.\n";
 }
 
-void Laser::movement() {
+void WeaponPlLaser::movement() {
 	GameObject::movement();
 	setY(getY() + getVelY());		// Up direction
 	//if (getGrade() == 1) {
@@ -51,7 +51,7 @@ void Laser::movement() {
 	//}
 }
 
-void Laser::spawn(int x, int y, int velocity, int player, int type) {
+void WeaponPlLaser::spawn(int x, int y, int velocity, int player, int type) {
 	setX(x);
 	setY(y);
 	//setVelocity(velocity);
@@ -61,7 +61,7 @@ void Laser::spawn(int x, int y, int velocity, int player, int type) {
 }
 
 // Render the laser objects to the screen // 2017/01/22 Moved from game.cpp
-void Laser::render(int player, Texture &orange, Texture &green, SDL_Renderer *rend) {
+void WeaponPlLaser::render(int player, Texture &orange, Texture &green, SDL_Renderer *rend) {
 	if (player == 1)
 		orange.render(getX(), getY(), rend);
 	else if (player == 2)

@@ -20,7 +20,7 @@ const int TOTAL_PARTICLES = 20;	// Particle count
 class Player : public GameObject {
 public:				
 	Player();							// Initializes the variables
-	Player(LTexture &dark, LTexture &medium, LTexture &light);				// 2017/01/20 Particles
+	Player(Texture &dark, Texture &medium, Texture &light);				// 2017/01/20 Particles
 
 	//void handleEvent(SDL_Event& e);
 	void handleEvent(SDL_Event& e, int player);	// Takes key presses and adjusts the ship's velocity
@@ -50,8 +50,8 @@ public:
 	int getLaserGrade() { return mLaserGrade; }
 	void setLaserGrade(int grade) { mLaserGrade = grade; }
 
-	void render(LTexture &player, LTexture &dark, LTexture &medium, LTexture &light, LTexture &shimmer, SDL_Renderer *rend);	// Shows the ship with particles on the screen
-	void rendPlayerLives(LTexture &lives, int player, SDL_Renderer *rend);
+	void render(Texture &player, Texture &dark, Texture &medium, Texture &light, Texture &shimmer, SDL_Renderer *rend);	// Shows the ship with particles on the screen
+	void rendPlayerLives(Texture &lives, int player, SDL_Renderer *rend);
 	bool getDrawParticle() { return drawParticle; }
 	void setDrawParticle(bool p) { drawParticle = p; }
 
@@ -61,7 +61,7 @@ private:
 
 	Particle* particles[TOTAL_PARTICLES];	// The particles
 
-	void renderParticles(LTexture &one, LTexture &two, LTexture &three, LTexture &four, SDL_Renderer *rend);
+	void renderParticles(Texture &one, Texture &two, Texture &three, Texture &four, SDL_Renderer *rend);
 
 	bool drawParticle;
 

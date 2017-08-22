@@ -1,5 +1,7 @@
 #include "GameObject.h"
 
+#define MAX_HEALTH 100
+
 // Constructor
 //GameObject::GameObject(int damage) :	// Constructor has default value for damage of 3
 //	m_Damage(damage)
@@ -9,10 +11,6 @@ GameObject::GameObject() {
 	m_y = 0;
 	m_xVel = 0;
 	m_yVel = 0;
-	
-	// Initialise Collider
-	setColliderWidth(getWidth());
-	setColliderHeight(getHeight());
 }
 // Deconstructors
 GameObject::~GameObject() {
@@ -20,11 +18,11 @@ GameObject::~GameObject() {
 }
 
 // Render the Game Objects to the screen
-void GameObject::render(LTexture &texture, SDL_Renderer *rend, int degrees) {
+void GameObject::render(Texture &texture, SDL_Renderer *rend, int degrees) {
 	texture.render(getX(), getY(), rend, NULL, degrees, NULL, SDL_FLIP_NONE);
 }
 
-void GameObject::render(LTexture &texture, SDL_Renderer *rend, SDL_Rect *currentClip, int &currentframe, int frames) {	// 2017/01/22 Moved from game.cpp
+void GameObject::render(Texture &texture, SDL_Renderer *rend, SDL_Rect *currentClip, int &currentframe, int frames) {	// 2017/01/22 Moved from game.cpp
 	texture.render(getX(), getY(), rend, currentClip);
 
 	++currentframe;								// Go to next frame
@@ -34,25 +32,42 @@ void GameObject::render(LTexture &texture, SDL_Renderer *rend, SDL_Rect *current
 	}
 }
 
+int GameObject::getStartTime() { return m_StartTime; }
+int GameObject::getEndTime() { return m_EndTime; }
+void GameObject::setStartTime(int t) { m_StartTime = t; }
+void GameObject::setEndTime(int t) { m_EndTime = t; }
 
-void GameObject::spawn(int x, int y) {
-	setX(x);
-	setY(y);
-	//setVelX(0);
-	setVelY(0);
-	setAlive(true);
-	//setAlive(true);
-	//setCollider(m_Collider);
+Texture GameObject::getTexture() {
+	return m_Texture;
+}
+void GameObject::setTexture(Texture texture) {
+	m_Texture = texture;
 }
 
-void GameObject::spawn(int x, int y, int vx, int vy, int type) {
+void GameObject::spawn(int x, int y, int vx, int vy) {
 	m_x = x;
 	m_y = y;
 	m_xVel = vx;
 	m_yVel = vy;	// 2017-01-10 JOE: use same velocity for x and y
+	setAlive(true);
+}
+
+void GameObject::spawn(int x, int y, int vx, SDL_Rect collider) {
+	m_x = x;
+	m_y = y;
+	m_xVel = vx;
+	m_yVel = vx;	// 2017-01-10 JOE: use same velocity for x and y
+	m_Collider = collider;
+}
+
+void GameObject::spawn(int x, int y, int vx, int vy, SDL_Rect collider, int type) {
+	m_x = x;
+	m_y = y;
+	m_xVel = vx;
+	m_yVel = vy;	// 2017-01-10 JOE: use same velocity for x and y
+	m_Collider = collider;
 	m_Type = type;
 	setAlive(true);
-	setCollider(m_Collider);
 }
 
 void GameObject::movement() {
@@ -63,14 +78,19 @@ void GameObject::movement() {
 	setColliderY(getY());
 
 	// Destroy Game Object moving off screen on Y axis
-	if (getY() < 40) setAlive(false);								// Once it reaches the pink border
-	else if (getY() > (SCREEN_HEIGHT_GAME - 40)) setAlive(false);	// 600 - 40 for pink border
+	if (getY() <= 40) setAlive(false);								// Once it reaches the pink border
+	else if (getY() >= (SCREEN_HEIGHT_GAME - 40)) setAlive(false);	// 600 - 40 for pink border
 	else setAlive(true);
 
 	// Destroy Game Object moving off screen on X axis
 	if ((getX() > SCREEN_WIDTH && getVelX() > 0)) setAlive(false);	// 2017/02/08 Need to check if velocity is negative, or power ups & blood cells don't appear on screen
-	else if (getX() < -getWidth()) setAlive(false); 
+	else if (getX() < -getWidth()) setAlive(false);
 	else setAlive(true);
+}
+
+// Getter and Setter methods
+int GameObject::getMaxHealth() {
+	return MAX_HEALTH;
 }
 
 void GameObject::setHealth(int h) {

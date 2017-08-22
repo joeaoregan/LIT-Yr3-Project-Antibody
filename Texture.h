@@ -3,6 +3,7 @@
 #include <SDL.h>
 #include <SDL_image.h>
 #include <string>
+#include <SDL_ttf.h>
 
 // Texture wrapper class
 
@@ -11,14 +12,16 @@
 #define SCREEN_HEIGHT 720
 #define SCREEN_HEIGHT_GAME 600
 
-class LTexture {
+class Texture {
 public:		
-	LTexture(int degrees = 0);									// Initializes variables
+	Texture(int degrees = 0);									// Initializes variables
 		
-	~LTexture();												// Deallocates memory
+	~Texture();												// Deallocates memory
+
+
+	SDL_Texture* loadTexture(std::string path, SDL_Renderer *rend);	// Loads individual image as texture
 
 	bool loadFromFile(std::string path, SDL_Renderer *rend);	// Loads image at specified path	2017-01-19 Added Renderer
-
 #ifdef _SDL_TTF_H
 	//Creates image from font string
 	bool loadFromRenderedText(std::string textureText, SDL_Color textColor, TTF_Font* font, SDL_Renderer* rend, bool textWrapped = false);

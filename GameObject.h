@@ -4,11 +4,9 @@ JOE: Moved functionality common to game objects to GameObjects class reducing th
 #ifndef GAME_OBJECTS_H
 #define GAME_OBJECTS_H
 
-#define MAX_HEALTH 100
-
 #include <SDL.h>
 #include <SDL_image.h>
-#include "LTexture.h"
+#include "Texture.h"
 #include <iostream>
 
 class GameObject {
@@ -16,14 +14,15 @@ public:
 	GameObject();
 	~GameObject();												// Deconstructor
 
-	void spawn(int x, int y);									// Player
-	void spawn(int x, int y, int vx, int vy = 0, int type = 0);	// Virus, PowerUp, BloodCell, Explosion, NinjaStar, EnemyLaser
+	void spawn(int x, int y, int vx = 0, int vy = 0);
+	void spawn(int x, int y, int vx, SDL_Rect collider);
+	void spawn(int x, int y, int vx, int vy, SDL_Rect collider, int type = 0);
 
 	virtual void movement();
 
 	//void render(LTexture &texture, SDL_Renderer *rend);							// Shows the Enemy on the screen
-	void render(LTexture &texture, SDL_Renderer *rend, int degrees = 0);
-	void render(LTexture &texture, SDL_Renderer *rend, SDL_Rect *currentClip, int &currentframe, int frames);
+	void render(Texture &texture, SDL_Renderer *rend, int degrees = 0);
+	void render(Texture &texture, SDL_Renderer *rend, SDL_Rect *currentClip, int &currentframe, int frames);
 
 	int getX() { return m_x; }						// Get GameObject X coord
 	int getY() { return m_y; }						// Get GameObject Y coord
@@ -36,7 +35,7 @@ public:
 	int getHeight() { return m_Height; }			// return the objects height
 	std::string getName() { return m_Name; }		// return the objects name
 	int getHealth() { return m_Health; }			// return the objects health
-	int getMaxHealth() { return MAX_HEALTH; }
+	int getMaxHealth();
 	int getNumLives() { return m_NumLives; }
 	int getType() { return m_Type; }				// 2017/01/25 Return the objects type
 	int getAngle() { return m_Angle; }				// 2017/02/07 Return the objects angle
@@ -55,7 +54,7 @@ public:
 	void setNumLives(int n) { m_NumLives = n; }		// Set the number of lives for the object
 
 	//SDL_Rect getCollider() { return m_Collider; }
-	SDL_Rect * getCollider() { return &m_Collider; }
+	SDL_Rect* getCollider() { return &m_Collider; }
 	void setCollider(SDL_Rect collider) { m_Collider = collider; }			// 2017/01/19 Added as Sean keeps doing dumb things with the colliders
 	void setColliderWidth(int w) { m_Collider.w = w; }
 	void setColliderHeight(int h) { m_Collider.h = h; }
@@ -67,13 +66,13 @@ public:
 	//SDL_Color getFontColour();
 	//void setFontColour(SDL_Color f);
 
-	int getStartTime() { return m_StartTime; }
-	int getEndTime() { return m_EndTime; }
-	void setStartTime(int t) { m_StartTime = t; }
-	void setEndTime(int t) { m_EndTime = t; }
+	int getStartTime();
+	int getEndTime();
+	void setStartTime(int t);
+	void setEndTime(int t);
 
-	LTexture getTexture() { return m_Texture; }
-	void setTexture(LTexture texture) { m_Texture = texture; }
+	Texture getTexture();
+	void setTexture(Texture texture);
 
 private:
 	// GameObject Variables
@@ -93,7 +92,7 @@ private:
 	// 31-01 Display time
 	int m_StartTime;				// Time to begin displaying
 	int m_EndTime;					// Time to end displaying
-	LTexture m_Texture;
+	Texture m_Texture;
 	//SDL_Color fontColour;			// moved to texture class
 	int m_Angle;					// 2017-02-07: Angle to rotate an object
 };

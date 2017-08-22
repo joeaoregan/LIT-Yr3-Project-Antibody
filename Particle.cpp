@@ -1,7 +1,7 @@
 #include "Particle.h"
-#include "LTexture.h"
+#include "Texture.h"
 
-Particle::Particle(int x, int y, LTexture &one, LTexture &two, LTexture &three) {
+Particle::Particle(int x, int y, Texture &one, Texture &two, Texture &three) {
 	//Set offsets
 	mPosX = x - 5 + (rand() % 10);		// CHANGE TO SET SIZE BIGGER / SMALLER
 	mPosY = y - 5 + (rand() % 7);
@@ -21,7 +21,7 @@ and then every other frame we render a semitransparent shimmer texture over it
 to make it look like the particle is shining. We then update the frame of
 animation.
 */
-void Particle::render(LTexture &texture, SDL_Renderer *rend) {
+void Particle::render(Texture &texture, SDL_Renderer *rend) {
 	mTexture->render(mPosX, mPosY, rend);				//Show image
 
 	//Show shimmer

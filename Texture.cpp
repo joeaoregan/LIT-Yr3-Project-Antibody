@@ -1,8 +1,8 @@
 #include <SDL.h>
-#include <SDL_ttf.h>
-#include "LTexture.h"
+//#include <SDL_ttf.h>
+#include "Texture.h"
 
-LTexture::LTexture(int degrees) {
+Texture::Texture(int degrees) {
 	// Initialize
 	mTexture = NULL;
 	mWidth = 0;
@@ -12,18 +12,41 @@ LTexture::LTexture(int degrees) {
 	mFlash = false;
 }
 
-LTexture::~LTexture() {
+Texture::~Texture() {
 	free();						// Deallocate
 }
 
-SDL_Color LTexture::getFontColour() {
+SDL_Color Texture::getFontColour() {
 	return txtColour;
 }
-void LTexture::setFontColour(SDL_Color f) {
+void Texture::setFontColour(SDL_Color f) {
 	txtColour = f;
 }
 
-bool LTexture::loadFromFile(std::string path, SDL_Renderer *rend) {
+
+SDL_Texture* Texture::loadTexture(std::string path, SDL_Renderer *rend) {
+	//The final texture
+	SDL_Texture* newTexture = NULL;
+
+	//Load image at specified path
+	SDL_Surface* loadedSurface = IMG_Load(path.c_str());
+	if (loadedSurface == NULL) {
+		printf("Unable to load image %s! SDL_image Error: %s\n", path.c_str(), IMG_GetError());
+	}
+	else {
+		//Create texture from surface pixels
+		newTexture = SDL_CreateTextureFromSurface(rend, loadedSurface);
+		if (newTexture == NULL) {
+			printf("Unable to create texture from %s! SDL Error: %s\n", path.c_str(), SDL_GetError());
+		}
+
+		SDL_FreeSurface(loadedSurface);	//Get rid of old loaded surface
+	}
+
+	return newTexture;
+}
+
+bool Texture::loadFromFile(std::string path, SDL_Renderer *rend) {
 	free();	// Get rid of preexisting texture
 
 	SDL_Texture* newTexture = NULL;							// The final texture
@@ -55,7 +78,7 @@ bool LTexture::loadFromFile(std::string path, SDL_Renderer *rend) {
 SDL_Surface* textSurface;
 
 #ifdef _SDL_TTF_H
-bool LTexture::loadFromRenderedText(std::string textureText, SDL_Color textColor, TTF_Font* font, SDL_Renderer* renderer, bool textWrapped) {
+bool Texture::loadFromRenderedText(std::string textureText, SDL_Color textColor, TTF_Font* font, SDL_Renderer* renderer, bool textWrapped) {
 	free();	//Get rid of preexisting texture
 
 	if (!textWrapped)
@@ -85,7 +108,7 @@ bool LTexture::loadFromRenderedText(std::string textureText, SDL_Color textColor
 	return mTexture != NULL;	// Return success
 }
 #endif
-void LTexture::free() {
+void Texture::free() {
 	// Free texture if it exists
 	if (mTexture != NULL) {
 		SDL_DestroyTexture(mTexture);
@@ -95,11 +118,11 @@ void LTexture::free() {
 	}
 }
 
-void LTexture::setColor(Uint8 red, Uint8 green, Uint8 blue) {
+void Texture::setColor(Uint8 red, Uint8 green, Uint8 blue) {
 	SDL_SetTextureColorMod(mTexture, red, green, blue);	// Modulate texture rgb
 }
 
-void LTexture::setBlendMode(SDL_BlendMode blending) {
+void Texture::setBlendMode(SDL_BlendMode blending) {
 	SDL_SetTextureBlendMode(mTexture, blending);		// Set blending function
 }
 
@@ -107,7 +130,7 @@ int counter = 0;					// counter for changing alpha for flashing
 int alphaUp = 5, alphaDown = 5;		// turn the alpha value up or down
 
 //void LTexture::flashGameObject(int &alpha, bool &flash, int rate, int times) {
-void LTexture::flashGameObject(int rate, int times) {
+void Texture::flashGameObject(int rate, int times) {
 	if (getFlash()) {
 		if (alphaDown > 5) {
 			alphaDown -= rate;
@@ -134,11 +157,11 @@ void LTexture::flashGameObject(int rate, int times) {
 }
 
 
-void LTexture::modifyAlpha(Uint8 alpha) {
+void Texture::modifyAlpha(Uint8 alpha) {
 	SDL_SetTextureAlphaMod(mTexture, alpha);			// Modulate texture alpha
 }
 // render(int x, int y, SDL_Renderer *rend, SDL_Rect* clip = NULL, double angle = 0.0, SDL_Point* center = NULL, SDL_RendererFlip flip = SDL_FLIP_NONE);
-void LTexture::render(int x, int y, SDL_Renderer *rend, SDL_Rect* clip, double angle, SDL_Point* center, SDL_RendererFlip flip) {
+void Texture::render(int x, int y, SDL_Renderer *rend, SDL_Rect* clip, double angle, SDL_Point* center, SDL_RendererFlip flip) {
 	SDL_Rect renderQuad = { x, y, mWidth, mHeight };	// Set rendering space and render to screen
 
 	if (clip != NULL) {									// Set clip rendering dimensions

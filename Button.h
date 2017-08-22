@@ -4,7 +4,7 @@
 #include <SDL_image.h>
 #include <stdio.h>
 #include <string>
-#include "LTexture.h"
+#include "Texture.h"
 
 //Button constants
 const int BUTTON_WIDTH = 160;
@@ -32,7 +32,7 @@ public:
 	//void handleEvent(SDL_Event* e, LTexture test);
 	void handleEvent(SDL_Event* e, int buttonSelected);
 
-	void render(LTexture &texture, SDL_Renderer *rend, SDL_Rect *currentClip);						// Rendering function
+	void render(Texture &texture, SDL_Renderer *rend, SDL_Rect *currentClip);						// Rendering function
 	//void init();
 	SDL_Point mPosition;
 

@@ -14,12 +14,12 @@ JOE: Moved functionality common to game objects to GameObjects class reducing th
 #define LASER_H
 #include "Weapon.h"
 
-class Laser : public Weapon {
+class WeaponPlLaser : public Weapon {
 public:
-	Laser(int angle = 0, int grade = 0);
-	~Laser();												// Destructor
-
-	virtual void movement();								// Moves the laser
+	WeaponPlLaser(int angle = 0, int grade = 0);
+	~WeaponPlLaser();												// Destructor
+	
+	virtual void movement();								// Moves the laser	
 
 	void render(int player, Texture &orange, Texture &green, SDL_Renderer *rend);	// 2017/01/22 added textures to renderer
 

@@ -4,8 +4,8 @@ Added asdw keyboard movement
 */
 #include "Player.h"
 #include "Game.h"
-#include "Saw.h"
-#include "Rocket.h"
+#include "WeaponPlSaw.h"
+#include "WeaponPlRocket.h"
 #include <math.h>
 
 #define VELOCITY 10
@@ -22,7 +22,7 @@ unsigned int curTime;
 int VEL;
 
 Game game1;
-Rocket rocket;
+WeaponPlRocket rocket;
 
 Player::Player() {
 	// Initialize the offsets
@@ -47,8 +47,8 @@ Player::Player() {
 	setNumLives(3);							// works, game is over when both players lives are <= 0
 }
 
-Player::Player(LTexture &dark, LTexture &medium, LTexture &light) {
-	// Initialize the offsetsCollider
+Player::Player(Texture &dark, Texture &medium, Texture &light) {
+	// Initialize the offsets
 	setX(0);
 	setY(SCREEN_HEIGHT / 2);
 
@@ -78,7 +78,7 @@ Player::Player(LTexture &dark, LTexture &medium, LTexture &light) {
 }
 
 // 2017/01/22 Separated player render() from game.cpp
-void Player::render(LTexture &player, LTexture &dark, LTexture &medium, LTexture &light, LTexture &shimmer, SDL_Renderer *rend) {
+void Player::render(Texture &player, Texture &dark, Texture &medium, Texture &light, Texture &shimmer, SDL_Renderer *rend) {
 	//Set texture transparency
 	dark.modifyAlpha(100);	// Alpha of 192 gives particles a semi transparent look
 	medium.modifyAlpha(100);
@@ -91,7 +91,7 @@ void Player::render(LTexture &player, LTexture &dark, LTexture &medium, LTexture
 	}
 }
 
-void Player::rendPlayerLives(LTexture &lives, int player, SDL_Renderer *rend) {
+void Player::rendPlayerLives(Texture &lives, int player, SDL_Renderer *rend) {
 	if (player == 1) {
 		if (getNumLives() > 0)
 			//lives.render(10, SCREEN_HEIGHT - lives.getHeight() - 10, rend);
@@ -126,7 +126,7 @@ void Player::render(LTexture &texture, LTexture &one, LTexture &two, LTexture &t
 }
 */
 
-void Player::renderParticles(LTexture &one, LTexture &two, LTexture &three, LTexture &four, SDL_Renderer *rend) {
+void Player::renderParticles(Texture &one, Texture &two, Texture &three, Texture &four, SDL_Renderer *rend) {
 	//Go through particles
 	for (int i = 0; i < TOTAL_PARTICLES; ++i) {
 		//Delete and replace dead particles
@@ -203,6 +203,15 @@ void Player::handleEvent(SDL_Event& e, int player) {
 			}
 			else if (e.type == SDL_JOYHATMOTION) {	// Set movement for D-Pad
 				gameControllerDPad(e);
+			}
+
+			// Fire rocket when button 9 released
+
+			else if (e.type == SDL_JOYBUTTONUP) {		// Number of buttons
+				if (e.jbutton.button == 9) {															// Pick next track on the list
+					std::cout << "Launch Rocket - Button: " << (int)e.jbutton.button << std::endl;		// shows which button has been pressed
+					game1.spawnRocket(getX(), getY(), 1, 9);
+				}
 			}
 		} // joystick present
 	}
