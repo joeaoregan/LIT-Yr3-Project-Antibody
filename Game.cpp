@@ -51,6 +51,10 @@ bool displayLevelIntro;				// Display the information splash screen at the start
 /***************************************************************************************************************************/
 
 // Weapons
+int rocket1BonusScore;
+int rocket2BonusScore;
+bool killRocket1 = false;
+bool killRocket2 = false;
 bool Laser1 = false;
 bool Laser2 = false;
 
@@ -479,7 +483,7 @@ bool Game::loadMedia() {
 		}
 	}
 
-	audio.music();
+	if(MUSIC_ON) audio.music();		// EDIT IN _TestData.h
 
 	return success;
 }
@@ -575,10 +579,10 @@ void Game::update(){
 
 				if (getCurrentLevel() == 0 && displayGameIntro) displayGameIntro = splash.displayGameIntroSplashScreens(gRenderer);	// 2017/01/18 Splash screens at start of game, Game Title & Game Creators
 
-				//if (getCurrentLevel() == MENU) menu1.draw(gRenderer);		// New
+				if (getCurrentLevel() == MENU) menu1.draw(gRenderer);		// New
 
-				//if (getCurrentLevel() != 0) playLevel(getCurrentLevel());
-				playLevel(1);	// Test start at level 2
+				if (getCurrentLevel() != 0) playLevel(getCurrentLevel());
+				//playLevel(1);	// Test start at level 2
 
 				if (getCurrentLevel() > 0) fps.fpsthink();					// Update the FPS
 
@@ -966,6 +970,64 @@ void Game::renderGameObjects() {
 
 			if (player1->getAlive()) {
 				bar.playerHealthBar(player1->getX(), player1->getY(), player1->getWidth(), player1->getHealth(), gRenderer);
+
+
+
+
+
+				if (killRocket1) {
+					for (unsigned int index = 0; index != listOfPlayerWeapons.size(); ++index) {
+						if (listOfPlayerWeapons[index]->getType() == ROCKET_P1) listOfPlayerWeapons[index]->setAlive(false);		// Kill the rocket
+					}
+				}
+				if (killRocket2) {
+					for (unsigned int index = 0; index != listOfPlayerWeapons.size(); ++index) {
+						if (listOfPlayerWeapons[index]->getType() == ROCKET_P2) listOfPlayerWeapons[index]->setAlive(false);		// Kill the rocket
+					}
+				}
+
+				if (player1->getRocketBarActive()) {
+					rocket1BonusScore = 50;									// RESET ROCKET BONUS SCORE
+					killRocket1 = false;										// Reset Kill rocket
+					if (SDL_GetTicks() >= player1->getTimerTracker() + 200) {
+						player1->setTimerTracker(SDL_GetTicks());				// start the timer
+						player1->setTimer(player1->getTimer() - 0.2);
+					}
+
+					rocket1BonusScore -= rocket1BonusScore * (player1->getTimer() / ROCKET_TIMER);
+					bar.rocketPowerBar(player1->getX(), player1->getY(), player1->getWidth(), player1->getTimer(), gRenderer);
+
+					if (player1->getTimer() <= 0) {
+						spawnExplosion(player1->getX(), player1->getY());
+						player1->setRocketActive(false);
+						player1->setRocketBarActive(false);
+						killRocket1 = true;
+						//for (unsigned int index = 0; index != listOfPlayerWeapons.size(); ++index) {
+						//	if (listOfPlayerWeapons[index]->getType() == ROCKET_P1) listOfPlayerWeapons[index]->setAlive(false);		// Kill the rocket
+						//}
+					}
+				}
+				if (player2->getRocketBarActive()) {
+					rocket2BonusScore = 50;									// RESET ROCKET BONUS SCORE
+					killRocket2 = false;										// Reset Kill rocket
+					if (SDL_GetTicks() >= player2->getTimerTracker() + 200) {
+						player2->setTimerTracker(SDL_GetTicks());				// start the timer
+						player2->setTimer(player2->getTimer() - 0.2);
+					}
+
+					rocket2BonusScore -= rocket2BonusScore * (player2->getTimer() / ROCKET_TIMER);
+					bar.rocketPowerBar(player2->getX(), player2->getY(), player2->getWidth(), player2->getTimer(), gRenderer);
+
+					if (player2->getTimer() <= 0) {
+						spawnExplosion(player2->getX(), player2->getY());
+						player2->setRocketActive(false);
+						player2->setRocketBarActive(false);
+						killRocket2 = true;
+					}
+				}
+
+
+
 				gPlayer1Texture.modifyAlpha(gPlayer1Texture.getAlpha());
 				player1->render(gPlayer1Texture, gRenderer);
 
@@ -1050,6 +1112,7 @@ void Game::renderGameObjects() {
 					}
 				}
 			}
+
 
 			/* Professor Mini Map */
 			/* Weapon Scrolling will work of trigger buttons, press left and right to select main weapon */
@@ -1532,26 +1595,37 @@ void Game::spawnNinjaStar(int x, int y, int player) {					// player to spawn for
 		else if (player == 2) audio.ninjaFX_P2();
 	}
 }
-void Game::spawnRocket(int x, int y, int player, int type) {
-	bool launchRocket = false;
-	if (player == PLAYER_1 && !player1->getRocketActive() && player1->getNumRockets() > 0) {
-		player1->setRocketActive(true);							// Player 1 rocket is active (only 1 rocket can be active at a time)
-		player1->setNumRockets(player1->getNumRockets() - 1);	// decrement the number of rockets
-		launchRocket = true;									// Launch the rocket
-	}
-	else if (player == PLAYER_2 && !player2->getRocketActive() && player2->getNumRockets() > 0) {
-		player2->setRocketActive(true);
-		player2->setNumRockets(player2->getNumRockets() - 1);	// decrement the number of rockets
-		launchRocket = true;
-	}
-	if (launchRocket) {
-		WeaponPlRocket* p_Rocket = new WeaponPlRocket();				// Create a rocket
-		p_Rocket->spawn(x, y, (*p_Rocket->getCollider()), player, type);	// spawn for the player
-		p_Rocket->setAngle(0);	// Fire straight
-		if (player == PLAYER_1) p_Rocket->setType(ROCKET_P1);
-		else if (player == PLAYER_2) p_Rocket->setType(ROCKET_P2);
-		std::cout << "Rocket Spawned" << std::endl;
-		listOfPlayerWeapons.push_back(p_Rocket);
+void Game::spawnRocket(int x, int y, int player, int type, bool launch) {
+	if (launch == false && player == PLAYER_1) player1->setRocketBarActive(true);
+	else if (launch == false && player == PLAYER_2) player2->setRocketBarActive(true);
+	else {
+		bool createRocket = false;
+		if (player == PLAYER_1 && !player1->getRocketActive() && player1->getNumRockets() > 0) {
+			player1->setRocketActive(true);							// Player 1 rocket is active (only 1 rocket can be active at a time)
+			player1->setRocketBarActive(false);
+			player1->setTimer(ROCKET_TIMER);
+			//rocket1BonusScore = 50;								// RESET ROCKET BONUS SCORE
+			player1->setNumRockets(player1->getNumRockets() - 1);	// decrement the number of rockets
+			createRocket = true;									// Launch the rocket
+		}
+		else if (player == PLAYER_2 && !player2->getRocketActive() && player2->getNumRockets() > 0) {
+			player2->setRocketActive(true);
+			player2->setRocketBarActive(false);
+			player2->setTimer(ROCKET_TIMER);
+			//rocket2BonusScore = 50;								// RESET ROCKET BONUS SCORE
+			player2->setNumRockets(player2->getNumRockets() - 1);	// decrement the number of rockets
+			createRocket = true;
+		}
+		if (createRocket) {
+			WeaponPlRocket* p_Rocket = new WeaponPlRocket();				// Create a rocket
+			//p_Rocket->setVelX(0);
+			p_Rocket->spawn(x, y, (*p_Rocket->getCollider()), player, type);	// spawn for the player
+			p_Rocket->setAngle(0);	// Fire straight
+			if (player == PLAYER_1) p_Rocket->setType(ROCKET_P1);
+			else if (player == PLAYER_2) p_Rocket->setType(ROCKET_P2);
+			std::cout << "Rocket Spawned" << std::endl;
+			listOfPlayerWeapons.push_back(p_Rocket);
+		}
 	}
 }
 void Game::spawnSaw(int x, int y, int type) {			// player to spawn for and their coords, turn on if inacive, off if active	// 2017-02-08 Updated and working OK
@@ -1693,8 +1767,14 @@ void Game::collisionCheck() {
 	for (unsigned int index = 0; index != listOfPlayerWeapons.size(); index++) {
 		for (unsigned int index1 = 0; index1 != listOfEnemyVirus.size(); index1++) {
 			if (checkCollision(listOfPlayerWeapons[index]->getCollider(), listOfEnemyVirus[index1]->getCollider()) == true) {
-				if (listOfPlayerWeapons[index]->getType() == ROCKET_P1) infoMessage("Impact!!! Missile has taken out an Enemy Virus!!!", PLAYER_1);
-				else if (listOfPlayerWeapons[index]->getType() == ROCKET_P2) infoMessage("Impact!!! Missile has taken out an Enemy Virus!!!", PLAYER_2);
+				if (listOfPlayerWeapons[index]->getType() == ROCKET_P1) {
+					infoMessage("Impact!!! Missile has taken out an Enemy Virus! Score +" + std::to_string(rocket1BonusScore), PLAYER_1);
+					managePlayerScores(rocket1BonusScore, PLAYER_1, listOfPlayerWeapons[index]->getType());
+				}
+				else if (listOfPlayerWeapons[index]->getType() == ROCKET_P2) {
+					infoMessage("Impact!!! Missile has taken out an Enemy Virus! Score +" + std::to_string(rocket2BonusScore), PLAYER_2);
+					managePlayerScores(rocket2BonusScore, PLAYER_2, listOfPlayerWeapons[index]->getType());
+				}
 				managePlayerScores(listOfEnemyVirus[index1]->getScore(), listOfPlayerWeapons[index]->getPlayer(), listOfPlayerWeapons[index]->getType());		// 2017-02-06 Add to players score
 
 				pointsValueCounter = 0;
@@ -1708,8 +1788,14 @@ void Game::collisionCheck() {
 		}
 		for (unsigned int index2 = 0; index2 != listOfEnemyShips.size(); index2++) {
 			if (checkCollision(listOfPlayerWeapons[index]->getCollider(), listOfEnemyShips[index2]->getCollider()) == true) {
-				if (listOfPlayerWeapons[index]->getType() == ROCKET_P1) infoMessage("Impact!!! Missile has taken out an Enemy Ship!!!", PLAYER_1);
-				else if (listOfPlayerWeapons[index]->getType() == ROCKET_P2) infoMessage("Impact!!! Missile has taken out an Enemy Ship!!!", PLAYER_2);
+				if (listOfPlayerWeapons[index]->getType() == ROCKET_P1) {
+					infoMessage("Impact!!! Missile has taken out an Enemy Ship! Score +" + std::to_string(rocket1BonusScore), PLAYER_1);
+					managePlayerScores(rocket1BonusScore, PLAYER_1, listOfPlayerWeapons[index]->getType());
+				}
+				else if (listOfPlayerWeapons[index]->getType() == ROCKET_P2) {
+					infoMessage("Impact!!! Missile has taken out an Enemy Ship! Score +" + std::to_string(rocket2BonusScore), PLAYER_2);
+					managePlayerScores(rocket2BonusScore, PLAYER_2, listOfPlayerWeapons[index]->getType());
+				}
 				managePlayerScores(listOfEnemyShips[index2]->getScore(), listOfPlayerWeapons[index]->getPlayer(), listOfPlayerWeapons[index]->getType());		// 2017-02-06 Add to players score
 
 				pointsValueCounter = 0;
@@ -1816,6 +1902,9 @@ void Game::gameTimer() {
 }
 
 void Game::resetGame(int currentLevel) {	// Reset a level or the game
+	rocket1BonusScore = 50;
+	rocket2BonusScore = 50;
+
 	// Reset the map of the professor
 	setViewport(mapViewport, (SCREEN_WIDTH - 120) / 2, 600, 120, 88);	// Reset the map to small size
 	gProfessorMapTexture.modifyAlpha(255);								// Reset the alpha value for the map texture
@@ -1880,6 +1969,8 @@ void Game::resetGame(int currentLevel) {	// Reset a level or the game
 	player1->setVelY(0);
 	player2->setVelX(0);
 	player2->setVelY(0);
+	player1->setTimer(ROCKET_TIMER);
+	player2->setTimer(ROCKET_TIMER);
 
 	// Delete all objects on screen
 	if (gameOver || levelOver) {

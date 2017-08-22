@@ -54,7 +54,10 @@ Player::Player() {
 	drawParticle = true;
 
 	setRocketActive(false);					// Player can spawn a rocket straight away
-	setNumRockets(0);						// The number of rockets a player has
+	setNumRockets(3);						// The number of rockets a player has
+
+	setTimer(ROCKET_TIMER);
+	setTimerTracker(0.0);
 }
 
 bool Player::loadMediaPlayer(SDL_Renderer *rend) {
@@ -177,7 +180,7 @@ void Player::handleEvent(SDL_Event& e, int player) {
 			case SDLK_e: game1.spawnSaw(getX(), getY(), SAW1); break;					// 2017/01/17 Saw Weapon added, check saw is active with if statement in spawn Saw, and activate/deactivate the weapon
 			case SDLK_f: setSpeedBoost(true);
 				game1.infoMessage("Player 1 speed boost activated", PLAYER_1); break;
-			case SDLK_c: game1.spawnRocket(getX(), getY(), PLAYER_1, 9); break;
+			case SDLK_c: game1.spawnRocket(getX(), getY(), PLAYER_1, ROCKET_P1, false); break;
 			}
 		}
 		else if (e.type == SDL_KEYUP && e.key.repeat == 0) {
@@ -187,6 +190,8 @@ void Player::handleEvent(SDL_Event& e, int player) {
 			case SDLK_s: moveUp(); break;		// undo move down
 			case SDLK_a: moveRight(); break;	// undo move left
 			case SDLK_d: moveLeft(); break;		// undo move right
+
+			case SDLK_c: game1.spawnRocket(getX(), getY(), PLAYER_1, ROCKET_P1, true); break;
 			}
 		}
 	}
@@ -205,7 +210,7 @@ void Player::handleEvent(SDL_Event& e, int player) {
 			case SDLK_r: spawnPlayerSaw(getX(), getY(), SAW2); break;
 			case SDLK_g: setSpeedBoost(true);
 				game1.infoMessage("Player 2 speed boost activated", PLAYER_2); break;
-			case SDLK_v: game1.spawnRocket(getX(), getY(), PLAYER_2, 9); break;
+			case SDLK_v: game1.spawnRocket(getX(), getY(), PLAYER_2, ROCKET_P2, false); break;
 			}
 		}
 		// If a key was released
@@ -219,6 +224,7 @@ void Player::handleEvent(SDL_Event& e, int player) {
 				if (getVelX() < 0) moveRight(); break;
 			case SDLK_RIGHT:
 				if (getVelX() > 0) moveLeft(); break;
+			case SDLK_v: game1.spawnRocket(getX(), getY(), PLAYER_2, ROCKET_P2, true); break;
 			}
 		}
 		if (SDL_NumJoysticks() > 0) {				// Joystick present
@@ -234,7 +240,7 @@ void Player::handleEvent(SDL_Event& e, int player) {
 			else if (e.type == SDL_JOYBUTTONUP) {		// Number of buttons
 				if (e.jbutton.button == 9) {															// Pick next track on the list
 					std::cout << "Launch Rocket - Button: " << (int)e.jbutton.button << std::endl;		// shows which button has been pressed
-					game1.spawnRocket(getX(), getY(), 1, 9);
+					game1.spawnRocket(getX(), getY(), PLAYER_2, ROCKET_P2, true);
 				}
 			}
 		} // joystick present
@@ -454,6 +460,10 @@ void Player::gameControllerButton(SDL_Event& e) {
 	if (e.jbutton.button == 5) {
 		game1.musicTrackForward();													// Pick next track on the list
 		std::cout << "Music Forward: " << (int)e.jbutton.button << std::endl;		// shows which button has been pressed
+	}
+	if (e.jbutton.button == 9) {															// Pick next track on the list
+		std::cout << "Enable Rocket - Button: " << (int)e.jbutton.button << std::endl;		// shows which button has been pressed
+		game1.spawnRocket(getX(), getY(), PLAYER_2, ROCKET_P2, false);
 	}
 }
 

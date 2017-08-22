@@ -6,6 +6,8 @@ JOE: Moved functionality common to game objects to GameObjects class reducing th
 
 #define MAX_HEALTH 100
 
+#define ROCKET_TIMER 2.0
+
 #include <SDL.h>
 #include <SDL_image.h>
 #include "Texture.h"
@@ -97,6 +99,8 @@ public:
 	bool satelliteObjectAlive;
 	unsigned int whichVirusAssignedTo;
 
+	bool getRocketBarActive() { return m_RocketBarActive; }
+	void setRocketBarActive(bool rocket) { m_RocketBarActive = rocket; }
 	bool getRocketActive() { return m_RocketActive; }
 	void setRocketActive(bool rocket) { m_RocketActive = rocket; }
 	int getNumRockets() { return numRockets; }
@@ -127,6 +131,7 @@ private:
 	bool lineAlgorithmCalculated;
 
 	bool m_RocketActive;			// If an object can fire rockets or not
+	bool m_RocketBarActive;
 	int numRockets;					// The number of rockets an object has
 };
 

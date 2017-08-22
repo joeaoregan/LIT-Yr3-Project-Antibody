@@ -21,6 +21,8 @@
 #define PLAYER_2 2
 #define NUMBER_OF_SONGS = 3;			// Total number of songs in the playlist
 
+enum playerWeapons { NINJA_STAR_P1, NINJA_STAR_P2, LASER_P1, LASER_P2, SAW_P1, SAW_P2, LASER_V2_P1, LASER_V2_P2, ROCKET_P1, ROCKET_P2 };
+
 class Game {
 public:
 	// Time
@@ -46,7 +48,6 @@ public:
 	int smallBloodCellsActive;
 
 	enum levels { MENU, LEVEL_1, LEVEL_2, LEVEL_3 };
-	enum playerWeapons {NINJA_STAR_P1, NINJA_STAR_P2, LASER_P1, LASER_P2, SAW_P1, SAW_P2, LASER_V2_P1, LASER_V2_P2, ROCKET_P1, ROCKET_P2};
 
 	int getCurrentLevel() { return mCurrentLevel; }
 	void setCurrentLevel(int l) { mCurrentLevel = l; }
@@ -81,7 +82,7 @@ public:
 	void spawnNinjaStar(int x, int y, int player);			// 2017/01/09 JOE: added function to create ninja star weapons - 2017/01/17 added player decision - player to spawn for and their coords
 	void spawnSaw(int x, int y, int player);				// 2017/01/20: Saw Weapon for player
 	void spawnPowerUp();
-	void spawnRocket(int x, int y, int player, int type);				// 2017-02-06
+	void spawnRocket(int x, int y, int player, int type, bool launch);	// 2017-02-06
 
 	void gameProgress();
 	void gameTimer();										// 2017-02-15
