@@ -32,7 +32,7 @@ enum GameObjectTypes {
 	MAP_ALERT, SCORE_TEXT, EXPLOSION
 };
 enum GameObjectSubTypes {
-	PLAYER1, PLAYER2,																						// Players
+	GAMEOBJECT, PLAYER1, PLAYER2,																			// Players
 	PLAYER1_SCORE, PLAYER2_SCORE,																			// Scores
 	POWER_UP_HEALTH, POWER_UP_LASER, POWER_UP_ROCKET, POWER_UP_CHECKPOINT, POWER_UP_LIVES,					// Power ups
 	ENEMY_SHIP_LASER, BLUE_VIRUS_BULLET, VIRUS_FIREBALL,													// Bullets
@@ -109,7 +109,7 @@ public:
 	int getSubType() const { return m_SubType; }						// 2017/01/25 Return the objects type
 	int getAngle() const { return m_Angle; }							// 2017/02/07 Return the objects angle
 	std::string getTextureID() const { return m_TextureID; }			// return the texture ID
-	SDL_Rect* getCollider() { return &m_Collider; }					// Get the collider for an object
+	SDL_Rect* getCollider() { return &m_Collider; }					    // Get the collider for an object
 	int getNumFrames() const { return m_Frames; }						// 2017/02/09 Animation frames
 	int getCurrentFrame() const { return m_CurrentFrame; }				// 2017/03/22 Get the current animation frame of sprite sheet
 	int getAnimRow() const { return m_CurrentAnimationRow; }			// 2017/03/22 Get the current animation row of sprite sheet

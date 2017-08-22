@@ -1288,8 +1288,6 @@ void Game::moveGameObjects() {
 	if (player1->getAlive()) player1->move();												// Update ship movement
 	if (player2->getAlive()) player2->move();
 
-	//scrollBG.move();																		// Move the Scrolling background
-
 	// Cycle through list of Game Objects and move them, Player scores, and Power Ups so far
 	for (unsigned int index = 0; index != listOfGameObjects.size(); ++index) {
 		// Objects that move towards coordinates
@@ -1318,11 +1316,14 @@ void Game::moveGameObjects() {
 				}
 			}
 		}
-		// Objects with ordinary movement, or movment pattern defined in move function
+		// Objects with ordinary movement, or movement pattern defined in move function
 		else listOfGameObjects[index]->move();
 	}
 }
 
+/*
+	This function moves the Enemy Virus to the nearest Player on the screen
+*/
 bool Game::moveToPlayer1(int x, int y) {
 	bool moveToPlayer1 = true;
 
@@ -1337,7 +1338,9 @@ bool Game::moveToPlayer1(int x, int y) {
 	return moveToPlayer1;
 }
 
-// 2017-02-16 Display player messages for player events, added to a function
+/*
+	2017-02-16 Display player messages for player events, added to a function
+*/
 void Game::infoMessage(std::string message, int type, int timer) {
 	if (type == 0) {
 		infoMessageCounter = 0;
@@ -1358,7 +1361,9 @@ void Game::infoMessage(std::string message, int type, int timer) {
 	std::cout << message << std::endl;
 }
 
-// Destroy Game Objects
+/*
+	Destroy Game Objects
+*/
 void Game::destroyGameObjects() {
 	// Test game objects are being destroyed and removed from list
 
@@ -1630,7 +1635,7 @@ void Game::spawnPlayer(int player) {
 		//std::cout << "player1.getY() " << player1.getY() << " player2.getY() " << player2.getY() << std::endl;
 	}
 
-	if ((!twoPlayer && player == PLAYER_1) ||(twoPlayer)) {
+	if ((!twoPlayer && player == PLAYER_1) || (twoPlayer)) {
 		infoMessage(randomPlayerMessage(player), player);					// 2017/03/04 Random player spawning messagess
 	}
 }
