@@ -38,7 +38,7 @@ ScoreValueText::ScoreValueText(int x, int y, int score, int player) {
 
 ScoreValueText::~ScoreValueText() {}
 int i = 0;
-void ScoreValueText::moveStalker(int x, int y) {
+void ScoreValueText::move(int x, int y) {
 	float dx = x - getX();
 	float dy = y - getY();
 	float goal_dist = sqrt((dx * dx) + (dy * dy));

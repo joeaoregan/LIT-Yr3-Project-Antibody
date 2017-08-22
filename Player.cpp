@@ -58,10 +58,21 @@ int VEL;
 //Game game1;
 WeaponPlRocket rocket;
 
-Player::Player() {
+//Player::Player() {
+Player::Player(int subType) {				// 2017/03/22
 	// Initialize the offsets
 	setX(0);
 	setY(SCREEN_HEIGHT / 2);
+
+	setType(PLAYER);
+	setSubType(subType);
+
+	if (subType == PLAYER1) {
+		setName("Player 1");
+	}
+	else if (subType == PLAYER2) {
+		setName("Player 2");
+	}
 
 	setWidth(100);
 	setHeight(47);

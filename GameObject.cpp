@@ -68,6 +68,22 @@ void GameObject::render(Texture &texture, SDL_Rect *currentClip, int &currentfra
 }
 
 /*
+	Render using the game singleton to fetch the renderer,
+	The texture singleton to get the texture using the GameObjects stored texture ID
+	Source and Destination rectangles
+	An angle of rotation
+*/
+void GameObject::renderAnimation() {
+	Texture::Instance()->modifyAlpha( getAlpha(), getTextureID() );
+	SDL_Rect renderQuadSource = { getWidth() * getCurrentFrame(), getHeight() * getAnimRow(), getWidth(), getHeight() };
+	SDL_Rect renderQuadDest = { getX(), getY(), getWidth(), getHeight() };
+
+	//SDL_RenderCopyEx(Game::Instance()->getRenderer(), Texture::Instance()->getTexture(getTextureID()), &srcRect, &renderQuadDest, angle, 0, flip);
+	//SDL_RenderCopyEx(Game::Instance()->getRenderer(), Texture::Instance()->getTexture(getTextureID()), NULL, &renderQuadDest, 0, NULL, SDL_FLIP_NONE);
+	SDL_RenderCopyEx(Game::Instance()->getRenderer(), Texture::Instance()->getTexture(getTextureID()), &renderQuadSource, &renderQuadDest, 0, NULL, SDL_FLIP_NONE);
+}
+
+/*
 // Render rotating object with ID
 void GameObject::render() {
 	SDL_Rect renderQuad = { getX(), getY(), getWidth(), getHeight() };	// Set rendering space and render to screen

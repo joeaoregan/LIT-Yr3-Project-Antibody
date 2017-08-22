@@ -55,8 +55,8 @@
 
 // Animation
 const int ANIMATION_FRAMES = 4;				// Number of frames of animation for Enemy Ship
-const int EXPLOSION_ANIMATION_FRAMES = 12;	// Number of frames of animation for Explosions
-const int BLOOD_EXP_ANIMATION_FRAMES = 12;
+const int EXPLOSION_ANIMATION_FRAMES = 16;	// Number of frames of animation for Explosions
+const int BLOOD_EXP_ANIMATION_FRAMES = 16;
 
 enum gameStates {  MENU, LEVEL_1, LEVEL_2, LEVEL_3, PAUSE, SETTINGS, HIGH_SCORES, GAME_INTRO, LEVEL_INFO, ENTER_NAME };
 
@@ -200,8 +200,11 @@ public:
 	void renderGamePlay();									// 2017-01-09 JOE: Render the game objects to the screen
 	void renderGameOver();									// 2017/03/02 JOE: Render the game objects for Game Over state
 	void renderTimer(unsigned int &timer);					// 2017/03/02 JOE: Separate the game timer to its own function
-	//void renderTimer();					// 2017/03/02 JOE: Separate the game timer to its own function
+	//void renderTimer();									// 2017/03/02 JOE: Separate the game timer to its own function
 	void moveGameObjects();									// 2017-01-09 JOE: Move the game objects on the screen
+
+	bool moveToPlayer1(int x, int y);						// 2017/03/22 Separate which Player the virus chooses to move towards to function
+
 	void destroyGameObjects();								// 2017-01-09 JOE: Destroy the game objects when finished on the screen
 
 	bool loadMedia();										// Loads media

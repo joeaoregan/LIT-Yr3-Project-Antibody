@@ -30,7 +30,8 @@ public:
 		return s_pInstance;							// Make sure the texture manager only exists once
 	}
 	// Need to be private for singleton
-	Texture(int degrees = 0);				// Initializes variables
+	//Texture(int degrees = 0);				// Initializes variables
+	Texture();								// Initializes variables 2017/03/22 No longer need degrees when setting texture
 	~Texture();								// Deallocates memory
 
 	bool loadTextureMedia(); // 2017/02/26
@@ -60,24 +61,6 @@ public:
 	
 	void loadInputText(std::string input);
 	void loadEnterNameText(std::string nameText);
-	/*
-	bool loadFromRenderedTextID(SDL_Texture* text, std::string textureText, std::string id, SDL_Color textColor, TTF_Font* font, SDL_Renderer* renderer, bool textWrapped);
-	bool loadTextureMedia(SDL_Renderer* rend); // 2017/02/26
-	bool load(std::string fileName, std::string id, SDL_Renderer* pRenderer);
-	void draw(std::string id, int x, int y, int width, int height, SDL_Renderer* pRenderer, SDL_RendererFlip flip = SDL_FLIP_NONE);
-	void weaponIndicator(std::string textureID, int x, SDL_Renderer* rend);	// 2017/02/26 Function to render weapon indicators
-	SDL_Texture* loadTexture(std::string path, SDL_Renderer *rend);	// Loads individual image as texture
-	bool loadFromFile(std::string path, SDL_Renderer *rend);		// Loads image at specified path	2017-01-19 Added Renderer
-#ifdef _SDL_TTF_H
-																	//Creates image from font string
-	bool loadFromRenderedText(std::string textureText, SDL_Color textColor, TTF_Font* font, SDL_Renderer* rend, bool textWrapped = false);
-#endif
-	void renderMap(SDL_Renderer* rend);
-	void renderMap(std::string id, int x, int y, int width, int height, SDL_Renderer* rend);
-	//void render(int x, int y, SDL_Rect* clip = NULL, double angle = 0.0, SDL_Point* center = NULL, SDL_RendererFlip flip = SDL_FLIP_NONE);	// Renders texture at given point
-	void render(int x, int y, SDL_Renderer *rend, SDL_Rect* clip = NULL, double angle = 0.0, SDL_Point* center = NULL, SDL_RendererFlip flip = SDL_FLIP_NONE);
-*/
-	
 	
 	void free();												// Deallocates texture
 		
@@ -109,24 +92,12 @@ public:
 	bool getFlash() { return mFlash; }
 	void setFlash(bool flash) { mFlash = flash; }
 	
-	//SDL_Color getFontColour();
-	//void setFontColour(SDL_Color f);
-
-
 	void UIText(std::string textureText, int fontSize = 20);								// Render Text for player scores, FPS, and current Level
 	void UITextTimer(std::string timerText, unsigned int Timer);							// Render Text for Game Timer
 	void UITextPlayerMessage(std::string playerMessage, int type = 0);
 	void numRocketsLeft(std::string textureText);											// 2017/02/19 Indicate the number of rockets each player has left
 	void speedBoostText(std::string textureText);											// 2017/02/20 Indicates a speedboost is active
-	//void createdByText();						// 2017/02/20		 2017/03/03 altered	
-	/*
-	void UIText(std::string textureText, SDL_Renderer* rend);								// Render Text for player scores, FPS, and current Level
-	void UITextTimer(std::string timerText, SDL_Renderer* rend, unsigned int Timer);		// Render Text for Game Timer
-	void UITextPlayerMessage(std::string playerMessage, SDL_Renderer* rend, int type = 0);
-	void numRocketsLeft(std::string textureText, SDL_Renderer* rend);						// 2017/02/19 Indicate the number of rockets each player has left
-	void speedBoostText(std::string textureText, SDL_Renderer* rend);						// 2017/02/20 Indicates a speedboost is active
-	void createdByText(SDL_Renderer* rend);													// 2017/02/20			
-	*/
+	
 	unsigned int lastTime = 0;
 
 	std::map<std::string, SDL_Texture*> getTextureMap() { return m_textureMap; }
@@ -168,9 +139,35 @@ private:
 	// 23/01/2017 Added these
 	int m_X;
 	int m_Y;
-	//int m_Alpha;	// Textures alpha value
-
-	//SDL_Color txtColour;
 };
 
 #endif
+
+/*
+SDL_Color txtColour;
+
+bool loadFromRenderedTextID(SDL_Texture* text, std::string textureText, std::string id, SDL_Color textColor, TTF_Font* font, SDL_Renderer* renderer, bool textWrapped);
+bool loadTextureMedia(SDL_Renderer* rend); // 2017/02/26
+bool load(std::string fileName, std::string id, SDL_Renderer* pRenderer);
+void draw(std::string id, int x, int y, int width, int height, SDL_Renderer* pRenderer, SDL_RendererFlip flip = SDL_FLIP_NONE);
+void weaponIndicator(std::string textureID, int x, SDL_Renderer* rend);	// 2017/02/26 Function to render weapon indicators
+SDL_Texture* loadTexture(std::string path, SDL_Renderer *rend);	// Loads individual image as texture
+bool loadFromFile(std::string path, SDL_Renderer *rend);		// Loads image at specified path	2017-01-19 Added Renderer
+#ifdef _SDL_TTF_H
+//Creates image from font string
+bool loadFromRenderedText(std::string textureText, SDL_Color textColor, TTF_Font* font, SDL_Renderer* rend, bool textWrapped = false);
+#endif
+void renderMap(SDL_Renderer* rend);
+void renderMap(std::string id, int x, int y, int width, int height, SDL_Renderer* rend);
+//void render(int x, int y, SDL_Rect* clip = NULL, double angle = 0.0, SDL_Point* center = NULL, SDL_RendererFlip flip = SDL_FLIP_NONE);	// Renders texture at given point
+void render(int x, int y, SDL_Renderer *rend, SDL_Rect* clip = NULL, double angle = 0.0, SDL_Point* center = NULL, SDL_RendererFlip flip = SDL_FLIP_NONE);
+SDL_Color getFontColour();
+void setFontColour(SDL_Color f);
+void createdByText();						// 2017/02/20		 2017/03/03 altered
+void UIText(std::string textureText, SDL_Renderer* rend);								// Render Text for player scores, FPS, and current Level
+void UITextTimer(std::string timerText, SDL_Renderer* rend, unsigned int Timer);		// Render Text for Game Timer
+void UITextPlayerMessage(std::string playerMessage, SDL_Renderer* rend, int type = 0);
+void numRocketsLeft(std::string textureText, SDL_Renderer* rend);						// 2017/02/19 Indicate the number of rockets each player has left
+void speedBoostText(std::string textureText, SDL_Renderer* rend);						// 2017/02/20 Indicates a speedboost is active
+void createdByText(SDL_Renderer* rend);													// 2017/02/20
+*/

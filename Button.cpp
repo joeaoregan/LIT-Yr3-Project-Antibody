@@ -10,7 +10,13 @@
 #include "Button.h"
 #include "Game.h"
 #include "Audio.h"
+
+#include "SettingsMenu.h"
+#include "HighScores.h"
 //#include <SDL.h>
+
+SettingsMenu settingsButton;
+HighScores highScoresButton;
 
 enum mainMenuButtons { STORY, GAME_1PLAYER, GAME_2PLAYER, GO_TO_SETTINGS, MENU_TO_HIGH_SCORES, QUIT };
 enum settingsMenuButtons { MUSIC_ON, MUSIC_OFF, FULL_SCREEN_TOGGLE, MAIN_MENU, QUIT_SETTINGS };
@@ -140,20 +146,22 @@ void Button::handleEvent(SDL_Event* e, int buttonSelected) {
 				// Handle button events for settings menu
 				else if (Game::Instance()->getCurrentLevel() == SETTINGS) {
 					if (buttonSelected == MUSIC_ON) {
-						Audio::Instance()->playPauseMusic();
+						Audio::Instance()->playPauseMusic();					// Play the original music soundtrack
 					}
 					else if (buttonSelected == MUSIC_OFF) {
-						Audio::Instance()->stopMusic();						// Stop the music
+						Audio::Instance()->stopMusic();							// Stop the music
 					}
 					else if (buttonSelected == FULL_SCREEN_TOGGLE) {
-						Game::Instance()->fullScreenOrWindowed();
+						Game::Instance()->fullScreenOrWindowed();				// Make the game full screen or windowed
 					}
 					else if (buttonSelected == MAIN_MENU) {
-						Game::Instance()->setCurrentLevel(MENU);
-						//Game::Instance()->settingsMenuLoaded = false;		// menu media not loaded
+						Game::Instance()->setCurrentLevel(MENU);				// Change game state to Main Menu
+						settingsButton.closeSettingsMedia();					// Clear the media associated with the Settings Menu
+						//Game::Instance()->settingsMenuLoaded = false;			// menu media not loaded
 					}
 					else if (buttonSelected == QUIT_SETTINGS) {
 						std::cout << "Selected: Quit The Game" << std::endl;
+						settingsButton.closeSettingsMedia();					// Clear the media associated with the Settings Menu
 						Game::Instance()->close();
 					}
 				}
@@ -162,7 +170,8 @@ void Button::handleEvent(SDL_Event* e, int buttonSelected) {
 				else if (Game::Instance()->getCurrentLevel() == HIGH_SCORES) {
 					if (buttonSelected == SCORES_TO_MENU) {
 						Game::Instance()->setCurrentLevel(MENU);
-						//Game::Instance()->highScoresLoaded = false;		// High Scores media not loaded after clearing NEED TO SET CLEAR
+						highScoresButton.closeHighScoresMedia();				// Close the media associated with the High Scores menu on exit
+						//Game::Instance()->highScoresLoaded = false;			// High Scores media not loaded after clearing NEED TO SET CLEAR
 					}
 				}
 
@@ -170,7 +179,7 @@ void Button::handleEvent(SDL_Event* e, int buttonSelected) {
 				else if (Game::Instance()->getCurrentLevel() == ENTER_NAME) {
 					if (buttonSelected == RESET) {
 						//Game::Instance()->setCurrentLevel(MENU);
-						//Game::Instance()->highScoresLoaded = false;		// High Scores media not loaded after clearing NEED TO SET CLEAR
+						//Game::Instance()->highScoresLoaded = false;		.// High Scores media not loaded after clearing NEED TO SET CLEAR
 					}
 					if (buttonSelected == NAME_TO_MENU) {
 						Game::Instance()->setCurrentLevel(MENU);

@@ -377,10 +377,10 @@ void HUD::speedBoostIndicator(bool boost) {
 int previousNumRockets1, previousNumRockets2;
 
 void HUD::rocketIndicator(int numRockets, int player, bool alive) {
-	gPowerUpRocketTexture.free();
 	gPowerUpRocketTexture.modifyAlpha(255);									// Keep alpha values independent, show bright if alive
 	if (numRockets <= 0 || !alive) gPowerUpRocketTexture.modifyAlpha(50);	// Fade out the rocket image if player has no rockets
 	gPowerUpRocketTexture.render(scroll + 15, -2, NULL, 45);				// 1st //weaponScrolling = 60;
+	//gPowerUpRocketTexture.free();											// Test: Hides the rocket image
 
 	if (player == PLAYER_1) {
 		if (previousNumRockets1 != numRockets) {
@@ -438,7 +438,7 @@ void HUD::createdByText() {
 		gCreatedByTextTexture2.render((SCREEN_WIDTH - gCreatedByTextTexture2.getWidth()) / 2, 120 - gCreatedByTextTexture2.getHeight() - 8);
 	}
 	else if (changeEverySecond % 3 == 0) {
-		//if (!gCreatedByTextTexture.loadFromRenderedText("JOE O'REGAN and SEAN HORGAN", { 0, 255, 0, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 16), true)) {				// Green Text
+		//if (!gCreatedByTextTexture.loadFromRenderedText("Seán Horgan and Joe O'Regan", { 0, 255, 0, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 16), true)) {				// Green Text
 		//	printf("createdByText(): Unable to render Created By Text Texture!\n");
 		//}
 		gCreatedByTextTexture3.render((SCREEN_WIDTH - gCreatedByTextTexture3.getWidth()) / 2, 120 - gCreatedByTextTexture3.getHeight() - 8);

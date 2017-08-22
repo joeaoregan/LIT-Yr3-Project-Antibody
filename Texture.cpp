@@ -22,13 +22,12 @@
 
 Texture* Texture::s_pInstance = 0;
 
-Texture::Texture(int degrees) {
+Texture::Texture() {
 	// Initialize
 	mTexture = NULL;
 	mWidth = 0;
 	mHeight = 0;
 	mAlpha = 255;				// Default alpha is fully solid colour
-	mDegrees = degrees;
 	mFlash = false;
 }
 
@@ -433,13 +432,20 @@ void Texture::clearMedia() {
 
 }
 
-const int NUM_TEXTURES2 = 31;
+const int NUM_TEXTURES2 = 36;
 
 // 2D Array of textures, with path to file, texture ID, and description for error messages
 std::string textures2[NUM_TEXTURES2][3] = {
 	// Game
 	{ "Art/Prof.png", "profID", "Professor" },										// Map texture to show the players current position inside the professor
 	{ "Art/Player1ShipBlue30.png", "mapShipID", "Blue Mini Map Ship" },				// Map texture to show the players current position inside the professor
+
+	// Explosions
+	{ "Art/Explosion.png", "explosionID", "Explosion" },							// 2017/03/22 Added Explosion animation
+	{ "Art/ExplosionBlood.png", "eplosionBloodID", "Blood Explosion" },				// 2017/03/22 Added Blood Explosion animation
+	{ "Art/ExplosionVirusGreen.png", "explosionGreenID", "Green Explosion" },		// 2017/03/22 Added Green Explosion animation
+	{ "Art/ExplosionVirusOrange.png", "explosionOrangeID", "Orange Explosion" },	// 2017/03/22 Added Orange Explosion animation
+	{ "Art/ExplosionVirusBlue.png", "explosionBlueID", "Blue Explosion" },			// 2017/03/22 Added Blue Explosion animation
 
 	// Blood Cells
 	{ "Art/BloodCell.png", "bcID", "Large Blood Cell" },							// 2017/03/17 Added texture for Large Blood Cell to map

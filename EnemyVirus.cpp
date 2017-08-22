@@ -77,20 +77,24 @@ EnemyVirus::~EnemyVirus() {
 
 // 2017/03/03 Stalker movement, for moving towards player
 void EnemyVirus::moveStalker(int shipX, int shipY) {
-	if (getType() != SMALL_VIRUS &&  getX() > shipX) {
-			if (getY() - shipY >= 0) {
-				if (getY() - shipY >= getVelocity())
-					setY(getY() - getVelocity());							// No need to make smaller movements at the moment, as velocity is v.low anyway
-			}
-			else if (getY() - shipY < 0) {
-				setY(getY() + getVelocity());
-			}
+	if (getType() != SMALL_VIRUS &&  getX() > shipX) {					// 2017/03/22 Moved from Game class
+		if (getX() > SCREEN_WIDTH && getX() < SCREEN_WIDTH + 10) {		// When a virus is within 10 pixels of appearing on screen
+			Game::Instance()->infoMessage(getName() + " Approaching");	// 2017/02/19 Added information message indicates virus is approaching
+		}
 
-			setColliderX(getX() + 6);
-			setColliderY(getY() + 10);
+		if (getY() - shipY >= 0) {
+			if (getY() - shipY >= getVelocity())
+				setY(getY() - getVelocity());							// No need to make smaller movements at the moment, as velocity is v.low anyway
+		}
+		else if (getY() - shipY < 0) {
+			setY(getY() + getVelocity());
+		}
 
-			setX(getX() + getVelX());
-			GameObject::destroy();		// Destroy the object when it moves off screen
+		setColliderX(getX() + 6);
+		setColliderY(getY() + 10);
+
+		setX(getX() + getVelX());
+		GameObject::destroy();		// Destroy the object when it moves off screen
 		}	
 	else
 		GameObject::move();			// Normal right to left movement

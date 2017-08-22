@@ -17,8 +17,7 @@ public:
 	ScoreValueText(int x, int y, int score, int player);
 	~ScoreValueText();
 
-	virtual void move() {};
-	virtual void moveStalker(int x, int y);	// Tracker movement, scores move towards players who earned the points
+	virtual void move(int x, int y);	// Tracker movement, scores move towards players who earned the points
 
 	virtual void destroy() {};
 

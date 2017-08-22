@@ -12,7 +12,16 @@
 class ScrollingBackground : public GameObject {
 public:
 	ScrollingBackground() {
+		setType(BACKGROUND);
+		setName("Scrolling Background");
+		setWidth(1280);
+		setHeight(600);
+		setX(0);
+		setY(0);
+		setTextureID("startBG");		// 2017/03/18 Added saw texture to texture map
 
+		std::cout << "Background Constructor Called" << std::endl;
+		setAlive(true);
 	};
 	~ScrollingBackground() {};
 
@@ -46,7 +55,6 @@ public:
 	virtual void destroy() {
 		scrollingOffset = 0;	// Reset scrollingOffset
 
-
 		// Background images to free when not in level state
 
 		//{ "Art/bgBegin720a.png", "startBG", "Starting Background" },
@@ -64,6 +72,7 @@ public:
 	*/
 	virtual void render() {
 		//GameObject::render();
+		std::cout << "background render " << std::endl;
 
 		// Render background
 		if (Game::Instance()->backgroundLoopCounter < 1) Texture::Instance()->renderMap("startBG", scrollingOffset, 0, SCREEN_WIDTH, SCREEN_HEIGHT_GAME);											// 1st background (and every odd number)
@@ -72,7 +81,7 @@ public:
 
 		if (Game::Instance()->backgroundLoopCounter < BACKGROUND_SCROLL_TIMES) Texture::Instance()->renderMap("middleBG", scrollingOffset + SCREEN_WIDTH, 0, SCREEN_WIDTH, SCREEN_HEIGHT_GAME);	// 2nd background (and every even number)
 		else Texture::Instance()->renderMap("endBG", scrollingOffset + SCREEN_WIDTH, 0, SCREEN_WIDTH, SCREEN_HEIGHT_GAME);
-	}
+	};
 };
 
 #endif

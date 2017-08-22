@@ -17,8 +17,9 @@
 const int TOTAL_PARTICLES = 20;	// Particle count
 
 class Player : public GameObject {
-public:				
-	Player();								// Initializes the variables
+public:
+	//Player();								// Initializes the variables
+	Player(int subType = PLAYER1);			// Initializes the variables // 2017/03/22 Added subtype
 
 	Particle* particles[TOTAL_PARTICLES];	// The particles
 	bool getDrawParticle() { return drawParticle; }

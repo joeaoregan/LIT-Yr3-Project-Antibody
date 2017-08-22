@@ -1,4 +1,6 @@
 /*
+	2017/03/22 Made the Enemy Boss collider slightly smaller and closer to the face, 
+				so explosions are happening closer to the target
 	2017/03/18 Updated animation swapping Lorcan for Daniel (an improvement!!!)
 				Added more complicated movement, with the player performing different
 				movement sequences at different points on the screen
@@ -56,8 +58,8 @@ public:
 		setVelocity(-10);
 
 		// Initialise Collider
-		setColliderWidth(getWidth());
-		setColliderHeight(getHeight());
+		setColliderWidth(getWidth() - 50);
+		setColliderHeight(getHeight() - 70);
 
 		setFrames(0);
 	}
@@ -78,8 +80,8 @@ public:
 
 	virtual void move(int x, int y) {
 		// Set collider movement as its not inheriting movment
-		setColliderX(getX());
-		setColliderY(getY());
+		setColliderX(getX() + 30);	// 2017/03/22 Set the enemy collider closer to its face
+		setColliderY(getY() + 10);
 		//if (getX() == 
 
 		//if (getX() > SCREEN_WIDTH - 330 && getX() < SCREEN_WIDTH - 200 && moveRight) { // 1st
