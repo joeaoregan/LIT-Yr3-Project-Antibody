@@ -58,7 +58,7 @@ public:
 	};
 
 	// Inherited movement function
-	virtual void move() {
+	virtual void move(int x = 0, int y = 0) {
 		GameObject::move();
 	};
 	virtual void destroy() {};

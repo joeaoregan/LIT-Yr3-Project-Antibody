@@ -38,9 +38,8 @@ public:
 	~WeaponPlSaw() {
 		std::cout << "Saw destructor called." << std::endl;
 	};
-
-	// Inherited movement function
-	virtual void move() {};
+	
+	virtual void move() {};									// Inherited movement function (not required)
 
 	// Moves the Saw - stalker movement, follows players every move
 	virtual void move(int x, int y) {
@@ -48,7 +47,9 @@ public:
 		setY(y + 25);
 	};
 
-	virtual void destroy() {};
+	virtual void destroy() {								// Destroy the object when it moves off screen
+		GameObject::destroy();
+	};
 };
 
 #endif

@@ -83,9 +83,9 @@ void Texture::renderMap(std::string id, int x, int y, int width, int height) {
 	//void Texture::renderMap(std::string id, int x, int y, int width, int height, SDL_Renderer* rend) {
 	SDL_Rect renderQuad = { x, y, width, height };	// Set rendering space and render to screen
 
-
 	SDL_RenderCopyEx(Game::Instance()->getRenderer(), m_textureMap[id], NULL, &renderQuad, 0, NULL, SDL_FLIP_NONE);	// Render to screen
 }
+
 void Texture::render(std::string id, int x, int y, SDL_Rect* clip, double angle, SDL_Point* center, SDL_RendererFlip flip) {
 	SDL_Rect renderQuad = { x, y, mWidth, mHeight };	// Set rendering space and render to screen
 
@@ -431,12 +431,17 @@ void Texture::clearMedia() {
 
 }
 
-const int NUM_TEXTURES2 = 23;
+const int NUM_TEXTURES2 = 26;
 
 // 2D Array of textures, with path to file, texture ID, and description for error messages
 std::string textures2[NUM_TEXTURES2][3] = {
 	// Game
-	{ "Art/Prof.png", "profID", "Professor" },		// Map texture to show the players current position inside the professor
+	{ "Art/Prof.png", "profID", "Professor" },					// Map texture to show the players current position inside the professor
+
+	// Blood Cells
+	{ "Art/BloodCell.png", "bcID", "Large Blood Cell" },		// Texture for Large Blood Cell
+	{ "Art/BloodCellSmall.png", "bcsID", "Small Blood Cell" },	// Texture for Small Blood Cell
+	{ "Art/WhiteCell.png", "bcwID", "White Blood Cell" },		// Texture for White Blood Cell
 
 	// Background images
 	{ "Art/bgBegin720a.png", "startBG", "Starting Background" },

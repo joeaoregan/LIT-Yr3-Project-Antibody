@@ -46,13 +46,4 @@ bool Game::checkCollision(SDL_Rect *a, SDL_Rect *b) {
 	return true;
 }
 
-
-
-/*
-class CollisionStuff : public CollisionStuff {
-public:
-	//CollisionStuff();							// Initializes the variables
-	//~CollisionStuff();
-};
-*/
 #endif

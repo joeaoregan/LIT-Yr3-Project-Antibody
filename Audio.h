@@ -66,7 +66,7 @@ public:
 
 private:
 	Audio();											// Constructor is private for use as a Singleton. Initializes the variables
-	~Audio();											// Private deconstructor shuts down and cleans up the mixer API
+	~Audio();											// Private destructor shuts down and cleans up the mixer API
 
 	unsigned int currentSong;							// Play a random song when the game starts, 2017/03/17 Changed to Private
 
@@ -78,7 +78,6 @@ private:
 };
 
 #endif
-
 /*
 	//void music();						// Load the music files and add them to the listOfMusic array (2017/03/17 combined with loadMediaAudio() function)
 

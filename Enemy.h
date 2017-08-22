@@ -15,12 +15,10 @@
 #include "GameObject.h"
 
 class Enemy : public GameObject {
-public:
-	// Constructor
-	Enemy() {};
-
-	// Destructor
-	~Enemy() {};
+public:	
+	Enemy() {};		// Constructor
+	
+	~Enemy() {};	// Destructor
 };
 
 #endif

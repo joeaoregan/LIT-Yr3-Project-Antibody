@@ -4,6 +4,9 @@
 				Changed playMusic() to playPauseMusic() and changed type to void from int as identifyTrack() is now in Audio class not Game
 				Moved play / pause functionality to playMusic() function in Audio class
 				Changed musicForwardSongName() and musicBackSongName() type to void from int, as tracks are identified with identifyTrack() in Audio and not Game class
+				Moved enemy laser spawning from Game class to Enemy Ship move function
+				Created a unique render function for Blood Cells that uses the stored texture ID to load the texture image
+				it also rotates the blood cells in a random direction
 	2017/03/13 Added full screen toggle setting by pressing F11 and in settings menu
 				Tidied up the pause menu, so it can only be accessed from within the game
 				Added bubble image to represent player shield shieldP1ID, shieldP2ID
@@ -303,9 +306,9 @@ Texture gRocketTexture;				// Texture for Rocket weapon
 Texture gNinjaStarBlueTexture(5);	// Texture for Ninja Star weapon
 Texture gNinjaStarYellowTexture(5);	// Texture for Ninja Star weapon // 2017-01-30 with rotation angle of 5 degrees
 Texture gSawTexture(5);				// Texture for Ninja Star weapon
-Texture gBloodCellTexture(1);		// Texture for Blood Cell obstacle (classed as enemy as it causes damage on impact)
-Texture gBloodCellSmallTexture(2);	// Texture for Smaller Blood Cell
-Texture gWhiteBloodCellTexture(2);	// Texture for White Blood Cell
+//Texture gBloodCellTexture(1);		// Texture for Blood Cell obstacle (classed as enemy as it causes damage on impact)
+//Texture gBloodCellSmallTexture(2);	// Texture for Smaller Blood Cell
+//Texture gWhiteBloodCellTexture(2);	// Texture for White Blood Cell
 // UI
 Texture gTimeTextTexture;			// Countdown time displayed in game screen
 Texture gFPSTextTexture;			// Frames Per Second displayed at top of screen
@@ -453,16 +456,16 @@ bool Game::init() {
 bool Game::loadMedia() {
 	Texture::Instance()->loadFromRenderedTextID("Level " + std::to_string(getCurrentLevel()), "levelID", { 0, 255, 0, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 20));
 
-	bool success = true;								// Loading success flag
+	bool success = true;														// Loading success flag
 
 	Texture::Instance()->loadTextureMedia();
 
-	success = menu1.loadMenuMedia();					// Load buttons etc
+	success = menu1.loadMenuMedia();											// Load buttons etc
 
-	//if (MUSIC_ON) audio.music();						// EDIT IN _TestData.h
-	///Audio::Instance()->music();						// 2017/03/17 Combined music loading with effects loading, as only one function is necessary
+	//if (MUSIC_ON) audio.music();												// EDIT IN _TestData.h
+	///Audio::Instance()->music();												// 2017/03/17 Combined music loading with effects loading, as only one function is necessary
 	success = Audio::Instance()->loadMediaAudio();
-	success = headsUpDisplay.loadLevelStuff();			// 2017/02/21 Separated heads up display object initialisation to the class for loading textures for player lives etc
+	success = headsUpDisplay.loadLevelStuff();									// 2017/02/21 Separated heads up display object initialisation to the class for loading textures for player lives etc
 	success = particle.initParticle();
 
 	// Open the font
@@ -485,6 +488,7 @@ bool Game::loadMedia() {
 		printf("Failed to load Player 2 texture!\n");
 		success = false;
 	}
+	/*
 	if (!gBloodCellTexture.loadFromFile("Art/BloodCell.png")) {					// 10/01 Added Large Blood Cell
 		printf("Failed to load Blood Cell texture!\n");
 		success = false;
@@ -497,6 +501,7 @@ bool Game::loadMedia() {
 		printf("Failed to load White Blood Cell texture!\n");
 		success = false;
 	}
+	*/
 	// Weapons
 	if (!gNinjaStarBlueTexture.loadFromFile("Art/NinjaStarBlue.png")) {			// Ninja Star Texture
 		printf("Failed to load Blue Ninja Star texture!\n");
@@ -662,9 +667,9 @@ void Game::close() {
 	gNinjaStarYellowTexture.free();
 	gSawTexture.free();
 	gRocketTexture.free();
-	gBloodCellTexture.free();
-	gBloodCellSmallTexture.free();
-	gWhiteBloodCellTexture.free();
+	//gBloodCellTexture.free();
+	//gBloodCellSmallTexture.free();
+	//gWhiteBloodCellTexture.free();
 	gPowerUpRocketTexture.free();
 
 	// free animations
@@ -949,34 +954,13 @@ bool Game::playerInput(bool quit = false) {
 			switch (e.key.keysym.sym) {
 			// Play/Pause music on a m key press, stop music on 0
 			case SDLK_m:
-				Audio::Instance()->playPauseMusic();							// 2017/03/17 Altered function to play / pause the music in Audio class
-				/*
-				if (Mix_PlayingMusic() == 0) {							// If there is no music playing
-					//int song = Audio::Instance()->playMusic();
-					Audio::Instance()->playMusic();
-					//Audio::Instance()->identifyTrack(song);
-					//infoMessage("Music Play");
-				}
-				else {													// If music is being played
-					if (Mix_PausedMusic() == 1) {						// Check if the music is paused
-						Mix_ResumeMusic();								// Resume music
-						infoMessage("Music Play");
-					}
-					else {												// If the music is playing
-						Mix_PauseMusic();								// Pause the music
-						infoMessage("Music Paused");
-					}
-				}
-				*/
-				break;
+				Audio::Instance()->playPauseMusic(); break;				// 2017/03/17 Altered function to play / pause the music in Audio class
 			case SDLK_l:
 				Audio::Instance()->musicForwardSongName(); break;		// Skip track forwards, identifying the name of the new song playing
 			case SDLK_k:
 				Audio::Instance()->musicBackSongName(); break;			// Skip track backwards, identifying the name of the new song playing
 			case SDLK_0:
 				Audio::Instance()->stopMusic();
-				//Mix_HaltMusic();
-				//infoMessage("Music Stopped"); break;					// Stop Music Message 2017/03/17 In Audio class
 			case SDLK_ESCAPE:
 				if (getCurrentLevel() == LEVEL_1 || getCurrentLevel() == LEVEL_2 || getCurrentLevel() == LEVEL_3) {
 					levelToPause = getCurrentLevel();	// Store the existing level number
@@ -998,7 +982,7 @@ bool Game::playerInput(bool quit = false) {
 					Texture::Instance()->modifyAlpha(50, "profID");
 				}
 				else if (mapViewport.y == 40) {
-					setViewport(mapViewport, (SCREEN_WIDTH - 120) / 2, 600, 120, 88); // 230 was 192, 168 was 140
+					setViewport(mapViewport, (SCREEN_WIDTH - 120) / 2, 600, 120, 88);	// 230 was 192, 168 was 140
 					infoMessage("Hide Map");
 					Texture::Instance()->modifyAlpha(255, "profID");
 				}
@@ -1008,7 +992,7 @@ bool Game::playerInput(bool quit = false) {
 				//	break;
 			case SDLK_F1:
 				framesPerSec.str("");
-				framesPerSec << "FPS: " << fps1.getFPS();										// FPS the game is running at
+				framesPerSec << "FPS: " << fps1.getFPS();								// FPS the game is running at
 				gFPSTextTexture.UIText(framesPerSec.str().c_str());						// Render text - Use a string to render the current FPS to a texture
 				fps1.rendFPS(framesPerSec.str().c_str());
 				break;
@@ -1071,9 +1055,9 @@ void Game::setRotatingAngle() {
 	gNinjaStarBlueTexture.setDegrees(gNinjaStarBlueTexture.getDegrees() + 5);
 	gNinjaStarYellowTexture.setDegrees(gNinjaStarYellowTexture.getDegrees() + 5);
 	gSawTexture.setDegrees(gSawTexture.getDegrees() + 5);
-	gBloodCellTexture.setDegrees(gBloodCellTexture.getDegrees() + 1);
-	gBloodCellSmallTexture.setDegrees(gBloodCellTexture.getDegrees() + 2);
-	gWhiteBloodCellTexture.setDegrees(gBloodCellTexture.getDegrees() + 2);
+	//gBloodCellTexture.setDegrees(gBloodCellTexture.getDegrees() + 1);
+	//gBloodCellSmallTexture.setDegrees(gBloodCellTexture.getDegrees() + 2);
+	//gWhiteBloodCellTexture.setDegrees(gBloodCellTexture.getDegrees() + 2);
 }
 
 void Game::scrollBackground() {
@@ -1184,12 +1168,18 @@ void Game::renderGamePlay() {
 				else listOfGameObjects[index]->setAlive(false);
 			}
 			// Render Blood Cells
-			else if (listOfGameObjects[index]->getSubType() == LARGE_BLOOD_CELL)
-				listOfGameObjects[index]->render(gBloodCellTexture, -gBloodCellTexture.getDegrees() * listOfGameObjects[index]->getRotationDirection());			// Render the Blood Cell, with random rotation direction
+			else if (listOfGameObjects[index]->getType() == BLOOD_CELL)
+				listOfGameObjects[index]->render();			// Render the Blood Cell, with random rotation direction
+
+				//listOfGameObjects[index]->render(gBloodCellTexture, -gBloodCellTexture.getDegrees() * listOfGameObjects[index]->getRotationDirection());
+				/*
 			else if (listOfGameObjects[index]->getSubType() == SMALL_BLOOD_CELL)
-				listOfGameObjects[index]->render(gBloodCellSmallTexture, -gBloodCellSmallTexture.getDegrees() * listOfGameObjects[index]->getRotationDirection());	// Render the Small Blood Cell, with random rotation direction
+				//listOfGameObjects[index]->render(gBloodCellSmallTexture, -gBloodCellSmallTexture.getDegrees() * listOfGameObjects[index]->getRotationDirection());
+				listOfGameObjects[index]->render();			// Render the Blood Cell, with random rotation direction	// Render the Small Blood Cell, with random rotation direction
 			else if (listOfGameObjects[index]->getSubType() == WHITE_BLOOD_CELL)
-				listOfGameObjects[index]->render(gWhiteBloodCellTexture, -gWhiteBloodCellTexture.getDegrees() * listOfGameObjects[index]->getRotationDirection());
+				//listOfGameObjects[index]->render(gWhiteBloodCellTexture, -gWhiteBloodCellTexture.getDegrees() * listOfGameObjects[index]->getRotationDirection());
+				listOfGameObjects[index]->render();			// Render the Blood Cell, with random rotation direction
+			*/
 			// Render Enemies
 			else if (listOfGameObjects[index]->getSubType() == ENEMY_SHIP) {																						// 2017/02/09 Fixed the Enemy Ship animations, they are now assigned to indiviual objects with the game object frame attribute
 				listOfGameObjects[index]->render(gEnemySpriteSheetTexture, &gEnemySpriteClips[frames / 10], frames, 4);												// 4 the number of frames
@@ -1504,24 +1494,20 @@ void Game::moveGameObjects() {
 	// Cycle through list of Game Objects and move them, Player scores, and Power Ups so far
 	for (unsigned int index = 0; index != listOfGameObjects.size(); ++index) {
 		if (listOfGameObjects[index]->getSubType() == PLAYER1_SCORE) {
-			listOfGameObjects[index]->move(player1->getX(), player1->getY());				// Move the score to Player 1 ship
+			listOfGameObjects[index]->moveStalker(player1->getX(), player1->getY());		// Move the score to Player 1 ship
 		}
 		else if (listOfGameObjects[index]->getSubType() == SAW1) {							// Move Player 1 saw
 			listOfGameObjects[index]->move(player1->getX(), player1->getY());
 		}
 		else if (listOfGameObjects[index]->getSubType() == PLAYER2_SCORE) {					// Move the score to Player 2 ship
-				listOfGameObjects[index]->move(player2->getX(), player2->getY());
+				listOfGameObjects[index]->moveStalker(player2->getX(), player2->getY());
 			}
 		else if (listOfGameObjects[index]->getSubType() == SAW2) {							// Move Player 2 saw
 			listOfGameObjects[index]->move(player2->getX(), player2->getY());
 		}
-		else if (listOfGameObjects[index]->getSubType() == ENEMY_SHIP) {					// Move Enemy ships + Fire enemy lasers
-			listOfGameObjects[index]->move();
-			spawnEnemyLaser(listOfGameObjects[index]->getX(), listOfGameObjects[index]->getY(), ENEMY_SHIP_LASER);
-		}
 		else if (listOfGameObjects[index]->getSubType() == VIRUS_GREEN || listOfGameObjects[index]->getSubType() == VIRUS_ORANGE || listOfGameObjects[index]->getSubType() == VIRUS_BLUE) {	// Move Enemy Virus, tracking the player movement
-			if (listOfGameObjects[index]->getX() > SCREEN_WIDTH && listOfGameObjects[index]->getX() < SCREEN_WIDTH + 10) {	// When a virus is within 10 pixels of appearing on screen
-					infoMessage(listOfGameObjects[index]->getName() + " Approaching");	// 2017/02/19 Added information message indicates virus is approaching
+			if (listOfGameObjects[index]->getX() > SCREEN_WIDTH && listOfGameObjects[index]->getX() < SCREEN_WIDTH + 10) {						// When a virus is within 10 pixels of appearing on screen
+					infoMessage(listOfGameObjects[index]->getName() + " Approaching");															// 2017/02/19 Added information message indicates virus is approaching
 			}
 			if (player2->getAlive() && (abs(player1->getX() - listOfGameObjects[index]->getX()) * abs(player1->getX() - listOfGameObjects[index]->getX())) +	// Distance on X axis between player 1 and virus squared
 				(abs(player1->getY() - listOfGameObjects[index]->getY()) * abs(player1->getY() - listOfGameObjects[index]->getY())) >			// Distance on Y axis between player 1 and virus squared
@@ -1593,20 +1579,15 @@ void Game::destroyGameObjects() {
 
 	// If player is offscreen and past the width of the blockage
 	if (player1->getX() <= -player1->getWidth() - 10) {
-		//player1->setHealth(0);
-		//player1->setNumLives(player1->getNumLives() - 1);
 		spawnPlayer(PLAYER_1);
 		managePlayerHealth(PLAYER_1, 25);
-		//player1->setHealth(-1);
 	}
 	if (player2->getX() <= -player2->getWidth() - 10) {
-		//player2->setNumLives(player2->getNumLives() - 1);
-		//managePlayerHealth(PLAYER_2, 0, "Blockage");
 		spawnPlayer(PLAYER_2);
 		managePlayerHealth(PLAYER_2, 25);
 	}
 
-	for (unsigned int index = 0; index != listOfGameObjects.size(); ++index) {	// Erase Game Objects
+	for (unsigned int index = 0; index != listOfGameObjects.size(); ++index) {															// Erase Game Objects
 		if ((listOfGameObjects[index]->getSubType() == PLAYER1_SCORE)) {
 			if (SDL_GetTicks() > listOfGameObjects[index]->getTimerTracker() + 2500) listOfGameObjects[index]->setAlive(false); // if the current time is more than the start time + 100
 			//if (listOfGameObjects[index]->getAlive() == false) scoreTextP1counter--;											// Decrement the player 1 score text counter
@@ -1757,7 +1738,7 @@ void Game::spawnBlockage() {
 	//std::cout << "Blockage Spawned!\n";
 
 	if (twoPlayer) {
-		infoMessage(randomBlockageMessage(), 3);							// 2017/03/04 Display a random spawning message for blockages
+		infoMessage(randomBlockageMessage(), 3);						// 2017/03/04 Display a random spawning message for blockages
 	}
 	numBlockages += 4;
 }
@@ -1768,11 +1749,11 @@ void Game::spawnPlayer(int player) {
 		player1->spawn(50, (randomYCoord * 58) + 50);						// 2017/01/20: Spawn Player 1 at random Y coord
 		player1->setAlive(true);
 		gPlayer1Texture.setFlash(true);
-		gPlayer1Texture.flashGameObject(10, 4);							// 2017/01/30 Moved flashGameObject() function into LTexture
+		gPlayer1Texture.flashGameObject(10, 4);								// 2017/01/30 Moved flashGameObject() function into LTexture
 	}
 	else if (player == PLAYER_2) {
 		player2->spawn(50, (randomYCoord * 58) + 50);
-		if (player2->getY() == player1->getY()) spawnPlayer(2);			// 2017/01/20: Spawn Player 2 at random Y coord + different to Player 1
+		if (player2->getY() == player1->getY()) spawnPlayer(2);				// 2017/01/20: Spawn Player 2 at random Y coord + different to Player 1
 		player2->setAlive(true);
 		gPlayer2Texture.setFlash(true);
 		gPlayer2Texture.flashGameObject(10, 4);
@@ -1827,13 +1808,13 @@ void Game::spawnEnemyVirus(int x, int y, int subType) {
 		Audio::Instance()->playFX("ripFX");
 	}
 	else {
-		int randomExplodingVirus = rand() % 4 + 1;								// 1 in 4 chance of Orange Exploding Virus
+		int randomExplodingVirus = rand() % 4 + 1;									// 1 in 4 chance of Orange Exploding Virus
 		//randomExplodingVirus = 2; // Test blue virus
 		if (randomExplodingVirus == 1 && (getCurrentLevel() == 2 || getCurrentLevel() == 3)) subType = VIRUS_ORANGE;
 		else if (randomExplodingVirus == 2 && getCurrentLevel() == 3) subType = VIRUS_BLUE;
 		else subType = VIRUS_GREEN;
 
-		GameObject* p_Virus = new EnemyVirus(subType, 3.0);		// Orange type = 1
+		GameObject* p_Virus = new EnemyVirus(subType, 3.0);							// Orange type = 1
 		p_Virus->setTimer(VIRUS_TIMER);
 		p_Virus->spawn(x, y, -randomSpeed-4  , -randomSpeed);
 		listOfGameObjects.push_back(p_Virus);
@@ -1887,9 +1868,9 @@ void Game::spawnExplosion(int x, int y, int subType) {
 	p_Explosion->spawn(x, y - 30);								// Spawn the explosion at the given x & y coords
 	listOfGameObjects.push_back(p_Explosion);					// Add explosion to list of game objects
 
-	//if (subType == EXPLOSION) Audio::Instance()->explosionFX();			// Play explosion sound effect
-	//else if (subType == BLOOD_EXPLOSION) Audio::Instance()->splashFX();	// 2017/03/13 Splash Effect for blood cells
-	//else Audio::Instance()->ripFX();									// 2017/03/13 Rip Effect for Virus Enemies ripping in 2
+	//if (subType == EXPLOSION) Audio::Instance()->explosionFX();				// Play explosion sound effect
+	//else if (subType == BLOOD_EXPLOSION) Audio::Instance()->splashFX();		// 2017/03/13 Splash Effect for blood cells
+	//else Audio::Instance()->ripFX();											// 2017/03/13 Rip Effect for Virus Enemies ripping in 2
 	if (subType == EXPLOSION) Audio::Instance()->playFX("explosionFX");			// Play explosion sound effect
 	else if (subType == BLOOD_EXPLOSION) Audio::Instance()->playFX("splashFX");	// 2017/03/13 Splash Effect for blood cells
 	else Audio::Instance()->playFX("ripFX");									// 2017/03/13 Rip Effect for Virus Enemies ripping in 2
@@ -1900,11 +1881,6 @@ void Game::spawnLaser(int x, int y, int player, int grade, int velocity) {
 	GameObject* p_Laser1 = new WeaponPlLaser(player);
 
 	p_Laser1->spawn(x + 65, y + 25, velocity);	// Spawn laser at front of ship, with set veloicty, for player 1, setting sub-type of laser
-
-	//if (player == PLAYER_1) grade = player1->getLaserGrade();						// Decide if it is a single laser, or triple laser beam
-	//else if (player == PLAYER_2) grade = player2->getLaserGrade();
-	//if (player == PLAYER_1) grade = 1;								// Decide if it is a single laser, or triple laser beam
-	//else if (player == PLAYER_2) grade = 1;
 
 	// Check the grade of the laser, to decide if it is a single, double, or triple beam
 	if (grade == LASER_DOUBLE) {
@@ -2095,7 +2071,6 @@ void Game::managePlayerHealth(int player, int damage, std::string name) {
 			player1->setSawActive(false);							// kill the active saw
 			player1->setAlive(false);								// kill the player
 		}
-		//else if (player1->getHealth() <= 0 && player1->getAlive()) {	// if player health is 0 or less AND player is alive
 		else if (player1->getHealth() <= 0) {	// if player health is 0 or less AND player is alive
 			player1->setNumLives(player1->getNumLives() - 1);
 			if (player1->getNumLives() > 0) {
@@ -2140,7 +2115,6 @@ void Game::managePlayerHealth(int player, int damage, std::string name) {
 	//}
 }
 
-//void Game::setViewport(SDL_Rect &rect, int x, int y, int w, int h) {
 void setViewport(SDL_Rect &rect, int x, int y, int w, int h) {
 	rect.x = x;
 	rect.y = y;
@@ -2332,13 +2306,11 @@ void Game::collisionCheck() {
 					if (!gPlayer1Texture.getFlash()) managePlayerHealth(PLAYER_1, listOfGameObjects[index]->getDamage() / 5, "Enemy Ship");	// Take off 5 health
 			}
 			else if (listOfGameObjects[index]->getSubType() == VIRUS_GREEN || listOfGameObjects[index]->getSubType() == VIRUS_ORANGE || listOfGameObjects[index]->getSubType() == VIRUS_BLUE) {
-				//if (player1->getSawActive() && listOfGameObjects[index]->getSubType() == VIRUS_GREEN) {
 				if (listOfGameObjects[index]->getSubType() == VIRUS_GREEN) {
 					spawnEnemyVirus(listOfGameObjects[index]->getX(), listOfGameObjects[index]->getY(), VIRUS_SMALL_GREEN);
 					spawnEnemyVirus(listOfGameObjects[index]->getX(), listOfGameObjects[index]->getY(), VIRUS_SMALL_GREEN);
 					listOfGameObjects[index]->setAlive(false);						// If saw is active kill that enemy
 				}
-				//else if (player1->getSawActive() && listOfGameObjects[index]->getSubType() == VIRUS_BLUE) {
 				else if (listOfGameObjects[index]->getSubType() == VIRUS_ORANGE) {
 					spawnEnemyVirus(listOfGameObjects[index]->getX(), listOfGameObjects[index]->getY(), VIRUS_SMALL_ORANGE);
 					spawnEnemyVirus(listOfGameObjects[index]->getX(), listOfGameObjects[index]->getY(), VIRUS_SMALL_ORANGE);
@@ -2382,7 +2354,6 @@ void Game::collisionCheck() {
 				}
 				else if (listOfGameObjects[index]->getSubType() == POWER_UP_LASER) {
 					player2->setLaserGrade(player2->getLaserGrade() + 1);
-					//Laser2 = true;
 					infoMessage("Player 2 has upgraded their laser!!!", PLAYER_2);
 				}
 				else if (listOfGameObjects[index]->getSubType() == POWER_UP_ROCKET) {
@@ -2424,7 +2395,6 @@ void Game::collisionCheck() {
 					spawnEnemyVirus(listOfGameObjects[index]->getX(), listOfGameObjects[index]->getY(), VIRUS_SMALL_GREEN);
 					listOfGameObjects[index]->setAlive(false);						// If saw is active kill that enemy
 				}
-				//else if (player1->getSawActive() && listOfGameObjects[index]->getSubType() == VIRUS_BLUE) {
 				else if (player2->getSawActive() && listOfGameObjects[index]->getSubType() == VIRUS_ORANGE) {
 					spawnEnemyVirus(listOfGameObjects[index]->getX(), listOfGameObjects[index]->getY(), VIRUS_SMALL_ORANGE);
 					spawnEnemyVirus(listOfGameObjects[index]->getX(), listOfGameObjects[index]->getY(), VIRUS_SMALL_ORANGE);

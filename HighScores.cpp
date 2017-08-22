@@ -1,11 +1,11 @@
 /*
-2017/03/08 Added Settings Menu class
+	2017/03/08 Added Settings Menu class
 */
 /*
-SETTINGS MENU:
+	SETTINGS MENU:
 
-This function handles the objects for the settings menu. The separate button class
-handles the transitions.
+	This function handles the objects for the settings menu. The separate button class
+	handles the transitions.
 */
 
 #include "HighScores.h"

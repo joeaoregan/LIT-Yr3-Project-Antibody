@@ -25,30 +25,28 @@
 #include <math.h>
 
 // Constructor
-//GameObject::GameObject(int damage) :	// Constructor has default value for damage of 3
-//	m_Damage(damage)
-//{}
 GameObject::GameObject() {
 	m_x = 0;
 	m_y = 0;
 	m_xVel = 0;
 	m_yVel = 0;
 }
+
 // Deconstructors
 GameObject::~GameObject() {
 	//std::cout << "GameObject deconstructor" << std::endl;
 }
 
 // Render the Game Objects to the screen
-
 void GameObject::render() {
 	Texture mTexture;
 	mTexture.render(getX(), getY(), NULL, 0, NULL, SDL_FLIP_NONE);
 }
+
+
 void GameObject::render(Texture &texture, int degrees) {
 	texture.render(getX(), getY(), NULL, degrees, NULL, SDL_FLIP_NONE);
 }
-
 void GameObject::render(Texture &texture, SDL_Rect *currentClip, int &currentframe, int frames) {	// 2017/01/22 Moved from game.cpp
 	texture.render(getX(), getY(), currentClip);
 
@@ -59,6 +57,14 @@ void GameObject::render(Texture &texture, SDL_Rect *currentClip, int &currentfra
 	}
 }
 
+/*
+// Render rotating object with ID
+void GameObject::render() {
+	SDL_Rect renderQuad = { getX(), getY(), getWidth(), getHeight() };	// Set rendering space and render to screen
+
+	SDL_RenderCopyEx(Game::Instance()->getRenderer(), Texture::Instance()->getTexture(getTextureID()), NULL, &renderQuad, getAngle(), NULL, SDL_FLIP_NONE);	// Render to screen
+}
+*/
 void GameObject::spawn(int x, int y, int vx, int vy) {
 	m_x = x;
 	m_y = y;
@@ -77,6 +83,30 @@ void GameObject::move(int x, int y) {
 
 	destroy();
 }
+void GameObject::moveStalker(int targetX, int targetY) {
+	if (getX() < SCREEN_WIDTH - getWidth()) {		// If the object is on the screen
+		int randomVelocity = rand() % 4 + 2;
+
+		if (getX() - targetX >= 0) {				// If the small virus is behind the white blood cell
+			if (getX() - targetX >= randomVelocity)
+				setX(getX() - randomVelocity);		// No need to make smaller movements at the moment, as velocity is v.low anyway
+		}
+		else if (getX() - targetX < 0) {			// if the small virus is in front of the white blood cell
+			setX(getX() + randomVelocity);			// Move towards X coord
+		}
+
+		if (getY() - targetY >= 0) {				// if the small virus is below the white blood cell
+			if (getY() - targetY >= randomVelocity)
+				setY(getY() - randomVelocity);		// No need to make smaller movements at the moment, as velocity is v.low anyway
+		}
+		else if (getY() - targetY < 0) {			// if the small virus is above the white blood cell
+			setY(getY() + randomVelocity);			// Move towards Y coord
+		}
+
+		setColliderX(getX());						// Set the X coordinate of the collider
+		setColliderY(getY());						// Set the Y coordinate of the collider
+	}
+}
 
 void GameObject::orbit(int centerX, int centerY, float timer) {
 	if (centerX < SCREEN_WIDTH) {
@@ -93,7 +123,6 @@ void GameObject::orbit(int centerX, int centerY, float timer) {
 	}
 }
 
-
 void GameObject::destroy() {
 	// Destroy Game Object moving off screen on Y axis
 	if (getY() <= 40) setAlive(false);								// Once it reaches the pink border
@@ -102,22 +131,20 @@ void GameObject::destroy() {
 
 	// Destroy Game Object moving off screen on X axis
 	if ((getX() > SCREEN_WIDTH && getVelX() > 0)) setAlive(false);	// 2017/02/08 Need to check if velocity is negative, or power ups & blood cells don't appear on screen
-	else if (getX() < -getWidth() - 20) setAlive(false);			// If the object if off screen to the left
+	else if (getX() < -getWidth() - 10) setAlive(false);			// If the object if off screen to the left
 	else setAlive(true);
 }
 
 void GameObject::setHealth(int h) {
 	if (h < 0) {
-		m_Health = 0;				// If health is less than 0 set 0
-		setAlive(false);			// set the Game object as not alive
+		m_Health = 0;												// If health is less than 0 set 0
+		setAlive(false);											// set the Game object as not alive
 	}
 	else if (h > 100)
 		m_Health = 100;
 	else
 		m_Health = h;
 }
-
-
 
 // 2017-02-21 Moved from Player.cpp
 void GameObject::setSpeedBoost(bool boost) {
@@ -131,7 +158,18 @@ void GameObject::setSpeedBoost(bool boost) {
 		boostPercent = 3.0;
 }
 
+void GameObject::setLaserGrade(int grade) {
+	if (grade > LASER_TRIPLE) grade = LASER_TRIPLE;					// 2017/03/01 Triple laser is the highest grade of laser
+		mLaserGrade = grade;
+}
+
 /*
+// Old constructor
+GameObject::GameObject(int damage) :	// Constructor has default value for damage of 3
+	m_Damage(damage)
+{}
+
+// Old function to render particles
 void GameObject::renderParticles(Texture &one, Texture &two, Texture &three, Texture &four) {
 	//Go through particles
 	for (int i = 0; i < TOTAL_PARTICLES2; ++i) {
@@ -148,8 +186,3 @@ void GameObject::renderParticles(Texture &one, Texture &two, Texture &three, Tex
 	}
 }
 */
-
-void GameObject::setLaserGrade(int grade) {
-	if (grade > LASER_TRIPLE) grade = LASER_TRIPLE;	// 2017/03/01 Triple laser is the highest grade of laser
-		mLaserGrade = grade;
-}

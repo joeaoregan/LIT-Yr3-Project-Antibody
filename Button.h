@@ -27,28 +27,25 @@ enum button_state { MOUSE_OUT, MOUSE_OVER, CLICKED };
 //The mouse button
 class Button {
 public:
-	void setCallback(void(*callback)()) { m_callback = callback; }
+	void setCallback(void(*callback)()) { m_callback = callback; }	// Callbacks for buttons
 	int getCallbackID() { return m_callbackID; }
-
-	//Initializes internal variables
-	Button();
-
-	//Sets top left position
-	void setPosition(int x, int y);
-
-	//Handles mouse event
+		
+	Button();														// Initializes internal variables
+		
+	void setPosition(int x, int y);									// Sets top left position
+		
 	//void handleEvent(SDL_Event* e, LTexture test);
-	void handleEvent(SDL_Event* e, int buttonSelected);
+	void handleEvent(SDL_Event* e, int buttonSelected);				// Handles mouse event
 
-	void render(Texture &texture, SDL_Rect *currentClip);						// Rendering function
-	//void render(Texture &texture, SDL_Renderer *rend, SDL_Rect *currentClip);						// Rendering function
+	void render(Texture &texture, SDL_Rect *currentClip);			// Rendering function
+	//void render(Texture &texture, SDL_Renderer *rend, SDL_Rect *currentClip);		// Rendering function
 	//void init();
 	SDL_Point mPosition;
 
 	ButtonSprite getButtonSprite() { return mCurrentSprite; }
 	void setButtonSprite(ButtonSprite bs) { mCurrentSprite = bs; }
 
-	ButtonSprite mCurrentSprite;		// Currently used global sprite - Sprite enumeration
+	ButtonSprite mCurrentSprite;									// Currently used global sprite - Sprite enumeration
 
 private:
 	void(*m_callback)();
@@ -56,7 +53,6 @@ private:
 	int m_callbackID;
 
 	bool m_bReleased;
-
 };
 
 #endif

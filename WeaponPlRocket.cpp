@@ -80,7 +80,6 @@ void WeaponPlRocket::render(Texture &texture, int degrees) {
 
 	//std::cout << "Rocket Render" << std::endl;
 	//texture.render(getX(), getY(), NULL, degrees, NULL, SDL_FLIP_NONE);
-
 }
 
 void WeaponPlRocket::renderRocketParticles() {

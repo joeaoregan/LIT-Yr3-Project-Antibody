@@ -72,7 +72,7 @@ Audio::Audio() {
 }
 
 /*
-	The deconstructor shuts down and cleans up the mixer API
+	The destructor shuts down and cleans up the mixer API
 */
 Audio::~Audio() {
 	Mix_CloseAudio();													// Shutdown and cleanup the mixer API
@@ -243,7 +243,7 @@ void Audio::playFX(std::string id) {
 	It calls the identifyTrack() function to display the track details
 	It outputs the current song name to the console
 */
-void Audio::musicForwardSongName() {						// Pick next track on the list
+void Audio::musicForwardSongName() {					// Pick next track on the list
 	if (currentSong + 1 < listOfMusic.size())			// If the current song number (0 number start value) is less than the number of tracks on the list
 		currentSong++;									// go to next track on list
 	else
