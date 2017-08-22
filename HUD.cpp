@@ -110,8 +110,10 @@ void HUD::displayLevelNum(int levelNum) {
 		//Texture::Instance()->getTexture("levelID");
 		Texture::Instance()->loadFromRenderedTextID("Level " + std::to_string(levelNum), "levelID", { 0, 255, 0, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 20));
 
-	previousLevelNum = levelNum;
-	gLevelTextTexture.render(10, 8);
+	//previousLevelNum = levelNum;
+	//gLevelTextTexture.render(10, 8);
+
+	Texture::Instance()->render("levelID", 10, 8);	// Display the level number
 }
 
 /*	2017/02/21: Moved from Game.cpp
@@ -303,6 +305,7 @@ void HUD::rendPlayerLives(int livesP1, int livesP2) {
 	if (livesP2 > 2)
 		gP2LivesTexture.render(SCREEN_WIDTH - (gP2LivesTexture.getWidth() * 3) - 30, 120 - gP2LivesTexture.getHeight() - 10);
 
+	//Texture::Instance()->render("levelID", 10, 8);	// Display the level number NEEDS TO BE IN DIFFERENT VIEW PORT
 }
 
 

@@ -1,7 +1,7 @@
-/* 
+/*
 	_TestData.h
 
-	This header files contains game settings which can be adjusted as needed 
+	This header files contains game settings which can be adjusted as needed
 	to balance and test the game
 */
 
@@ -44,7 +44,7 @@
 //#define SPAWN_NUM_BLOOD_CELL 4			// WAS 6 The number of large blood cells that can appear on screen at a time
 //#define SPAWN_NUM_BLOOD_CELL_S 5			// WAS 9 The number of small blood cells that can appear on screen at a time
 //#define SPAWN_NUM_BLOOD_CELL_WHITE 2		// WAS 3 The number of white blood cells that can appear on screen at a time
-#define SPAWN_NUM_POWER_UPS 2				// The number of power ups that can appear on screen at a time
+//#define SPAWN_NUM_POWER_UPS 2				// The number of power ups that can appear on screen at a time
 
 // Seans Game Balancing Stuff
 // Number of enemies to be displayed on screen

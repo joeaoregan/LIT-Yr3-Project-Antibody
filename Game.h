@@ -121,6 +121,7 @@ public:
 	int infoMessageCounter, infoMessageMapCounter;
 	std::string infoMessageP1, infoMessageP2; 			// Player notification messages, Yellow writing appearing in the middle of the game screen
 	std::string infoMessageGeneral, infoMessageMap;
+	void checkMessageTimes();							// 2017/03/19 Check how long a message has been on screen
 
 	// Number of Game Objects currently on the screen
 	int activeBloodCells;
@@ -131,8 +132,7 @@ public:
 	int activeEnemyVirus;
 	int activeEnemyVirusSmall;
 	int activeEnemyBoss;
-
-
+	
 	void setRotatingAngle();	// 2017/02/22 Moved here. Set the angle for rotating objects
 	void scrollBackground();	// 2017/02/22 Moved here. Scoll the background
 

@@ -130,7 +130,7 @@ public:
 	// Blue Virus Satellite object
 	int rotateCounter;													// degrees the satellite object has rotated
 	bool satelliteObjectOrbiting;										// Check is satellite object orbiting Blue Virus
-	int whichVirusAssignedTo;											// The Blue virus the satellite is assigned to
+	unsigned int whichVirusAssignedTo;									// The Blue virus the satellite is assigned to
 
 	// Rockets
 	bool getRocketBarActive() const { return m_RocketBarActive; }		// Is the rocket status bar active
