@@ -21,8 +21,7 @@ public:
 	EnemyVirus(int type = VIRUS_GREEN, float time = 0);		// Initializes the variables
 	~EnemyVirus();											// Destructor
 	
-	virtual void move() {};									// This function is only here because is has to be
-	virtual void moveStalker(int playerX, int playerY);		// Tracker movement for Virus, moving towards the nearest player
+	virtual void move(int playerX, int playerY);		// Tracker movement for Virus, moving towards the nearest player
 	virtual void destroy() {};
 	virtual void render() {
 		GameObject::renderAnimation();

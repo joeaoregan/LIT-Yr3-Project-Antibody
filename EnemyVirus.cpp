@@ -33,42 +33,59 @@ EnemyVirus::EnemyVirus(int subType, float time) {
 	setType(ENEMY_OBJECT);
 	setDamage(20);
 
-	setWidth(60);
-	setHeight(60);
+	setWidth(75);
+	setHeight(75);
+
+	setColliderWidth(60);
+	setColliderHeight(60);
 
 	setVelocity(3);
 
 	if (subType == VIRUS_GREEN) {
-		setScore(10);						// Value for killing object
+		setScore(10);								// Value for killing object
 		setName("Green Virus");
+		setTextureID("greenVirusID");				// 2017/03/22 Move texture to Texture Map
 	}
 	else if (subType == VIRUS_ORANGE) {
 		setScore(15);
 		setName("Exploding Orange Virus");
+		setTextureID("orangeVirusID");				// 2017/03/22 Move texture to Texture Map
 	}
 	else if (subType == VIRUS_BLUE) {
 		setScore(20);
 		setName("Blue Virus");
+		setTextureID("blueVirusID");				// 2017/03/22 Move texture to Texture Map
 	}
 	else if (getType() == SMALL_VIRUS) {
 		setScore(5);
 		setWidth(45);
 		setHeight(45);
 		setVelocity(1);
-		if (subType == VIRUS_SMALL_GREEN) setName("Small Green Virus");
-		else if (subType == VIRUS_SMALL_ORANGE) setName("Small Orange Virus");
-		else if (subType == VIRUS_SMALL_BLUE) setName("Small Blue Virus");
+
+		if (subType == VIRUS_SMALL_GREEN) {
+			setName("Small Green Virus");
+			setTextureID("greenVirusSmallID");		// 2017/03/22 Move texture to Texture Map
+		}
+		else if (subType == VIRUS_SMALL_ORANGE) {
+			setName("Small Orange Virus");
+			setTextureID("orangeVirusSmallID");		// 2017/03/22 Move texture to Texture Map
+		}
+		else if (subType == VIRUS_SMALL_BLUE) {
+			setName("Small Blue Virus");
+			setTextureID("blueVirusSmallID");		// 2017/03/22 Move texture to Texture Map
+		}
 	}
-
-	setColliderWidth(getWidth());
-	setColliderHeight(getHeight());
-
+	
 	setSubType(subType);						// 2017-01-25 type of game object
 	setTimer(time);
 
 	setTimerTracker(0.0);
-
-	setFrames(0);
+	
+	// Animation Stuff
+	setFrames(4);					// Frames needed for animation
+	setAnimCount(0);
+	setCurrentFrame(0);				// Start at 1st frame of animation
+	setAlpha(255);
 }
 
 EnemyVirus::~EnemyVirus() {
@@ -76,7 +93,7 @@ EnemyVirus::~EnemyVirus() {
 }
 
 // 2017/03/03 Stalker movement, for moving towards player
-void EnemyVirus::moveStalker(int shipX, int shipY) {
+void EnemyVirus::move(int shipX, int shipY) {
 	if (getType() != SMALL_VIRUS &&  getX() > shipX) {					// 2017/03/22 Moved from Game class
 		if (getX() > SCREEN_WIDTH && getX() < SCREEN_WIDTH + 10) {		// When a virus is within 10 pixels of appearing on screen
 			Game::Instance()->infoMessage(getName() + " Approaching");	// 2017/02/19 Added information message indicates virus is approaching
@@ -89,7 +106,7 @@ void EnemyVirus::moveStalker(int shipX, int shipY) {
 		else if (getY() - shipY < 0) {
 			setY(getY() + getVelocity());
 		}
-
+				
 		setColliderX(getX() + 6);
 		setColliderY(getY() + 10);
 
@@ -98,4 +115,9 @@ void EnemyVirus::moveStalker(int shipX, int shipY) {
 		}	
 	else
 		GameObject::move();			// Normal right to left movement
+
+	// Increment Animation Frame
+	setAnimCount(getAnimCount() + 1);
+	setCurrentFrame((getAnimCount() / 10) % 4);
+	if (getCurrentFrame() == getNumFrames()) setAnimCount(0);
 }

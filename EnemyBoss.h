@@ -38,6 +38,7 @@ public:
 		setType(ENEMY_OBJECT);					// Set type
 		setSubType(ENEMY_BOSS);					// Set sub-type
 		setName("Enemy Boss");					// Identify object
+		setTextureID("bossID");					// 2017/03/22 Move texture to Texture Map
 
 		setScore(50);							// Value for killing object
 		setDamage(20);
@@ -61,7 +62,11 @@ public:
 		setColliderWidth(getWidth() - 50);
 		setColliderHeight(getHeight() - 70);
 
-		setFrames(0);
+		// Animation Stuff
+		setFrames(4);							// Frames needed for animation
+		setAnimCount(0);
+		setCurrentFrame(0);						// Start at 1st frame of animation
+		setAlpha(255);
 	}
 
 	// Destructor
@@ -150,6 +155,11 @@ public:
 			}
 		}
 
+		// Increment Animation Frame
+		setAnimCount(getAnimCount() + 1);
+		setCurrentFrame((getAnimCount() / 10) % 4);
+		if (getCurrentFrame() == getNumFrames()) setAnimCount(0);
+
 		//m_x += m_xVel;
 
 		//else if (getX() <= SCREEN_WIDTH - 330 && !moveRight) {
@@ -165,7 +175,7 @@ public:
 	void countBossMoves() {
 		countMoves++;
 		if (countMoves == 6) {
-			moveAttack = true;	// Move the boss backwards
+			moveAttack = true;		// Move the boss backwards
 			countMoves = 0;			// reset move counter
 		}
 	}
@@ -175,6 +185,11 @@ public:
 	*/
 	virtual void destroy() {		// Destory the enemy boss when it moves out of bounds
 		GameObject::destroy();		// Destroy function from Game Object base class
+	};
+
+
+	virtual void render() {
+		GameObject::renderAnimation();
 	};
 };
 

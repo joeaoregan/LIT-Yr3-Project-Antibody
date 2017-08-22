@@ -37,7 +37,7 @@ public:
 		The Enemy boss spawns once the background (or distance on map) has looped the required times
 	*/
 	virtual void move(int x = 0, int y = 0) {
-//		int bgCounter = Game::Instance()->backgroundLoopCounter;
+		int bgCounter = Game::Instance()->backgroundLoopCounter;
 
 		if (Game::Instance()->backgroundLoopCounter <= BACKGROUND_SCROLL_TIMES) scrollingOffset -= BACKGROUND_SCROLL_SPEED;	// Scroll for a fixed number of times
 		if (scrollingOffset < -SCREEN_WIDTH) {
@@ -74,7 +74,7 @@ public:
 		//GameObject::render();
 		std::cout << "background render " << std::endl;
 
-		// Render background
+		// Render background	
 		if (Game::Instance()->backgroundLoopCounter < 1) Texture::Instance()->renderMap("startBG", scrollingOffset, 0, SCREEN_WIDTH, SCREEN_HEIGHT_GAME);											// 1st background (and every odd number)
 		else if (Game::Instance()->backgroundLoopCounter > BACKGROUND_SCROLL_TIMES) Texture::Instance()->renderMap("endBG", scrollingOffset, 0, SCREEN_WIDTH, SCREEN_HEIGHT_GAME);
 		else Texture::Instance()->renderMap("middleBG", scrollingOffset, 0, SCREEN_WIDTH, SCREEN_HEIGHT_GAME);

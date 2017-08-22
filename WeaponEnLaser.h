@@ -59,6 +59,14 @@ public:
 			setTextureID("satelliteID");
 			//std::cout << "BLUE VIRUS BULLET CONSTRUCTOR" << std::endl;
 		}
+		else if (subType == EYE_LASER) {
+			setName("Enemy Eye Laser");
+			setDamage(15);						// 2017/02/21 Player health is decreased by 5 health points
+			setWidth(25);
+			setHeight(25);
+			setTextureID("satelliteID");
+			//std::cout << "BLUE VIRUS BULLET CONSTRUCTOR" << std::endl;
+		}
 
 		if (getSubType() == ENEMY_SHIP_LASER) {
 			setColliderWidth(getWidth());
@@ -74,6 +82,19 @@ public:
 
 		rotateCounter = 0;
 		satelliteObjectOrbiting = false;	// Blue virus projectile is orbiting or not
+
+		if (subType == EYE_LASER) {
+			setWidth(25);
+			setHeight(25);
+
+			// Animation Stuff
+			setFrames(8);					// Frames needed for animation
+			setAnimCount(0);
+			setCurrentFrame(0);				// Start at 1st frame of animation
+			setAlpha(255);
+			setName("Boss Eye Laser");
+			setTextureID("eyeLaserID");		// 2017/03/22 Move texture to Texture Ma
+		}
 	};
 
 	// Enemy laser Destructor
@@ -82,8 +103,21 @@ public:
 	};
 
 	// Moves the Enemy laser
-	virtual void move() {
-		GameObject::move();
+	virtual void move(int x, int y) {
+		if (getSubType() == EYE_LASER) {
+			setX(x);
+			setY(y);
+
+			setAnimCount(getAnimCount() + 1);
+			setCurrentFrame(getCurrentFrame() + (getAnimCount() / 20));
+
+			if (getCurrentFrame() == getNumFrames()) {
+				Game::Instance()->spawnEnemyLaser(getX() + 57, getY() + 210, BLUE_VIRUS_BULLET);
+				Game::Instance()->spawnEnemyLaser(getX() + 167, getY() + 214, BLUE_VIRUS_BULLET);
+			}
+		}
+		else
+			GameObject::move();
 	};
 
 	virtual void destroy() {};
@@ -92,9 +126,14 @@ public:
 		2017/03/18 Render function
 	*/
 	virtual void render() {
-		SDL_Rect renderQuad = { getX(), getY(), getWidth(), getHeight() };	// Set rendering space and render to screen
+		if (getSubType() == EYE_LASER) {
+			GameObject::renderAnimation();	// Animate eye laser
+		}
+		else {
+			SDL_Rect renderQuad = { getX(), getY(), getWidth(), getHeight() };	// Set rendering space and render to screen
 
-		SDL_RenderCopyEx(Game::Instance()->getRenderer(), Texture::Instance()->getTexture(getTextureID()), NULL, &renderQuad, getAngle(), NULL, SDL_FLIP_NONE);	// Render to screen
+			SDL_RenderCopyEx(Game::Instance()->getRenderer(), Texture::Instance()->getTexture(getTextureID()), NULL, &renderQuad, getAngle(), NULL, SDL_FLIP_NONE);	// Render to screen
+		}
 	};
 
 	int centerX, centerY;		// center for rotation

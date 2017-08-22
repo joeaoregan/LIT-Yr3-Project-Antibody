@@ -3,7 +3,7 @@
 	2017/02/09 Added status bar class StatusBar.h for creating status bars, such as health bar
 	2017/01/18 Added health bars for players
 */
-/*
+/* 
 	STATUS BAR:
 
 	Display health bars, power bars for rockets and speed boosts. Also has a countdown virus for
@@ -12,8 +12,6 @@
 
 #include "StatusBar.h"
 #include "Game.h"
-
-#define MAX_HEALTH 100.0		// The max health for a player
 
 StatusBar::StatusBar() {
 }
@@ -40,11 +38,11 @@ void StatusBar::rocketPowerBar(int x, int y, int w, float time) {
 }
 
 void StatusBar::virusTimer(int x, int y, int w, float virusTimer) {
-	createStatusBar(x + w + 25, y + 10, 5, 60, virusTimer / VIRUS_TIMER, fgColourBlue, bgColourOrange, VERTICAL);	//
+	createStatusBar(x + w + 25, y + 10, 5, 60, virusTimer / VIRUS_TIMER, fgColourBlue, bgColourOrange, VERTICAL);	// 
 																														//bar.createStatusBar(, 5, (listOfEnemyVirus[index]->getHeight() / 3) * 2, virusBar / listOfEnemyVirus[index]->getTimer(), fgColourBlue, bgColourOrange, gRenderer, VERTICAL); // 2/3s the height of the virus
 }
 void StatusBar::virusTimerBlue(int x, int y, int w, float virusTimer) {
-	createStatusBar(x + w + 25, y + 10, 5, 60, virusTimer / VIRUS_TIMER, fgColourBlue, bgColourBlue, VERTICAL);	//
+	createStatusBar(x + w + 25, y + 10, 5, 60, virusTimer / VIRUS_TIMER, fgColourBlue, bgColourBlue, VERTICAL);	// 
 																														//bar.createStatusBar(, 5, (listOfEnemyVirus[index]->getHeight() / 3) * 2, virusBar / listOfEnemyVirus[index]->getTimer(), fgColourBlue, bgColourOrange, gRenderer, VERTICAL); // 2/3s the height of the virus
 }
 

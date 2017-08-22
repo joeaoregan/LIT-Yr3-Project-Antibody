@@ -1,5 +1,4 @@
 /*
-	2017/03/22 Added animation sprite sheets to the Texture map
 	2017/03/18 Added the Ninja Stars and Saw texture to the texture map in Texture class
 	2017/03/17 Added the Blood Cell texture to the texture map in Texture class
 	2017/02/28 Moved background texture loading to texture map
@@ -441,7 +440,7 @@ std::string textures2[NUM_TEXTURES2][3] = {
 	{ "Art/Player1Ship.png", "player1ID", "Player 1" },								// 2017/03/22 Added Player 1 Texture to map
 	{ "Art/Player2Ship.png", "player2ID", "Player 2" },								// 2017/03/22 Added Player 2 Texture to map
 
-	// Game
+	// Map
 	{ "Art/Prof.png", "profID", "Professor" },										// Map texture to show the players current position inside the professor
 	{ "Art/Player1ShipBlue30.png", "mapShipID", "Blue Mini Map Ship" },				// Map texture to show the players current position inside the professor
 

@@ -20,7 +20,7 @@
 	2017/01/20 Spawn Player 1 at random Y coord added to spawnPlayer() function
 				Added player lives indicators for players
 	2017/01/18 Added speed boost
-				Added flashing for 2nd player
+				Added flashing for 2nd player 
 				Added health bars for players
 	2017/01/17 Separated Player 1 and 2 scores
 	2017/01/16 Added second player to the game
@@ -31,8 +31,8 @@
 /*
 	PLAYER:
 
-	The Player class handles all the Player ships functionality, including movement, rendering the player ship,
-	and the player lives, player input from keyboard and gamepad, rendering particles for the ship engine,
+	The Player class handles all the Player ships functionality, including movement, rendering the player ship, 
+	and the player lives, player input from keyboard and gamepad, rendering particles for the ship engine, 
 	and handling the players weapons. The Player weapons include Laser, Ninja Star, Saw, and Rocket.
 */
 #include "Player.h"
@@ -40,7 +40,6 @@
 #include "WeaponPlSaw.h"
 #include "WeaponPlRocket.h"
 #include "Audio.h"
-#include <math.h>
 
 #define VELOCITY 10
 #define BOOST 5
@@ -66,7 +65,7 @@ Player::Player(int subType) {				// 2017/03/22
 
 	setType(PLAYER);
 	setSubType(subType);
-
+	
 	if (subType == PLAYER1) {
 		setName("Player 1");
 	}
@@ -91,7 +90,7 @@ Player::Player(int subType) {				// 2017/03/22
 	setScore(0);
 	setAlive(false);
 	setNumLives(3);							// works, game is over when both players lives are <= 0
-
+	
 	//Initialize particles
 	for (int i = 0; i < TOTAL_PARTICLES; ++i) {
 		//particles[i] = new Particle(getX(), getY(), gDarkBlueParticleTexture, gMediumBlueParticlTexture, gLightBlueParticleTexture);
@@ -114,6 +113,10 @@ void Player::render(Texture &player) {
 	if (getAlive()) {																			// 2017/01/22 If the player is alive render the player, with particles
 		renderParticles();
 		player.render(getX(), getY());
+
+		// 2017/03/13 Draw bubble around player to represent shield // 2017/03/22 Moved from Game class
+		if (getShieldActive() && getSubType() == PLAYER1) Texture::Instance()->renderMap("shieldP1ID", getX() - 5, getY() - 32, 110, 110);		
+		else if (getShieldActive() && getSubType() == PLAYER2) Texture::Instance()->renderMap("shieldP2ID", getX() - 5, getY() - 32, 110, 110);
 	}
 }
 
@@ -185,16 +188,16 @@ void Player::handleEvent(SDL_Event& e, int player) {
 		else if (e.type == SDL_KEYUP && e.key.repeat == 0) {
 			// Adjust the velocity
 			switch (e.key.keysym.sym) {
-			case SDLK_w: moveDown(); break;		// undo move up
-			case SDLK_s: moveUp(); break;		// undo move down
-			case SDLK_a: moveRight(); break;	// undo move left
-			case SDLK_d: moveLeft(); break;		// undo move right
+			case SDLK_w: moveDown(); break;		// undo move up 
+			case SDLK_s: moveUp(); break;		// undo move down 
+			case SDLK_a: moveRight(); break;	// undo move left 
+			case SDLK_d: moveLeft(); break;		// undo move right 
 
 			case SDLK_c: Game::Instance()->spawnRocket(getX(), getY(), PLAYER_1, ROCKET_P1, true); break;
 			}
 		}
 	}
-	else if (player == PLAYER2 && getAlive()) {
+	else if (player == PLAYER2 && getAlive()) {		
 		if (e.type == SDL_KEYDOWN && e.key.repeat == 0) {
 			switch (e.key.keysym.sym) {
 			case SDLK_UP: moveUp(); break;
@@ -215,7 +218,7 @@ void Player::handleEvent(SDL_Event& e, int player) {
 		// If a key was released
 		else if (e.type == SDL_KEYUP && e.key.repeat == 0) {
 			switch (e.key.keysym.sym) {
-			case SDLK_UP:
+			case SDLK_UP: 
 				if (getVelY() < 0) moveDown(); break;	// only
 			case SDLK_DOWN:
 				if (getVelY() > 0) moveUp(); break;
@@ -244,12 +247,14 @@ void Player::handleEvent(SDL_Event& e, int player) {
 			}
 		} // joystick present
 	}
+	/*
 	else if (player == 3) {
 
 	}
+	*/
 	/*
 	if (e.type == SDL_KEYDOWN && e.key.repeat == 0) {
-		// MOVEMENT
+		// MOVEMENT		
 		switch (e.key.keysym.sym) {			// Adjust the velocity with keyboard
 		case SDLK_UP:
 		case SDLK_w: setVelY(getVelY() - getVelocity()); break;
@@ -286,7 +291,7 @@ void Player::handleEvent(SDL_Event& e, int player) {
 	if (SDL_NumJoysticks() > 0) {				// Joystick present
 		if (e.type == SDL_JOYBUTTONDOWN) {		// Number of buttons
 			gameControllerButton(e);
-		}
+		}	
 		else if (e.type == SDL_JOYHATMOTION) {	// Set movement for D-Pad
 			gameControllerDPad(e);
 		}
@@ -341,7 +346,7 @@ void Player::moveRight(bool blocked) {
 int Player::moveDiagonal() {
 	//if (getSpeedBoost() && getVelocity() != 0)
 	//	return getVelocity() + BOOST / sqrt(2);
-
+	
 	return getVelocity() / sqrt(2);
 }
 

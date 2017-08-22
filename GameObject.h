@@ -32,17 +32,17 @@ enum GameObjectTypes {
 	MAP_ALERT, SCORE_TEXT, EXPLOSION
 };
 enum GameObjectSubTypes {
-	GAMEOBJECT, PLAYER1, PLAYER2,																			// Players
-	PLAYER1_SCORE, PLAYER2_SCORE,																			// Scores
-	POWER_UP_HEALTH, POWER_UP_LASER, POWER_UP_ROCKET, POWER_UP_CHECKPOINT, POWER_UP_LIVES,					// Power ups
-	ENEMY_SHIP_LASER, BLUE_VIRUS_BULLET, VIRUS_FIREBALL,													// Bullets
-	FIRE_EXPLOSION, BLOOD_EXPLOSION, GREEN_VIRUS_EXPLOSION, ORANGE_VIRUS_EXPLOSION, BLUE_VIRUS_EXPLOSION,	// Explosions
-	SAW1, SAW2,																								// Saw
-	LARGE_BLOOD_CELL, SMALL_BLOOD_CELL, WHITE_BLOOD_CELL,													// Blood Cells
-	ENEMY_SHIP, ENEMY_BOSS,																					// Enemies
-	VIRUS_GREEN, VIRUS_ORANGE, VIRUS_BLUE, VIRUS_SMALL_GREEN, VIRUS_SMALL_ORANGE, VIRUS_SMALL_BLUE,			// Virus
-	LASER_P1, LASER_P2, LASER_V2_P1, LASER_V2_P2, LASER_V3_P1, LASER_V3_P2,									// Player Laser
-	NINJA_STAR_P1, NINJA_STAR_P2, ROCKET_P1, ROCKET_P2,														// Misc Weapons
+	PLAYER1, PLAYER2,																									// Players
+	PLAYER1_SCORE, PLAYER2_SCORE,																						// Scores
+	POWER_UP_HEALTH, POWER_UP_LASER, POWER_UP_ROCKET, POWER_UP_CHECKPOINT, POWER_UP_LIVES,								// Power ups
+	ENEMY_SHIP_LASER, BLUE_VIRUS_BULLET, VIRUS_FIREBALL,																// Bullets
+	FIRE_EXPLOSION, BLOOD_EXPLOSION, GREEN_VIRUS_EXPLOSION, ORANGE_VIRUS_EXPLOSION, BLUE_VIRUS_EXPLOSION, EYE_LASER,	// Explosions
+	SAW1, SAW2,																											// Saw
+	LARGE_BLOOD_CELL, SMALL_BLOOD_CELL, WHITE_BLOOD_CELL,																// Blood Cells
+	ENEMY_SHIP, ENEMY_BOSS,																								// Enemies
+	VIRUS_GREEN, VIRUS_ORANGE, VIRUS_BLUE, VIRUS_SMALL_GREEN, VIRUS_SMALL_ORANGE, VIRUS_SMALL_BLUE,						// Virus
+	LASER_P1, LASER_P2, LASER_V2_P1, LASER_V2_P2, LASER_V3_P1, LASER_V3_P2,												// Player Laser
+	NINJA_STAR_P1, NINJA_STAR_P2, ROCKET_P1, ROCKET_P2,																	// Misc Weapons
 };
 
 /*
@@ -109,7 +109,7 @@ public:
 	int getSubType() const { return m_SubType; }						// 2017/01/25 Return the objects type
 	int getAngle() const { return m_Angle; }							// 2017/02/07 Return the objects angle
 	std::string getTextureID() const { return m_TextureID; }			// return the texture ID
-	SDL_Rect* getCollider() { return &m_Collider; }					    // Get the collider for an object
+	SDL_Rect getCollider() const { return m_Collider; }					// Get the collider for an object
 	int getNumFrames() const { return m_Frames; }						// 2017/02/09 Animation frames
 	int getCurrentFrame() const { return m_CurrentFrame; }				// 2017/03/22 Get the current animation frame of sprite sheet
 	int getAnimRow() const { return m_CurrentAnimationRow; }			// 2017/03/22 Get the current animation row of sprite sheet
@@ -162,7 +162,7 @@ public:
 	// Blue Virus Satellite object
 	int rotateCounter;													// degrees the satellite object has rotated
 	bool satelliteObjectOrbiting;										// Check is satellite object orbiting Blue Virus
-	unsigned int whichVirusAssignedTo;									// The Blue virus the satellite is assigned to
+	int whichVirusAssignedTo;											// The Blue virus the satellite is assigned to
 
 	// Rockets
 	bool getRocketBarActive() const { return m_RocketBarActive; }		// Is the rocket status bar active

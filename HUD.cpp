@@ -470,7 +470,6 @@ void HUD::rendPlayerLives(int livesP1, int livesP2) {
 	//Texture::Instance()->render("levelID", 10, 8);	// Display the level number NEEDS TO BE IN DIFFERENT VIEW PORT
 }
 
-
 /*
 std::stringstream timeText;
 

@@ -16,13 +16,12 @@
 /*
 	GAME OBJECT:
 
-	This is the base class for all game objects within the game including player and enemy objects. A list of
+	This is the base class for all game objects within the game including player and enemy objects. A list of 
 	game objects is used to handle object movement, rendering, and collisions.
 */
 
 #include "GameObject.h"
 #include "Game.h"
-#include <math.h>
 
 // Constructor
 GameObject::GameObject() {
@@ -83,11 +82,11 @@ void GameObject::renderAnimation() {
 	SDL_RenderCopyEx(Game::Instance()->getRenderer(), Texture::Instance()->getTexture(getTextureID()), &renderQuadSource, &renderQuadDest, 0, NULL, SDL_FLIP_NONE);
 }
 
-/*
+/* 
 // Render rotating object with ID
 void GameObject::render() {
 	SDL_Rect renderQuad = { getX(), getY(), getWidth(), getHeight() };	// Set rendering space and render to screen
-
+	
 	SDL_RenderCopyEx(Game::Instance()->getRenderer(), Texture::Instance()->getTexture(getTextureID()), NULL, &renderQuad, getAngle(), NULL, SDL_FLIP_NONE);	// Render to screen
 }
 */
@@ -101,7 +100,7 @@ void GameObject::spawn(int x, int y, int vx, int vy) {
 
 void GameObject::move(int x, int y) {
 	m_x += m_xVel;
-	//if (y != 0)
+	//if (y != 0) 
 		m_y += m_yVel;
 
 	setColliderX(getX());
@@ -184,9 +183,9 @@ void GameObject::setSpeedBoost(bool boost) {
 		boostPercent = 3.0;
 }
 
-void GameObject::setLaserGrade(int grade) {
+void GameObject::setLaserGrade(int grade) { 
 	if (grade > LASER_TRIPLE) grade = LASER_TRIPLE;					// 2017/03/01 Triple laser is the highest grade of laser
-		mLaserGrade = grade;
+		mLaserGrade = grade; 
 }
 
 /*

@@ -31,8 +31,8 @@ public:
 		setDamage(15);
 
 		// Initialise Dimensions
-		setWidth(100);
-		setHeight(47);
+		setWidth(120);					// Needed for animation function
+		setHeight(50);
 
 		// Initialize the offsets
 		setX(0);
@@ -47,14 +47,18 @@ public:
 		setColliderWidth(getWidth());
 		setColliderHeight(getHeight());
 
-		setFrames(0);					// Frames needed for animation
-
-		setName("Enemy Ship");
+		// Animation Stuff
+		setFrames(4);					// Frames needed for animation
+		setAnimCount(0);
+		setCurrentFrame(0);				// Start at 1st frame of animation
+		setAlpha(255);
+		setName("Nano-Bot Enemy Ship");
+		setTextureID("nanoBotID");		// 2017/03/22 Move texture to Texture Map
 	}
 
 	// Destructor
 	~EnemyShip() {								
-		std::cout << "Enemy Ship destroyed" << std::endl;
+		std::cout << "Nano-Bot Enemy Ship destroyed" << std::endl;
 	}
 
 	/* 
@@ -65,8 +69,20 @@ public:
 	virtual void move(int x = 0, int y = 0) {									// Needs to have X and Y values to override base class function
 		Game::Instance()->spawnEnemyLaser(getX(), getY(), ENEMY_SHIP_LASER);	// 2017/03/17 Moved from Game class
 		GameObject::move();
+
+		// Increment Animation Frame
+		setAnimCount(getAnimCount() + 1);
+		setCurrentFrame((getAnimCount() / 10) % 4);
+		if (getCurrentFrame() == getNumFrames()) setAnimCount(0);
 	};
-	virtual void destroy() {};
+
+	virtual void destroy() {
+		GameObject::destroy();		// Destroy function from Game Object base class
+	};
+
+	virtual void render() {
+		GameObject::renderAnimation();
+	};
 };
 
 #endif
