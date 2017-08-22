@@ -2,7 +2,6 @@
 #define EXPLOSION_H
 
 #include "GameObject.h"
-#include "SDL.h"
 
 class Explosion : public GameObject {
 public:

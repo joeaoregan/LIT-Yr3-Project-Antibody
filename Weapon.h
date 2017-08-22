@@ -19,6 +19,7 @@ public:
 	void setGrade(int g);
 
 	void render(LTexture &texture, SDL_Renderer *rend, int degrees = 0);				// Shows the Ninja Star on the screen - 2017/01/17 Add player decision
+	void handleEvent(SDL_Event& e, int player);
 
 private:
 	int mPlayer;

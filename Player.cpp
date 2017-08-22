@@ -5,6 +5,7 @@ Added asdw keyboard movement
 #include "Player.h"
 #include "Game.h"
 #include "Saw.h"
+#include "Rocket.h"
 #include <math.h>
 
 #define VELOCITY 10
@@ -21,6 +22,8 @@ unsigned int curTime;
 int VEL;
 
 Game game1;
+Rocket rocket;
+
 Player::Player() {
 	// Initialize the offsets
 	setX(0);
@@ -162,6 +165,7 @@ void Player::handleEvent(SDL_Event& e, int player) {
 			//case SDLK_e: game1.spawnSaw(getX(), getY(), 1, getSawActive()); break;			// 2017/01/17 Saw Weapon added, check saw is active with if statement in spawn Saw, and activate/deactivate the weapon
 			case SDLK_e: game1.spawnSaw(getX(), getY(), 1); break;			// 2017/01/17 Saw Weapon added, check saw is active with if statement in spawn Saw, and activate/deactivate the weapon
 			case SDLK_f: setSpeedBoost(true); break;
+			case SDLK_c: game1.spawnRocket(getX(), getY(), 1, 9);
 			}
 		}
 		else if (e.type == SDL_KEYUP && e.key.repeat == 0) {
@@ -189,6 +193,7 @@ void Player::handleEvent(SDL_Event& e, int player) {
 			//case SDLK_r: game1.spawnSaw(getX(), getY(), 2, getSawActive()); break;			// 2017/01/17 Separate saw for player 2
 			case SDLK_r: game1.spawnSaw(getX(), getY(), 2); break;			// 2017/01/17 Separate saw for player 2
 			case SDLK_g: setSpeedBoost(true); break;
+			case SDLK_v: game1.spawnRocket(getX(), getY(), 2, 9);
 			}
 		}
 		// If a key was released

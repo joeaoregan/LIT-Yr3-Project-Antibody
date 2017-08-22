@@ -12,6 +12,8 @@
 #include <SDL_ttf.h>
 #include "Game.h"					// Game header file, with functions and variabls
 #include <sstream>					// For timer
+#include <string.h>
+#include <math.h>
 #include <SDL_mixer.h>				// 2017/01/09 JOE: SOUND - library we use to make audio playing easier
 #include "LTexture.h"				// Game textures
 #include "Player.h"					// Player class
@@ -27,8 +29,10 @@
 #include "Button.h"
 #include "Explosion.h"				// 2017/01/25 Added explosions for Player Laser colliding with Enemy Ships and Virus
 #include "FPS.h"
-#include <string.h>
-#include <math.h>
+#include "Rocket.h"					// 2017-02-06
+
+bool p1RocketActive = false;
+bool p2RocketActive = false;
 
 //bool checkCollision(SDL_Rect *a, SDL_Rect *b);
 bool checkCollision(SDL_Rect a, SDL_Rect b);
@@ -145,7 +149,9 @@ LTexture gLaserOrangeTexture;		// Texture for Player 2 Laser weapon
 LTexture gLaserBlueTexture;			// Texture for Enemy Laser weapon
 LTexture gPowerUpHealthTexture;		// Texture for Health Box Power Up
 LTexture gPowerUpLaserTexture;		// Texture for Health Box Power Up
-LTexture gPowerUpLaserTextureV2;		// Texture for Health Box Power Up
+LTexture gPowerUpLaserTextureV2;	// Texture for Health Box Power Up
+LTexture gRocketTexture;
+LTexture gPowerUpRocketTexture;
 // Rotating Objects and Weapons (degrees to rotate in brackets)
 LTexture gNinjaStarBlueTexture(5);	// Texture for Ninja Star weapon
 LTexture gNinjaStarYellowTexture(5);// Texture for Ninja Star weapon // 2017-01-30 with rotation angle of 5 degrees
@@ -316,7 +322,7 @@ bool Game::init() {
 		}
 
 		// Create window
-		gWindow = SDL_CreateWindow("ANTIBODY v1.08 by Joe O'Regan & Se\u00E1n Horgan: Scores, FPS Class, Story Intro", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);	/* Window name */
+		gWindow = SDL_CreateWindow("ANTIBODY v1.09 by Joe O'Regan & Se\u00E1n Horgan: Rocket (Control Direction), Updated Scoring Function", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);	/* Window name */
 		if (gWindow == NULL) {
 			printf("Window could not be created! SDL Error: %s\n", SDL_GetError());
 			success = false;
@@ -359,7 +365,7 @@ bool Game::loadMedia() {
 
 	textColour = { 255, 255, 255, 255 };
 
-	gFontLazy30Menu = TTF_OpenFont(".\\Fonts\\Retro.ttf", 30);
+	gFontLazy30Menu = TTF_OpenFont(".\\Fonts\\Lazy.ttf", 30);	// Open the font
 	if (gFontLazy30Menu == NULL) {
 		printf("XXX Failed to load lazy font! SDL_ttf Error: %s\n", TTF_GetError());
 		success = false;
@@ -405,7 +411,7 @@ bool Game::loadMedia() {
 	}
 	else {
 		//Set sprites
-		for (int i = 0; i < BUTTON_SPRITE_TOTAL; ++i) {
+		for (unsigned int i = 0; i < BUTTON_SPRITE_TOTAL; ++i) {
 			gSpriteClipsMenu[i].x = 0;
 			gSpriteClipsMenu[i].y = i * 200;
 			gSpriteClipsMenu[i].w = BUTTON_WIDTH;
@@ -545,6 +551,14 @@ bool Game::loadMedia() {
 		printf("Failed to load Yellow Ninja Star texture!\n");
 		success = false;
 	}
+	if (!gRocketTexture.loadFromFile(".\\Art\\Rocket.png", gRenderer)) {		// Ninja Star Texture
+		printf("Failed to load Rocket texture!\n");
+		success = false;
+	}
+	if (!gPowerUpRocketTexture.loadFromFile(".\\Art\\Rocket.png", gRenderer)) {		// Ninja Star Texture
+		printf("Failed to load Power Up - Rocket texture!\n");
+		success = false;
+	}
 	if (!gSawTexture.loadFromFile(".\\Art\\SawBlue.png", gRenderer)) {							// Ninja Star Texture
 		printf("Failed to load Blue Saw texture!\n");
 		success = false;
@@ -597,7 +611,7 @@ bool Game::loadMedia() {
 	}
 	else {
 		// Set sprite clips 19/01/2017 Added for loop
-		for (int i = 0; i < 6; ++i) {
+		for (unsigned int i = 0; i < 6; ++i) {
 			gPressButtonToContinueSpriteClips[i].x = 0;
 			if(i < 4)
 				gPressButtonToContinueSpriteClips[i].y = i * 50;
@@ -616,7 +630,7 @@ bool Game::loadMedia() {
 	}
 	else {
 		//Set sprite clips
-		for (int i = 0; i < 4; ++i) {
+		for (unsigned int i = 0; i < 4; ++i) {
 			gEnemySpriteClips[i].x = 0;
 			gEnemySpriteClips[i].y = i * 50;
 			gEnemySpriteClips[i].w = 120;
@@ -629,7 +643,7 @@ bool Game::loadMedia() {
 	}
 	else {
 		//Set sprite clips
-		for (int i = 0; i < 6; ++i) {
+		for (unsigned int i = 0; i < 6; ++i) {
 			if(i < 4) gOrangeVirusSpriteClips[i].x = i * 75;
 			if (i == 5) gOrangeVirusSpriteClips[i].x = 2 * 75;
 			if (i == 6) gOrangeVirusSpriteClips[i].x = 1 * 75;
@@ -645,7 +659,7 @@ bool Game::loadMedia() {
 	}
 	else {
 		//Set sprite clips
-		for (int i = 0; i < EXPLOSION_ANIMATION_FRAMES; ++i) {
+		for (unsigned int i = 0; i < EXPLOSION_ANIMATION_FRAMES; ++i) {
 			gExplosionClips[i].x = i * 96;
 			gExplosionClips[i].y = 0;
 			gExplosionClips[i].w = 96;
@@ -760,12 +774,14 @@ void Game::close() {
 	gNinjaStarBlueTexture.free();
 	gNinjaStarYellowTexture.free();
 	gSawTexture.free();
+	gRocketTexture.free();
 	gBloodCellTexture.free();
 	gBloodCellSmallTexture.free();
 	gWhiteBloodCellTexture.free();
 	gPowerUpHealthTexture.free();
 	gPowerUpLaserTexture.free();
 	gPowerUpLaserTextureV2.free();
+	gPowerUpRocketTexture.free();
 	gLogo1.free();
 	gLogo2.free();
 	gLevel1.free();
@@ -847,7 +863,7 @@ void Game::update(){
 				quit = playerInput(quit);				// 2017/01/09 JOE: Handle input from player
 
 				//if (displayIntro) displayGameLogos();	// 2017/01/18 Splash screens at start of game
-				//if (getCurrentLevel() == 0 && displayIntro) displaySplashScreens();	// 2017/01/18 Splash screens at start of game
+				if (getCurrentLevel() == 0 && displayIntro) displaySplashScreens();	// 2017/01/18 Splash screens at start of game
 				//if (getCurrentLevel() == MENU) menu();
 
 				if (getCurrentLevel() != 0) playLevel(getCurrentLevel());
@@ -867,7 +883,7 @@ void Game::menu() {
 	SDL_SetRenderDrawColor(gRenderer, 0xFF, 0x00, 0x00, 0xFF);
 	SDL_RenderClear(gRenderer);
 
-	for (int i = 0; i < TOTAL_BUTTONS; ++i) {
+	for (unsigned int i = 0; i < TOTAL_BUTTONS; ++i) {
 		gMenuButtons[i].render(gButtonSpriteSheetTexture, gRenderer, &gSpriteClipsMenu[gMenuButtons[i].mCurrentSprite]);
 	}
 
@@ -975,18 +991,12 @@ void Game::displaySplashScreens() {
 	displayIntro = false;
 }
 
-
-
-
-
 std::string story1 = "The player must avoid contact with Enemy Viruses\nThe Viruses will move towards the nearest player\n\n\nThe Orange Virus moves towards the nearest player\nAnd explodes when its timer has run out\n\n\nThe Enemy Ship fires lasers\nAs it crosses the screen right to left";
 std::string story2 = "Story 2 blah blah \nFill this\nIn Later";
 std::string story3 = "Story 3 blah blah blah\nFill this\nIn Later";
 
 void Game::displayLevelSplashScreen(std::string objective) {
-
 	// STORY
-
 	textColour = {255,255,255,255};
 	if (!gStory1.loadFromRenderedText(story1, textColour, gFontRetro20, gRenderer, true)) {
 		printf("Unable to render level game objective texture!\n");
@@ -1139,7 +1149,7 @@ void Game::gamepadInfo() {
 
 		std::cout << "joystick instance id: " << SDL_JoystickInstanceID(gController1) << std::endl;
 
-		for (int i = 0; i < SDL_NumJoysticks(); ++i) {
+		for (unsigned int i = 0; i < SDL_NumJoysticks(); ++i) {
 			const char *name = SDL_GameControllerNameForIndex(i);
 			if (name) {
 				printf("Joystick %i has game controller name '%s'\n", i, name);
@@ -1389,12 +1399,23 @@ bool Game::playerInput(bool quit = false) {
 		}
 
 		// Handle button events
-		for (int i = 0; i < TOTAL_BUTTONS; ++i) {
+		for (unsigned int i = 0; i < TOTAL_BUTTONS; ++i) {
 			gMenuButtons[i].handleEvent(&e, i);
 		}
 
 		player1.handleEvent(e, 1);									// Handle input for Player 1
 		player2.handleEvent(e, 2);									// Handle input for Player 2
+
+
+		for (unsigned int index = 0; index != listOfPlayerWeapons.size(); ++index) {
+			if (listOfPlayerWeapons[index]->getType() == ROCKET && listOfPlayerWeapons[index]->getPlayer() == PLAYER_1) {
+				listOfPlayerWeapons[index]->handleEvent(e, 1);
+			}
+			else if (listOfPlayerWeapons[index]->getType() == ROCKET && listOfPlayerWeapons[index]->getPlayer() == PLAYER_2) {
+				listOfPlayerWeapons[index]->handleEvent(e, 2);
+			}
+		}
+
 	}
 
 	return quit;
@@ -1508,18 +1529,18 @@ void Game::renderGameObjects() {
 			}
 
 			// Cycle through list of Enemy Ships and Virus and render to screen
-			for (int index = 0; index != listOfEnemyShips.size(); ++index) {
+			for (unsigned int index = 0; index != listOfEnemyShips.size(); ++index) {
 				listOfEnemyShips[index]->render(gEnemySpriteSheetTexture, gRenderer, &gEnemySpriteClips[enemyFrame / 10], enemyFrame);
 				//SDL_RenderDrawRect(gRenderer, &listOfEnemyShips[index]->getCollider());
 			}
-			for (int index = 0; index != listOfEnemyVirus.size(); ++index) {
+			for (unsigned int index = 0; index != listOfEnemyVirus.size(); ++index) {
 				if (listOfEnemyVirus[index]->getType() == GREEN) listOfEnemyVirus[index]->render(gEnemyVirusTexture, gRenderer);
 				else if (listOfEnemyVirus[index]->getType() == ORANGE) listOfEnemyVirus[index]->render(gOrangeVirusSpriteSheetTexture, gRenderer, &gOrangeVirusSpriteClips[enemyFrame / 10], enemyFrame);
 				//SDL_RenderDrawRect(gRenderer, &listOfEnemyVirus[index]->getCollider());
 			}
 
 			// Cycle through list of Explosions and render to screen
-			for (int index = 0; index != listOfExplosions.size(); ++index) {
+			for (unsigned int index = 0; index != listOfExplosions.size(); ++index) {
 				listOfExplosions[index]->render(gExplosionSpriteSheetTexture, gRenderer, &gExplosionClips[explosionFrame / 8], explosionFrame);
 				//SDL_RenderDrawRect(gRenderer, &listOfExplosions[index]->getCollider());
 				//std::cout << "ExplosionFrame: " << explosionframe << std::endl;
@@ -1530,7 +1551,7 @@ void Game::renderGameObjects() {
 			}
 
 			// Cycle through list of power up objects and render them to screen
-			for (int index = 0; index != listOfPowerUps.size(); ++index) {
+			for (unsigned int index = 0; index != listOfPowerUps.size(); ++index) {
 				if (listOfPowerUps[index]->getType() == 1)
 					listOfPowerUps[index]->render(gPowerUpHealthTexture, gRenderer);
 				else
@@ -1538,14 +1559,14 @@ void Game::renderGameObjects() {
 				//SDL_RenderDrawRect(gRenderer, &listOfPowerUps[index]->getCollider());
 			}
 
-			for (int index = 0; index != listOfEnemyLaserObjects.size(); ++index) {
+			for (unsigned int index = 0; index != listOfEnemyLaserObjects.size(); ++index) {
 				std::cout << "Laser " << index << " is of type: " << listOfEnemyLaserObjects[index]->getType() << std::endl;
 				if (listOfEnemyLaserObjects[index]->getType() == 1) listOfEnemyLaserObjects[index]->render(gVirusFireballTexture, gRenderer); //
 				else listOfEnemyLaserObjects[index]->render(gLaserBlueTexture, gRenderer); // gVirusFireballTexture
 				//SDL_RenderDrawRect(gRenderer, &listOfEnemyLaserObjects[index]->getCollider());
 			}
 
-			for (int index = 0; index != listOfPlayerWeapons.size(); ++index) {
+			for (unsigned int index = 0; index != listOfPlayerWeapons.size(); ++index) {
 				if (listOfPlayerWeapons[index]->getType() == NINJA_STAR_P1)
 					listOfPlayerWeapons[index]->render(gNinjaStarYellowTexture, gRenderer, gNinjaStarYellowTexture.getDegrees());	// Yellow ninja star for player 1
 				else if (listOfPlayerWeapons[index]->getType() == NINJA_STAR_P2)
@@ -1558,11 +1579,13 @@ void Game::renderGameObjects() {
 					listOfPlayerWeapons[index]->render(gLaserOrangeTexture, gRenderer);
 				else if (listOfPlayerWeapons[index]->getType() == LASER_V2_P2)
 					listOfPlayerWeapons[index]->render(gLaserGreenTexture, gRenderer);
+				else if (listOfPlayerWeapons[index]->getType() == ROCKET)
+					listOfPlayerWeapons[index]->render(gRocketTexture, gRenderer);
 
 				//SDL_RenderDrawRect(gRenderer, &listOfPlayerWeapons[index]->getCollider());										// Draw the collider for each Weapon object
 			}
 
-			for (int index = 0; index != listOfGameObjects.size(); ++index) {														// Render player scores for killing Enemies
+			for (unsigned int index = 0; index != listOfGameObjects.size(); ++index) {														// Render player scores for killing Enemies
 				if (listOfGameObjects[index]->getType() == PLAYER_1) {
 					listOfGameObjects[index]->render(gPointsValueTextMessage1, gRenderer);
 					//listOfGameObjects[index]->render(listOfGameObjects[index]->getTexture(), gRenderer);
@@ -1632,7 +1655,7 @@ void Game::renderGameObjects() {
 				virusBar -= 0.5;					// increment every 1/2 second to decrement countdown timer
 				//std::cout << "virus counter " << virusBar;
 			}
-			for (int index = 0; index != listOfEnemyVirus.size(); ++index) {
+			for (unsigned int index = 0; index != listOfEnemyVirus.size(); ++index) {
 				if (listOfEnemyVirus[index]->getType() == ORANGE) {						// 2017/01/25 If the type of virus is an Orange Exploding Virus
 					if (listOfEnemyVirus[index]->getX() > SCREEN_WIDTH - listOfEnemyVirus[index]->getWidth()) virusBar = 3.0;	// Don't decrement the counter until the virus is appearing on screen // x, y, width, height
 					renderHealthBar(listOfEnemyVirus[index]->getX() + listOfEnemyVirus[index]->getWidth() + 10, listOfEnemyVirus[index]->getY() + (listOfEnemyVirus[index]->getHeight() / 6), 5, (listOfEnemyVirus[index]->getHeight() / 3) * 2, virusBar / listOfEnemyVirus[index]->getTimer(), fgColourBlue, bgColourOrange, VERTICAL); // 2/3s the height of the virus
@@ -1752,12 +1775,12 @@ void Game::moveGameObjects() {
 	if (player2.getAlive()) player2.movement();
 
 	// Cycle through lists of Enemys and move them
-	for (int index = 0; index != listOfEnemyShips.size(); ++index) {
+	for (unsigned int index = 0; index != listOfEnemyShips.size(); ++index) {
 		listOfEnemyShips[index]->movement();
 		spawnEnemyLaser(listOfEnemyShips[index]->getX(), listOfEnemyShips[index]->getY());
 	}
 	// Cycle through list of Enemy virus and move them
-	for (int index = 0; index != listOfEnemyVirus.size(); ++index) {
+	for (unsigned int index = 0; index != listOfEnemyVirus.size(); ++index) {
 		if (listOfEnemyVirus[index]->getX() > SCREEN_WIDTH && listOfEnemyVirus[index]->getX() < SCREEN_WIDTH + 10 && listOfEnemyVirus[index]->getType() == 1) {
 			playerMessageCounter = 0;
 			playerMessage = "Exploding Orange Virus Approaching";
@@ -1774,13 +1797,13 @@ void Game::moveGameObjects() {
 	}
 
 	// Cycle through list of Power Ups and move them
-	for (int index = 0; index != listOfPowerUps.size(); ++index) {
+	for (unsigned int index = 0; index != listOfPowerUps.size(); ++index) {
 		listOfPowerUps[index]->movement();
 	}
-	for (int index = 0; index != listOfEnemyLaserObjects.size(); ++index) {
+	for (unsigned int index = 0; index != listOfEnemyLaserObjects.size(); ++index) {
 		listOfEnemyLaserObjects[index]->movement();
 	}
-	for (int index = 0; index != listOfPlayerWeapons.size(); ++index) {
+	for (unsigned int index = 0; index != listOfPlayerWeapons.size(); ++index) {
 		listOfPlayerWeapons[index]->movement();
 		//SDL_RenderDrawRect(gRenderer, &listOfPlayerWeapons[index]->getCollider());
 	}
@@ -1794,7 +1817,7 @@ void Game::moveGameObjects() {
 
 // Destroy Game Objects
 void Game::destroyGameObjects() {
-	for (int index = 0; index != listOfExplosions.size(); ++index) {
+	for (unsigned int index = 0; index != listOfExplosions.size(); ++index) {
 		if (!listOfExplosions[index]->getAlive()) {
 			listOfExplosions.erase(listOfExplosions.begin() + index);
 			//std::cout << "Explosion Destroyed." << std::endl;
@@ -1802,14 +1825,14 @@ void Game::destroyGameObjects() {
 		}
 	}// end for
 
-	for (int index = 0; index != listOfEnemyShips.size(); ++index) {
+	for (unsigned int index = 0; index != listOfEnemyShips.size(); ++index) {
 		if (!listOfEnemyShips[index]->getAlive()) {
 			listOfEnemyShips.erase(listOfEnemyShips.begin() + index);
 			//std::cout << "Enemy Ship Destroyed." << std::endl;
 			index--;
 		}
 	}// end for
-	for (int index = 0; index != listOfEnemyVirus.size(); ++index) {
+	for (unsigned int index = 0; index != listOfEnemyVirus.size(); ++index) {
 		if (!listOfEnemyVirus[index]->getAlive()) {
 			listOfEnemyVirus.erase(listOfEnemyVirus.begin() + index);
 			//std::cout << "Enemy Virus Destroyed." << std::endl;
@@ -1829,7 +1852,7 @@ void Game::destroyGameObjects() {
 		}
 	}
 
-	for (int index = 0; index != listOfEnemyLaserObjects.size(); ++index) {
+	for (unsigned int index = 0; index != listOfEnemyLaserObjects.size(); ++index) {
 		if (!listOfEnemyLaserObjects[index]->getAlive()) {
 			listOfEnemyLaserObjects.erase(listOfEnemyLaserObjects.begin() + index);
 			//std::cout << "Enemy Laser Destroyed." << std::endl;
@@ -1837,7 +1860,7 @@ void Game::destroyGameObjects() {
 		}
 	}// end for
 
-	for (int index = 0; index != listOfPlayerWeapons.size(); index++) {
+	for (unsigned int index = 0; index != listOfPlayerWeapons.size(); index++) {
 		if (!listOfPlayerWeapons[index]->getAlive()) {
 			if (listOfPlayerWeapons[index]->getType() == NINJA_STAR_P1) std::cout << "P1 Ninja Star Destroyed." << std::endl;
 			else if (listOfPlayerWeapons[index]->getType() == NINJA_STAR_P2) std::cout << "P2 Ninja Star Destroyed." << std::endl;
@@ -1845,6 +1868,16 @@ void Game::destroyGameObjects() {
 			else if (listOfPlayerWeapons[index]->getType() == LASER_P2) std::cout << "P2 Laser Destroyed." << std::endl;
 			else if (listOfPlayerWeapons[index]->getType() == LASER_V2_P1) std::cout << "P1 Angle Laser Destroyed." << std::endl;
 			else if (listOfPlayerWeapons[index]->getType() == LASER_V2_P2) std::cout << "P2 Angle Laser Destroyed." << std::endl;
+			else if (listOfPlayerWeapons[index]->getType() == ROCKET) {
+				if (listOfPlayerWeapons[index]->getPlayer() == PLAYER_1) {
+					std::cout << "P1 ROCKET Destroyed." << std::endl;
+					p1RocketActive = false;
+				}
+				else if (listOfPlayerWeapons[index]->getPlayer() == PLAYER_2) {
+					std::cout << "P2 ROCKET Destroyed." << std::endl;
+					p2RocketActive = false;
+				}
+			}
 
 			listOfPlayerWeapons.erase(listOfPlayerWeapons.begin() + index);
 			index--;
@@ -1859,14 +1892,14 @@ void Game::destroyGameObjects() {
 			iterSaw++;
 		}
 	}
-	for (int index = 0; index != listOfPowerUps.size(); ++index) {
+	for (unsigned int index = 0; index != listOfPowerUps.size(); ++index) {
 		if (!listOfPowerUps[index]->getAlive()) {
 			listOfPowerUps.erase(listOfPowerUps.begin() + index);
 			//std::cout << "Power Up Destroyed." << std::endl;
 			index--;
 		}
 	}// end for
-	for (int index = 0; index != listOfGameObjects.size(); ++index) {			// Erase Game Objects
+	for (unsigned int index = 0; index != listOfGameObjects.size(); ++index) {			// Erase Game Objects
 		if (SDL_GetTicks() > listOfGameObjects[index]->getStartTime() + 1000)	// if the current time is more than the start time + 100
 			listOfGameObjects[index]->setAlive(false);							// Kill the object
 
@@ -1998,12 +2031,14 @@ void Game::spawnLaser(int x, int y, int player, int velocity, int grade) {
 		p_Laser1->spawn(x + 65, y + 25, velocity, LASER_P1);
 		grade = player1.getLaserGrade();
 		p_Laser1->setType(LASER_P1);
+		p_Laser1->setPlayer(PLAYER_1);
 		p_Laser1->setCollider(p_Laser1->getCollider());
 	}
 	else if (player == PLAYER_2) {
 		p_Laser1->spawn(x + 65, y + 25, velocity, LASER_P2);
 		grade = player2.getLaserGrade();
 		p_Laser1->setType(LASER_P2);
+		p_Laser1->setPlayer(PLAYER_2);
 	}
 
 	listOfPlayerWeapons.push_back(p_Laser1);
@@ -2095,7 +2130,28 @@ void Game::spawnNinjaStar(int x, int y, int player) {					// player to spawn for
 		if (player == 2) Mix_PlayChannel(-1, gNinjaFX2, 0);
 	}
 }
-void Game::spawnSaw(int x, int y, int player) {		// player to spawn for and their coords, turn on if inacive, off if active
+
+void Game::spawnRocket(int x, int y, int player, int type) {
+	if (player == PLAYER_1 && !p1RocketActive) {
+		Rocket* p_Rocket = new Rocket();
+		p_Rocket->spawn(x, y, p_Rocket->getCollider(), player, type);
+		p_Rocket->setType(ROCKET);
+		std::cout << "Rocket Spawned" << std::endl;
+		listOfPlayerWeapons.push_back(p_Rocket);
+		p1RocketActive = true;
+	}
+	else if (player == PLAYER_2 && !p2RocketActive) {
+		Rocket* p_Rocket = new Rocket();
+		p_Rocket->spawn(x, y, p_Rocket->getCollider(), player, type);
+		p_Rocket->setType(ROCKET);
+		std::cout << "Rocket Spawned" << std::endl;
+		listOfPlayerWeapons.push_back(p_Rocket);
+		p2RocketActive = true;
+	}
+
+}
+
+void Game::spawnSaw(int x, int y, int player) {				// player to spawn for and their coords, turn on if inacive, off if active
 	if (player == PLAYER_1 && !player1.getSawActive()) {	// IF SAW IS ALREADY ACTIVE KILL IT OTHERWISE SPAWN IT - Individual saw for each player
 		Saw* p_Saw = new Saw();								// Create new saw
 		p_Saw->spawn(x, y);									// spawn the saw
@@ -2136,6 +2192,7 @@ bool checkCollision(SDL_Rect a, SDL_Rect b) {
 	int rightA, rightB;
 	int topA, topB;
 	int bottomA, bottomB;
+
 /*
 	//Calculate the sides of rect A
 	leftA = (*a).x;
@@ -2154,12 +2211,6 @@ bool checkCollision(SDL_Rect a, SDL_Rect b) {
 	rightA = a.x + a.w;
 	topA = a.y;
 	bottomA = a.y + a.h;
-
-	//Calculate the sides of rect B
-	leftB = b.x;
-	rightB = b.x + b.w;
-	topB = b.y;
-	bottomB = b.y + b.h;
 
 	//If any of the sides from A are outside of B
 	if (bottomA <= topB) {
@@ -2193,7 +2244,7 @@ bool checkCollision(SDL_Rect a, SDL_Rect b) {
 
 void Game::collisionCheck() {
 	// Check if Player 1  or 2 has collided with an enemy virus
-	for (int index1 = 0; index1 != listOfEnemyVirus.size(); ++index1) {
+	for (unsigned int index1 = 0; index1 != listOfEnemyVirus.size(); ++index1) {
 		if (checkCollision(player1.getCollider(), listOfEnemyVirus[index1]->getCollider()) == true) {
 			if (player1.getSawActive() && listOfEnemyVirus[index1]->getType() == GREEN) {
 				listOfEnemyVirus[index1]->setAlive(false);						// If saw is active kill that enemy
@@ -2217,7 +2268,7 @@ void Game::collisionCheck() {
 	}
 
 	// Check if Player has colided with Enemy Ship
-	for (int index2 = 0; index2 != listOfEnemyShips.size(); ++index2) {
+	for (unsigned int index2 = 0; index2 != listOfEnemyShips.size(); ++index2) {
 		if (checkCollision(player1.getCollider(), listOfEnemyShips[index2]->getCollider()) == true) {
 			if (player1.getSawActive()) {
 				listOfEnemyShips[index2]->setAlive(false);										// If saw is active kill that enemy
@@ -2235,7 +2286,7 @@ void Game::collisionCheck() {
 	}
 
 	// Check if Player 1 or 2 has picked up a power up
-	for (int index = 0; index != listOfPowerUps.size(); ++index) {
+	for (unsigned int index = 0; index != listOfPowerUps.size(); ++index) {
 		if (checkCollision(player1.getCollider(), listOfPowerUps[index]->getCollider()) == true) {
 			player1.setScore(player1.getScore() + listOfPowerUps[index]->getScore());
 			//player1.setHealth(player1.getHealth() + listOfPowerUps[index]->getScore());
@@ -2280,17 +2331,10 @@ void Game::collisionCheck() {
 	}
 
 	// Cycle through Ninja Stars and Lasers, and check collision with Enemy Ships and Virus
-	for (int index = 0; index != listOfPlayerWeapons.size(); index++) {
-		for (int index1 = 0; index1 != listOfEnemyVirus.size(); index1++) {
+	for (unsigned int index = 0; index != listOfPlayerWeapons.size(); index++) {
+		for (unsigned int index1 = 0; index1 != listOfEnemyVirus.size(); index1++) {
 			if (checkCollision(listOfPlayerWeapons[index]->getCollider(), listOfEnemyVirus[index1]->getCollider()) == true) {
-				if (listOfPlayerWeapons[index]->getType() == NINJA_STAR_P1)							// If the Weapon belongs to Player 1
-					player1.setScore(player1.getScore() + listOfEnemyVirus[index1]->getScore());	// Add the score value of the Enemy to Player 1
-				else if (listOfPlayerWeapons[index]->getType() == NINJA_STAR_P2)					// If the Weapon belongs to Player 2
-					player2.setScore(player2.getScore() + listOfEnemyVirus[index1]->getScore());
-				else if (listOfPlayerWeapons[index]->getType() == LASER_P1)							// If the Weapon belongs to Player 1
-					player1.setScore(player1.getScore() + listOfEnemyVirus[index1]->getScore());	// Add the score value of the Enemy to Player 1
-				else if (listOfPlayerWeapons[index]->getType() == LASER_P2)							// If the Weapon belongs to Player 2
-					player2.setScore(player2.getScore() + listOfEnemyVirus[index1]->getScore());	// Add the score value fo the Enemy to Player 2
+				managePlayerScores(listOfEnemyVirus[index1]->getScore(), listOfPlayerWeapons[index]->getPlayer());		// 2017-02-06 Add to players score
 
 				pointsValueCounter = 0;
 				displayScoreForObject(listOfEnemyVirus[index1]->getX(), listOfEnemyVirus[index1]->getY(), listOfEnemyVirus[index1]->getScore(), listOfPlayerWeapons[index]->getType());	// Display Score
@@ -2302,12 +2346,9 @@ void Game::collisionCheck() {
 				listOfPlayerWeapons[index]->setAlive(false);	// DESTROY
 			}
 		}
-		for (int index2 = 0; index2 != listOfEnemyShips.size(); index2++) {
+		for (unsigned int index2 = 0; index2 != listOfEnemyShips.size(); index2++) {
 			if (checkCollision(listOfPlayerWeapons[index]->getCollider(), listOfEnemyShips[index2]->getCollider()) == true) {
-				if (listOfPlayerWeapons[index]->getType() == NINJA_STAR_P1 || listOfPlayerWeapons[index]->getType() == LASER_P1)		// If the Weapon belongs to Player 1
-					player1.setScore(player1.getScore() + listOfEnemyShips[index2]->getScore());										// Add the score value of the Enemy to Player 1
-				else if (listOfPlayerWeapons[index]->getType() == NINJA_STAR_P2 || listOfPlayerWeapons[index]->getType() == LASER_P2)	// If the Weapon belongs to Player 2
-					player2.setScore(player2.getScore() + listOfEnemyShips[index2]->getScore());										// Add the score value fo the Enemy to Player 2
+				managePlayerScores(listOfEnemyShips[index2]->getScore(), listOfPlayerWeapons[index]->getPlayer());		// 2017-02-06 Add to players score
 
 				pointsValueCounter = 0;
 				//pointsValue = "Score + " + std::to_string(listOfEnemyShips[index2]->getScore());
@@ -2323,7 +2364,7 @@ void Game::collisionCheck() {
 	}
 
 	// Check if Enemy Laser has collided with Player 1 or 2
-	for (int index = 0; index != listOfEnemyLaserObjects.size(); ++index) {
+	for (unsigned int index = 0; index != listOfEnemyLaserObjects.size(); ++index) {
 		if (checkCollision(listOfEnemyLaserObjects[index]->getCollider(), player1.getCollider()) == true) {
 			managePlayerHealth(PLAYER_1, listOfEnemyLaserObjects[index]->getScore());
 			listOfEnemyLaserObjects[index]->setAlive(false);
@@ -2335,6 +2376,11 @@ void Game::collisionCheck() {
 	}
 }
 
+void Game::managePlayerScores(int score, int player) {
+	if (player == PLAYER_1) player1.setScore(player1.getScore() + score);
+	else if (player == PLAYER_2) player2.setScore(player2.getScore() + score);
+}
+
 void Game::score(int type) {
 	if (type == NINJA_STAR_P1) std::cout << "Enemy Ship Killed by Player 1 Ninja Star!\n";
 	else if (type == NINJA_STAR_P2) std::cout << "Enemy Ship Killed by Player 2 Ninja Star!\n";
@@ -2344,6 +2390,7 @@ void Game::score(int type) {
 	else if (type == SAW_P2) std::cout << "Enemy Ship Killed by Player 2 Saw!\n";
 	else if (type == LASER_V2_P1) std::cout << "Enemy Ship Killed by Player 1 Upgraded Laser!\n";
 	else if (type == LASER_V2_P2) std::cout << "Enemy Ship Killed by Player 2 Upgraded Laser!\n";
+	else if (type == ROCKET) std::cout << "Enemy Ship Killed by Player Rocket!\n";
 
 	Mix_PlayChannel(-1, gExplosionFX, 0);
 }

@@ -17,8 +17,6 @@ GameObject::~GameObject() {
 	//std::cout << "GameObject deconstructor" << std::endl;
 }
 
-
-
 // Render the Game Objects to the screen
 void GameObject::render(LTexture &texture, SDL_Renderer *rend, int degrees) {
 	texture.render(getX(), getY(), rend, NULL, degrees, NULL, SDL_FLIP_NONE);
@@ -29,26 +27,12 @@ int GameObject::getEndTime() { return m_EndTime; }
 void GameObject::setStartTime(int t) { m_StartTime = t; }
 void GameObject::setEndTime(int t) { m_EndTime = t; }
 
-
-
 LTexture GameObject::getTexture() {
 	return m_Texture;
 }
 void GameObject::setTexture(LTexture texture) {
 	m_Texture = texture;
 }
-
-/*
-
-// Moved to texture class
-
-SDL_Color GameObject::getFontColour() {
-	return fontColour;
-}
-void GameObject::setFontColour(SDL_Color f) {
-	fontColour = f;
-}
-*/
 
 void GameObject::spawn() {
 	m_x = 0;

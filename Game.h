@@ -55,7 +55,7 @@ public:
 	enum levels { MENU, LEVEL_1, LEVEL_2, LEVEL_3 };
 	enum powerUpTypes { HEALTH = 1, LASER };
 	enum virusType { GREEN, ORANGE };
-	enum playerWeapons {NINJA_STAR_P1, NINJA_STAR_P2, LASER_P1, LASER_P2, SAW_P1, SAW_P2, LASER_V2_P1, LASER_V2_P2};
+	enum playerWeapons {NINJA_STAR_P1, NINJA_STAR_P2, LASER_P1, LASER_P2, SAW_P1, SAW_P2, LASER_V2_P1, LASER_V2_P2, ROCKET};
 
 	int getCurrentLevel();
 	void setCurrentLevel(int l);
@@ -98,6 +98,7 @@ public:
 	void spawnNinjaStar(int x, int y, int player);			// 2017/01/09 JOE: added function to create ninja star weapons - 2017/01/17 added player decision - player to spawn for and their coords
 	void spawnSaw(int x, int y, int player);				// 2017/01/20: Saw Weapon for player
 	void spawnPowerUp();
+	void spawnRocket(int x, int y, int player, int type = ROCKET);				// 2017-02-06
 
 	void gamepadInfo();							// 2017/01/17: Separate gamepad information
 	void displayText();							// 2017/01/17: Display game text
@@ -123,6 +124,7 @@ public:
 	int getNumPlayers();
 	void setNumPlayers(int n);
 	void managePlayerHealth(int player, int score, std::string name = "Game Object");
+	void managePlayerScores(int score, int player);
 
 	static Game* Instance() {
 		if (s_pInstance == 0) {
