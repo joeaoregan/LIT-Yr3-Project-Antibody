@@ -91,7 +91,7 @@ bool MainMenu::loadMedia() {
 	bool success = true;	// Loading success flag
 	SDL_Color textColor = { 0, 0, 0 };
 
-	gFontMenu = TTF_OpenFont(".\\Fonts\\lazy.ttf", 28);
+	gFontMenu = TTF_OpenFont(".\\Fonts\\Lazy.ttf", 29);	// Open the font
 	if (gFontMenu == NULL) {
 		printf("XXX Failed to load lazy font! SDL_ttf Error: %s\n", TTF_GetError());
 		success = false;
@@ -135,7 +135,7 @@ bool MainMenu::loadMedia() {
 	}
 
 	//Load sprites
-	if (!gButtonSpriteSheetTexture.loadFromFile(".\\Art\\buttonOne.png", gRendererMenu)) {		// CHANGED ADDED RENDERER TO FUNCTION
+	if (!gButtonSpriteSheetTexture.loadFromFile("Art/buttonOne.png", gRendererMenu)) {		// CHANGED ADDED RENDERER TO FUNCTION
 		printf("Failed to load button sprite texture!\n");
 		success = false;
 	}

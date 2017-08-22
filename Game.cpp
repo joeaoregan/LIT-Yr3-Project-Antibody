@@ -2,7 +2,7 @@
 // 2017/01/23 set up levels and background
 
 /*
-    Menu
+    Changed Background and Logo graphics
 
     2017-08-11:
         Joe: Change window title
@@ -131,7 +131,7 @@ SDL_Haptic*	gControllerHaptic = NULL;	// 2017/01/18 Haptic (Force Feedback) adde
 Mix_Music *gMusic1 = NULL;				// Mix_Music: Data type for music
 Mix_Music *gMusic2 = NULL;
 Mix_Music *gMusic3 = NULL;
-int currentSong;						// Play a random song when the game starts
+unsigned int currentSong;						// Play a random song when the game starts
 
 //The sound effects that will be used (pointers)
 Mix_Chunk *gNinjaFX1 = NULL;		// 2017/01/09 JOE: SOUND - Mix_Chunk: Data type for short sounds
@@ -285,7 +285,7 @@ bool init() {
 		}
 
 		// Create window
-		gWindow = SDL_CreateWindow("ANTIBODY v1.01 by Joe O'Regan & Se\u00E1n Horgan: Menu", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);	/* Window name */
+		gWindow = SDL_CreateWindow("ANTIBODY v1.01 by Joe O'Regan & Se\u00E1n Horgan: New Background & Logo Graphics", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);	/* Window name */
 		if (gWindow == NULL) {
 			printf("Window could not be created! SDL Error: %s\n", SDL_GetError());
 			success = false;
@@ -355,14 +355,14 @@ bool loadMedia() {
 	gShimmerTexture.modifyAlpha(150);
 
 	// Open the font
-	//gFont = TTF_OpenFont("22_timing/lazy.ttf", 28);
-	gFont = TTF_OpenFont(".\\Fonts\\lazy.ttf", 28);
+	//gFont = TTF_OpenFont("Fonts/Retro.ttf", 16);
+	gFont = TTF_OpenFont(".\\Fonts\\Retro.ttf", 16);
 	if (gFont == NULL) {
 		printf("Failed to load lazy font! SDL_ttf Error: %s\n", TTF_GetError());
 		success = false;
 	}
 	else {
-		textColour = { 0, 100, 200, 255 };								// Set text color as blue
+		textColour = { 255, 0, 0, 255 };								// Set text color for three names RED
 		TTF_SetFontStyle(gFont, TTF_STYLE_BOLD);								// Use bold font
 
 		if (!gCreatedByTextTexture.loadFromRenderedText("A Game By Sean Horgan And Joe O'Regan", textColour, gFont, gRenderer)) {
@@ -371,14 +371,14 @@ bool loadMedia() {
 		}
 	}
 
-	//gFont2 = TTF_OpenFont("Fonts/KunstlerScript.ttf", 72);
-	gFont2 = TTF_OpenFont(".\\Fonts\\KunstlerScript.ttf", 72);
+	//gFont2 = TTF_OpenFont("Fonts/Retro.ttf", 40);
+	gFont2 = TTF_OpenFont(".\\Fonts\\Retro.ttf", 40);
 	if (gFont2 == NULL) {
 		printf("Failed to load kunstler font! SDL_ttf Error: %s\n", TTF_GetError());
 		success = false;
 	}
 	else {
-		textColour = { 0, 100, 200, 255 };
+		textColour = { 0, 255, 0, 255 };
 		TTF_SetFontStyle(gFont2, TTF_STYLE_BOLD);											// Use bold font
 	}
 
@@ -418,11 +418,11 @@ bool loadMedia() {
 		printf("Failed to load background texture!\n");
 		success = false;
 	}
-	if (!gBGStartTexture.loadFromFile(".\\Art\\bgBegin720a.png", gRenderer)) {		// Background start texture
+	if (!gBGStartTexture.loadFromFile(".\\Art\\bgBegin720a.png", gRenderer)) {						// Background start texture
 		printf("Failed to load start background texture!\n");
 		success = false;
 	}
-	if (!gBGEndTexture.loadFromFile(".\\Art\\bgEnd720a.png", gRenderer)) {			// Background end texture
+	if (!gBGEndTexture.loadFromFile(".\\Art\\bgEnd720a.png", gRenderer)) {							// Background end texture
 		printf("Failed to load end background texture!\n");
 		success = false;
 	}
@@ -496,7 +496,7 @@ bool loadMedia() {
 	}
 	else {
 		// Set sprite clips 19/01/2017 Added for loop
-		for (int i = 0; i < 6; ++i) {
+		for (unsigned int i = 0; i < 6; ++i) {
 			gSpriteClips[i].x = 0;
 			if(i < 4)
 				gSpriteClips[i].y = i * 94;
@@ -515,7 +515,7 @@ bool loadMedia() {
 	}
 	else {
 		//Set sprite clips
-		for (int i = 0; i < 4; ++i) {
+		for (unsigned int i = 0; i < 4; ++i) {
 			gEnemySpriteClips[i].x = 0;
 			gEnemySpriteClips[i].y = i * 50;
 			gEnemySpriteClips[i].w = 120;
@@ -704,7 +704,7 @@ void Game::update(){
 
 				playLevel(currentLevel);
 
-				//fpsthink();
+				fpsthink();
 
 				//if (player1.getAlive() && player2.getAlive()) gameOver = true;
 
@@ -821,7 +821,7 @@ void Game::displayGameLogos() {
 void Game::displayLevelSplashScreen(std::string objective) {
 	scrollingOffsetLogo = 600;				// Texture will start below window
 
-	textColour = { 255, 255, 255, 255 };		// White text for level objectives
+	textColour = { 0, 255, 0, 255 };		// Green text for level objectives
 	if (!gLevelObjectiveTextTexture.loadFromRenderedText(objective, textColour, gFont, gRenderer, true)) { // gLevel1ObjectiveTextTexture
 		printf("Unable to render level game objective texture!\n");
 	}
@@ -880,7 +880,7 @@ void Game::gamepadInfo() {
 
 		std::cout << "joystick instance id: " << SDL_JoystickInstanceID(gController1) << std::endl;
 
-		for (int i = 0; i < SDL_NumJoysticks(); ++i) {
+		for (unsigned int i = 0; i < SDL_NumJoysticks(); ++i) {
 			const char *name = SDL_GameControllerNameForIndex(i);
 			if (name) {
 				printf("Joystick %i has game controller name '%s'\n", i, name);
@@ -930,9 +930,9 @@ void Game::displayText() {
 	// Game Over
 	if (levelOver == true) {
 		//std::cout << "Level " << currentLevel << " Complete" << std::endl;
-		if (currentLevel == 1) textColour = { 250, 250, 250, 255 };
-		if (currentLevel == 2) textColour = { 255, 0, 50, 255 };
-		if (currentLevel == 3) textColour = { 0, 0, 220, 255 };
+		if (currentLevel == 1) textColour = { 0, 255, 0, 255 };
+		if (currentLevel == 2) textColour = { 0, 255, 0, 255 };
+		if (currentLevel == 3) textColour = { 0, 255, 0, 255 };
 		if (!gFinalScoreTextTexture.loadFromRenderedText(finalScores, textColour, gFont2, gRenderer)) {
 			printf("Unable to render final scores texture!\n");
 		}
@@ -987,7 +987,7 @@ void Game::displayText() {
 			timerFlash = true;
 		}
 		else {
-			textColour = { 0, 100, 200, 255 };			// Purple text
+			textColour = { 0, 255, 0, 255 };			// Green text for timer
 			timerFlash = false;
 		}
 		if (!gTimeTextTexture.loadFromRenderedText(timeText.str().c_str(), textColour, gFont, gRenderer)) {
@@ -995,7 +995,7 @@ void Game::displayText() {
 		}
 
 		//Render text - Get a string from it and use it to render the current time to a texture
-		textColour = { 0, 100, 200, 255 };
+		textColour = { 0, 255, 0, 255 }; // Green text for UI elements
 		if (!gP1ScoreTextTexture.loadFromRenderedText(score1Text.str().c_str(), textColour, gFont, gRenderer)) {
 			printf("Unable to render P1 score texture!\n");
 		}
@@ -1015,7 +1015,7 @@ void Game::displayText() {
 	}
 
 	if (gameOver == true) {
-		textColour = { 0, 100, 200, 255 };			// Purple text
+		textColour = { 0, 255, 0, 255 };			// Green text
 		if (player1.getScore() > player2.getScore())
 			gameWinner = "Player 1 Wins";
 		else if (player2.getScore() > player1.getScore())
@@ -1053,7 +1053,7 @@ void Game::displayText() {
 }
 
 bool Game::playerInput(bool quit = false) {
-	SDL_Color textColor = { 0, 0, 0, 255 };	//Set text color as green
+	//SDL_Color textColor = { 0, 255, 0, 255 };	//Set text color as green
 
 	// In memory text stream
 	// string streams - function like iostreams only instead of reading or writing to the console, they allow you to read and write to a string in memory
@@ -1205,17 +1205,17 @@ void Game::renderGameObjects() {
 		}
 
 		// Cycle through list of Enemy Ships and Virus and render to screen
-		for (int index = 0; index != listOfEnemyShips.size(); ++index) {
+		for (unsigned int index = 0; index != listOfEnemyShips.size(); ++index) {
 			listOfEnemyShips[index]->render(gEnemySpriteSheetTexture, gRenderer, &gEnemySpriteClips[enemyframe / 10], enemyframe);
 			//SDL_RenderDrawRect(gRenderer, &listOfEnemyShips[index]->getCollider());
 		}
-		for (int index = 0; index != listOfEnemyVirus.size(); ++index) {
+		for (unsigned int index = 0; index != listOfEnemyVirus.size(); ++index) {
 			listOfEnemyVirus[index]->render(gEnemyVirusTexture, gRenderer);
 			//SDL_RenderDrawRect(gRenderer, &listOfEnemyVirus[index]->getCollider());
 		}
 
 		// Cycle through list of power up objects and render them to screen
-		for (int index = 0; index != listOfPowerUps.size(); ++index) {
+		for (unsigned int index = 0; index != listOfPowerUps.size(); ++index) {
 			if(listOfPowerUps[index]->getType() == 1)
 				listOfPowerUps[index]->render(gPowerUpHealthTexture, gRenderer);
 			else
@@ -1224,15 +1224,15 @@ void Game::renderGameObjects() {
 		}
 
 		// Cycle through list of Weapon objects and render them to screen
-		for (int index = 0; index != listOfLaserObjects.size(); ++index) {
+		for (unsigned int index = 0; index != listOfLaserObjects.size(); ++index) {
 			listOfLaserObjects[index]->render(listOfLaserObjects[index]->getPlayer(), gLaserOrangeTexture, gLaserGreenTexture, gRenderer);
 			//SDL_RenderDrawRect(gRenderer, &listOfLaserObjects[index]->getLaserCollider());
 		}
-		for (int index = 0; index != listOfEnemyLaserObjects.size(); ++index) {
+		for (unsigned int index = 0; index != listOfEnemyLaserObjects.size(); ++index) {
 			listOfEnemyLaserObjects[index]->render(gLaserBlueTexture, gRenderer);
 			//SDL_RenderDrawRect(gRenderer, &listOfEnemyLaserObjects[index]->getELaserCollider());
 		}
-		for (int index = 0; index != listOfNinjaStarObjects.size(); ++index) {
+		for (unsigned int index = 0; index != listOfNinjaStarObjects.size(); ++index) {
 			if (listOfNinjaStarObjects[index]->getPlayer() == PLAYER_1)
 				listOfNinjaStarObjects[index]->render(degrees, gNinjaStarYellowTexture, gRenderer);	// Yellow ninja star for player 1
 			else
@@ -1256,15 +1256,11 @@ void Game::renderGameObjects() {
 			playerMessageCounter++;
 		}
 
-
-
-
-
 		gTimeTextTexture.modifyAlpha(timerAlpha);	// Flash the timer
-		gTimeTextTexture.render(600, 8, gRenderer);
+		gTimeTextTexture.render(1150, 8, gRenderer);
 		gP1ScoreTextTexture.render(10, 8, gRenderer);
-		gP2ScoreTextTexture.render(100, 8, gRenderer);
-		gFPSTextTexture.render(200, 8, gRenderer);
+		gP2ScoreTextTexture.render(170, 8, gRenderer);
+		gFPSTextTexture.render(350, 8, gRenderer);
 
 		// Health Bars for Players
 		SDL_Color fgColour = { 0, 255, 0, 255 };								// Set text color as blue
@@ -1293,7 +1289,7 @@ void Game::renderGameObjects() {
 
 	if (gameOver == true) {
 		gGameOverTextTexture.modifyAlpha(gameOverAlpha);
-		gGameOverTextTexture.render((SCREEN_WIDTH - gGameOverTextTexture.getWidth()) / 2, (SCREEN_HEIGHT - gGameOverTextTexture.getHeight() - 300) / 2, gRenderer); // FOR TESTING
+		gGameOverTextTexture.render((SCREEN_WIDTH - gGameOverTextTexture.getWidth()) / 2, (SCREEN_HEIGHT - gGameOverTextTexture.getHeight() - 100) / 2, gRenderer); // FOR TESTING
 		gFinalScoreTextTexture.modifyAlpha(gameOverAlpha);
 		gFinalScoreTextTexture.render((SCREEN_WIDTH - gFinalScoreTextTexture.getWidth()) / 2, (SCREEN_HEIGHT - gFinalScoreTextTexture.getHeight() + 300) / 2, gRenderer); // FOR TESTING
 		gGameWinnerTextTexture.modifyAlpha(gameOverAlpha);
@@ -1308,13 +1304,13 @@ void Game::moveGameObjects() {
 	if (player2.getAlive()) player2.movement();
 
 	// Cycle through lists of Enemys and move them
-	for (int index = 0; index != listOfEnemyShips.size(); ++index) {
+	for (unsigned int index = 0; index != listOfEnemyShips.size(); ++index) {
 		listOfEnemyShips[index]->movement();
 		spawnEnemyLaser(listOfEnemyShips[index]->getX(), listOfEnemyShips[index]->getY());
 		//SDL_RenderDrawRect(gRenderer, &listOfLaserObjects[index]->getLaserCollider());
 	}
 	// Cycle through list of Enemy virus and move them
-	for (int index = 0; index != listOfEnemyVirus.size(); ++index) {
+	for (unsigned int index = 0; index != listOfEnemyVirus.size(); ++index) {
 		if(abs(listOfEnemyVirus[index]->getX() - player1.getX()) < abs(listOfEnemyVirus[index]->getX() - player2.getX()))	// absolute values to see which is closer on x axis, player1 or 2, and move towards that player
 			listOfEnemyVirus[index]->movement(player1.getX(), player1.getY());
 		else
@@ -1333,17 +1329,17 @@ void Game::moveGameObjects() {
 	}
 
 	// Cycle through list of Power Ups and move them
-	for (int index = 0; index != listOfPowerUps.size(); ++index) {
+	for (unsigned int index = 0; index != listOfPowerUps.size(); ++index) {
 		listOfPowerUps[index]->movement();
 	}
 	// Cycle through lists of weapons and move them
-	for (int index = 0; index != listOfLaserObjects.size(); ++index) {
+	for (unsigned int index = 0; index != listOfLaserObjects.size(); ++index) {
 		listOfLaserObjects[index]->movement();
 	}
-	for (int index = 0; index != listOfEnemyLaserObjects.size(); ++index) {
+	for (unsigned int index = 0; index != listOfEnemyLaserObjects.size(); ++index) {
 		listOfEnemyLaserObjects[index]->movement();
 	}
-	for (int index = 0; index != listOfNinjaStarObjects.size(); ++index) {
+	for (unsigned int index = 0; index != listOfNinjaStarObjects.size(); ++index) {
 		listOfNinjaStarObjects[index]->movement();
 		//SDL_RenderDrawRect(gRenderer, &listOfNinjaStarObjects[index]->getNinjaStarCollider());
 	}
@@ -1382,14 +1378,14 @@ void Game::flashGameObject(int &alpha, bool &flash, int rate, int times) {
 
 // Destroy Game Objects
 void Game::destroyGameObjects() {
-	for (int index = 0; index != listOfEnemyShips.size(); ++index) {
+	for (unsigned int index = 0; index != listOfEnemyShips.size(); ++index) {
 		if (!listOfEnemyShips[index]->getAlive()) {
 			listOfEnemyShips.erase(listOfEnemyShips.begin() + index);
 			//std::cout << "Enemy Ship Destroyed." << std::endl;
 			index--;
 		}
 	}// end for
-	for (int index = 0; index != listOfEnemyVirus.size(); ++index) {
+	for (unsigned int index = 0; index != listOfEnemyVirus.size(); ++index) {
 		if (!listOfEnemyVirus[index]->getAlive()) {
 			listOfEnemyVirus.erase(listOfEnemyVirus.begin() + index);
 			//std::cout << "Enemy Virus Destroyed." << std::endl;
@@ -1423,21 +1419,21 @@ void Game::destroyGameObjects() {
 			iterWBC++;
 		}
 	}
-	for (int index = 0; index != listOfLaserObjects.size(); ++index) {
+	for (unsigned int index = 0; index != listOfLaserObjects.size(); ++index) {
 		if (!listOfLaserObjects[index]->getAlive()) {
 			listOfLaserObjects.erase(listOfLaserObjects.begin() + index);
 			//std::cout << "Laser Destroyed." << std::endl;
 			index--;
 		}
 	}// end for
-	for (int index = 0; index != listOfEnemyLaserObjects.size(); ++index) {
+	for (unsigned int index = 0; index != listOfEnemyLaserObjects.size(); ++index) {
 		if (!listOfEnemyLaserObjects[index]->getAlive()) {
 			listOfEnemyLaserObjects.erase(listOfEnemyLaserObjects.begin() + index);
 			std::cout << "Enemy Laser Destroyed." << std::endl;
 			index--;
 		}
 	}// end for
-	for (int index = 0; index != listOfNinjaStarObjects.size(); ++index) {
+	for (unsigned int index = 0; index != listOfNinjaStarObjects.size(); ++index) {
 		if (!listOfNinjaStarObjects[index]->getAlive()) {
 			listOfNinjaStarObjects.erase(listOfNinjaStarObjects.begin() + index);
 			std::cout << "Ninja Star Destroyed." << std::endl;
@@ -1453,7 +1449,7 @@ void Game::destroyGameObjects() {
 			iterSaw++;
 		}
 	}
-	for (int index = 0; index != listOfPowerUps.size(); ++index) {
+	for (unsigned int index = 0; index != listOfPowerUps.size(); ++index) {
 		if (!listOfPowerUps[index]->getAlive()) {
 			listOfPowerUps.erase(listOfPowerUps.begin() + index);
 			//std::cout << "Power Up Destroyed." << std::endl;
@@ -1758,7 +1754,7 @@ void fpsthink() {
 
 void Game::collisionCheck() {
 	// Check if Player 1  or 2 has collided with an enemy virus or ship
-	for (int index1 = 0; index1 != listOfEnemyVirus.size(); ++index1) {
+	for (unsigned int index1 = 0; index1 != listOfEnemyVirus.size(); ++index1) {
 		if (checkCollision(player1.getCollider(), listOfEnemyVirus[index1]->getCollider()) == true) {
 			if (player1.getSawActive()) {
 				listOfEnemyVirus[index1]->setAlive(false);						// If saw is active kill that enemy
@@ -1775,7 +1771,7 @@ void Game::collisionCheck() {
 		}
 	}
 
-	for (int index2 = 0; index2 != listOfEnemyShips.size(); ++index2) {
+	for (unsigned int index2 = 0; index2 != listOfEnemyShips.size(); ++index2) {
 		if (checkCollision(player1.getCollider(), listOfEnemyShips[index2]->getCollider()) == true) {
 			if (player1.getSawActive()) {
 				listOfEnemyShips[index2]->setAlive(false);										// If saw is active kill that enemy
@@ -1793,7 +1789,7 @@ void Game::collisionCheck() {
 	}
 
 	// Check if Player 1 or 2 has picked up a power up
-	for (int index = 0; index != listOfPowerUps.size(); ++index) {
+	for (unsigned int index = 0; index != listOfPowerUps.size(); ++index) {
 		if (checkCollision(player1.getCollider(), listOfPowerUps[index]->getCollider()) == true) {
 			player1.setScore(player1.getScore() + listOfPowerUps[index]->getScore());
 			//player1.setHealth(player1.getHealth() + listOfPowerUps[index]->getScore());
@@ -1801,7 +1797,7 @@ void Game::collisionCheck() {
 			if (listOfPowerUps[index]->getType() == HEALTH) {
 				managePlayerHealth(PLAYER_1, -listOfPowerUps[index]->getScore());
 				playerMessageCounter = 0;
-				playerMessage = "Player 1 has increaded their healthr!!!";
+				playerMessage = "Player 1 has increaded their health!!!";
 			}
 			else if (listOfPowerUps[index]->getType() == LASER) {
 				player1.setScore(player1.getScore() + listOfPowerUps[index]->getScore());
@@ -1836,8 +1832,8 @@ void Game::collisionCheck() {
 	}
 
 	// Cycle through lists of Player Lasers and check collision with other game objects
-	for (int index = 0; index != listOfLaserObjects.size(); ++index) {
-		for (int index1 = 0; index1 != listOfEnemyVirus.size(); ++index1) {														// Check if collision with Virus
+	for (unsigned int index = 0; index != listOfLaserObjects.size(); ++index) {
+		for (unsigned int index1 = 0; index1 != listOfEnemyVirus.size(); ++index1) {														// Check if collision with Virus
 			if (checkCollision(listOfLaserObjects[index]->getCollider(), listOfEnemyVirus[index1]->getCollider()) == true) {
 				if (listOfLaserObjects[index]->getPlayer() == PLAYER_1)
 					player1.setScore(player1.getScore() + listOfEnemyVirus[index1]->getScore());
@@ -1850,7 +1846,7 @@ void Game::collisionCheck() {
 				Mix_PlayChannel(-1, gExplosionFX, 0);
 			}
 		}
-		for (int index2 = 0; index2 != listOfEnemyShips.size(); ++index2) {
+		for (unsigned int index2 = 0; index2 != listOfEnemyShips.size(); ++index2) {
 			if (checkCollision(listOfLaserObjects[index]->getCollider(), listOfEnemyShips[index2]->getCollider()) == true) {	// Check for Player Laser collision with Enemy Ship
 				if (listOfLaserObjects[index]->getPlayer() == PLAYER_1)
 					player1.setScore(player1.getScore() + listOfEnemyShips[index2]->getScore());
@@ -1865,9 +1861,9 @@ void Game::collisionCheck() {
 		}
 	}
 	// Cycle through Ninja Stars and check collision on enemies
-	for (int index = 0; index != listOfNinjaStarObjects.size(); ++index) {
+	for (unsigned int index = 0; index != listOfNinjaStarObjects.size(); ++index) {
 		listOfNinjaStarObjects[index]->movement();
-		for (int index1 = 0; index1 != listOfEnemyVirus.size(); ++index1) {
+		for (unsigned int index1 = 0; index1 != listOfEnemyVirus.size(); ++index1) {
 			if (checkCollision(listOfNinjaStarObjects[index]->getCollider(), listOfEnemyVirus[index1]->getCollider()) == true) {
 				player1.setScore(player1.getScore() + listOfEnemyVirus[index1]->getScore());
 				listOfEnemyVirus[index1]->setAlive(false);
@@ -1876,7 +1872,7 @@ void Game::collisionCheck() {
 				Mix_PlayChannel(-1, gExplosionFX, 0);
 			}
 		}
-		for (int index2 = 0; index2 != listOfEnemyShips.size(); ++index2) {
+		for (unsigned int index2 = 0; index2 != listOfEnemyShips.size(); ++index2) {
 			if (checkCollision(listOfNinjaStarObjects[index]->getCollider(), listOfEnemyShips[index2]->getCollider()) == true) {
 				player1.setScore(player1.getScore() + listOfEnemyShips[index2]->getScore());
 				listOfEnemyShips[index2]->setAlive(false);
@@ -1888,7 +1884,7 @@ void Game::collisionCheck() {
 	}
 
 	// Check if Enemy Laser has collided with Player 1 or 2
-	for (int index = 0; index != listOfEnemyLaserObjects.size(); ++index) {
+	for (unsigned int index = 0; index != listOfEnemyLaserObjects.size(); ++index) {
 		if (checkCollision(listOfEnemyLaserObjects[index]->getCollider(), player1.getCollider()) == true) {
 			managePlayerHealth(PLAYER_1, listOfEnemyLaserObjects[index]->getScore());
 			listOfEnemyLaserObjects[index]->setAlive(false);
