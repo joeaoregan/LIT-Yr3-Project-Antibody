@@ -1,17 +1,5 @@
-/* 
-	2017/01/23 Fixed saw spawning, now appearing/disappearing
-	2017/01/20 Added spawnSaw() function to Game class to create Saw Weapon for player
-	2017/01/17 Added separate class for saw weapon Saw.h (renamed WeaponPlSaw.h)
-	2017/01/09 Saw Weapon
-*/
-/*
-	SAW:
-
-	The players saw weapon can be used to cut Enemy Virus enemies in half. The smaller virus
-	objects are then more managable for White Blood Cells to destroy. Saws are close range 
-	weapons, the player can not be damaged while using the saw, as other objects are deflected
-	with it. It is limited to close range which makes it less usefull than Ninja Stars for 
-	destroying Orange Virus enemies, that explode on impact.
+/* 2017-01-09:
+Saw Weapon
 */
 #include "WeaponPlSaw.h"
 #include "Player.h"

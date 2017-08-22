@@ -9,9 +9,8 @@
 
 /* 
 	2017/02/27:	User game singleton to access renderer
-	2017/01/25 Changed player max y value to 600 - 40 (
-	2017/01/04: Fixed dimensions of ship
-	2017/01/09: Moved functionality common to game objects to GameObjects class reducing the code
+	2017-01-04: Fixed dimensions of ship
+	2017/01/09: JOE: Moved functionality common to game objects to GameObjects class reducing the code
 */
 
 const int TOTAL_PARTICLES = 20;	// Particle count

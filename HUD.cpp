@@ -1,18 +1,3 @@
-/*
-	2017/02/21 All indicators now scroll left to right on start up
-	2017/02/21 Moved player lives, scores, speed boost indicator, rocket indicator, and created by text to head up display
-	2017/02/19 Added rocket icon to viewoport displaying information on the number of rockets in the players inventory
-*/
-/*
-	HEADS UP DISPLAY (HUD):
-
-	This class contains all the information relavent to the player dashboard, including lives, scores, and weapon indicators
-	for each player. Weapon indicators include, current laser grade, number of rockets, and an indicator for when the player
-	speed boost is active, displaying a status bar for when the boost timer runs out.
-
-	The game map is also displayed here in mini form, which can be resized by pressing a button on the keyboard or gamepad.
-	There is also an animated game creator text on the bottom of the display.
-*/
 #include "HUD.h"
 #include <sstream>
 

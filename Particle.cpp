@@ -1,15 +1,3 @@
-/*
-	2017/01/30 Added particle texture alpha modify functionality
-	2017/01/20 Class for handling particles for the ship engine
-*/
-/*
-	PARTICLE:
-
-	The particle class handles the functionality for displaying the engine particles
-	for the players ships. A random number of aparticles is drawn to the screen each
-	frame. A random number pool is used to create the effect of the particles.
-*/
-
 #include "Particle.h"
 #include "Texture.h"
 

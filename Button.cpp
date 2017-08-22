@@ -1,11 +1,5 @@
-/*
-	2017/01/19 Started working on menu functionality with buttons
-*/
-/*
-	BUTTON:
-
-	This class handles the buttons the player can interact with in the game menus
-*/
+//#include <SDL.h>
+//#include <iostream>
 #include "Button.h"
 #include "Game.h"
 

@@ -1,16 +1,3 @@
-/*
-	2017/02/14 Added menu handling class
-	2017/01/24 Added Menu to main code
-	2017/01/19 Started to add game main menu
-				Added working menu buttons
-*/
-/*
-	MENU: 
-
-	This function handles the objects for the game menu. The separate button class
-	handles the transitions.
-*/
-
 #include "Menu.h"
 #include <SDL_ttf.h>
 

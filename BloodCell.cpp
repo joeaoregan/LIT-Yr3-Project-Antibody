@@ -1,26 +1,4 @@
-/*	
-	2017/02/19 Added separate explosions for blood cells to look more like a blood splatter
-	2017/02/18 Moved Blood Cells to game object list
-	2017/01/30 Combined the three separate blood cell classes for Large, small, and white blood cells into a common blood cell class
-				Added rotation angle to constructors for Textures that rotate, including blood cells
-				Moved degrees variable to object so all rotating objects rotate at different times
-	2017/01/22 Added forwards/backwards rotation for blood cells
-	2017/01/10 Added Large Blood Cell object
-				Added class for handling blood cells including Small Blood Cell, and White Blood Cells, BloodCell.h
-*/
-/*
-	BLOOD CELL:
-
-	There are three types of blood cell in the game small, large, and white blood cells. Small blood cells move in the background
-	and do not affect the player in any way. Large blood cells can be split by player weapons causing a explosion of blood
-	splattered on the screen. The white blood cell does not interfere with the player in any way, but when a player splits an 
-	enemy virus in two, the white blood cell can then swoop in to clear up the virus, as they are a more manageable size for the
-	white blood cells to break down.
-
-	Blood cells have random rotational movement, and random speed is assigned when they are spawned.
-*/
 #include "BloodCell.h"
-
 int up = 0, down = 250;
 
 BloodCell::BloodCell(int subType) {

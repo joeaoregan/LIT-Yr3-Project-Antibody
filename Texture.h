@@ -1,11 +1,5 @@
-/*
-	2017/01/30 Added rotation angle to constructors for Textures that rotate
-				Moved flashGameObject() functionality into Texture class
-	2017/01/24 Changed screen size from 1280 x 720 from 800 x 600
-*/
 #ifndef LTEXTURE_H
 #define LTEXTURE_H
-
 #include"Game.h"
 //#include <SDL.h>
 #include <SDL_image.h>
@@ -31,9 +25,9 @@ public:
 		return s_pInstance;							// Make sure the texture manager only exists once
 	}
 	// Need to be private for singleton
-	Texture(int degrees = 0);						// Initializes variables
+	Texture(int degrees = 0);										// Initializes variables
 
-	~Texture();										// Deallocates memory
+	~Texture();														// Deallocates memory
 
 
 	//bool loadFromRenderedTextIO(std::string id, std::string textureText, SDL_Color textColor, TTF_Font* font, SDL_Renderer* renderer, bool textWrapped);

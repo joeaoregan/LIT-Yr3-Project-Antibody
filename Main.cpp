@@ -1,9 +1,3 @@
-/*
-	MAIN:
-
-	This is the main entry point for the game
-*/
-
 #include "Game.h"
 //#include "MainMenu.h"
 

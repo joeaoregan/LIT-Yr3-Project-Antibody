@@ -1,30 +1,3 @@
-/*	
-	2017/02/19 Added functionality to initialise the rocket, then create and launch the rocket after returning true from function in spawnRocket() function
-	2017/02/16 When the rocket button is pressed it sets a timer, when it's released it sets power (score value), timer set to 2.0 seconds
-				Bonus score added for rocket collisions
-	2017/02/08 Added check so rocket explodes on collision with the game boundary
-				Fixed the angle on the rocket moving up and down
-				Added control for rocket movement in Weapon class
-	2017/02/06 Added spawnRocket() function to create rockets for players, rocket movement can be controlled by player
-				Added class for rockets Rocket.h (Renamed WeaponPlRocket.h)
-				Added functionality so only 1 rocket can be active at a time for players first in game, then moved to player, then moved to gameobject
-*/
-
-/* 
-	ROCKET WEAPON:
-
-	Players start with a limited number of rockets, this can be increased by collecting
-	rocket power ups that appear on screen. Only one rocket can be fired at a time.
-
-	Rockets can be controlled by the player to guide towards the target
-	A timer appears on screen when the rocket button is held to build up power
-	This increases the score value on impact with enemy objects and if the player doesn't 
-	let go of the button before the timer runs out the rocket will explode
-
-	Players can collect rocket power ups to increase the number of rockets in their inventory
-	and the current number of rockets for each player is indicated in the heads up display.
-*/
-
 #include "WeaponPlRocket.h"
 #include "Player.h"
 

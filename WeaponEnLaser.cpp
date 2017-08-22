@@ -1,18 +1,13 @@
+
 /*
-	2017/02/18 Added enemy laser to game objects list
-				Set types and sub-types for objects on game objects list
-	2017-01-10 Added enemy laser projectile, velocity is a minus value as it is travelling right to left
+* LaserEnemy.cpp is where all the implementations of the function definitions in LaserEnemy.h reside.
 */
 /*
-	ENEMY LASER: 
-
-	This class handles enemy weapon objects, first starting with Enemy Ship lasers, then adding Orange Virus projectiles,
-	and then adding the satellite projectile for the Blue Virus.
-
-	WeaponEnLaser (LaserEnemy.cpp) is where all the implementations of the function definitions in LaserEnemy.h reside.
+2017-01-10:
+Added enemy laser projectile, velocity is a minus value as it is travelling right to left
 */
-
 #include "WeaponEnLaser.h"
+//#include "EnemyShip.h"
 #include <math.h>
 
 // LaserEnemy Constructor

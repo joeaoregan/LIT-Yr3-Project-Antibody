@@ -1,7 +1,3 @@
-/*
-	2017/02/09 Added status bar class StatusBar.h for creating status bars, such as health bar
-	2017/01/18 Added health bars for players
-*/
 #ifndef STATUS_BAR_H
 #define STATUS_BAR_H
 

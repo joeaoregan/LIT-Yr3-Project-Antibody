@@ -1,8 +1,3 @@
-/*
-	2017/02/09 Separated audio to it's own class
-				Fixed music not playing problem
-*/
-
 #ifndef AUDIO_H
 #define AUDIO_H
 
