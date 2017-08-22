@@ -23,5 +23,27 @@ EnemyShip::EnemyShip() {					// Constructor
 }
 
 EnemyShip::~EnemyShip() {					// Destructor
-	std::cout << "Enemy Ship destroyed" << std::endl;
+
+}
+
+void EnemyShip::movement() {
+	GameObject::movement();
+
+	setColliderX(getX());
+	setColliderY(getY());
+
+	// destroy enemy ship once it is offscreen
+	if (getX() < -getWidth()) setAlive(false);
+	else setAlive(true);
+}
+
+// Enemies render function with sprite animation
+void EnemyShip::render(LTexture &texture, SDL_Renderer *rend, SDL_Rect *currentClip, int &enemyframe) {	// 2017/01/22 Moved from game.cpp
+	texture.render(getX(), getY(), rend, currentClip);
+
+	++enemyframe;								// Go to next frame
+
+	if (enemyframe >= ANIMATION_FRAMES * 10) {	// Cycle animation
+		enemyframe = 0;
+	}
 }

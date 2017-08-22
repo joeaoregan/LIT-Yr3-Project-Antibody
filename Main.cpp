@@ -3,7 +3,8 @@
 
 //#define GAME_LOOPS 20		// Number of times to loop the game
 
-int main() {
+int main()
+{
 	srand(static_cast<unsigned int>(time(0)));	// Seed the random number
 
 	//MainMenu menu;	//create menu object

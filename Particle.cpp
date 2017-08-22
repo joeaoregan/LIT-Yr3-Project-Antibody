@@ -24,7 +24,7 @@ animation.
 void Particle::render(LTexture &texture, SDL_Renderer *rend) {
 	mTexture->render(mPosX, mPosY, rend);				//Show image
 
-	//Show shimmer
+														//Show shimmer
 	if (mFrame % 3 == 0) {
 		texture.render(mPosX, mPosY, rend);
 	}

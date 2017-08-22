@@ -8,13 +8,17 @@ class EnemyVirus : public Enemy {
 public:
 	float bombTimer;
 
-	EnemyVirus(int type = 0, float time = 0);							// Initializes the variables
+	EnemyVirus();							// Initializes the variables
+	EnemyVirus(int type, float time);							// Initializes the variables
 	~EnemyVirus();							// Destructor
 	
 	virtual void movement(int playerX, int playerY);
+	//void render();							// Shows the Enemy on the screen
+	void render(LTexture &texture, SDL_Renderer *rend);							// Shows the Enemy on the screen
+	void render(LTexture &texture, SDL_Renderer *rend, SDL_Rect *currentClip, int &enemyframe);
 
-	float getTimer() { return bombTimer; }
-	void setTimer(int t) { bombTimer = t; }
+	float getTimer();
+	void setTimer(int t);
 };
 
 #endif

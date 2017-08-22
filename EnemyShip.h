@@ -7,6 +7,12 @@ class EnemyShip : public Enemy {
 public:
 	EnemyShip();							// Initializes the variables
 	~EnemyShip();
+
+	const int ANIMATION_FRAMES = 4;
+
+	virtual void movement();
+	//void render();							// Shows the Enemy on the screen
+	void render(LTexture &texture, SDL_Renderer *rend, SDL_Rect *currentClip, int &enemyframey);							// Shows the Enemy on the screen
 };
 
 #endif

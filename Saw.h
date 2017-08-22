@@ -14,6 +14,8 @@ public:
 
 	virtual void movement(int x, int y);	// Moves the Saw	
 
+	//void render();							// Render the saw
+	void render(LTexture &texture, SDL_Renderer *rend, int degrees);							// Render the saw //2017/01/22 added texture and renderer
 	virtual void spawn(int x, int y);		// Spawn the saw
 };
 

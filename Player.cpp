@@ -37,9 +37,8 @@ Player::Player() {
 	setVelX(0);
 	setVelY(0);
 	setVelocity(VELOCITY);
-	//setCollider(mCollider);
-	setColliderWidth(getWidth());
-	setColliderHeight(getHeight());
+	mCollider.w = getWidth();
+	mCollider.h = getHeight();
 
 	setSawActive(false);
 	setScore(0);
@@ -60,9 +59,8 @@ Player::Player(LTexture &dark, LTexture &medium, LTexture &light) {
 	setVelX(0);
 	setVelY(0);
 	setVelocity(VELOCITY);
-
-	setColliderWidth(getWidth());
-	setColliderHeight(getHeight());
+	mCollider.w = getWidth();
+	mCollider.h = getHeight();
 
 	setSawActive(false);
 	setScore(0);
@@ -126,6 +124,7 @@ void Player::render(LTexture &texture, LTexture &one, LTexture &two, LTexture &t
 }
 */
 
+
 void Player::renderParticles(LTexture &one, LTexture &two, LTexture &three, LTexture &four, SDL_Renderer *rend) {
 	//Go through particles
 	for (int i = 0; i < TOTAL_PARTICLES; ++i) {
@@ -141,6 +140,15 @@ void Player::renderParticles(LTexture &one, LTexture &two, LTexture &three, LTex
 		particles[i]->render(four, rend);
 	}
 }
+
+bool Player::getDrawParticle() {
+	return drawParticle;
+}
+void Player::setDrawParticle(bool p) {
+	drawParticle = p;
+}
+
+
 
 void Player::handleEvent(SDL_Event& e, int player) {
 	if (player == 1) {
@@ -292,7 +300,7 @@ void Player::movement() {
 		std::cout << "SPEED BOOST ENDED";
 	}
 
-	GameObject::movement();
+	setX(getX() + getVelX());											// Velocity is 0 if not moving
 
 	// If the ship went too far to the left or right
 	if ((getX() < 0) || ((getX() + getWidth()) > SCREEN_WIDTH)) {
@@ -305,6 +313,9 @@ void Player::movement() {
 	if ((getY() < 40) || ((getY() + getHeight()) > SCREEN_HEIGHT_GAME - 40)) {
 		setY(getY() - getVelY());										// Move back
 	}
+
+	mCollider.x = getX();												// Only needed once if you check after movement
+	mCollider.y = getY();
 }
 
 void Player::gameControllerDPad(SDL_Event& e) {
@@ -419,10 +430,43 @@ void Player::resetPreviousDirection() {
 	}
 }
 
+void Player::setShipColX(int x) {
+	mCollider.x = x;
+}// end setX
+void Player::setShipColY(int y)
+{
+	mCollider.y = y;
+}// end setY
+
+// Speed Boost
+bool Player::getSpeedBoost() {
+	return mSpeedBoost;
+}
+unsigned int Player::getBoostStartTime() {
+	return mBoostStartTime;
+}
 void Player::setSpeedBoost(bool boost) {
 	mSpeedBoost = boost;
 	if (boost) {
 		mBoostStartTime = SDL_GetTicks();
 		std::cout << "SPEED BOOST START" << std::endl;
 	}
+}
+
+
+
+
+bool Player::getSawActive() {
+	return sawActive;
+}
+void Player::setSawActive(bool active) {
+	sawActive = active;
+}
+
+int Player::getLaserGrade() {
+	return mLaserGrade;
+}
+
+void Player::setLaserGrade(int grade) {
+	mLaserGrade = grade;
 }

@@ -5,8 +5,14 @@
 
 class PowerUp : public GameObject {
 public:
-	PowerUp(int type = 0, int score = 0);
+	PowerUp();
+	PowerUp(int type, int score);
 	~PowerUp();
+
+	virtual void movement();
+	//void render();							// Shows the Power Up on the screen
+	void render(LTexture &texture, SDL_Renderer *rend);							// Shows the Power Up on the screen
+	//int powerUpType;
 };
 
 #endif

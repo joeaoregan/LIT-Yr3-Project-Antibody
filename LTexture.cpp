@@ -102,8 +102,14 @@ void LTexture::setColor(Uint8 red, Uint8 green, Uint8 blue) {
 void LTexture::setBlendMode(SDL_BlendMode blending) {
 	SDL_SetTextureBlendMode(mTexture, blending);		// Set blending function
 }
+int LTexture::getAlpha() {
+	return mAlpha;
+}
+void LTexture::setAlpha(int a) {
+	mAlpha = a;
+}
 
-int counter = 0;					// counter for changing alpha for flashing
+int counter = 0;		// counter for changing alpha for flashing
 int alphaUp = 5, alphaDown = 5;		// turn the alpha value up or down
 
 //void LTexture::flashGameObject(int &alpha, bool &flash, int rate, int times) {
@@ -147,4 +153,41 @@ void LTexture::render(int x, int y, SDL_Renderer *rend, SDL_Rect* clip, double a
 	}
 
 	SDL_RenderCopyEx(rend, mTexture, clip, &renderQuad, angle, center, flip);	// Render to screen
+}
+
+int LTexture::getWidth() {
+	return mWidth;
+}
+
+int LTexture::getHeight() {
+	return mHeight;
+}
+
+// 23/01/2017 Added these
+int LTexture::getX() {
+	return m_X;
+}
+int LTexture::getY() {
+	return m_Y;
+}
+void LTexture::setX(int x) {
+	m_X = x;
+}
+void LTexture::setY(int y) {
+	m_Y = y;
+}
+
+int LTexture::getDegrees() {
+	return mDegrees;
+}
+void LTexture::setDegrees(int d){
+	mDegrees = d % 360;					// returns degrees from 0 to 360
+}
+
+
+bool LTexture::getFlash() {
+	return mFlash;
+}
+void LTexture::setFlash(bool flash) {
+	mFlash = flash;
 }
