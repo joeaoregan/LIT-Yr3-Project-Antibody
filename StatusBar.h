@@ -3,7 +3,6 @@
 
 #include <SDL_image.h>
 
-#define MAX_HEALTH 100.0				// The max health for a player
 #define VIRUS_TIMER 3.0
 #define ROCKET_TIMER 2.0
 #define START_LEFT 0

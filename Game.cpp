@@ -38,7 +38,6 @@
 #include "Audio.h"					// 2017/02/09
 #include <math.h>
 
-
 /***************************************************************************************************************************/
 /******************************************** TURN STUFF ON AND OFF FOR TESTING ********************************************/
 
@@ -1596,8 +1595,8 @@ void Game::spawnNinjaStar(int x, int y, int player) {					// player to spawn for
 	}
 }
 void Game::spawnRocket(int x, int y, int player, int type, bool launch) {
-	if (launch == false && player == PLAYER_1) player1->setRocketBarActive(true);
-	else if (launch == false && player == PLAYER_2) player2->setRocketBarActive(true);
+	if (launch == false && player == PLAYER_1 && player1->getNumRockets() > 0) player1->setRocketBarActive(true);			// if not ready to fire, player is player 1, and player 1 has rockets
+	else if (launch == false && player == PLAYER_2 && player2->getNumRockets() > 0) player2->setRocketBarActive(true);
 	else {
 		bool createRocket = false;
 		if (player == PLAYER_1 && !player1->getRocketActive() && player1->getNumRockets() > 0) {

@@ -1,4 +1,5 @@
 #include "StatusBar.h"
+#define MAX_HEALTH 100.0				// The max health for a player
 
 StatusBar::StatusBar() {
 }
@@ -15,11 +16,11 @@ void StatusBar::rocketPowerBar(int x, int y, int w, float time, SDL_Renderer *re
 }
 
 void StatusBar::virusTimer(int x, int y, int w, float virusTimer, SDL_Renderer *rend) {
-	createStatusBar(x + w + 10, y + 10, 5, 60, virusTimer / VIRUS_TIMER, fgColourBlue, bgColourOrange, rend, VERTICAL);	// 
+	createStatusBar(x + w + 10, y + 10, 5, 60, virusTimer / VIRUS_TIMER, fgColourBlue, bgColourOrange, rend, VERTICAL);	//
 																														//bar.createStatusBar(, 5, (listOfEnemyVirus[index]->getHeight() / 3) * 2, virusBar / listOfEnemyVirus[index]->getTimer(), fgColourBlue, bgColourOrange, gRenderer, VERTICAL); // 2/3s the height of the virus
 }
 void StatusBar::virusTimerBlue(int x, int y, int w, float virusTimer, SDL_Renderer *rend) {
-	createStatusBar(x + w + 10, y + 10, 5, 60, virusTimer / VIRUS_TIMER, fgColourBlue, bgColourBlue, rend, VERTICAL);	// 
+	createStatusBar(x + w + 10, y + 10, 5, 60, virusTimer / VIRUS_TIMER, fgColourBlue, bgColourBlue, rend, VERTICAL);	//
 																														//bar.createStatusBar(, 5, (listOfEnemyVirus[index]->getHeight() / 3) * 2, virusBar / listOfEnemyVirus[index]->getTimer(), fgColourBlue, bgColourOrange, gRenderer, VERTICAL); // 2/3s the height of the virus
 }
 
