@@ -11,8 +11,14 @@ public:
 	Uint32 frametimelast;				// Last calculated SDL_GetTicks
 	Uint32 framecount;					// total frames rendered
 
+	// FPS
+	float framespersecond;				// the value you want
+
 	void fpsinit();
 	void fpsthink();
+
+	float getFPS();
+	void setFPS(float fps);
 };
 
 #endif

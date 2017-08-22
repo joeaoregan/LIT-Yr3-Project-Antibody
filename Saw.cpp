@@ -10,6 +10,7 @@ Saw::Saw() {
 	setWidth(40);
 	setHeight(40);
 	setVelocity(0);
+	setAlive(true);
 	//setSawActive(false);
 }
 

@@ -16,6 +16,13 @@ LTexture::~LTexture() {
 	free();						// Deallocate
 }
 
+SDL_Color LTexture::getFontColour() {
+	return txtColour;
+}
+void LTexture::setFontColour(SDL_Color f) {
+	txtColour = f;
+}
+
 bool LTexture::loadFromFile(std::string path, SDL_Renderer *rend) {
 	free();	// Get rid of preexisting texture
 
@@ -28,7 +35,7 @@ bool LTexture::loadFromFile(std::string path, SDL_Renderer *rend) {
 	else {
 		SDL_SetColorKey(loadedSurface, SDL_TRUE, SDL_MapRGB(loadedSurface->format, 0, 0xFF, 0xFF));	// Color key image
 
-		newTexture = SDL_CreateTextureFromSurface(rend, loadedSurface);							// Create texture from surface pixels
+		newTexture = SDL_CreateTextureFromSurface(rend, loadedSurface);								// Create texture from surface pixels
 		if (newTexture == NULL) {
 			printf("Unable to create texture from %s! SDL Error: %s\n", path.c_str(), SDL_GetError());
 		}
@@ -54,7 +61,7 @@ bool LTexture::loadFromRenderedText(std::string textureText, SDL_Color textColor
 	if (!textWrapped)
 		textSurface = TTF_RenderText_Solid(font, textureText.c_str(), textColor);	//Render text surface
 	else
-		textSurface = TTF_RenderText_Blended_Wrapped(font, textureText.c_str(), textColor, 600);
+		textSurface = TTF_RenderText_Blended_Wrapped(font, textureText.c_str(), textColor, 1000);
 
 
 	if (textSurface != NULL) {

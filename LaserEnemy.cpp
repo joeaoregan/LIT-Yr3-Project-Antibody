@@ -16,6 +16,7 @@ LaserEnemy::LaserEnemy(int type) {
 	setHeight(5);
 	setVelocity(15);
 	setType(type);
+	setAlive(true);
 
 	if (getType() == 0) {
 		setColliderWidth(getWidth());

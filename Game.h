@@ -80,6 +80,8 @@ public:
 	//void level2();
 	//void level3();
 
+	void displayScoreForObject(int x, int y, int score, int player);
+
 	//void renderMenu();
 
 	void resetGame(int level);					// Reset game to this level

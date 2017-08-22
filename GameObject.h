@@ -21,6 +21,7 @@ public:
 	void spawn(int x, int y, int vx, SDL_Rect collider);
 	void spawn(int x, int y, int vx, int vy, SDL_Rect collider, int type = 0);
 	virtual void movement();
+	void render(LTexture &texture, SDL_Renderer *rend, int degrees = 0);
 
 	int getX();					// Get GameObject X coord
 	int getY();					// Get GameObject Y coord
@@ -50,16 +51,24 @@ public:
 	void setHealth(int health);			// set the health
 	void setNumLives(int n);
 
-	//SDL_Rect getCollider();
-    //SDL_Rect * getCollider(){ return &m_Collider; }
-    SDL_Rect getCollider(){ return m_Collider; }
-
+	SDL_Rect getCollider();
 	void setCollider(SDL_Rect collider);	// 2017/01/19 Added as Sean keeps doing dumb things with the colliders
 	void setColliderWidth(int w);
 	void setColliderHeight(int h);
 	void setColliderX(int x);
 	void setColliderY(int y);
 	void setType(int t);
+
+	//SDL_Color getFontColour();
+	//void setFontColour(SDL_Color f);
+
+	int getStartTime();
+	int getEndTime();
+	void setStartTime(int t);
+	void setEndTime(int t);
+
+	LTexture getTexture();
+	void setTexture(LTexture texture);
 
 private:
 	// GameObject Variables
@@ -75,6 +84,12 @@ private:
 	int m_NumLives;
 
 	int m_Type;						// Integer value to indicate the type of game object POWER UP, VIRUS
+
+	// 31-01 Display time
+	int m_StartTime;				// Time to begin displaying
+	int m_EndTime;					// Time to end displaying
+	LTexture m_Texture;
+	//SDL_Color fontColour;	// moved to texture class
 };
 
 #endif
@@ -125,4 +140,4 @@ private:
 //void setRandomCoords(int x, int y); // NEVER USED X OR Y
 //void setRandomCoords();
 //void checkCoords();
-//void checkCoords(GameObject* objectToCheck);	// MOVED TO GAME as uniqueCoords
+//void checkCoords(GameObject* objectToCheck);	// MOVED TO GAME as uniqueCoords	

@@ -31,7 +31,7 @@ Laser::Laser() {
 	setAngle(0);	// Fire straight
 	setGrade(0);	// Basic Laser = 0, Triple Laser = 1
 
-	setAlive(true);
+	setAlive(true);	// Make sure laser is alive from the beginning
 }
 Laser::Laser(int angle, int grade) {
 	//std::cout << "Laser constuctor called.\n";

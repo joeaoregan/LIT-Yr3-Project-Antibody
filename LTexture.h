@@ -64,7 +64,16 @@ public:
 	bool getFlash();
 	void setFlash(bool flash);
 
+
+	SDL_Color getFontColour();
+	void setFontColour(SDL_Color f);
+
 private:	
+	// 31/01/2017 display score value of killed enemy, at enemy coords
+	int timeToDisplay;
+	int Xcoord;
+	int Ycoord;
+
 	SDL_Texture* mTexture;	// The actual hardware texture
 
 	//Image dimensions
@@ -73,6 +82,9 @@ private:
 	int mAlpha;
 	int mDegrees;
 	bool mFlash;
+
+
+	SDL_Color txtColour;
 };
 
 #endif
