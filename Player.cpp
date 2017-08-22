@@ -82,20 +82,26 @@ void Player::render(LTexture &player, LTexture &dark, LTexture &medium, LTexture
 void Player::rendPlayerLives(LTexture &lives, int player, SDL_Renderer *rend) {
 	if (player == 1) {
 		if (getNumLives() > 0)
-			lives.render(10, SCREEN_HEIGHT - lives.getHeight() - 10, rend);
+			//lives.render(10, SCREEN_HEIGHT - lives.getHeight() - 10, rend);
+			lives.render(10, 120 - lives.getHeight() - 10, rend);
 		if (getNumLives() > 1)
-			lives.render(10 + lives.getWidth(), SCREEN_HEIGHT - lives.getHeight() - 10, rend);
+			//lives.render(10 + lives.getWidth(), SCREEN_HEIGHT - lives.getHeight() - 10, rend);
+			lives.render(20 + lives.getWidth(), 120 - lives.getHeight() - 10, rend);
 		if (getNumLives() > 2)
-			lives.render(10 + (lives.getWidth() * 2), SCREEN_HEIGHT - lives.getHeight() - 10, rend);
+			//lives.render(10 + (lives.getWidth() * 2), SCREEN_HEIGHT - lives.getHeight() - 10, rend);
+			lives.render(30 + (lives.getWidth() * 2), 120 - lives.getHeight() - 10, rend);
 	}
 
 	if (player == 2) {
 		if (getNumLives() > 0)
-			lives.render(SCREEN_WIDTH - lives.getWidth() - 10, SCREEN_HEIGHT - lives.getHeight() - 10, rend);
+			//lives.render(SCREEN_WIDTH - lives.getWidth() - 10, SCREEN_HEIGHT - lives.getHeight() - 10, rend);
+			lives.render(SCREEN_WIDTH - lives.getWidth() - 10, 120 - lives.getHeight() - 10, rend);
 		if (getNumLives() > 1)
-			lives.render(SCREEN_WIDTH - (lives.getWidth() * 2) - 10, SCREEN_HEIGHT - lives.getHeight() - 10, rend);
+			//lives.render(SCREEN_WIDTH - (lives.getWidth() * 2) - 10, SCREEN_HEIGHT - lives.getHeight() - 10, rend);
+			lives.render(SCREEN_WIDTH - (lives.getWidth() * 2) - 20, 120 - lives.getHeight() - 10, rend);
 		if (getNumLives() > 2)
-			lives.render(SCREEN_WIDTH - (lives.getWidth() * 3) - 10, SCREEN_HEIGHT - lives.getHeight() - 10, rend);
+			//lives.render(SCREEN_WIDTH - (lives.getWidth() * 3) - 10, SCREEN_HEIGHT - lives.getHeight() - 10, rend);
+			lives.render(SCREEN_WIDTH - (lives.getWidth() * 3) - 30, 120 - lives.getHeight() - 10, rend);
 	}
 }
 /*

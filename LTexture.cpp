@@ -102,7 +102,7 @@ void LTexture::setAlpha(int a) {
 void LTexture::modifyAlpha(Uint8 alpha) {
 	SDL_SetTextureAlphaMod(mTexture, alpha);			// Modulate texture alpha
 }
-
+// render(int x, int y, SDL_Renderer *rend, SDL_Rect* clip = NULL, double angle = 0.0, SDL_Point* center = NULL, SDL_RendererFlip flip = SDL_FLIP_NONE);
 void LTexture::render(int x, int y, SDL_Renderer *rend, SDL_Rect* clip, double angle, SDL_Point* center, SDL_RendererFlip flip) {
 	SDL_Rect renderQuad = { x, y, mWidth, mHeight };	// Set rendering space and render to screen
 
