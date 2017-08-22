@@ -204,7 +204,7 @@
 #include "WeaponPlSaw.h"			// 2017/01/17 JOE: Added Saw Weapon
 #include "BloodCell.h"				// 2017/01/10 JOE: Added Blood Cell obstacle
 #include "PowerUp.h"				// 2017/01/10 SEAN/JOE: Added Power Up
-#include "Menu.h"					// 2017/02/14 JOE: Class for handling menus. Includes button.h
+#include "Menu.h"					// 2017/02/14 BRIAN/JOE: Class for handling menus. Includes button.h
 #include "Explosion.h"				// 2017/01/25 JOE: Added explosions for Player Laser colliding with Enemy Ships and Virus
 #include "FPS.h"					// 2017/02/01 SEAN/JOE: Class for handling frames for second
 #include "SplashScreen.h"			// 2017/02/08 JOE: Class for displaying splash screens
