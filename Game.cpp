@@ -1,4 +1,5 @@
 /*
+	2017/03/07 Added additional original song Blood Level
 	2017/03/06 Moved texture information to array for loading
 	2017/03/04 Moved smaller class files functionality into their headers
 				Set a game object texture ID variable, Player and Enemy lasers now render based on their unique texture ID
@@ -400,7 +401,7 @@ bool Game::init() {
 		else
 			windowFlag = SDL_WINDOW_SHOWN;
 
-		gWindow = SDL_CreateWindow("Antibody", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, windowFlag);	/* Window name */
+		gWindow = SDL_CreateWindow("Antibody", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_FULLSCREEN);	/* Window name */
 
 		if (gWindow == NULL) {
 			printf("Window could not be created! SDL Error: %s\n", SDL_GetError());

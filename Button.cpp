@@ -117,7 +117,51 @@ void Button::handleEvent(SDL_Event* e, int buttonSelected) {
 						std::cout << "Selected: 1 Player Game!" << std::endl;
 						//std::cout << "Level: " << game.getCurrentLevel() << std::endl;
 						Game::Instance()->setCurrentLevel(1);									// TEST ENTER NAME
-						//Game::Instance()->setCurrentLevel(ENTER_NAME);
+																								//Game::Instance()->setCurrentLevel(ENTER_NAME);
+						std::cout << "Level: " << Game::Instance()->getCurrentLevel() << std::endl;
+						Game::Instance()->twoPlayer = false;
+						Game::Instance()->displayLevelIntro = false;
+					}
+					else if (buttonSelected == GAME_2PLAYER) {
+						std::cout << "Selected: 2 Player Game!" << std::endl;
+						//std::cout << "Level: " << game.getCurrentLevel() << std::endl;
+						Game::Instance()->twoPlayer = true;
+						Game::Instance()->setCurrentLevel(LEVEL_1);
+						std::cout << "Level: " << Game::Instance()->getCurrentLevel() << std::endl;
+					}
+					else if (buttonSelected == GO_TO_SETTINGS) {
+						std::cout << "Selected: Go To Settings Menu" << std::endl;
+						Game::Instance()->setCurrentLevel(SETTINGS);
+					}
+					else if (buttonSelected == MENU_TO_HIGH_SCORES) {
+						Game::Instance()->setCurrentLevel(HIGH_SCORES);
+						std::cout << "Selected: View High Scores" << std::endl;
+					}
+					else if (buttonSelected == QUIT) {
+						std::cout << "Selected: Quit The Game" << std::endl;
+						Game::Instance()->close();
+						//Game::Instance()->setCurrentLevel(ENTER_NAME);		// TEST ENTER NAME
+					}
+				}
+				if (Game::Instance()->getCurrentLevel() == PAUSE) {
+					if (buttonSelected == STORY) {
+						std::cout << "Selected: 1 Player Game!" << std::endl;
+						//game.setCurrentLevel(1);
+						//std::cout << "Level: " << game.getCurrentLevel() << std::endl;
+						//game.twoPlayer = false;
+						//game.update();
+						Game::Instance()->setCurrentLevel(1);
+						std::cout << "Level: " << Game::Instance()->getCurrentLevel() << std::endl;
+						Game::Instance()->twoPlayer = false;
+						Game::Instance()->displayLevelIntro = true;
+						//Game::Instance()->update();
+						// Call a function in Game.cpp in the Main Project
+					}
+					else if (buttonSelected == GAME_1PLAYER) {
+						std::cout << "Selected: 1 Player Game!" << std::endl;
+						//std::cout << "Level: " << game.getCurrentLevel() << std::endl;
+						Game::Instance()->setCurrentLevel(1);									// TEST ENTER NAME
+																								//Game::Instance()->setCurrentLevel(ENTER_NAME);
 						std::cout << "Level: " << Game::Instance()->getCurrentLevel() << std::endl;
 						Game::Instance()->twoPlayer = false;
 						Game::Instance()->displayLevelIntro = false;
