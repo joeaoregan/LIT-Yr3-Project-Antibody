@@ -1,10 +1,18 @@
 /*
+	2017/03/18 Updated animation swapping Lorcan for Daniel (an improvement!!!)
+				Added more complicated movement, with the player performing different
+				movement sequences at different points on the screen
+				Added laser spawning from the eyes, along with laser generation animation
+				Added Virus spawning from the opening mouth at certain positions on screen
 	2017/03/02 Added Enemy Boss class
 */
 /*
 	ENEMY BOSS:
 
-	The enemy ship moves right to left across the screen firing intermittently
+	The Boss is a sub-type of Enemy but with more functionality than basic nano-bots and viruses
+	It has more varied movement than other enemy objects, but stops short of the start of the 
+	game screen, giving the player a position from which to attack
+	It also fires lasers from its eyes and viruses from its mouth in level 1
 */
 
 #ifndef ENEMY_BOSS_H
@@ -15,9 +23,15 @@
 
 class EnemyBoss : public Enemy {
 public:
-	bool moveRight = true;
+	//bool moveRight = true; // 2017/03/21 original movement boolean
 
-	// Constructor
+	/* 
+		Enemy Boss Constructor
+
+		The Boss is a sub-type of Enemy
+		It has more varied movement than other enemy objects
+		It also fires lasers from its eyes and viruses from its mouth in level 1
+	*/
 	EnemyBoss() {					
 		setType(ENEMY_OBJECT);					// Set type
 		setSubType(ENEMY_BOSS);					// Set sub-type
@@ -52,8 +66,16 @@ public:
 	~EnemyBoss() {					
 		std::cout << "Enemy Boss destroyed" << std::endl;
 	}
+
+	/*
+		2017/03/18 Updated enemy boss movement to randomly move around the screen 
+		after first moving to the left, stopping, and moving up and down
+		Some of the movement was accidental, but it looks good, so no need to change
+		Moved projectile and virus spawning to Game class, to be triggered by animation end-point
+	*/
 	bool moveUp = false, moveDown = false, moveForward = true, moveBackwards = false, moveAttack = false, spawnVirus = false;
 	int countMoves = 0;
+
 	virtual void move(int x, int y) {
 		// Set collider movement as its not inheriting movment
 		setColliderX(getX());
@@ -134,6 +156,10 @@ public:
 		//}
 	}
 
+	/*
+		This function counts the number of times the boss moves up and down
+		before it progresses to random diagonal movement back and forth from Player
+	*/
 	void countBossMoves() {
 		countMoves++;
 		if (countMoves == 6) {
@@ -142,6 +168,9 @@ public:
 		}
 	}
 
+	/*
+		The destroy function inherits from GameObject
+	*/
 	virtual void destroy() {		// Destory the enemy boss when it moves out of bounds
 		GameObject::destroy();		// Destroy function from Game Object base class
 	};

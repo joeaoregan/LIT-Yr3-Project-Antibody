@@ -13,7 +13,7 @@
 #include "StatusBar.h"
 #include "Game.h"
 
-#define MAX_HEALTH 100.0				// The max health for a player
+#define MAX_HEALTH 100.0		// The max health for a player
 
 StatusBar::StatusBar() {
 }

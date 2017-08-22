@@ -39,8 +39,8 @@ GameObject::~GameObject() {
 
 // Render the Game Objects to the screen
 void GameObject::render() {
-	Texture mTexture;
-	mTexture.render(getX(), getY(), NULL, 0, NULL, SDL_FLIP_NONE);
+	//Texture mTexture; // 2017/03/21
+	m_Texture.render(getX(), getY(), NULL, 0, NULL, SDL_FLIP_NONE);
 }
 
 

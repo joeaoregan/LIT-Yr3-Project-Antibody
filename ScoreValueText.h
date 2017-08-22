@@ -1,4 +1,5 @@
 /*
+	2017/03/21 Moved additional render functionality from Game class
 	2017/02/10 Added functionality so the scores displayed on screen move to player who scored them (Changed from moving to players score)
 	2017/02/09 Added score class ScoreValueText.h for displaying values of scores for destroying objects
 	2017/02/06 Added managePlayerScores() function to handle players score to Game class
@@ -21,7 +22,21 @@ public:
 
 	virtual void destroy() {};
 
-	Texture m_Texture;
+	/* 
+		2017/03/21 Updated render function with different alpha values for score for kills indicator text
+	*/
+	virtual void render() {
+		//std::cout << "Test" << std::endl;
+
+		if (getSubType() == PLAYER1_SCORE)
+			m_Texture.setAlpha(120);
+		else if (getSubType() == PLAYER2_SCORE)
+			m_Texture.setAlpha(100);
+
+		GameObject::render(m_Texture);
+	}
+
+	//Texture m_Texture;	// 2017/03/21
 };
 
 #endif

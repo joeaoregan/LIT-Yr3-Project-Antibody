@@ -11,7 +11,6 @@ public:
 	// Menu Text
 	Texture gScoresMenuTextTexture1;
 	Texture gScoresMenuTextTexture2;
-	Texture gScoresMenuTextTexture3;
 
 	//Buttons objects
 	Button gReturnToMenu;
@@ -24,8 +23,6 @@ public:
 	void closeHighScoresMedia();
 	void handleHighScoresEvents(SDL_Event& e);
 	void draw();
-
 };
 
 #endif
-

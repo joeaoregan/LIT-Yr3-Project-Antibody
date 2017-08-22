@@ -80,6 +80,9 @@ public:
 		return s_pInstance;
 	}
 
+	// Viewports
+	SDL_Rect gameViewport;		// Main game screen view port
+
 	bool checkCollision(SDL_Rect *a, SDL_Rect *b);
 	
 	//SDL_Renderer* getRenderer() const { return m_pRenderer; }
@@ -112,7 +115,7 @@ public:
 	// Scrolling
 	int backgroundLoopCounter;							// Number of times the background image has looped
 	int scrollingOffset;								// 2017/01/10 JOE: Declare the background scrolling offset (Moved as stops background scrolling when in the render function)
-	int weaponScrolling;								// Scroll the image for current default laser weapon
+	//int weaponScrolling;								// Scroll the image for current default laser weapon // 2017/03/20 Moved to HUD class
 
 	// Game Messages
 	int pointsValueCounter;								// Time to display score for killing Enemy message
@@ -121,6 +124,7 @@ public:
 	int infoMessageCounter, infoMessageMapCounter;
 	std::string infoMessageP1, infoMessageP2; 			// Player notification messages, Yellow writing appearing in the middle of the game screen
 	std::string infoMessageGeneral, infoMessageMap;
+	
 	void checkMessageTimes();							// 2017/03/19 Check how long a message has been on screen
 
 	// Number of Game Objects currently on the screen
@@ -132,8 +136,8 @@ public:
 	int activeEnemyVirus;
 	int activeEnemyVirusSmall;
 	int activeEnemyBoss;
-	
-	void setRotatingAngle();	// 2017/02/22 Moved here. Set the angle for rotating objects
+
+	//void setRotatingAngle();	// 2017/02/22 Moved here. Set the angle for rotating objects // No longer needed angle set in move() function for rotating objects
 	void scrollBackground();	// 2017/02/22 Moved here. Scoll the background
 
 	int getCurrentLevel() { return mCurrentLevel; }
