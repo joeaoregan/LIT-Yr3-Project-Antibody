@@ -62,6 +62,10 @@ public:
 	SDL_Color getFontColour();
 	void setFontColour(SDL_Color f);
 
+	void UIText(std::string textureText, SDL_Renderer* rend);			// Render Text for player scores, FPS, and current Level
+	void UITextTimer(std::string timerText, SDL_Renderer* rend, unsigned int Timer);		// Render Text for Game Timer
+	void UITextPlayerMessage(std::string playerMessage, SDL_Renderer* rend, int player);
+
 private:	
 	// 31/01/2017 display score value of killed enemy, at enemy coords
 	int timeToDisplay;

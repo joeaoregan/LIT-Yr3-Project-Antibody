@@ -5,8 +5,9 @@ Saw Weapon
 #include "Player.h"
 
 // Saw Constructor
-WeaponPlSaw::WeaponPlSaw(int player) {
-	setPlayer(player);
+WeaponPlSaw::WeaponPlSaw(int type) {
+	//setPlayer(player);
+	setType(type);
 	std::cout << "Saw constuctor called.\n";
 	setWidth(40);
 	setHeight(40);

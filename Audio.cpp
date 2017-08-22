@@ -1,6 +1,55 @@
 #include "Audio.h"
 #include <iostream>
 
+bool Audio::loadMediaAudio() {
+	bool success = true;
+
+	// Load the laser FX for Player 1
+	gLaserFX1 = Mix_LoadWAV("Audio/Laser1.wav");														// Load sound effects
+	if (gLaserFX1 == NULL) {
+		printf("Failed to load P1 laser beam sound effect! SDL_mixer Error: %s\n", Mix_GetError());
+		success = false;
+	}
+
+	// Load the laser FX for Player 2
+	gLaserFX2 = Mix_LoadWAV("Audio/Laser2.wav");														// Load sound effects
+	if (gLaserFX2 == NULL) {
+		printf("Failed to load P2 laser beam sound effect! SDL_mixer Error: %s\n", Mix_GetError());
+	}
+
+	// Load the Ninja Star FX for Player 1
+	gNinjaFX1 = Mix_LoadWAV("Audio/Swoosh1.wav");														// Load sound effects
+	if (gNinjaFX1 == NULL) {
+		printf("Failed to load P1 ninja star sound effect! SDL_mixer Error: %s\n", Mix_GetError());
+	}
+
+	// Load the Ninja Star FX for Player 2
+	gNinjaFX2 = Mix_LoadWAV("Audio/Swoosh2.wav");														// Load sound effects
+	if (gNinjaFX2 == NULL) {
+		printf("Failed to load P2 ninja star sound effect! SDL_mixer Error: %s\n", Mix_GetError());
+	}
+
+	// Load the Laser FX for Enemy Ships
+	gLaserEFX = Mix_LoadWAV("Audio/LaserEnemy.wav");													// Load sound effects
+	if (gLaserEFX == NULL) {
+		printf("Failed to load enemy laser beam sound effect! SDL_mixer Error: %s\n", Mix_GetError());
+	}
+
+	// Load the Explosion FX
+	gExplosionFX = Mix_LoadWAV("Audio/explosion.wav");													// Load sound effects
+	if (gExplosionFX == NULL) {
+		printf("Failed to load explosion sound effect! SDL_mixer Error: %s\n", Mix_GetError());
+	}
+
+	// Load the Saw FX for player ships
+	gSawFX = Mix_LoadWAV("Audio/Saw.wav");																// Load sound effects
+	if (gSawFX == NULL) {
+		printf("Failed to load Saw sound effect! SDL_mixer Error: %s\n", Mix_GetError());
+	}
+
+	return success;
+}
+
 void Audio::music() {
 	//Load music
 	gMusic1 = Mix_LoadMUS("Audio/GameSong1.wav");											// Load music
@@ -67,72 +116,32 @@ int Audio::musicBack(int song, int numSongs) {								// Pick previous track on 
 }
 */
 
-
-
 void Audio::laserFX_P1() {
-	// Load the laser
-	gLaserFX1 = Mix_LoadWAV("Audio/Laser1.wav");														// Load sound effects
-	if (gLaserFX1 == NULL) {
-		printf("Failed to load P1 laser beam sound effect! SDL_mixer Error: %s\n", Mix_GetError());
-		//success = false;
-	}
-
 	//if (player == 1) Mix_PlayChannel(-1, gLaserFX1, 0);		// Different sound for each player laser
 	Mix_PlayChannel(-1, gLaserFX1, 0);		// Different sound for each player laser				
 }
 
 void Audio::laserFX_P2() {
-	// Load the laser
-	gLaserFX2 = Mix_LoadWAV("Audio/Laser2.wav");														// Load sound effects
-	if (gLaserFX2 == NULL) {
-		printf("Failed to load P2 laser beam sound effect! SDL_mixer Error: %s\n", Mix_GetError());
-	}
-
 	Mix_PlayChannel(-1, gLaserFX2, 0);		// Different sound for each player laser				
 }
 
 void Audio::ninjaFX_P1() {
-	gNinjaFX1 = Mix_LoadWAV("Audio/Swoosh1.wav");														// Load sound effects
-	if (gNinjaFX1 == NULL) {
-		printf("Failed to load P1 ninja star sound effect! SDL_mixer Error: %s\n", Mix_GetError());
-	}
-
 	Mix_PlayChannel(-1, gNinjaFX1, 0);
 }
 
 void Audio::ninjaFX_P2() {
-	gNinjaFX2 = Mix_LoadWAV("Audio/Swoosh2.wav");														// Load sound effects
-	if (gNinjaFX2 == NULL) {
-		printf("Failed to load P2 ninja star sound effect! SDL_mixer Error: %s\n", Mix_GetError());
-	}
-
 	Mix_PlayChannel(-1, gNinjaFX2, 0);
 }
 
 void Audio::sawFX() {
-	gLaserEFX = Mix_LoadWAV("Audio/LaserEnemy.wav");													// Load sound effects
-	if (gLaserEFX == NULL) {
-		printf("Failed to load enemy laser beam sound effect! SDL_mixer Error: %s\n", Mix_GetError());
-	}
-
 	Mix_PlayChannel(-1, gSawFX, 0);
 }
 
 void Audio::laserFX_Enemy() {
-	gExplosionFX = Mix_LoadWAV("Audio/explosion.wav");													// Load sound effects
-	if (gExplosionFX == NULL) {
-		printf("Failed to load explosion sound effect! SDL_mixer Error: %s\n", Mix_GetError());
-	}
-
 	Mix_PlayChannel(-1, gLaserEFX, 0);
 }
 
 void Audio::explosionFX() {
-	gSawFX = Mix_LoadWAV("Audio/Saw.wav");																// Load sound effects
-	if (gSawFX == NULL) {
-		printf("Failed to load Saw sound effect! SDL_mixer Error: %s\n", Mix_GetError());
-	}
-
 	Mix_PlayChannel(-1, gExplosionFX, 0);		// Play sound on explosion
 }
 

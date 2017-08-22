@@ -15,7 +15,7 @@ public:
 	Mix_Music *gMusic1 = NULL;				// Mix_Music: Data type for music
 	Mix_Music *gMusic2 = NULL;
 	Mix_Music *gMusic3 = NULL;
-	unsigned int currentSong;						// Play a random song when the game starts
+	unsigned int currentSong;				// Play a random song when the game starts
 
 	std::vector<Mix_Music*> listOfMusic;	// List of Music tracks
 
@@ -27,6 +27,8 @@ public:
 	Mix_Chunk *gLaserEFX = NULL;		// 2017/01/09 JOE: SOUND - Mix_Chunk: Data type for short sounds
 	Mix_Chunk *gExplosionFX = NULL;		// Explosion sound fx
 	Mix_Chunk *gSawFX = NULL;			// Saw sound fx
+
+	bool loadMediaAudio();
 
 	void music();
 

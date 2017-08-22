@@ -12,7 +12,7 @@ Added enemy laser projectile, velocity is a minus value as it is travelling righ
 
 // LaserEnemy Constructor
 WeaponEnLaser::WeaponEnLaser(int type, int rotateCenter) {
-	std::cout << "Enemy Laser constuctor called.\n";
+	//std::cout << "Enemy Laser constuctor called.\n";
 	setWidth(50);
 	setHeight(5);
 	setVelocity(-15);

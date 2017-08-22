@@ -29,7 +29,6 @@ public:
 	int smallBloodCellsActive;
 
 	enum levels { MENU, LEVEL_1, LEVEL_2, LEVEL_3 };
-	enum powerUpTypes { HEALTH = 1, LASER };
 	enum playerWeapons {NINJA_STAR_P1, NINJA_STAR_P2, LASER_P1, LASER_P2, SAW_P1, SAW_P2, LASER_V2_P1, LASER_V2_P2, ROCKET};
 
 	int getCurrentLevel() { return mCurrentLevel; }
@@ -68,8 +67,9 @@ public:
 	void spawnRocket(int x, int y, int player, int type = ROCKET);				// 2017-02-06
 
 	void gameProgress();
+	void gameTimer();										// 2017-02-15
 
-	//void gamepadInfo();										// 2017/01/17: Separate gamepad information
+	//void gamepadInfo();									// 2017/01/17: Separate gamepad information
 
 
 

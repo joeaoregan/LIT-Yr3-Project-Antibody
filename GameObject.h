@@ -11,6 +11,8 @@ JOE: Moved functionality common to game objects to GameObjects class reducing th
 #include "Texture.h"
 #include <iostream>
 
+enum GameObjectTypes { PLAYER1_SCORE, PLAYER2_SCORE, POWER_UP_HEALTH, POWER_UP_LASER, POWER_UP_ROCKET, EXPLOSION, SAW1, SAW2 };
+
 class GameObject {
 public:
 	GameObject();
@@ -44,7 +46,7 @@ public:
 	int getHealth() { return m_Health; }			// return the objects health
 	int getMaxHealth() { return MAX_HEALTH; }
 	int getNumLives() { return m_NumLives; }
-	unsigned int getType() { return m_Type; }				// 2017/01/25 Return the objects type
+	int getType() { return m_Type; }				// 2017/01/25 Return the objects type
 	int getAngle() { return m_Angle; }				// 2017/02/07 Return the objects angle
 
 	void setX(int x) { m_x = x; }					// Set GameObject X coord
@@ -60,14 +62,14 @@ public:
 	void setHealth(int health);						// set the health
 	void setNumLives(int n) { m_NumLives = n; }		// Set the number of lives for the object
 
-	//SDL_Rect getCollider() { return m_Collider; }
+//	SDL_Rect getCollider() { return m_Collider; }
 	SDL_Rect* getCollider() { return &m_Collider; }
 	void setCollider(SDL_Rect collider) { m_Collider = collider; }			// 2017/01/19 Added as Sean keeps doing dumb things with the colliders
 	void setColliderWidth(int w) { m_Collider.w = w; }
 	void setColliderHeight(int h) { m_Collider.h = h; }
 	void setColliderX(int x) { m_Collider.x = x; }
 	void setColliderY(int y) { m_Collider.y = y; }
-	void setType(unsigned int t) { m_Type = t; }				// 2017/01/25 Set the objects type
+	void setType(int t) { m_Type = t; }				// 2017/01/25 Set the objects type
 	void setAngle(int a) { m_Angle = a; }
 
 	//SDL_Color getFontColour();
@@ -93,7 +95,7 @@ public:
 	int rotateCounter;	// degrees the satellite object has rotated
 	//int rotateCenter;
 	bool satelliteObjectAlive;
-	unsigned int whichVirusAssignedTo;
+	int whichVirusAssignedTo;
 
 private:
 	// GameObject Variables
@@ -108,10 +110,10 @@ private:
 	int m_Score;					// Score value for killing or collecting an object
 	int m_NumLives;
 
-	unsigned int m_Type;			// Integer value to indicate the type of game object POWER UP, VIRUS
+	int m_Type;						// Integer value to indicate the type of game object POWER UP, VIRUS
 
 	// 31-01 Display time
-	float m_TimeTracker;			// Time to begin displaying
+	float m_TimeTracker;				// Time to begin displaying
 	float m_Timer;					// Time to end displaying
 	//SDL_Color fontColour;			// moved to texture class
 	int m_Angle;					// 2017-02-07: Angle to rotate an object

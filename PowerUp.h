@@ -3,6 +3,8 @@
 
 #include "GameObject.h"
 
+//enum powerUpTypes { POWER_UP_HEALTH = 1, POWER_UP_LASER, POWER_UP_ROCKET };
+
 class PowerUp : public GameObject {
 public:
 	PowerUp(int type = 0, int score = 0);

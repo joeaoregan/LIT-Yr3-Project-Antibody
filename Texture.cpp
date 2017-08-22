@@ -169,3 +169,51 @@ void Texture::render(int x, int y, SDL_Renderer *rend, SDL_Rect* clip, double an
 
 	SDL_RenderCopyEx(rend, mTexture, clip, &renderQuad, angle, center, flip);	// Render to screen
 }
+
+/* 
+	2017-02-15:
+	Function to render the players scores, the FPS, and the current game level
+*/
+void Texture::UIText(std::string textureText, SDL_Renderer* rend) {
+	if (!loadFromRenderedText(textureText, { 0, 255, 0, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 20), rend)) {		// Green Text
+		printf("Unable to render User Interface Text Texture!\n");
+	}
+}
+/*
+	2017-02-15:
+	Like the UIText function, only it alters font colour depending on if the timer is running out or not
+*/
+void Texture::UITextTimer(std::string timerText, SDL_Renderer* rend, unsigned int Timer) {
+	// Time running out change colour to red
+	if (Timer >= 0 && Timer <= 5) {
+		setFlash(true);
+
+		if (!loadFromRenderedText(timerText, { 255, 0, 0, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 20), rend)) {		// Red Text
+			printf("Unable to render User Interface Timer Text Texture!\n");
+		}
+	}
+	else {
+		setFlash(false);
+
+		if (!loadFromRenderedText(timerText, { 0, 255, 0, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 20), rend)) {		// Green Text
+			printf("Unable to render User Interface Timer Text Texture!\n");
+		}
+	}
+}
+
+/*
+	2017/02/15:
+	Independent messages for player 1 and 2, for picking up objects and upgrading weapons etc
+*/
+void Texture::UITextPlayerMessage(std::string playerMessage, SDL_Renderer* rend, int player) {
+	if (player == 1) {
+		if (!loadFromRenderedText(playerMessage, { 240, 210, 65, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 20), rend)) {	// Gold Text
+			printf("Unable to render player 1 Message text texture!\n");
+		}
+	}
+	else if (player == 2){
+		if (!loadFromRenderedText(playerMessage, { 65, 210, 240, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 20), rend)) {	// Blue Text
+			printf("Unable to render player 2 Message text texture!\n");
+		}
+	}
+}

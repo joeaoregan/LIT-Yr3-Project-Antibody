@@ -30,7 +30,7 @@ public:
 	Texture gLightBlueParticleTexture;	// Light blue engine particle
 	Texture gShimmerTexture;			// Shimmer engine particle
 
-	void spawnPlayerSaw(int x, int y, int player);
+	void spawnPlayerSaw(int x, int y, int type);
 
 	bool loadMediaPlayer(SDL_Renderer *rend);
 	void closePlayer();

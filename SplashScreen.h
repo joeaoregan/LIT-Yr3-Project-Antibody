@@ -12,6 +12,8 @@ public:
 	Texture gGameOverTextTexture;		// End of game, game over texture
 
 	std::string storyPage1;
+	std::string storyPage2;
+	std::string storyPage3;
 	
 	bool initSplashScreens(SDL_Renderer *rend);
 	void closeSplashScreens();
@@ -23,7 +25,7 @@ public:
 	Texture gPressEnterSpriteSheetTexture;					// Press Enter to Continue sprite sheet
 	SDL_Rect gPressButtonToContinueSpriteClips[6];			// Sprite frames for Press Button to Continue animation
 
-	void level1IntroScreens(SDL_Renderer *rend, Texture &virus, Texture &orangeVirus, Texture &enemyShip);
+	void level1IntroScreens(SDL_Renderer *rend, Texture &virus, Texture &orangeVirus, Texture &enemyShip, Texture &Laser, Texture &Health, Texture &rocket);
 	void level2IntroScreens(SDL_Renderer *rend, Texture &virus, Texture &orangeVirus, Texture &enemyShip);
 	void level3IntroScreens(SDL_Renderer *rend, Texture &virus, Texture &orangeVirus, Texture &enemyShip);
 
@@ -31,6 +33,7 @@ public:
 
 	void pressButtonToContinue(SDL_Renderer *rend, SDL_Event e);
 
+	void enemyInformationSplashScreen(SDL_Renderer *rend, Texture &background, Texture &tx1, Texture &tx2, Texture &tx3, Texture &img4, Texture &img5, Texture &img6);
 
 	// Intro Logos
 	Texture gLogo1;		// 2017/01/18 Texture for game Splash Screen 1
@@ -70,9 +73,9 @@ public:
 
 	void scrollUpText(SDL_Renderer *rend, Texture &background, Texture & text, int seconds, int rate = 15, int startAt = SCREEN_HEIGHT, int stopAt = 300); // Change rate to increase speed, higher number = faster
 
-	void scrollTextAndImage(SDL_Renderer *rend, int seconds, int startAt, Texture &background, Texture &story, Texture &tx1, Texture &tx2, Texture &tx3);
-	
-	void enemyInformationSplashScreen(SDL_Renderer *rend, Texture &tx1, Texture &tx2, Texture &tx3);
+	void infoScreenL1Enemies(SDL_Renderer *rend, int seconds, int startAt, Texture &background, Texture &story, Texture &tx1, Texture &tx2, Texture &tx3);
+	void infoScreenL1PowerUps(SDL_Renderer *rend, int seconds, int startAt, Texture &background, Texture &story, Texture &tx1, Texture &tx2, Texture &tx3);
+
 
 
 	SDL_Color textColour;
