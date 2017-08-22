@@ -12,10 +12,8 @@ JOE: Moved functionality common to game objects to GameObjects class reducing th
 #include <SDL_image.h>
 #include "Texture.h"
 #include <iostream>
-#include "Particle.h"
 
 enum GameObjectTypes {
-	PLAYER, PLAYER_1, PLAYER_2,																			// Player
 	PLAYER1_SCORE, PLAYER2_SCORE,																		// Scores
 	POWER_UP_HEALTH, POWER_UP_LASER, POWER_UP_ROCKET, POWER_UP_CHECKPOINT,								// Power ups
 	ENEMY_SHIP_LASER, BLUE_VIRUS_BULLET, VIRUS_FIREBALL, EXPLOSION,										// Bullets
@@ -23,18 +21,13 @@ enum GameObjectTypes {
 	BLOOD_CELL, SMALL_BLOOD_CELL, WHITE_BLOOD_CELL,														// Blood Cells
 	ENEMY_SHIP, VIRUS_GREEN, VIRUS_ORANGE, VIRUS_BLUE,													// Virus
 	NINJA_STAR_P1, NINJA_STAR_P2, LASER_P1, LASER_P2, LASER_V2_P1, LASER_V2_P2, ROCKET_P1, ROCKET_P2,	// Weapons
-	PLAYER_WEAPON, ENEMY_OBJECT, POWER_UP																// General-type of object
+	PLAYER_WEAPON, ENEMY_OBJECT																			// Sub-type of object
 };
 
 class GameObject {
 public:
 	GameObject();
 	~GameObject();												// Deconstructor
-
-	Texture gDarkBlueParticleTexture;	// Dark blue engine particle
-	Texture gMediumBlueParticlTexture;	// Medium blue engine particle
-	Texture gLightBlueParticleTexture;	// Light blue engine particle
-	Texture gShimmerTexture;			// Shimmer engine particle
 
 	virtual void handleEvent(SDL_Event& e, int player) {}
 
@@ -56,10 +49,8 @@ public:
 	};
 	//virtual void movement(int x, int y, int z) {};
 
-	virtual void renderPlayer(Texture &texture, SDL_Renderer *rend) {};
-
 	//void render(LTexture &texture, SDL_Renderer *rend);							// Shows the Enemy on the screen
-	virtual void render(Texture &texture, SDL_Renderer *rend, int degrees = 0);
+	void render(Texture &texture, SDL_Renderer *rend, int degrees = 0);
 	void render(Texture &texture, SDL_Renderer *rend, SDL_Rect *currentClip, int &currentframe, int frames);
 
 	int getX() { return m_x; }						// Get GameObject X coord
@@ -75,8 +66,8 @@ public:
 	int getHealth() { return m_Health; }			// return the objects health
 	int getMaxHealth() { return MAX_HEALTH; }
 	int getNumLives() { return m_NumLives; }
-	int getSubType() { return m_SubType; }				// 2017/01/25 Return the objects type
-	int getType() { return m_GeneralType; }		// 2017/02/18 Return the objects sub-type
+	int getType() { return m_Type; }				// 2017/01/25 Return the objects type
+	int getSubType() { return m_SubType; }			// 2017/02/18 Return the objects sub-type
 	int getAngle() { return m_Angle; }				// 2017/02/07 Return the objects angle
 
 	void setX(int x) { m_x = x; }					// Set GameObject X coord
@@ -98,8 +89,8 @@ public:
 	void setColliderHeight(int h) { m_Collider.h = h; }
 	void setColliderX(int x) { m_Collider.x = x; }
 	void setColliderY(int y) { m_Collider.y = y; }
-	void setSubType(int t) { m_SubType = t; }				// 2017/01/25 Set the objects type
-	void setType(int t) { m_GeneralType = t; }		// 2017/02/18 Set the objects sub-type
+	void setType(int t) { m_Type = t; }				// 2017/01/25 Set the objects type
+	void setSubType(int t) { m_SubType = t; }		// 2017/02/18 Set the objects sub-type
 	void setAngle(int a) { m_Angle = a; }
 
 	//SDL_Color getFontColour();
@@ -145,33 +136,6 @@ public:
 	int getPlayer() { return mPlayer; }
 	void setPlayer(int p = 0) { mPlayer = p; }
 
-	// Player Speed boost
-	bool getSpeedBoost() { return mSpeedBoost; }
-	unsigned int getBoostStartTime() { return mBoostStartTime; }
-	void setSpeedBoost(bool boost);
-	bool getDrawParticle() { return drawParticle; }
-	void setDrawParticle(bool p) { drawParticle = p; }
-
-	// Saw
-	bool getSawActive() { return sawActive; }
-	void setSawActive(bool active) { sawActive = active; }
-
-	// Laser
-	int getLaserGrade() { return mLaserGrade; }
-	void setLaserGrade(int grade) { mLaserGrade = grade; }
-
-	// Player stuff
-	//void renderParticles(Texture &one, Texture &two, Texture &three, Texture &four, SDL_Renderer *rend);
-	void renderParticles(Texture &four, SDL_Renderer *rend, bool drawParticle, int x, int y);
-	void renderPlayerParticles(int x, int y, bool drawParticle, SDL_Renderer *rend);
-
-	bool loadMediaPlayer(SDL_Renderer *rend);
-	void closePlayer();
-
-	void createParticle(int x, int y);
-
-	//void rendPlayerLives(int lives, Texture &texture, int player, SDL_Renderer *rend);
-
 private:
 	// GameObject Variables
 	std::string m_Name;				// Name of the object
@@ -185,8 +149,8 @@ private:
 	int m_Score;					// Score value for killing or collecting an object
 	int m_NumLives;
 
-	int m_SubType;						// Integer value to indicate the type of game object POWER UP, VIRUS
-	int m_GeneralType;
+	int m_Type;						// Integer value to indicate the type of game object POWER UP, VIRUS
+	int m_SubType;
 
 	// 31-01 Display time
 	float m_TimeTracker;			// Time to begin displaying
@@ -207,16 +171,6 @@ private:
 
 	// Weapons
 	int mPlayer;
-
-	// Player
-	bool mSpeedBoost;
-	unsigned int mBoostStartTime;
-
-	bool drawParticle;
-	int mLaserGrade;
-	bool sawActive;
-
-	Particle* particles[TOTAL_PARTICLES];	// The particles
 };
 
 #endif

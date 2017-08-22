@@ -68,9 +68,6 @@ public:
 	void UITextTimer(std::string timerText, SDL_Renderer* rend, unsigned int Timer);		// Render Text for Game Timer
 	void UITextPlayerMessage(std::string playerMessage, SDL_Renderer* rend, int type = 0);
 
-
-	void rendPlayerLives(int lives, Texture &texture, int player, SDL_Renderer *rend);
-
 private:	
 	// 31/01/2017 display score value of killed enemy, at enemy coords
 	int timeToDisplay;

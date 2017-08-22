@@ -7,20 +7,20 @@ BloodCell::BloodCell(int type) {
 	//shiftColliders();
 	int randomRotationDirection = rand() % 3 + 1;
 
-	setSubType(type);
+	setType(type);
 	setVelocity(1);
 	setMovement(200);
 	setDistanceBetween(100);
 
-	if (getSubType() == BLOOD_CELL) {					// Set dimensions for different types of blood cells
+	if (getType() == BLOOD_CELL) {					// Set dimensions for different types of blood cells
 		setWidth(100);
 		setHeight(55);
 	}
-	else if (getSubType() == SMALL_BLOOD_CELL) {
+	else if (getType() == SMALL_BLOOD_CELL) {
 		setWidth(59);
 		setHeight(66);
 	}
-	else if (getSubType() == WHITE_BLOOD_CELL) {
+	else if (getType() == WHITE_BLOOD_CELL) {
 		setMovement(250);
 		setDistanceBetween(150);
 		setWidth(70);

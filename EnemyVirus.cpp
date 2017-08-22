@@ -16,14 +16,14 @@ EnemyVirus::EnemyVirus(int type, float time) {
 	setColliderWidth(getWidth());
 	setColliderHeight(getHeight());
 
-	setSubType(type);						// 2017-01-25 type of game object
+	setType(type);						// 2017-01-25 type of game object
 	setTimer(time);
 
 	setTimerTracker(0.0);
 
 	setFrames(0);
 
-	setType(ENEMY_OBJECT);
+	setSubType(ENEMY_OBJECT);
 }
 
 EnemyVirus::~EnemyVirus() {

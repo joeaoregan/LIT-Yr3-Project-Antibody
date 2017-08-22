@@ -32,7 +32,7 @@ WeaponPlLaser::WeaponPlLaser(int angle, int grade) {
 
 	setAlive(true);
 
-	setType(PLAYER_WEAPON);
+	setSubType(PLAYER_WEAPON);
 }
 
 // Laser Destructor
@@ -59,7 +59,7 @@ void WeaponPlLaser::spawn(int x, int y, int velocity, int player, int type) {
 	//setVelocity(velocity);
 	setVelX(velocity);
 	setPlayer(player);
-	setSubType(type);
+	setType(type);
 }
 
 // Render the laser objects to the screen // 2017/01/22 Moved from game.cpp

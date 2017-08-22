@@ -17,8 +17,8 @@
 #include <string>
 
 // Other Symbolic Constants
-//#define PLAYER_1 1
-//#define PLAYER_2 2
+#define PLAYER_1 1
+#define PLAYER_2 2
 
 //enum playerWeapons { NINJA_STAR_P1, NINJA_STAR_P2, LASER_P1, LASER_P2, SAW_P1, SAW_P2, LASER_V2_P1, LASER_V2_P2, ROCKET_P1, ROCKET_P2 };
 

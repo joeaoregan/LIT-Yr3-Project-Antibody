@@ -18,7 +18,7 @@ WeaponEnLaser::WeaponEnLaser(int type, int rotateCenter) {
 	setVelocity(-15);
 	setVelX(-15);
 	//setVelY(0);
-	setSubType(type);
+	setType(type);
 	setAlive(true);
 
 	// Set the name
@@ -29,7 +29,7 @@ WeaponEnLaser::WeaponEnLaser(int type, int rotateCenter) {
 	else if (type == BLUE_VIRUS_BULLET)
 		setName("Blue Virus Bullet");
 
-	if (getSubType() == 0) {
+	if (getType() == 0) {
 		setColliderWidth(getWidth());
 		setColliderHeight(getHeight());
 	}

@@ -10,7 +10,7 @@ Explosion::Explosion(int x, int y) {
 	setX(x);
 	setY(y);
 
-	setSubType(EXPLOSION);
+	setType(EXPLOSION);
 }
 
 Explosion::~Explosion() {

@@ -7,7 +7,7 @@ Saw Weapon
 // Saw Constructor
 WeaponPlSaw::WeaponPlSaw(int type) {
 	//setPlayer(player);
-	setSubType(type);
+	setType(type);
 	std::cout << "Saw constuctor called.\n";
 	setWidth(40);
 	setHeight(40);

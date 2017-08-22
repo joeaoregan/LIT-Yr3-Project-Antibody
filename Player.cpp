@@ -9,7 +9,7 @@ Added asdw keyboard movement
 #include "Particle.h"
 #include <math.h>
 
-//Particle partPlayer;
+Particle p;
 
 #define VELOCITY 10
 #define BOOST 2
@@ -29,8 +29,6 @@ WeaponPlRocket rocket;
 
 Player::Player() {
 	// Initialize the offsets
-	setType(PLAYER);
-
 	setX(0);
 	setY(SCREEN_HEIGHT / 2);
 
@@ -49,73 +47,61 @@ Player::Player() {
 	setSawActive(false);
 	setScore(0);
 	setAlive(false);
-	setNumLives(3);								// works, game is over when both players lives are <= 0
+	setNumLives(3);							// works, game is over when both players lives are <= 0
 
-	createParticle(getX(), getY());	// Initialise particles
-	setDrawParticle(true);
+	p.initParticle(getX(), getY());
 
-	setRocketActive(false);						// Player can spawn a rocket straight away
-	setNumRockets(3);							// The number of rockets a player has
+	drawParticle = true;
+
+	setRocketActive(false);					// Player can spawn a rocket straight away
+	setNumRockets(3);						// The number of rockets a player has
 
 	setTimer(ROCKET_TIMER);
 	setTimerTracker(0.0);
 }
 
-void Player::renderPlayer(Texture &player, SDL_Renderer *rend) {
-	std::cout << "PARTICLES renderPlayer 1" << std::endl;
-
-	if (getAlive()) {														// 2017/01/22 If the player is alive render the player, with particles
-		renderPlayerParticles(getX(), getY(), true, rend);					// Render the particles 1st
-
-		std::cout << "PARTICLES renderPlayer 2" << std::endl;
-
-
-		player.render(getX(), getY(), rend);								// Render the player on top of the particles
-
-		//std::cout << "PARTICLES" << std::endl;
-
-		//partPlayer.createParticle(getX(), getY());
-		//createParticle(getX(), getY());
-	}
-}
-
-/*
 // 2017/01/22 Separated player render() from game.cpp
 void Player::render(Texture &player, SDL_Renderer *rend) {
 	//Set texture transparency
-	//gDarkBlueParticleTexture.modifyAlpha(100);	// Alpha of 192 gives particles a semi transparent look
-	//gMediumBlueParticlTexture.modifyAlpha(100);
-	//gLightBlueParticleTexture.modifyAlpha(100);
-	//gShimmerTexture.modifyAlpha(150);
 
 	if (getAlive()) {																			// 2017/01/22 If the player is alive render the player, with particles
-		//partPlayer.renderParticles(gDarkBlueParticleTexture, gMediumBlueParticlTexture, gLightBlueParticleTexture, gShimmerTexture, rend);
-		partPlayer.renderPlayerParticles(getX(), getY(), getDrawParticle(), rend);
+		//p.renderPlayerParticles(getX(), getY(), rend, getDrawParticle());
 		player.render(getX(), getY(), rend);
 	}
 }
 
-// 2017/01/22 Separated player render() from game.cpp
-void Player::render(Texture &player, Texture &dark, Texture &medium, Texture &light, Texture &shimmer, SDL_Renderer *rend) {
-	//Set texture transparency
-	dark.modifyAlpha(100);	// Alpha of 192 gives particles a semi transparent look
-	medium.modifyAlpha(100);
-	light.modifyAlpha(100);
-	shimmer.modifyAlpha(150);
+void Player::rendPlayerLives(Texture &lives, int player, SDL_Renderer *rend) {
+	if (player == 1) {
+		if (getNumLives() > 0)
+			//lives.render(10, SCREEN_HEIGHT - lives.getHeight() - 10, rend);
+			lives.render(10, 120 - lives.getHeight() - 10, rend);
+		if (getNumLives() > 1)
+			//lives.render(10 + lives.getWidth(), SCREEN_HEIGHT - lives.getHeight() - 10, rend);
+			lives.render(20 + lives.getWidth(), 120 - lives.getHeight() - 10, rend);
+		if (getNumLives() > 2)
+			//lives.render(10 + (lives.getWidth() * 2), SCREEN_HEIGHT - lives.getHeight() - 10, rend);
+			lives.render(30 + (lives.getWidth() * 2), 120 - lives.getHeight() - 10, rend);
+	}
 
-	if (getAlive()) {																			// 2017/01/22 If the player is alive render the player, with particles
-		partPlayer.renderParticles(dark, medium, light, shimmer, rend, getDrawParticle(), getX(), getY());
-		player.render(getX(), getY(), rend);
+	if (player == 2) {
+		if (getNumLives() > 0)
+			//lives.render(SCREEN_WIDTH - lives.getWidth() - 10, SCREEN_HEIGHT - lives.getHeight() - 10, rend);
+			lives.render(SCREEN_WIDTH - lives.getWidth() - 10, 120 - lives.getHeight() - 10, rend);
+		if (getNumLives() > 1)
+			//lives.render(SCREEN_WIDTH - (lives.getWidth() * 2) - 10, SCREEN_HEIGHT - lives.getHeight() - 10, rend);
+			lives.render(SCREEN_WIDTH - (lives.getWidth() * 2) - 20, 120 - lives.getHeight() - 10, rend);
+		if (getNumLives() > 2)
+			//lives.render(SCREEN_WIDTH - (lives.getWidth() * 3) - 10, SCREEN_HEIGHT - lives.getHeight() - 10, rend);
+			lives.render(SCREEN_WIDTH - (lives.getWidth() * 3) - 30, 120 - lives.getHeight() - 10, rend);
 	}
 }
-*/
 
 void Player::spawnPlayerSaw(int x, int y, int type) {
 	game1.spawnSaw(x, y, type);
 }
 
 void Player::handleEvent(SDL_Event& e, int player) {
-	if (player == PLAYER_1 && getAlive()) {
+	if (player == 1 && getAlive()) {
 		if (e.type == SDL_KEYDOWN && e.key.repeat == 0) {
 			switch (e.key.keysym.sym) {
 			case SDLK_w: moveUp(); break;
@@ -144,7 +130,7 @@ void Player::handleEvent(SDL_Event& e, int player) {
 			}
 		}
 	}
-	else if (player == PLAYER_2 && getAlive()) {
+	else if (player == 2 && getAlive()) {
 		if (e.type == SDL_KEYDOWN && e.key.repeat == 0) {
 			switch (e.key.keysym.sym) {
 			case SDLK_UP: moveUp(); break;
@@ -413,5 +399,13 @@ void Player::gameControllerButton(SDL_Event& e) {
 	if (e.jbutton.button == 9) {															// Pick next track on the list
 		std::cout << "Enable Rocket - Button: " << (int)e.jbutton.button << std::endl;		// shows which button has been pressed
 		game1.spawnRocket(getX(), getY(), PLAYER_2, ROCKET_P2, false);
+	}
+}
+
+void Player::setSpeedBoost(bool boost) {
+	mSpeedBoost = boost;
+	if (boost) {
+		mBoostStartTime = SDL_GetTicks();
+		std::cout << "SPEED BOOST START" << std::endl;
 	}
 }

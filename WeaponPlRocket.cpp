@@ -16,7 +16,7 @@ WeaponPlRocket::WeaponPlRocket() {
 	//setGrade(0);	// Basic Rocket = 0
 
 	setAlive(true);	// Make sure Rocket is alive from the beginning
-	setType(PLAYER_WEAPON);
+	setSubType(PLAYER_WEAPON);
 }
 
 // Laser Destructor
