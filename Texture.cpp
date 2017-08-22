@@ -55,7 +55,7 @@ bool Texture::loadFromFile(std::string path, SDL_Renderer *rend) {
 		printf("Unable to load image %s! SDL_image Error: %s\n", path.c_str(), IMG_GetError());
 	}
 	else {
-		SDL_SetColorKey(loadedSurface, SDL_TRUE, SDL_MapRGB(loadedSurface->format, 0, 0xFF, 0xFF));	// Color key image
+		//SDL_SetColorKey(loadedSurface, SDL_TRUE, SDL_MapRGB(loadedSurface->format, 0, 0xFF, 0xFF));	// Color key image TURNED OFF FOR BLUE VIRUS
 
 		newTexture = SDL_CreateTextureFromSurface(rend, loadedSurface);								// Create texture from surface pixels
 		if (newTexture == NULL) {

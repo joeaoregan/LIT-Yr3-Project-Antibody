@@ -12,7 +12,11 @@ void StatusBar::playerHealthBar(int x, int y, int w, float health, SDL_Renderer 
 
 void StatusBar::virusTimer(int x, int y, int w, float virusTimer, SDL_Renderer *rend) {
 	createStatusBar(x + w + 10, y + 10, 5, 60, virusTimer / VIRUS_TIMER, fgColourBlue, bgColourOrange, rend, VERTICAL);	// 
-	//bar.createStatusBar(, 5, (listOfEnemyVirus[index]->getHeight() / 3) * 2, virusBar / listOfEnemyVirus[index]->getTimer(), fgColourBlue, bgColourOrange, gRenderer, VERTICAL); // 2/3s the height of the virus
+																														//bar.createStatusBar(, 5, (listOfEnemyVirus[index]->getHeight() / 3) * 2, virusBar / listOfEnemyVirus[index]->getTimer(), fgColourBlue, bgColourOrange, gRenderer, VERTICAL); // 2/3s the height of the virus
+}
+void StatusBar::virusTimerBlue(int x, int y, int w, float virusTimer, SDL_Renderer *rend) {
+	createStatusBar(x + w + 10, y + 10, 5, 60, virusTimer / VIRUS_TIMER, fgColourBlue, bgColourBlue, rend, VERTICAL);	// 
+																														//bar.createStatusBar(, 5, (listOfEnemyVirus[index]->getHeight() / 3) * 2, virusBar / listOfEnemyVirus[index]->getTimer(), fgColourBlue, bgColourOrange, gRenderer, VERTICAL); // 2/3s the height of the virus
 }
 
 void StatusBar::createStatusBar(int x, int y, int w, int h, float Percent, SDL_Color FGColor, SDL_Color BGColor, SDL_Renderer *rend, int orientation) {	// Horizontal healthbar 2017/01/20 added if statement to decide orientation of health bar

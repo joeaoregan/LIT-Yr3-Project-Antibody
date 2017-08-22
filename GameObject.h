@@ -23,8 +23,9 @@ public:
 	virtual void movement();
 	virtual void movement(int x, int y) {
 		//setY(getY() - 5);
-		//if (getY() <= 40) setAlive(false);
+				//if (getY() <= 40) setAlive(false);
 	};
+	//virtual void movement(int x, int y, int z) {};
 
 	//void render(LTexture &texture, SDL_Renderer *rend);							// Shows the Enemy on the screen
 	void render(Texture &texture, SDL_Renderer *rend, int degrees = 0);
@@ -88,6 +89,11 @@ public:
 	int dx, dy;
 
 	Texture m_Texture;
+
+	int rotateCounter;	// degrees the satellite object has rotated
+	//int rotateCenter;
+	bool satelliteObjectAlive;
+	unsigned int whichVirusAssignedTo;
 
 private:
 	// GameObject Variables

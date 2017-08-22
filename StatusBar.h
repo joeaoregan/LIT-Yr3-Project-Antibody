@@ -17,13 +17,15 @@ public:
 	float endTime = 0.0;
 
 	SDL_Color fgColour = { 0, 255, 0, 255 };								// Set foreground colour as green
-	SDL_Color fgColourBlue = { 0, 200, 255, 255 };							// Set foreground colour as green
+	SDL_Color fgColourBlue = { 0, 200, 255, 255 };							// Set foreground colour as Blue
 	SDL_Color bgColour = { 255, 0, 0, 255 };								// Set background colour as red
-	SDL_Color bgColourOrange = { 255, 150, 0, 255 };						// Set background colour as red
+	SDL_Color bgColourOrange = { 255, 150, 0, 255 };						// Set background colour as Orange
+	SDL_Color bgColourBlue = { 0, 0, 255, 255 };							// Set background colour as Blue
 
 	void createStatusBar(int x, int y, int w, int h, float Percent, SDL_Color FGColor, SDL_Color BGColor, SDL_Renderer *rend, int orientation);
 	void playerHealthBar(int x, int y, int w, float Percent, SDL_Renderer *rend);
 	void virusTimer(int x, int y, int w, float Percent, SDL_Renderer *rend);
+	void virusTimerBlue(int x, int y, int w, float Percent, SDL_Renderer *rend);
 	
 };
 

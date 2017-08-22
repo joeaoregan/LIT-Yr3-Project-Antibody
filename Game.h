@@ -30,7 +30,6 @@ public:
 
 	enum levels { MENU, LEVEL_1, LEVEL_2, LEVEL_3 };
 	enum powerUpTypes { HEALTH = 1, LASER };
-	enum virusType { GREEN, ORANGE };
 	enum playerWeapons {NINJA_STAR_P1, NINJA_STAR_P2, LASER_P1, LASER_P2, SAW_P1, SAW_P2, LASER_V2_P1, LASER_V2_P2, ROCKET};
 
 	int getCurrentLevel() { return mCurrentLevel; }
@@ -67,7 +66,7 @@ public:
 	void spawnEnemyVirus();									// 2017/01/10 JOE: added function to create enemy virus at random times and random y coord
 	void spawnBloodCell(int type = 0);						// 2017/01/10 JOE: add function to create blood cells
 	void spawnLaser(int x, int y, int player, int v = 20, int grade = 0);	// 2017/01/16 spawn a laser at coords, with velocitys 2017/01/20 added Weapons grade
-	void spawnEnemyLaser(int x, int y, int type = 0);						// 2017/01/10
+	void spawnEnemyLaser(int x, int y, int type = 0, int whichVirus = 0);						// 2017/01/10
 	void spawnNinjaStar(int x, int y, int player);			// 2017/01/09 JOE: added function to create ninja star weapons - 2017/01/17 added player decision - player to spawn for and their coords
 	void spawnSaw(int x, int y, int player);				// 2017/01/20: Saw Weapon for player
 	void spawnPowerUp();

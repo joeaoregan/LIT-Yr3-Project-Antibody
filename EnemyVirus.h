@@ -3,6 +3,9 @@
 
 #include "Enemy.h"
 #include "Player.h"
+#include "WeaponEnLaser.h"
+
+enum virusType { GREEN, ORANGE, BLUE };
 
 class EnemyVirus : public Enemy {
 public:
@@ -12,6 +15,8 @@ public:
 	~EnemyVirus();							// Destructor
 	
 	virtual void movement(int playerX, int playerY);
+
+	WeaponEnLaser* laser;
 };
 
 #endif
