@@ -211,10 +211,10 @@ void Player::handleEvent(SDL_Event& e, int player) {
 			case SDLK_SPACE: game1.spawnLaser(getX(), getY(), 1); break;	// TEST NEW WEAPON
 			case SDLK_n: game1.spawnNinjaStar(getX(), getY(), 1); break;
 			//case SDLK_e: game1.spawnSaw(getX(), getY(), 1, getSawActive()); break;			// 2017/01/17 Saw Weapon added, check saw is active with if statement in spawn Saw, and activate/deactivate the weapon
-			case SDLK_e: game1.spawnSaw(getX(), getY(), SAW1); break;			// 2017/01/17 Saw Weapon added, check saw is active with if statement in spawn Saw, and activate/deactivate the weapon
-			//case SDLK_e: spawnPlayerSaw(getX(), getY(), SAW1); break;
+			//case SDLK_e: game1.spawnSaw(getX(), getY(), 1); break;			// 2017/01/17 Saw Weapon added, check saw is active with if statement in spawn Saw, and activate/deactivate the weapon
+			case SDLK_e: spawnPlayerSaw(getX(), getY(), SAW1);
 			case SDLK_f: setSpeedBoost(true); break;
-			case SDLK_c: game1.spawnRocket(getX(), getY(), 1, 9); break;
+			case SDLK_c: game1.spawnRocket(getX(), getY(), 1, 9);
 			}
 		}
 		else if (e.type == SDL_KEYUP && e.key.repeat == 0) {
@@ -239,9 +239,11 @@ void Player::handleEvent(SDL_Event& e, int player) {
 			//case SDLK_e: game1.spawnLaser(getX(), getY()); break; // SEAN: Press space bar to spawn a new laser
 			case SDLK_RCTRL: game1.spawnLaser(getX(), getY(), 2); break;
 			case SDLK_RSHIFT: game1.spawnNinjaStar(getX(), getY(), 2); break;
-			case SDLK_r: spawnPlayerSaw(getX(), getY(), SAW2); break;
+			//case SDLK_r: game1.spawnSaw(getX(), getY(), 2, getSawActive()); break;			// 2017/01/17 Separate saw for player 2
+			//case SDLK_r: game1.spawnSaw(getX(), getY(), 2); break;			// 2017/01/17 Separate saw for player 2
+			case SDLK_r: spawnPlayerSaw(getX(), getY(), SAW2);
 			case SDLK_g: setSpeedBoost(true); break;
-			case SDLK_v: game1.spawnRocket(getX(), getY(), 2, 9); break;
+			case SDLK_v: game1.spawnRocket(getX(), getY(), 2, 9);
 			}
 		}
 		// If a key was released
@@ -434,8 +436,8 @@ void Player::gameControllerButton(SDL_Event& e) {
 		std::cout << "Ninja Star Button: " << (int)e.jbutton.button << std::endl;	// shows which button has been pressed
 	}
 	if (e.jbutton.button == 2) {
-		game1.spawnSaw(getX(), getY(), SAW2);											// Saw Weapon
-		//spawnPlayerSaw(getX(), getY(), SAW2);
+		//game1.spawnSaw(getX(), getY(), 2);											// Saw Weapon
+		spawnPlayerSaw(getX(), getY(), SAW2);
 		std::cout << "Saw Button: " << (int)e.jbutton.button << std::endl;			// shows which button has been pressed
 	}
 	if (e.jbutton.button == 3) {

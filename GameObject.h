@@ -95,7 +95,7 @@ public:
 	int rotateCounter;	// degrees the satellite object has rotated
 	//int rotateCenter;
 	bool satelliteObjectAlive;
-	int whichVirusAssignedTo;
+	unsigned int whichVirusAssignedTo;
 
 private:
 	// GameObject Variables

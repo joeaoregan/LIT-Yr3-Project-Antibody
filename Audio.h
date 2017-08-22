@@ -28,8 +28,6 @@ public:
 	Mix_Chunk *gExplosionFX = NULL;		// Explosion sound fx
 	Mix_Chunk *gSawFX = NULL;			// Saw sound fx
 
-	bool loadMediaAudio();
-
 	void music();
 
 	void laserFX_P1();
