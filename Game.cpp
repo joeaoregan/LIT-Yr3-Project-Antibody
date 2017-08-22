@@ -38,6 +38,8 @@
 #include "Audio.h"					// 2017/02/09
 #include <math.h>
 
+bool DisplayTheFuckinScreensNumbNuts = true;
+
 std::string finalScores, gameWinners;
 
 // Weapons
@@ -296,6 +298,7 @@ bool Game::loadMedia() {
 	menu1.loadMediaMenu(gRenderer);						// Load buttons etc
 	success = player1->loadMediaPlayer(gRenderer);		// Load particles for each player
 	success = player2->loadMediaPlayer(gRenderer);		// Load particles for each player
+	success = audio.loadMediaAudio();
 
 	Texture gProfessor;
 
@@ -574,10 +577,10 @@ void Game::close() {
 	menu1.closeMenu();				// Close menu stuff
 	player1->closePlayer();
 	player2->closePlayer();
+	audio.destroy();				// Close audio files
 
 	// Quit SDL subsystems
 	IMG_Quit();
-	SDL_Quit();
 	SDL_Quit();
 }
 
@@ -678,7 +681,7 @@ void Game::resetGame(int currentLevel) {	// Reset a level or the game
 }
 
 void Game::playLevel(int levelNum) {
-	displayLevelIntroScreens(levelNum);
+	if (DisplayTheFuckinScreensNumbNuts) displayLevelIntroScreens(levelNum);
 
 	if (!gameOver) {
 		spawnMovingObjects();		// 2017/01/10 JOE: Spawn enemies and obstacles at random coords and distances apart
@@ -995,7 +998,8 @@ void Game::renderGameObjects() {
 
 			for (unsigned int index = 0; index != listOfGameObjects.size(); ++index) {
 				// Render Saws
-				if (listOfGameObjects[index]->getType() == SAW1 || listOfGameObjects[index]->getType() == SAW2) listOfGameObjects[index]->render(gSawTexture, gRenderer, gSawTexture.getDegrees());
+				if (listOfGameObjects[index]->getType() == SAW1) listOfGameObjects[index]->render(gSawTexture, gRenderer, gSawTexture.getDegrees());
+				else if (listOfGameObjects[index]->getType() == SAW2) listOfGameObjects[index]->render(gSawTexture, gRenderer, gSawTexture.getDegrees());
 
 				// Render Power Ups
 				else if (listOfGameObjects[index]->getType() == POWER_UP_HEALTH) listOfGameObjects[index]->render(gPowerUpHealthTexture, gRenderer);
@@ -1098,7 +1102,7 @@ void Game::renderGameObjects() {
 					if (SDL_GetTicks() >= listOfEnemyVirus[index]->getTimerTracker() + 500) {						// Every .5 seconds
 						listOfEnemyVirus[index]->setTimerTracker(SDL_GetTicks());									// reset the start time
 						listOfEnemyVirus[index]->setTimer(listOfEnemyVirus[index]->getTimer() - 0.5);				// Decrement the timer
-						std::cout << listOfEnemyVirus[index]->getTimer() << " Timer" << std::endl;					// Decrement the timer
+						//std::cout << listOfEnemyVirus[index]->getTimer() << " Timer" << std::endl;				// Decrement the timer
 					}
 
 					// Start the timer
@@ -1419,7 +1423,7 @@ void Game::spawnEnemyVirus() {
 	if (randomExplodingVirus == 2) {
 		EnemyVirus* p_OrangeVirus = new EnemyVirus(ORANGE, 3.0);		// Orange type = 1
 		p_OrangeVirus->setTimer(3.0);
-		std::cout << "Enemy Virus Spawned. Timer: " << p_OrangeVirus->getTimer() << std::endl;
+		//std::cout << "Enemy Virus Spawned. Timer: " << p_OrangeVirus->getTimer() << std::endl;
 		p_OrangeVirus->spawn(x, y, -4, -2, (*p_OrangeVirus->getCollider()), ORANGE);
 		listOfEnemyVirus.push_back(p_OrangeVirus);
 		//std::cout << "distance to virus p1: " << abs(((player1.getX() * player1.getX()) + (player1.getY() * player1.getY()))) << " p2: " << abs((player2.getX() * player2.getX()) + (player2.getY() * player2.getY())) << std::endl;
@@ -1427,7 +1431,7 @@ void Game::spawnEnemyVirus() {
 	else if (randomExplodingVirus == 1) {
 		EnemyVirus* p_BlueVirus = new EnemyVirus(BLUE, 3.0);		// BLUE type = 2
 		//p_OrangeVirus->setTimer(3.0);
-		std::cout << "Enemy Virus Spawned. Timer: " << p_BlueVirus->getTimer() << std::endl;
+		//std::cout << "Enemy Virus Spawned. Timer: " << p_BlueVirus->getTimer() << std::endl;
 		p_BlueVirus->spawn(x, y, -4, -2, (*p_BlueVirus->getCollider()), BLUE);
 		listOfEnemyVirus.push_back(p_BlueVirus);
 		//std::cout << "distance to virus p1: " << abs(((player1.getX() * player1.getX()) + (player1.getY() * player1.getY()))) << " p2: " << abs((player2.getX() * player2.getX()) + (player2.getY() * player2.getY())) << std::endl;
@@ -1531,6 +1535,7 @@ void Game::spawnEnemyLaser(int xCoord, int yCoord, int type, int whichVirus) {
 			WeaponEnLaser* p_LaserE = new WeaponEnLaser();
 			p_LaserE->spawn(xCoord - 20, yCoord + 30, p_LaserE->getVelocity());
 			listOfEnemyLaserObjects.push_back(p_LaserE);
+
 			audio.laserFX_Enemy();
 		}
 	}
@@ -1620,48 +1625,38 @@ void Game::spawnRocket(int x, int y, int player, int type) {
 		listOfPlayerWeapons.push_back(p_Rocket);
 	}
 }
-void Game::spawnSaw(int x, int y, int type) {				// player to spawn for and their coords, turn on if inacive, off if active	// 2017-02-08 Updated and working OK
+void Game::spawnSaw(int x, int y, int type) {			// player to spawn for and their coords, turn on if inacive, off if active	// 2017-02-08 Updated and working OK
 	bool createSaw = false;
 
+	// Check which player to create a saw for
 	if (type == SAW1 && !player1->getSawActive()) {
 		createSaw = true;
-		player1->setSawActive(true);							// show saw
+		player1->setSawActive(true);					// show saw
 	}
-	else if (type == SAW1 && !player2->getSawActive()) {
+	else if (type == SAW2 && !player2->getSawActive()) {
 		createSaw = true;
-		player2->setSawActive(true);							// show saw
+		player2->setSawActive(true);					// show saw
 	}
 
 	if (createSaw) {
 		GameObject* p_Saw = new WeaponPlSaw(type);		// Create new saw
-		p_Saw->spawn(x + 65, y + 25);						// spawn the saw
-		listOfGameObjects.push_back(p_Saw);					// add to list of saws
+		p_Saw->spawn(x + 65, y + 25);					// spawn the saw
+		listOfGameObjects.push_back(p_Saw);				// add to list of saws
+		p_Saw->setType(type);
 		if (!gameOver) audio.sawFX();
 	}
-	else {
-		for (unsigned int index = 0; index != listOfEnemyLaserObjects.size(); ++index) {
-			if (listOfEnemyLaserObjects[index]->getAlive() == true && listOfEnemyLaserObjects[index]->getType() == type) {			// if saw is active
+	else if (!createSaw) {
+		for (unsigned int index = 0; index != listOfGameObjects.size(); ++index) {
+			if (listOfGameObjects[index]->getType() == type) {			// if saw is the right type
+				if (listOfGameObjects[index]->getAlive() == true) {			// if saw is active
 
-				if (listOfEnemyLaserObjects[index]->getType() == SAW1) player1->setSawActive(false);						// hide saw
-				else if (listOfEnemyLaserObjects[index]->getType() == SAW2) player2->setSawActive(false);					// hide saw
+					if (listOfGameObjects[index]->getType() == SAW1) player1->setSawActive(false);						// hide saw
+					else if (listOfGameObjects[index]->getType() == SAW2) player2->setSawActive(false);					// hide saw
 
-				listOfEnemyLaserObjects[index]->setAlive(false);																// erase
+					listOfGameObjects[index]->setAlive(false);
+				}
 			}
 		}// end for
-
-		/*
-		for (iterSaw = listOfSawObjects.begin(); iterSaw != listOfSawObjects.end();) {
-			if ((*iterSaw)->getAlive() == true && (*iterSaw)->getPlayer() == player) {			// if saw is active
-				if ((*iterSaw)->getPlayer() == PLAYER_1) player1->setSawActive(false);			// hide saw
-				else if ((*iterSaw)->getPlayer() == PLAYER_2) player2->setSawActive(false);		// hide saw
-																								//player2.setSawActive(false);									// hide saw
-				iterSaw = listOfSawObjects.erase(iterSaw);						// erase
-			}
-			else {
-				iterSaw++;
-			}
-		}
-		*/
 	}
 }
 
