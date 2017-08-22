@@ -27,9 +27,23 @@ Laser::Laser() {
 
 	setColliderWidth(getWidth());
 	setColliderHeight(getHeight());
-	
+
 	setAngle(0);	// Fire straight
 	setGrade(0);	// Basic Laser = 0, Triple Laser = 1
+}
+Laser::Laser(int type) {
+	std::cout << "Laser constuctor called.\n";
+
+	setWidth(50);
+	setHeight(5);
+	setVelocity(15);
+
+	setColliderWidth(getWidth());
+	setColliderHeight(getHeight());
+
+	setAngle(0);	// Fire straight
+	setGrade(0);	// Basic Laser = 0, Triple Laser = 1
+	setType(type);
 }
 
 
@@ -40,6 +54,7 @@ Laser::~Laser(){
 
 void Laser::movement() {
 	GameObject::movement();
+	setY(getY() + getVelY());		// Up direction
 	//if (getGrade() == 1) {
 		if (getAngle() == 1) {
 			setY(getY() + 3);
@@ -57,6 +72,15 @@ void Laser::movement() {
 	else setAlive(true);
 }
 
+void Laser::spawn(int x, int y, int velocity, int player, int type) {
+	setX(x);
+	setY(y);
+	//setVelocity(velocity);
+	setVelX(velocity);
+	setPlayer(player);
+	setType(type);
+}
+/*
 void Laser::spawn(int x, int y, int velocity, int player) {
 	setX(x);
 	setY(y);
@@ -64,6 +88,7 @@ void Laser::spawn(int x, int y, int velocity, int player) {
 	setVelX(velocity);
 	setPlayer(player);
 }
+*/
 void Laser::spawn(int x, int y, SDL_Rect collider) {
 	setX(x + 65);
 	setY(y + 30);

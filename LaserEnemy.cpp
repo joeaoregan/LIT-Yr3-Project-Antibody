@@ -15,8 +15,14 @@ LaserEnemy::LaserEnemy() {
 	setWidth(50);
 	setHeight(5);
 	setVelocity(15);
-	setColliderWidth(getWidth());
-	setColliderHeight(getHeight());
+	if (getType() == 0) {
+		setColliderWidth(getWidth());
+		setColliderHeight(getHeight());
+	}
+	else{								// Type 1 = orange fireball
+		setColliderWidth(25);
+		setColliderHeight(25);
+	}
 	setScore(5);						// 2017/01/20 Points to deduct from player after collision with this object
 }
 
@@ -27,12 +33,18 @@ LaserEnemy::~LaserEnemy() {
 
 void LaserEnemy::movement() {
 	GameObject::movement();
+	setY(getY() + getVelY());
 
 	setColliderX(getX());
-	setColliderY(getY());;
+	setColliderY(getY());
 
 	// destroy laser beam once it is offscreen
-	if (getX() < - getWidth()) setAlive(false);
+	if (getY() < 40) setAlive(false);			// Once it reaches the pink border
+	else if (getY() > (SCREEN_HEIGHT_GAME - 40)) setAlive(false);	// 600 - 40 for pink border
+	else setAlive(true);
+
+	if (getX() < -getWidth()) setAlive(false);	// The width of the object off the screen
+	else if (getX() > SCREEN_WIDTH) setAlive(false);	// offscreen to the right
 	else setAlive(true);
 }
 
@@ -47,7 +59,3 @@ void LaserEnemy::spawn(int x, int y, SDL_Rect collider) {
 void LaserEnemy::render(LTexture &texture, SDL_Renderer *rend) { // 2017/01/22 Moved from game.cpp
 	texture.render(getX(), getY(), rend);
 }
-
-//SDL_Rect LaserEnemy::getELaserCollider(){
-//	return mELaserCollider;
-//}

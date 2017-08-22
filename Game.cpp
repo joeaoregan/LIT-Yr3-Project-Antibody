@@ -7,6 +7,15 @@
 // 2017/01/23	Set up levels and background
 // 2017/01/09	Edited background to be 800 x 600 instead of 600 x 480
 
+/*
+    Orange Exploding Virus
+
+    2017-08-11:
+        Joe: Change window title
+        Joe: Add relative path for asset files in "Art" directory
+        Joe: Changed getCollision() for ship and enemyship
+        Joe: Add relative path for asset files in "Music" and "Audio" directories
+*/
 
 #include <SDL.h>
 #include <SDL_image.h>
@@ -15,6 +24,7 @@
 #include "Game.h"					// Game header file, with functions and variabls
 #include <sstream>					// For timer
 #include <string.h>
+#include <math.h>
 
 #include <SDL_mixer.h>				// 2017/01/09 JOE: SOUND - library we use to make audio playing easier
 //#include <cmath>					// Unused header
@@ -29,15 +39,16 @@
 #include "BloodCellSmall.h"			// 2017/01/10 JOE: Added Small Blood Cell obstacle
 #include "WhiteBloodCell.h"			// White blood cell obstacle
 #include "PowerUp.h"				// 2017/01/10 SEAN: Added Power Up
-#include "LaserEnemy.h"				// The laser the enemy fires
+#include "LaserEnemy.h"				// The laser the enemy firesF
 #include "Particle.h"				// Particles for the ship engine
 #include "Explosion.h"				// 2017/01/25 Added explosions for Player Laser colliding with Enemy Ships and Virus
 
+enum virusType{GREEN, ORANGE };
 
 // Game & Level Testing
 bool quit = false;					// Main loop flag
 bool testMode = true;				// Game is in testing
-bool displayIntro = true;			// false means off
+bool displayIntro = false;			// false means off
 bool displayLevelIntro = true;		// Display the information splash screen at the start of a level
 int currentLevel = 1;				// The current level of the game, 0 = menu, 1 = level 1 etc.
 #define NUM_LIVES 3					// Number of lives each player starts with
@@ -65,6 +76,7 @@ LTexture gShimmerTexture;				// Shimmer engine particle
 // Render Healthbars
 enum healthBarOrientation { VERTICAL, HORIZONTAL };
 void renderHealthBar(int x, int y, int w, int h, float Percent, SDL_Color FGColor, SDL_Color BGColor, int orientation);	// 2017/01/20 Added orientation
+float virusBar = 0.0;
 
 #define PLAYER_1 1
 #define PLAYER_2 2
@@ -77,6 +89,7 @@ void renderHealthBar(int x, int y, int w, int h, float Percent, SDL_Color FGColo
 // Time
 Uint32 startTime = 6000;			// Unsigned integer 32-bits
 unsigned int lastTime = 0, currentTime, countdownTimer = GAME_TIMER;	// TEST TIMING
+unsigned int newTime = 3.0;
 
 // Scrolling and Rotation
 int degrees = 0;					// Degrees to rotate Stars and Saw
@@ -102,10 +115,13 @@ const int ANIMATION_FRAMES = 4;							// Number of frames of animation for Enemy
 const int EXPLOSION_ANIMATION_FRAMES = 12;				// Number of frames of animation for Explosions
 SDL_Rect gPressButtonToContinueSpriteClips[6];			// Sprite frames for Press Button to Continue animation
 SDL_Rect gEnemySpriteClips[ANIMATION_FRAMES];			// Sprite frames for Enemy Ship animation
+SDL_Rect gOrangeVirusSpriteClips[6];		// Sprite frames for Orange Virus animation
 SDL_Rect gExplosionClips[EXPLOSION_ANIMATION_FRAMES];	// Sprite frames for Explosion animation
+
 LTexture gPressEnterSpriteSheetTexture;					// Press Enter to Continue sprite sheet
 LTexture gEnemySpriteSheetTexture;						// Enemy sprite sheet
 LTexture gExplosionSpriteSheetTexture;					// explosion sprite sheet
+LTexture gOrangeVirusSpriteSheetTexture;				// Orange Virus sprite sheet
 int enemyFrame = 0;										// Frame count for speed of Enemy animation
 int explosionFrame = 0;									// Frame count for speed of explosion animation
 
@@ -133,7 +149,7 @@ SDL_Haptic*	gControllerHaptic = NULL;	// 2017/01/18 Haptic (Force Feedback) adde
 Mix_Music *gMusic1 = NULL;				// Mix_Music: Data type for music
 Mix_Music *gMusic2 = NULL;
 Mix_Music *gMusic3 = NULL;
-unsigned int currentSong;				// Play a random song when the game starts
+int currentSong;						// Play a random song when the game starts
 
 //The sound effects that will be used (pointers)
 Mix_Chunk *gNinjaFX1 = NULL;		// 2017/01/09 JOE: SOUND - Mix_Chunk: Data type for short sounds
@@ -175,6 +191,7 @@ LTexture gP1LivesTexture;			// Player 1 Small ship for number of lives
 LTexture gPlayer2Texture;			// Player 2 ship
 LTexture gP2LivesTexture;			// Player 2 Small Ship for number of lives
 LTexture gEnemyVirusTexture;		// Enemy Virus
+LTexture gVirusFireballTexture;		// Enemy Virus Fireball
 LTexture gLaserGreenTexture;		// Texture for Player 1 Laser weapon
 LTexture gLaserOrangeTexture;		// Texture for Player 2 Laser weapon
 LTexture gLaserBlueTexture;			// Texture for Enemy Laser weapon
@@ -288,7 +305,7 @@ bool init() {
 		}
 
 		// Create window
-		gWindow = SDL_CreateWindow("ANTIBODY v1.04 by Joe O'Regan & Se\u00E1n Horgan: Supervisor Demo", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);	/* Window name */
+		gWindow = SDL_CreateWindow("ANTIBODY v1.05 by Joe O'Regan & Se\u00E1n Horgan: Orange Exploding Virus", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);	/* Window name */
 		if (gWindow == NULL) {
 			printf("Window could not be created! SDL Error: %s\n", SDL_GetError());
 			success = false;
@@ -368,7 +385,7 @@ bool loadMedia() {
 		textColour = { 255, 0, 0, 255 };								// Set text color for three names RED
 		TTF_SetFontStyle(gFontRetro16, TTF_STYLE_BOLD);						// Use bold font
 
-		if (!gCreatedByTextTexture.loadFromRenderedText("A Game By Seán Horgan And Joe O'Regan", textColour, gFontRetro16, gRenderer)) {
+		if (!gCreatedByTextTexture.loadFromRenderedText("A Game By Sean Horgan And Joe O'Regan", textColour, gFontRetro16, gRenderer)) {
 			printf("Unable to render prompt text texture!\n");
 			success = false;
 		}
@@ -400,6 +417,10 @@ bool loadMedia() {
 	}
 	if (!gP2LivesTexture.loadFromFile(".\\Art\\Player2ShipSmallOld.png", gRenderer)) {				// Ship Texture
 		printf("Failed to load Player 2 Small Ship texture!\n");
+		success = false;
+	} // gVirusFireballTexture
+	if (!gVirusFireballTexture.loadFromFile(".\\Art\\VirusFireball.png", gRenderer)) {				// Enemy Virus Texture
+		printf("Failed to load Enemy Virus Orange Fireball texture!\n");
 		success = false;
 	}
 	if (!gEnemyVirusTexture.loadFromFile(".\\Art\\VirusGreen.png", gRenderer)) {				// Enemy Virus Texture
@@ -494,7 +515,7 @@ bool loadMedia() {
 	}
 	else {
 		// Set sprite clips 19/01/2017 Added for loop
-		for (unsigned int i = 0; i < 6; ++i) {
+		for (int i = 0; i < 6; ++i) {
 			gPressButtonToContinueSpriteClips[i].x = 0;
 			if(i < 4)
 				gPressButtonToContinueSpriteClips[i].y = i * 94;
@@ -513,11 +534,26 @@ bool loadMedia() {
 	}
 	else {
 		//Set sprite clips
-		for (unsigned int i = 0; i < 4; ++i) {
+		for (int i = 0; i < 4; ++i) {
 			gEnemySpriteClips[i].x = 0;
 			gEnemySpriteClips[i].y = i * 50;
 			gEnemySpriteClips[i].w = 120;
 			gEnemySpriteClips[i].h = 50;
+		}
+	}
+	if (!gOrangeVirusSpriteSheetTexture.loadFromFile(".\\Art\\EnemyVirus_SpriteSheet_Orange.png", gRenderer)) {	// Sprite sheet for Enemy Ship
+		printf("Failed to load Orange Virus animation texture!\n");
+		success = false;
+	}
+	else {
+		//Set sprite clips
+		for (int i = 0; i < 6; ++i) {
+			if(i < 4) gOrangeVirusSpriteClips[i].x = i * 75;
+			if (i == 5) gOrangeVirusSpriteClips[i].x = 2 * 75;
+			if (i == 6) gOrangeVirusSpriteClips[i].x = 1 * 75;
+			gOrangeVirusSpriteClips[i].y = 0;
+			gOrangeVirusSpriteClips[i].w = 75;
+			gOrangeVirusSpriteClips[i].h = 75;
 		}
 	}
 
@@ -527,7 +563,7 @@ bool loadMedia() {
 	}
 	else {
 		//Set sprite clips
-		for (unsigned int i = 0; i < EXPLOSION_ANIMATION_FRAMES; ++i) {
+		for (int i = 0; i < EXPLOSION_ANIMATION_FRAMES; ++i) {
 			gExplosionClips[i].x = i * 96;
 			gExplosionClips[i].y = 0;
 			gExplosionClips[i].w = 96;
@@ -614,6 +650,7 @@ void Game::close() {
 	gP1LivesTexture.free();
 	gP2LivesTexture.free();
 	gEnemyVirusTexture.free();
+	gVirusFireballTexture.free(); //
 	gBGTexture.free();
 	gBGStartTexture.free();
 	gBGEndTexture.free();
@@ -710,13 +747,13 @@ void Game::update(){
 			while (!quit) {
 				quit = playerInput(quit);				// 2017/01/09 JOE: Handle input from player
 
-				//if (displayIntro) displayGameLogos();	// 2017/01/18 Splash screens at start of game
+				if (displayIntro) displayGameLogos();	// 2017/01/18 Splash screens at start of game
 
 				//menu();
 
 				playLevel(currentLevel);
 
-				fpsthink();
+				//fpsthink();
 
 				//if (player1.getAlive() && player2.getAlive()) gameOver = true;
 
@@ -892,7 +929,7 @@ void Game::gamepadInfo() {
 
 		std::cout << "joystick instance id: " << SDL_JoystickInstanceID(gController1) << std::endl;
 
-		for (unsigned int i = 0; i < SDL_NumJoysticks(); ++i) {
+		for (int i = 0; i < SDL_NumJoysticks(); ++i) {
 			const char *name = SDL_GameControllerNameForIndex(i);
 			if (name) {
 				printf("Joystick %i has game controller name '%s'\n", i, name);
@@ -1067,7 +1104,7 @@ void Game::displayText() {
 }
 
 bool Game::playerInput(bool quit = false) {
-//	SDL_Color textColor = { 0, 255, 0, 255 };	//Set text color as green
+	SDL_Color textColor = { 0, 255, 0, 255 };	//Set text color as green
 
 	// In memory text stream
 	// string streams - function like iostreams only instead of reading or writing to the console, they allow you to read and write to a string in memory
@@ -1219,17 +1256,18 @@ void Game::renderGameObjects() {
 		}
 
 		// Cycle through list of Enemy Ships and Virus and render to screen
-		for (unsigned int index = 0; index != listOfEnemyShips.size(); ++index) {
+		for (int index = 0; index != listOfEnemyShips.size(); ++index) {
 			listOfEnemyShips[index]->render(gEnemySpriteSheetTexture, gRenderer, &gEnemySpriteClips[enemyFrame / 10], enemyFrame);
 			//SDL_RenderDrawRect(gRenderer, &listOfEnemyShips[index]->getCollider());
 		}
-		for (unsigned int index = 0; index != listOfEnemyVirus.size(); ++index) {
-			listOfEnemyVirus[index]->render(gEnemyVirusTexture, gRenderer);
+		for (int index = 0; index != listOfEnemyVirus.size(); ++index) {
+			if (listOfEnemyVirus[index]->getType() == GREEN) listOfEnemyVirus[index]->render(gEnemyVirusTexture, gRenderer);
+			else if (listOfEnemyVirus[index]->getType() == ORANGE) listOfEnemyVirus[index]->render(gOrangeVirusSpriteSheetTexture, gRenderer, &gOrangeVirusSpriteClips[enemyFrame / 10], enemyFrame);
 			//SDL_RenderDrawRect(gRenderer, &listOfEnemyVirus[index]->getCollider());
 		}
 
 		// Cycle through list of Explosions and render to screen
-		for (unsigned int index = 0; index != listOfExplosions.size(); ++index) {
+		for (int index = 0; index != listOfExplosions.size(); ++index) {
 			listOfExplosions[index]->render(gExplosionSpriteSheetTexture, gRenderer, &gExplosionClips[explosionFrame / 8], explosionFrame);
 			//SDL_RenderDrawRect(gRenderer, &listOfExplosions[index]->getCollider());
 			//std::cout << "ExplosionFrame: " << explosionframe << std::endl;
@@ -1240,7 +1278,7 @@ void Game::renderGameObjects() {
 		}
 
 		// Cycle through list of power up objects and render them to screen
-		for (unsigned int index = 0; index != listOfPowerUps.size(); ++index) {
+		for (int index = 0; index != listOfPowerUps.size(); ++index) {
 			if(listOfPowerUps[index]->getType() == 1)
 				listOfPowerUps[index]->render(gPowerUpHealthTexture, gRenderer);
 			else
@@ -1249,20 +1287,21 @@ void Game::renderGameObjects() {
 		}
 
 		// Cycle through list of Weapon objects and render them to screen
-		for (unsigned int index = 0; index != listOfLaserObjects.size(); ++index) {
+		for (int index = 0; index != listOfLaserObjects.size(); ++index) {
 			listOfLaserObjects[index]->render(listOfLaserObjects[index]->getPlayer(), gLaserOrangeTexture, gLaserGreenTexture, gRenderer);
 			//SDL_RenderDrawRect(gRenderer, &listOfLaserObjects[index]->getLaserCollider());
 		}
-		for (unsigned int index = 0; index != listOfEnemyLaserObjects.size(); ++index) {
-			listOfEnemyLaserObjects[index]->render(gLaserBlueTexture, gRenderer);
-			//SDL_RenderDrawRect(gRenderer, &listOfEnemyLaserObjects[index]->getELaserCollider());
+		for (int index = 0; index != listOfEnemyLaserObjects.size(); ++index) {
+			if (listOfEnemyLaserObjects[index]->getType() == 1) listOfEnemyLaserObjects[index]->render(gVirusFireballTexture, gRenderer); //
+			else listOfEnemyLaserObjects[index]->render(gLaserBlueTexture, gRenderer); // gVirusFireballTexture
+			//SDL_RenderDrawRect(gRenderer, &listOfEnemyLaserObjects[index]->getCollider());
 		}
-		for (unsigned int index = 0; index != listOfNinjaStarObjects.size(); ++index) {
+		for (int index = 0; index != listOfNinjaStarObjects.size(); ++index) {
 			if (listOfNinjaStarObjects[index]->getPlayer() == PLAYER_1)
 				listOfNinjaStarObjects[index]->render(degrees, gNinjaStarYellowTexture, gRenderer);	// Yellow ninja star for player 1
 			else
 				listOfNinjaStarObjects[index]->render(degrees, gNinjaStarBlueTexture, gRenderer);	// Blue ninja star for player 2
-			//SDL_RenderDrawRect(gRenderer, &listOfNinjaStarObjects[index]->getNinjaStarCollider());
+			//SDL_RenderDrawRect(gRenderer, &listOfNinjaStarObjects[index]->getCollider());
 		}
 		for (iterSaw = listOfSawObjects.begin(); iterSaw != listOfSawObjects.end();) {
 			(*iterSaw++)->render(gSawTexture, gRenderer, degrees);									// Render the Saw
@@ -1273,17 +1312,10 @@ void Game::renderGameObjects() {
 		gLevelTextTexture.render((SCREEN_WIDTH - gLevelTextTexture.getWidth()) / 1.5, 8, gRenderer);
 
 
-
-
-
 		if (playerMessageCounter < MESSAGE_TIME) {
 			gPlayerMessageTextTexture.render((SCREEN_WIDTH - gPlayerMessageTextTexture.getWidth()) / 2, (SCREEN_HEIGHT - gPlayerMessageTextTexture.getHeight()) / 2, gRenderer);
 			playerMessageCounter++;
 		}
-
-
-
-
 
 		gTimeTextTexture.modifyAlpha(timerAlpha);	// Flash the timer
 		gTimeTextTexture.render(1150, 8, gRenderer);
@@ -1292,8 +1324,10 @@ void Game::renderGameObjects() {
 		gFPSTextTexture.render(350, 8, gRenderer);
 
 		// Health Bars for Players
-		SDL_Color fgColour = { 0, 255, 0, 255 };								// Set text color as blue
-		SDL_Color bgColour = { 255, 0, 0, 255 };
+		SDL_Color fgColour = { 0, 255, 0, 255 };								// Set foreground colour as green
+		SDL_Color fgColourBlue = { 0, 200, 255, 255 };							// Set foreground colour as green
+		SDL_Color bgColour = { 255, 0, 0, 255 };								// Set background colour as red
+		SDL_Color bgColourOrange = { 255, 150, 0, 255 };								// Set background colour as red
 
 		if (player1.getAlive()) {
 			renderHealthBar(player1.getX() + (player1.getWidth() / 4), player1.getY() - 10, player1.getWidth() / 2, 5, player1.getHealth() / MAX_HEALTH, fgColour, bgColour, HORIZONTAL);
@@ -1306,6 +1340,28 @@ void Game::renderGameObjects() {
 			gPlayer2Texture.modifyAlpha(player2Alpha);
 			player2.render(gPlayer2Texture, gDarkBlueParticleTexture, gMediumBlueParticlTexture, gLightBlueParticleTexture, gShimmerTexture, gRenderer);
 			player2.rendPlayerLives(gP2LivesTexture, 2, gRenderer);						// render the ship over the background
+		}
+
+		// Orange Exploding Virus
+		currentTime = SDL_GetTicks();
+		if (currentTime > newTime + 500) {
+			newTime = currentTime;
+			virusBar -= 0.5;					// increment every 1/2 second to decrement countdown timer
+			//std::cout << "virus counter " << virusBar;
+		}
+		for (int index = 0; index != listOfEnemyVirus.size(); ++index) {
+			if (listOfEnemyVirus[index]->getType() == ORANGE) {						// 2017/01/25 If the type of virus is an Orange Exploding Virus
+				// x, y, width, height
+				if (listOfEnemyVirus[index]->getX() > SCREEN_WIDTH - listOfEnemyVirus[index]->getWidth()) virusBar = 3.0;	// Don't decrement the counter until the virus is appearing on screen
+				renderHealthBar(listOfEnemyVirus[index]->getX() + listOfEnemyVirus[index]->getWidth() + 10, listOfEnemyVirus[index]->getY() + (listOfEnemyVirus[index]->getHeight() / 6), 5, (listOfEnemyVirus[index]->getHeight() / 3) * 2, virusBar / listOfEnemyVirus[index]->getTimer(), fgColourBlue, bgColourOrange, VERTICAL); // 2/3s the height of the virus
+
+				if (virusBar <= 0) {
+					virusBar = 3.0;
+					spawnEnemyLaser(listOfEnemyVirus[index]->getX(), listOfEnemyVirus[index]->getY(), 1);
+					spawnExplosion(listOfEnemyVirus[index]->getX() - listOfEnemyVirus[index]->getWidth(), listOfEnemyVirus[index]->getY() + 10);
+					listOfEnemyVirus[index]->setAlive(false);			// When timer runs out kill the virus
+				}
+			}
 		}
 	}
 	else if (levelOver == true) {
@@ -1333,13 +1389,17 @@ void Game::moveGameObjects() {
 	if (player2.getAlive()) player2.movement();
 
 	// Cycle through lists of Enemys and move them
-	for (unsigned int index = 0; index != listOfEnemyShips.size(); ++index) {
+	for (int index = 0; index != listOfEnemyShips.size(); ++index) {
 		listOfEnemyShips[index]->movement();
 		spawnEnemyLaser(listOfEnemyShips[index]->getX(), listOfEnemyShips[index]->getY());
 		//SDL_RenderDrawRect(gRenderer, &listOfLaserObjects[index]->getLaserCollider());
 	}
 	// Cycle through list of Enemy virus and move them
-	for (unsigned int index = 0; index != listOfEnemyVirus.size(); ++index) {
+	for (int index = 0; index != listOfEnemyVirus.size(); ++index) {
+		if (listOfEnemyVirus[index]->getX() > SCREEN_WIDTH && listOfEnemyVirus[index]->getX() < SCREEN_WIDTH + 10 && listOfEnemyVirus[index]->getType() == 1) {
+			playerMessageCounter = 0;
+			playerMessage = "Exploding Orange Virus Approaching";
+		}
 		if(abs(listOfEnemyVirus[index]->getX() - player1.getX()) < abs(listOfEnemyVirus[index]->getX() - player2.getX()))	// absolute values to see which is closer on x axis, player1 or 2, and move towards that player
 			listOfEnemyVirus[index]->movement(player1.getX(), player1.getY());
 		else
@@ -1358,17 +1418,17 @@ void Game::moveGameObjects() {
 	}
 
 	// Cycle through list of Power Ups and move them
-	for (unsigned int index = 0; index != listOfPowerUps.size(); ++index) {
+	for (int index = 0; index != listOfPowerUps.size(); ++index) {
 		listOfPowerUps[index]->movement();
 	}
 	// Cycle through lists of weapons and move them
-	for (unsigned int index = 0; index != listOfLaserObjects.size(); ++index) {
+	for (int index = 0; index != listOfLaserObjects.size(); ++index) {
 		listOfLaserObjects[index]->movement();
 	}
-	for (unsigned int index = 0; index != listOfEnemyLaserObjects.size(); ++index) {
+	for (int index = 0; index != listOfEnemyLaserObjects.size(); ++index) {
 		listOfEnemyLaserObjects[index]->movement();
 	}
-	for (unsigned int index = 0; index != listOfNinjaStarObjects.size(); ++index) {
+	for (int index = 0; index != listOfNinjaStarObjects.size(); ++index) {
 		listOfNinjaStarObjects[index]->movement();
 		//SDL_RenderDrawRect(gRenderer, &listOfNinjaStarObjects[index]->getNinjaStarCollider());
 	}
@@ -1407,7 +1467,7 @@ void Game::flashGameObject(int &alpha, bool &flash, int rate, int times) {
 
 // Destroy Game Objects
 void Game::destroyGameObjects() {
-	for (unsigned int index = 0; index != listOfExplosions.size(); ++index) {
+	for (int index = 0; index != listOfExplosions.size(); ++index) {
 		if (!listOfExplosions[index]->getAlive()) {
 			listOfExplosions.erase(listOfExplosions.begin() + index);
 			//std::cout << "Explosion Destroyed." << std::endl;
@@ -1415,14 +1475,14 @@ void Game::destroyGameObjects() {
 		}
 	}// end for
 
-	for (unsigned int index = 0; index != listOfEnemyShips.size(); ++index) {
+	for (int index = 0; index != listOfEnemyShips.size(); ++index) {
 		if (!listOfEnemyShips[index]->getAlive()) {
 			listOfEnemyShips.erase(listOfEnemyShips.begin() + index);
 			//std::cout << "Enemy Ship Destroyed." << std::endl;
 			index--;
 		}
 	}// end for
-	for (unsigned int index = 0; index != listOfEnemyVirus.size(); ++index) {
+	for (int index = 0; index != listOfEnemyVirus.size(); ++index) {
 		if (!listOfEnemyVirus[index]->getAlive()) {
 			listOfEnemyVirus.erase(listOfEnemyVirus.begin() + index);
 			//std::cout << "Enemy Virus Destroyed." << std::endl;
@@ -1456,21 +1516,21 @@ void Game::destroyGameObjects() {
 			iterWBC++;
 		}
 	}
-	for (unsigned int index = 0; index != listOfLaserObjects.size(); ++index) {
+	for (int index = 0; index != listOfLaserObjects.size(); ++index) {
 		if (!listOfLaserObjects[index]->getAlive()) {
 			listOfLaserObjects.erase(listOfLaserObjects.begin() + index);
 			//std::cout << "Laser Destroyed." << std::endl;
 			index--;
 		}
 	}// end for
-	for (unsigned int index = 0; index != listOfEnemyLaserObjects.size(); ++index) {
+	for (int index = 0; index != listOfEnemyLaserObjects.size(); ++index) {
 		if (!listOfEnemyLaserObjects[index]->getAlive()) {
 			listOfEnemyLaserObjects.erase(listOfEnemyLaserObjects.begin() + index);
 			std::cout << "Enemy Laser Destroyed." << std::endl;
 			index--;
 		}
 	}// end for
-	for (unsigned int index = 0; index != listOfNinjaStarObjects.size(); ++index) {
+	for (int index = 0; index != listOfNinjaStarObjects.size(); ++index) {
 		if (!listOfNinjaStarObjects[index]->getAlive()) {
 			listOfNinjaStarObjects.erase(listOfNinjaStarObjects.begin() + index);
 			std::cout << "Ninja Star Destroyed." << std::endl;
@@ -1486,7 +1546,7 @@ void Game::destroyGameObjects() {
 			iterSaw++;
 		}
 	}
-	for (unsigned int index = 0; index != listOfPowerUps.size(); ++index) {
+	for (int index = 0; index != listOfPowerUps.size(); ++index) {
 		if (!listOfPowerUps[index]->getAlive()) {
 			listOfPowerUps.erase(listOfPowerUps.begin() + index);
 			//std::cout << "Power Up Destroyed." << std::endl;
@@ -1494,7 +1554,6 @@ void Game::destroyGameObjects() {
 		}
 	}// end for
 }
-
 
 // Decide how many of each enemy / obstacle on screen at a given time
 void Game::spawnMovingObjects() {
@@ -1558,10 +1617,19 @@ void Game::spawnEnemyShip() {
 void Game::spawnEnemyVirus() {
 	int x, y, randomSpeed;
 	spawnRandom(x, y, randomSpeed, 150);
+	int randomExplodingVirus = rand() % 4 + 1;			// 1 in 4 chance of Orange Exploding Virus
+	//int randomExplodingVirus = 1;			// Test Orange Virus
 
-	EnemyVirus* p_Virus = new EnemyVirus();
-	p_Virus->spawn(x, y, -4, -2, p_Virus->getCollider());
-	listOfEnemyVirus.push_back(p_Virus);
+	if (randomExplodingVirus == 1) {
+		EnemyVirus* p_OrangeVirus = new EnemyVirus(ORANGE, 3.0);		// Orange type = 1
+		p_OrangeVirus->spawn(x, y, -4, -2, p_OrangeVirus->getCollider(), ORANGE);
+		listOfEnemyVirus.push_back(p_OrangeVirus);
+	}
+	else {
+		EnemyVirus* p_GreenVirus = new EnemyVirus(GREEN, 0);			// Green type = 0
+		p_GreenVirus->spawn(x, y, -4, -2, p_GreenVirus->getCollider());
+		listOfEnemyVirus.push_back(p_GreenVirus);
+	}
 }
 void Game::spawnBloodCell() {
 	int x, y, randomSpeed;
@@ -1614,44 +1682,115 @@ void Game::spawnRandom(int &x, int &y, int &randomSpeed, int xMuliplier, int yPa
 }
 
 // Spawn Weapon at ships location
-void Game::spawnLaser(int x, int y, int player, int velocity, int grade) {
-	Laser* p_Laser1 = new Laser();
+void Game::spawnLaser(int x, int y, int player, int velocity, int grade, int type) {
+	if (type == 0) {
+		Laser* p_Laser1 = new Laser();
 
-	p_Laser1->spawn(x + 65, y + 25, velocity, player);
-	if (player == PLAYER_1) grade = player1.getLaserGrade();
-	else if (player == PLAYER_2) grade = player2.getLaserGrade();
+		p_Laser1->spawn(x + 65, y + 25, velocity, player);
+		if (player == PLAYER_1) grade = player1.getLaserGrade();
+		else if (player == PLAYER_2) grade = player2.getLaserGrade();
 
-	//p_Laser1->setPlayer(player);
-	listOfLaserObjects.push_back(p_Laser1);
+		//p_Laser1->setPlayer(player);
+		listOfLaserObjects.push_back(p_Laser1);
 
-	if (grade == 1) {		// FIRE 2 MORE LASERS AT ANGLES
-		Laser* p_Laser2 = new Laser();
-		Laser* p_Laser3 = new Laser();
-		p_Laser2->spawn(x + 65, y + 30, velocity, player);
-		//p_Laser2->setPlayer(player);
-		p_Laser2->setAngle(1);
-		p_Laser2->setGrade(1);
-		listOfLaserObjects.push_back(p_Laser2);
-		p_Laser3->spawn(x + 65, y + 35, velocity, player);
-		//p_Laser3->setPlayer(player);
-		p_Laser3->setAngle(2);
-		p_Laser3->setGrade(1);
-		listOfLaserObjects.push_back(p_Laser3);
+		if (grade == 1) {		// FIRE 2 MORE LASERS AT ANGLES
+			Laser* p_Laser2 = new Laser();
+			Laser* p_Laser3 = new Laser();
+			p_Laser2->spawn(x + 65, y + 30, velocity, player);
+			p_Laser2->setAngle(1);
+			p_Laser2->setGrade(1);
+			listOfLaserObjects.push_back(p_Laser2);
+			p_Laser3->spawn(x + 65, y + 35, velocity, player);
+			p_Laser3->setAngle(2);
+			p_Laser3->setGrade(1);
+			listOfLaserObjects.push_back(p_Laser3);
+		}
 	}
+
 	if (!gameOver) {
 		if (player == 1) Mix_PlayChannel(-1, gLaserFX1, 0);
 		if (player == 2) Mix_PlayChannel(-1, gLaserFX2, 0);
 	}
 }
-void Game::spawnEnemyLaser(int shipX, int shipY) {
-	LaserEnemy* p_LaserE = new LaserEnemy();
-	int randomLaser = rand() % 3 + 1;
-	int distanceBetweenShots = ( 50 * randomLaser ) + 50;								// 2017/01/20 More random shooting from enemies
-	//if (shipX % 100 == 0) {
-	if (shipX % distanceBetweenShots < 5) {												// 2017-01-20 Not all ships were firing
-		p_LaserE->spawn(shipX, shipY, p_LaserE->getCollider());
-		listOfEnemyLaserObjects.push_back(p_LaserE);
-		Mix_PlayChannel(-1, gLaserEFX, 0);
+void Game::spawnEnemyLaser(int shipX, int shipY, int type) {
+	if (type == 0 && shipX < SCREEN_WIDTH) {		// first type and visible on screen, start shooting
+		LaserEnemy* p_LaserE = new LaserEnemy();
+		int randomLaser = rand() % 3 + 1;
+		int distanceBetweenShots = (50 * randomLaser) + 50;								// 2017/01/20 More random shooting from enemies
+		//if (shipX % 100 == 0) {
+		if (shipX % distanceBetweenShots < 5) {											// 2017-01-20 Not all ships were firing
+			p_LaserE->spawn(shipX, shipY, p_LaserE->getCollider());
+			listOfEnemyLaserObjects.push_back(p_LaserE);
+			Mix_PlayChannel(-1, gLaserEFX, 0);
+		}
+	}
+	else if(type == 1){
+		LaserEnemy* p_Laser1 = new LaserEnemy();
+		LaserEnemy* p_Laser2 = new LaserEnemy();
+		LaserEnemy* p_Laser3 = new LaserEnemy();
+		LaserEnemy* p_Laser4 = new LaserEnemy();
+		LaserEnemy* p_Laser5 = new LaserEnemy();
+		LaserEnemy* p_Laser6 = new LaserEnemy();
+		LaserEnemy* p_Laser7 = new LaserEnemy();
+		LaserEnemy* p_Laser8 = new LaserEnemy();
+
+
+		std::cout << "***********   VIRUS BULLETS CREATED   ***********" << std::endl;
+
+		p_Laser1->spawn(shipX, shipY, p_Laser1->getCollider());
+		p_Laser1->setVelX(p_Laser1->getVelocity());
+		p_Laser1->setType(1);
+		p_Laser1->setAlive(true);
+		listOfEnemyLaserObjects.push_back(p_Laser1);
+
+
+		p_Laser2->spawn(shipX, shipY, p_Laser2->getCollider());
+		p_Laser2->setVelX(-p_Laser2->getVelocity());
+		p_Laser2->setType(1);
+		p_Laser2->setAlive(true);
+		listOfEnemyLaserObjects.push_back(p_Laser2);
+
+		p_Laser3->spawn(shipX, shipY, p_Laser3->getCollider());
+		p_Laser3->setVelX(0);
+		p_Laser3->setVelY(p_Laser3->getVelocity());
+		p_Laser3->setType(1);
+		p_Laser3->setAlive(true);
+		listOfEnemyLaserObjects.push_back(p_Laser3);
+
+		p_Laser4->setType(1);
+		p_Laser4->spawn(shipX, shipY, p_Laser4->getCollider());
+		p_Laser4->setVelX(0);
+		p_Laser4->setVelY(-p_Laser4->getVelocity());
+		p_Laser4->setAlive(true);
+		listOfEnemyLaserObjects.push_back(p_Laser4);
+
+		p_Laser5->setType(1);
+		p_Laser5->spawn(shipX, shipY, p_Laser5->getCollider());
+		p_Laser5->setVelX(p_Laser5->getVelocity() / sqrt(2));
+		p_Laser5->setVelY(-p_Laser5->getVelocity() / sqrt(2));
+		p_Laser5->setAlive(true);
+		listOfEnemyLaserObjects.push_back(p_Laser5);
+
+		p_Laser6->spawn(shipX, shipY, p_Laser6->getCollider());
+		p_Laser6->setVelX(p_Laser6->getVelocity() / sqrt(2));
+		p_Laser6->setVelY(p_Laser6->getVelocity() / sqrt(2));
+		p_Laser6->setType(1);
+		p_Laser6->setAlive(true);
+		listOfEnemyLaserObjects.push_back(p_Laser6);
+
+		p_Laser7->spawn(shipX, shipY, p_Laser7->getCollider());
+		p_Laser7->setVelX(-(p_Laser7->getVelocity() / sqrt(2)));
+		p_Laser7->setVelY(-(p_Laser7->getVelocity() / sqrt(2)));
+		p_Laser7->setType(1);
+		p_Laser7->setAlive(true);
+		listOfEnemyLaserObjects.push_back(p_Laser7);
+
+		p_Laser8->spawn(shipX, shipY, p_Laser8->getCollider());
+		p_Laser8->setVelX(-(p_Laser8->getVelocity() / sqrt(2)));
+		p_Laser8->setVelY(p_Laser8->getVelocity() / sqrt(2));
+		p_Laser8->setType(1);
+		p_Laser8->setAlive(true);
+		listOfEnemyLaserObjects.push_back(p_Laser8);
 	}
 }
 void Game::spawnNinjaStar(int x, int y, int player) {				// player to spawn for and their coords
@@ -1799,24 +1938,30 @@ void fpsthink() {
 
 void Game::collisionCheck() {
 	// Check if Player 1  or 2 has collided with an enemy virus or ship
-	for (unsigned int index1 = 0; index1 != listOfEnemyVirus.size(); ++index1) {
+	for (int index1 = 0; index1 != listOfEnemyVirus.size(); ++index1) {
 		if (checkCollision(player1.getCollider(), listOfEnemyVirus[index1]->getCollider()) == true) {
-			if (player1.getSawActive()) {
+			if (player1.getSawActive() && listOfEnemyVirus[index1]->getType() == GREEN) {
 				listOfEnemyVirus[index1]->setAlive(false);						// If saw is active kill that enemy
+			}
+			else if (listOfEnemyVirus[index1]->getType() == ORANGE) {
+				virusBar = 0;
 			}
 			else
 				if (!player1Flash) managePlayerHealth(PLAYER_1, listOfEnemyVirus[index1]->getScore() / 3, "Enemy Virus");	// Take off 5 health
 		}
 		else if (checkCollision(player2.getCollider(), listOfEnemyVirus[index1]->getCollider()) == true) {
-			if (player2.getSawActive()) {
+			if (player2.getSawActive() && listOfEnemyVirus[index1]->getType() == GREEN) {
 				listOfEnemyVirus[index1]->setAlive(false);						// If saw is active kill that enemy
+			}
+			else if (listOfEnemyVirus[index1]->getType() == ORANGE) {
+				virusBar = 0;
 			}
 			else
 				if (!player2Flash) managePlayerHealth(PLAYER_2, listOfEnemyVirus[index1]->getScore() / 3, "Enemy Virus");	// Take off 5 health
 		}
 	}
 
-	for (unsigned int index2 = 0; index2 != listOfEnemyShips.size(); ++index2) {
+	for (int index2 = 0; index2 != listOfEnemyShips.size(); ++index2) {
 		if (checkCollision(player1.getCollider(), listOfEnemyShips[index2]->getCollider()) == true) {
 			if (player1.getSawActive()) {
 				listOfEnemyShips[index2]->setAlive(false);										// If saw is active kill that enemy
@@ -1834,7 +1979,7 @@ void Game::collisionCheck() {
 	}
 
 	// Check if Player 1 or 2 has picked up a power up
-	for (unsigned int index = 0; index != listOfPowerUps.size(); ++index) {
+	for (int index = 0; index != listOfPowerUps.size(); ++index) {
 		if (checkCollision(player1.getCollider(), listOfPowerUps[index]->getCollider()) == true) {
 			player1.setScore(player1.getScore() + listOfPowerUps[index]->getScore());
 			//player1.setHealth(player1.getHealth() + listOfPowerUps[index]->getScore());
@@ -1842,7 +1987,7 @@ void Game::collisionCheck() {
 			if (listOfPowerUps[index]->getType() == HEALTH) {
 				managePlayerHealth(PLAYER_1, -listOfPowerUps[index]->getScore());
 				playerMessageCounter = 0;
-				playerMessage = "Player 1 has increaded their health!!!";
+				playerMessage = "Player 1 has increased their health!!!";
 			}
 			else if (listOfPowerUps[index]->getType() == LASER) {
 				player1.setScore(player1.getScore() + listOfPowerUps[index]->getScore());
@@ -1861,7 +2006,7 @@ void Game::collisionCheck() {
 			if (listOfPowerUps[index]->getType() == HEALTH) {
 				managePlayerHealth(PLAYER_2, -listOfPowerUps[index]->getScore());
 				playerMessageCounter = 0;
-				playerMessage = "Player 2 has increaded their health!!!";
+				playerMessage = "Player 2 has increased their health!!!";
 			}
 			else if (listOfPowerUps[index]->getType() == LASER) {
 				player2.setScore(player2.getScore() + listOfPowerUps[index]->getScore());
@@ -1877,8 +2022,8 @@ void Game::collisionCheck() {
 	}
 
 	// Cycle through lists of Player Lasers and check collision with other game objects
-	for (unsigned int index = 0; index != listOfLaserObjects.size(); ++index) {
-		for (unsigned int index1 = 0; index1 != listOfEnemyVirus.size(); ++index1) {														// Check if collision with Virus
+	for (int index = 0; index != listOfLaserObjects.size(); ++index) {
+		for (int index1 = 0; index1 != listOfEnemyVirus.size(); ++index1) {														// Check if collision with Virus
 			if (checkCollision(listOfLaserObjects[index]->getCollider(), listOfEnemyVirus[index1]->getCollider()) == true) {
 				if (listOfLaserObjects[index]->getPlayer() == PLAYER_1)
 					player1.setScore(player1.getScore() + listOfEnemyVirus[index1]->getScore());
@@ -1892,7 +2037,7 @@ void Game::collisionCheck() {
 				Mix_PlayChannel(-1, gExplosionFX, 0);
 			}
 		}
-		for (unsigned int index2 = 0; index2 != listOfEnemyShips.size(); ++index2) {
+		for (int index2 = 0; index2 != listOfEnemyShips.size(); ++index2) {
 			if (checkCollision(listOfLaserObjects[index]->getCollider(), listOfEnemyShips[index2]->getCollider()) == true) {	// Check for Player Laser collision with Enemy Ship
 				if (listOfLaserObjects[index]->getPlayer() == PLAYER_1)
 					player1.setScore(player1.getScore() + listOfEnemyShips[index2]->getScore());
@@ -1908,9 +2053,9 @@ void Game::collisionCheck() {
 		}
 	}
 	// Cycle through Ninja Stars and check collision on enemies
-	for (unsigned int index = 0; index != listOfNinjaStarObjects.size(); ++index) {
+	for (int index = 0; index != listOfNinjaStarObjects.size(); ++index) {
 		listOfNinjaStarObjects[index]->movement();
-		for (unsigned int index1 = 0; index1 != listOfEnemyVirus.size(); ++index1) {
+		for (int index1 = 0; index1 != listOfEnemyVirus.size(); ++index1) {
 			if (checkCollision(listOfNinjaStarObjects[index]->getCollider(), listOfEnemyVirus[index1]->getCollider()) == true) {
 				player1.setScore(player1.getScore() + listOfEnemyVirus[index1]->getScore());
 				listOfEnemyVirus[index1]->setAlive(false);
@@ -1919,7 +2064,7 @@ void Game::collisionCheck() {
 				Mix_PlayChannel(-1, gExplosionFX, 0);
 			}
 		}
-		for (unsigned int index2 = 0; index2 != listOfEnemyShips.size(); ++index2) {
+		for (int index2 = 0; index2 != listOfEnemyShips.size(); ++index2) {
 			if (checkCollision(listOfNinjaStarObjects[index]->getCollider(), listOfEnemyShips[index2]->getCollider()) == true) {
 				player2.setScore(player2.getScore() + listOfEnemyShips[index2]->getScore());
 				listOfEnemyShips[index2]->setAlive(false);
@@ -1931,7 +2076,7 @@ void Game::collisionCheck() {
 	}
 
 	// Check if Enemy Laser has collided with Player 1 or 2
-	for (unsigned int index = 0; index != listOfEnemyLaserObjects.size(); ++index) {
+	for (int index = 0; index != listOfEnemyLaserObjects.size(); ++index) {
 		if (checkCollision(listOfEnemyLaserObjects[index]->getCollider(), player1.getCollider()) == true) {
 			managePlayerHealth(PLAYER_1, listOfEnemyLaserObjects[index]->getScore());
 			listOfEnemyLaserObjects[index]->setAlive(false);

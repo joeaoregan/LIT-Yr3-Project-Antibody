@@ -1,7 +1,5 @@
 #include "GameObject.h"
 
-#define SCREEN_WIDTH 800
-#define SCREEN_HEIGHT 600
 #define MAX_HEALTH 100
 
 // Constructor
@@ -50,16 +48,16 @@ void GameObject::spawn(int x, int y, int vx, SDL_Rect collider) {
 	m_y = y;
 	m_xVel = vx;
 	m_yVel = vx;	// 2017-01-10 JOE: use same velocity for x and y
-	mCollider = collider;
+	m_Collider = collider;
 }
 
-void GameObject::spawn(int x, int y, int vx, int vy, SDL_Rect collider) {
+void GameObject::spawn(int x, int y, int vx, int vy, SDL_Rect collider, int type) {
 	m_x = x;
 	m_y = y;
 	m_xVel = vx;
 	m_yVel = vy;	// 2017-01-10 JOE: use same velocity for x and y
-	mCollider = collider;
-
+	m_Collider = collider;
+	m_Type = type;
 }
 
 void GameObject::movement() {
@@ -153,28 +151,39 @@ void GameObject::setNumLives(int n) {
 }
 
 SDL_Rect GameObject::getCollider(){
-	return mCollider;
+	return m_Collider;
 }
 void GameObject::setCollider(SDL_Rect collider) {
-	mCollider = collider;
+	m_Collider = collider;
 }
 
 void GameObject::setColliderWidth(int w){
-	mCollider.w = w;
+	m_Collider.w = w;
 }
 
 void GameObject::setColliderHeight(int h){
-	mCollider.h = h;
+	m_Collider.h = h;
 }
 
 void GameObject::setColliderX(int x){
-	mCollider.x = x;
+	m_Collider.x = x;
 }
 
 void GameObject::setColliderY(int y){
-	mCollider.y = y;
+	m_Collider.y = y;
 }
 
 void GameObject::setName(std::string name) {
 	m_Name = name;
+}
+
+
+
+// 2017/01/25
+int GameObject::getType() {
+	return m_Type;
+}
+
+void GameObject::setType(int t) {
+	m_Type = t;
 }

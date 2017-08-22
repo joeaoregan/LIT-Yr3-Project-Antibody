@@ -19,7 +19,7 @@ public:
 	void spawn(int x, int y, int vx);							// spawn with coords & velocity
 	void spawn(int x, int y, int vx, int vy);
 	void spawn(int x, int y, int vx, SDL_Rect collider);
-	void spawn(int x, int y, int vx, int vy, SDL_Rect collider);
+	void spawn(int x, int y, int vx, int vy, SDL_Rect collider, int type = 0);
 	virtual void movement();
 
 	int getX();					// Get GameObject X coord
@@ -35,6 +35,7 @@ public:
 	int getHealth();
 	int getMaxHealth();
 	int getNumLives();
+	int getType();
 
 	void setX(int x);			// Set GameObject X coord
 	void setY(int y);			// Set GameObject Y coord
@@ -55,6 +56,7 @@ public:
 	void setColliderHeight(int h);
 	void setColliderX(int x);
 	void setColliderY(int y);
+	void setType(int t);
 
 private:
 	// GameObject Variables
@@ -65,9 +67,11 @@ private:
 	int m_xVel, m_yVel, m_Velocity;	// Velocity
 	int m_Width, m_Height;			// Dimensions
 	bool m_Alive;					// Is the GameObject active on screen, return true if its health is greater than 0
-	SDL_Rect mCollider;
+	SDL_Rect m_Collider;
 	int m_Score;					// Score value for killing or collecting an object
 	int m_NumLives;
+
+	int m_Type;						// Integer value to indicate the type of game object POWER UP, VIRUS
 };
 
 #endif

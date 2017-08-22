@@ -154,10 +154,10 @@ void Player::handleEvent(SDL_Event& e, int player) {
 		else if (e.type == SDL_KEYUP && e.key.repeat == 0) {
 			// Adjust the velocity
 			switch (e.key.keysym.sym) {
-			case SDLK_w: moveDown(); break;		// undo up movement
-			case SDLK_s: moveUp(); break;		// undo down movement
-			case SDLK_a: moveRight(); break;	// undo left movement
-			case SDLK_d: moveLeft(); break;		// undo right movement
+			case SDLK_w: moveDown(); break;		// undo move up
+			case SDLK_s: moveUp(); break;		// undo move down
+			case SDLK_a: moveRight(); break;	// undo move left
+			case SDLK_d: moveLeft(); break;		// undo move right
 			}
 		}
 	}
@@ -292,7 +292,7 @@ void Player::movement() {
 	setY(getY() + getVelY());											// Move the ship up or down
 
 	// If the ship went too far up or down
-	if ((getY() < 40) || ((getY() + getHeight()) > SCREEN_HEIGHT - 40)) {
+	if ((getY() < 40) || ((getY() + getHeight()) > SCREEN_HEIGHT_GAME - 40)) {
 		setY(getY() - getVelY());										// Move back
 	}
 

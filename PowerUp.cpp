@@ -45,11 +45,3 @@ void PowerUp::movement() {
 void PowerUp::render(LTexture &texture, SDL_Renderer *rend) {
 	texture.render(getX(), getY(), rend);
 }
-
-int PowerUp:: getType() {
-	return powerUpType;
-}
-
-void PowerUp::setType(int type) {
-	powerUpType = type;
-}
