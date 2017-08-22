@@ -13,8 +13,8 @@
 /*
 	TEXTURE:
 
-	This class manages all texture functionality for the game. Loading textures from, storing them to 
-	a map for indexing, and then rendering to screen. There are functions to render textures from text, 
+	This class manages all texture functionality for the game. Loading textures from, storing them to
+	a map for indexing, and then rendering to screen. There are functions to render textures from text,
 	and also to handle the alpha value of objects, to make them transparent or flash.
 */
 #include "Texture.h"
@@ -59,7 +59,7 @@ bool Texture::load(std::string fileName, std::string id) {
 
 void Texture::draw(std::string id, int x, int y, int width, int height, SDL_RendererFlip flip) {
 //void Texture::draw(std::string id, int x, int y, int width, int height, SDL_Renderer* rend, SDL_RendererFlip flip) {
-	SDL_Rect renderQuad = { x, y, mWidth, mHeight };	// Set rendering space and render to screen
+//	SDL_Rect renderQuad = { x, y, mWidth, mHeight };	// Set rendering space and render to screen
 	SDL_Rect srcRect;
 	SDL_Rect destRect;
 
@@ -179,13 +179,15 @@ bool Texture::loadFromRenderedTextID(std::string textureText, std::string id, SD
 //bool Texture::loadFromRenderedTextID(SDL_Texture* text, std::string textureText, std::string id, SDL_Color textColor, TTF_Font* font, SDL_Renderer* renderer, bool textWrapped) {
 	free();	//Get rid of preexisting texture
 
-	if (!textWrapped)
-		textSurface = TTF_RenderText_Solid(font, textureText.c_str(), textColor);	//Render text surface
-	else
-		textSurface = TTF_RenderText_Blended_Wrapped(font, textureText.c_str(), textColor, 1000);
+	if (!textWrapped) textSurface = TTF_RenderText_Solid(font, textureText.c_str(), textColor);	//Render text surface
+	else textSurface = TTF_RenderText_Blended_Wrapped(font, textureText.c_str(), textColor, 1000);
+
+	std::cout << "Render text 1" << std::endl;
 
 	if (textSurface != NULL) {
+		std::cout << "Render text 2" << std::endl;
 		//Create texture from surface pixels
+		//mTexture = SDL_CreateTextureFromSurface(Game::Instance()->getRenderer(), textSurface);
 		textXXX = SDL_CreateTextureFromSurface(Game::Instance()->getRenderer(), textSurface);
 		if (textXXX == NULL) {
 			printf("Unable to create texture from rendered text! SDL Error: %s\n", SDL_GetError());
@@ -202,10 +204,13 @@ bool Texture::loadFromRenderedTextID(std::string textureText, std::string id, SD
 		printf("loadFromRenderedText(): Unable to render text surface! SDL_ttf Error: %s\n", TTF_GetError());
 	}
 
+	std::cout << "Render text 3" << std::endl;
+	//if (mTexture != 0) {
 	//if (mTexture != 0) {
 	if (textXXX != 0) {
 		//m_textureMap[id] = mTexture;	// Add to texture map
 		m_textureMap[id] = textXXX;	// Add to texture map
+		std::cout << "Render text 4" << std::endl;
 		return true;
 	}
 
@@ -313,14 +318,13 @@ void Texture::speedBoostText(std::string textureText) {
 	Function to indicate how many rockets a player has left
 */
 void Texture::numRocketsLeft(std::string textureText) {
-	std::cout << "numRocketsLeft" << textureText << std::endl;
-	//free();
+	free();
 //void Texture::numRocketsLeft(std::string textureText, SDL_Renderer* rend) {
 	if (!loadFromRenderedText(textureText, { 0, 255, 0, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 36))) {		// Green Text
 		printf("numRocketsLeft(): Unable to render Num Rockets Left User Interface Text Texture!\n");
 	}
 }
-/* 
+/*
 	2017-02-15:
 	Function to render the players scores, the FPS, and the current game level
 */
@@ -366,7 +370,7 @@ void Texture::UITextTimer(std::string timerText, unsigned int Timer) {
 
 //std::string previous1, previous2, previous3;
 void Texture::UITextPlayerMessage(std::string playerMessage, int type) {
-	
+
 	free();
 //void Texture::UITextPlayerMessage(std::string playerMessage, SDL_Renderer* rend, int type) {
 	if (type == 0) {
@@ -422,17 +426,11 @@ void Texture::loadEnterNameText(std::string nameText) {
 	enterName->loadFromRenderedTextID(nameText, "enterNameID", { 255, 255, 255, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 20), true);		// Lives in top left corner
 
 }
-
-SDL_Color Texture::getFontColour() {
-return txtColour;
-}
-void Texture::setFontColour(SDL_Color f) {
-txtColour = f;
-}
 */
 void Texture::clearMedia() {
 
 }
+
 const int NUM_TEXTURES2 = 20;
 
 // 2D Array of textures, with path to file, texture ID, and description for error messages
@@ -457,7 +455,8 @@ std::string textures2[NUM_TEXTURES2][3] = {
 
 	// Power Ups
 	{ "Art/PowerUpLife.png", "lifePowerUpID", "New Life Power Up" },
-	{ "Art/PowerUpClock.png", "checkpointPowerUpID", "Checkpoint // Timer Power Up" },
+//	{ "Art/PowerUpClock.png", "checkpointPowerUpID", "Checkpoint // Timer Power Up" },
+	{ "Art/PowerUpClockOld.png", "checkpointPowerUpID", "Checkpoint // Timer Power Up" },
 	{ "Art/PowerUpRocket.png", "rocketPowerUpID", "Rocket Power Up" },
 	{ "Art/PowerUpHealthBox.png", "healthPowerUpID", "Health Power Up" },
 	{ "Art/PowerUpLaser.png", "laserPowerUpID", "Laser Power Up" },
@@ -471,7 +470,7 @@ std::string textures2[NUM_TEXTURES2][3] = {
 };
 
 bool Texture::loadTextureMedia() {
-	//bool Texture::loadTextureMedia(SDL_Renderer* rend) {
+//bool Texture::loadTextureMedia(SDL_Renderer* rend) {
 
 	lastTime = SDL_GetTicks();
 

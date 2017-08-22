@@ -177,12 +177,7 @@ void Player::handleEvent(SDL_Event& e, int player) {
 			case SDLK_a: moveRight(); break;	// undo move left
 			case SDLK_d: moveLeft(); break;		// undo move right
 
-			case SDLK_c: if (getTimer() > 0)  Game::Instance()->spawnRocket(getX(), getY(), PLAYER_1, ROCKET_P1, true);
-						 //else //Game::Instance()->spawnRocket(getX(), getY(), PLAYER_2, ROCKET_P2, false);
-							// setTimer(ROCKET_TIMER);
-						else resetRocket();
-							// player1->setTimer(ROCKET_TIMER);
-				break;
+			case SDLK_c: Game::Instance()->spawnRocket(getX(), getY(), PLAYER_1, ROCKET_P1, true); break;
 			}
 		}
 	}
@@ -215,12 +210,7 @@ void Player::handleEvent(SDL_Event& e, int player) {
 				if (getVelX() < 0) moveRight(); break;
 			case SDLK_RIGHT:
 				if (getVelX() > 0) moveLeft(); break;
-			case SDLK_v:
-				if (getTimer() > 0 && !getKillRocket()) Game::Instance()->spawnRocket(getX(), getY(), PLAYER_2, ROCKET_P2, true);
-				//	setTimer(ROCKET_TIMER);
-				//else Game::Instance()->spawnRocket(getX(), getY(), PLAYER_2, ROCKET_P2, false);
-				else resetRocket();
-				break;
+			case SDLK_v: Game::Instance()->spawnRocket(getX(), getY(), PLAYER_2, ROCKET_P2, true); break;
 			}
 		}
 		if (SDL_NumJoysticks() > 0) {				// Joystick present
@@ -236,9 +226,7 @@ void Player::handleEvent(SDL_Event& e, int player) {
 			else if (e.type == SDL_JOYBUTTONUP) {		// Number of buttons
 				if (e.jbutton.button == 9) {															// Pick next track on the list
 					std::cout << "Launch Rocket - Button: " << (int)e.jbutton.button << std::endl;		// shows which button has been pressed
-					if (getTimer() > 0) {
-						Game::Instance()->spawnRocket(getX(), getY(), PLAYER_2, ROCKET_P2, true);
-					}
+					Game::Instance()->spawnRocket(getX(), getY(), PLAYER_2, ROCKET_P2, true);
 				}
 			}
 		} // joystick present
@@ -460,15 +448,12 @@ void Player::gameControllerButton(SDL_Event& e) {
 }
 
 
-
 //void Player::initialiseRocket(bool active, bool barActive, int timer, int numRockets) {
 bool Player::initialiseRocket() {
-	bool createRocket = true;
-	setProjectileActive(true);				// Set the rocket active, ready to render to screen
+	setProjectileActive(true);					// Set the rocket active, ready to render to screen
 	setRocketBarActive(false);				// Set the rocket power bar inactive
-	setNumRockets(getNumRockets() - 1);		// decrement the number of rockets
-	if (getTimer() <= 0) createRocket = false;
 	setTimer(ROCKET_TIMER);					// Reset the rocket timer
+	setNumRockets(getNumRockets() - 1);		// decrement the number of rockets
 
 	return true;							// Ready to create a rocket
 }
@@ -476,25 +461,19 @@ bool Player::initialiseRocket() {
 void Player::resetRocket() {
 	setProjectileActive(false);
 	setRocketBarActive(false);
-	setTimer(ROCKET_TIMER);
+
 	setKillRocket(true);
 }
+
 void::Player::rocketScore() {
 	if (SDL_GetTicks() >= getTimerTracker() + 200) {
 		setTimerTracker(SDL_GetTicks());						// start the timer
-		setTimer(getTimer() - (ROCKET_TIMER / 10.0));			// Take away 10% of the timer 2017/03/07 change to .3 to get 10%
-		std::cout << "Rocket Timer: " << getTimer() << std::endl;
+		setTimer(getTimer() - 0.2);								// Take away 10% of the timer
 	}
-	float bonus = 50.0 * (getTimer() / ROCKET_TIMER);
 
-	//std::cout << "BONUS " << bonus << std::endl;
-	setBonusScore(50 - (int) bonus);	// Score increments by 5 (10% of 50)
-	//std::cout << "Rocket Bonus: " << 50.0 - (50.0 * (getTimer() / ROCKET_TIMER)) << std::endl;
+	setBonusScore(50 - (50.0 * (getTimer() / ROCKET_TIMER)));	// Score increments by 5 (10% of 50)
 
-	//setKillRocket(false);										// The rocket can be erased
-	//if (getTimer() <= 0) setKillRocket(true);
-	//if (getTimer() <= 0) resetRocket();
-
+	setKillRocket(false);										// The rocket can be erased
 }
 
 float Player::boostTimer() {

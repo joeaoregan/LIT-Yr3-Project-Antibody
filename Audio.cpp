@@ -86,7 +86,7 @@ void Audio::music() {
 	if (gMusic2 == NULL) {
 		printf("Failed to load rage music! SDL_mixer Error: %s\n", Mix_GetError());
 	}
-	gMusic3 = Mix_LoadMUS("OriginalMusic/3BloodStream.mp3");												// Load music
+	gMusic3 = Mix_LoadMUS("Audio/GameSong3.mp3");												// Load music
 	if (gMusic3 == NULL) {
 		printf("Failed to load rage music! SDL_mixer Error: %s\n", Mix_GetError());
 	}
@@ -121,7 +121,7 @@ int Audio::musicForwardSongName() {						// Pick next track on the list
 
 	if (currentSong == 0) std::cout << "current song 1" << std::endl;
 	else if (currentSong == 1) std::cout << "current song 2" << std::endl;
-	else if (currentSong == 2) std::cout << "current song: Blood Stream" << std::endl;
+	else if (currentSong == 2) std::cout << "current song 3" << std::endl;
 	else if (currentSong == 3) std::cout << "Current Song: The First Step" << std::endl;
 	else if (currentSong == 4) std::cout << "Current Song: Virus" << std::endl;
 

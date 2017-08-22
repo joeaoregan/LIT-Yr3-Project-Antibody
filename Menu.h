@@ -1,9 +1,11 @@
 #ifndef MENU_H
 #define MENU_H
 
+//#include "MenuState.h"
 #include "Button.h"
 #include "Texture.h"
 
+//class Menu : public MenuState {
 class Menu {
 public:
 	static Menu* Instance() {
@@ -12,8 +14,14 @@ public:
 			return s_pInstance;
 		}
 
-		return s_pInstance;							// Make sure the texture manager only exists once
+		return s_pInstance;
 	}
+
+	virtual void update();
+	//virtual void render() {};
+
+	virtual bool init();
+	virtual bool clean();
 
 	TTF_Font *gFont = NULL;
 
@@ -34,20 +42,11 @@ public:
 	SDL_Rect gSpriteClipsMenu[BUTTON_SPRITE_TOTAL];
 	Texture gButtonSpriteSheetTexture;
 	
-	void closeMenuMedia();
 	void handleMenuEvents(SDL_Event& e);
-	bool loadMenuMedia();
-	void draw();
 	void drawPause();
 
-
-	//Menu(int x, int y);							// Initializes the variables
-	//~Menu();
-
-	//Mix_Chunk *sound = Mix_LoadWAV("Audio/explosion.wav");		// Explosion sound fx
-
 private:
-		static Menu* s_pInstance;
+	static Menu* s_pInstance;
 };
 
 #endif
