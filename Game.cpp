@@ -260,10 +260,10 @@ SDL_Rect rocketViewport2;	// Indicates the current amount of Rockets for Player 
 SDL_Rect boostViewport1;	// Indicates if Player 1 speed boost is active
 SDL_Rect boostViewport2;	// Indicates if Player 2 speed boost is active
 
-
 // Animation frames
 SDL_Rect gEnemySpriteClips[ANIMATION_FRAMES];	// Sprite frames for Enemy Ship animation
 SDL_Rect gEnemyBossSpriteClips[6];				// Sprite frames for Enemy Boss animation
+SDL_Rect gEnemyBossEyes[16];					// Sprite frames for Enemy Boss Small Blue Virus generation animation
 SDL_Rect gGreenVirusSpriteClips[6];				// Sprite frames for Orange Virus animation
 SDL_Rect gOrangeVirusSpriteClips[6];			// Sprite frames for Orange Virus animation
 SDL_Rect gBlueVirusSpriteClips[6];				// Sprite frames for Blue Virus animation
@@ -279,6 +279,9 @@ SDL_Rect gVirusBlueExplosionClips[BLOOD_EXP_ANIMATION_FRAMES];		// Sprite frames
 
 Texture gEnemySpriteSheetTexture;					// Enemy sprite sheet
 Texture gEnemyBossSpriteSheetTexture;				// Enemy Boss sprite sheet
+Texture gEnemyBossEyesSpriteSheetTexture;			// Enemy Boss Eyes sprite sheet
+Texture gEnemyBossStatusBarTextTexture;				// Identify the Enemy Boss on the health bar
+
 Texture gExplosionSpriteSheetTexture;				// Explosion sprite sheet
 Texture gBloodExplosionSpriteSheetTexture;			// Blood explosion sprite sheet
 Texture gVirusGreenExplosionSpriteSheetTexture;		// Green Virus explosion sprite sheet
@@ -477,6 +480,9 @@ bool Game::loadMedia() {
 		TTF_SetFontStyle(gFontRetro20, TTF_STYLE_BOLD);							// Use bold font
 	}
 
+	//gEnemyBossStatusBarTextTexture.loadFromRenderedText("The Gaddinator", { 100, 240, 240, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 20));
+	gEnemyBossStatusBarTextTexture.loadFromRenderedText("Lorctron", { 180, 210, 240, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 20));
+
 	// Load Textures
 	if (!gPlayer1Texture.loadFromFile("Art/Player1Ship.png")) {					// Player 1 Ship Texture
 		printf("Failed to load Player 1 texture!\n");
@@ -527,6 +533,33 @@ bool Game::loadMedia() {
 			gEnemySpriteClips[i].h = 50;
 		}
 	}
+	if (!gEnemyBossEyesSpriteSheetTexture.loadFromFile("Art/eyeLaserSpriteSheet.png")) {	// Sprite sheet for Enemy Ship
+		printf("Failed to load Enemy Boss animation texture!\n");
+		success = false;
+	}
+	else {
+		//Set sprite clips
+		for (unsigned int i = 0; i < 16; ++i) {
+			gEnemyBossEyes[i].x = i * 25;
+			gEnemyBossEyes[i].y = 0;
+			gEnemyBossEyes[i].w = 25;
+			gEnemyBossEyes[i].h = 25;
+		}
+	}
+	if (!gEnemyBossSpriteSheetTexture.loadFromFile("Art/lorcanSpriteSheet.png")) {	// Sprite sheet for Enemy Ship
+		printf("Failed to load Enemy Boss animation texture!\n");
+		success = false;
+	}
+	else {
+		//Set sprite clips
+		for (unsigned int i = 0; i < 4; ++i) {
+			gEnemyBossSpriteClips[i].x = i * 300;
+			gEnemyBossSpriteClips[i].y = 0;
+			gEnemyBossSpriteClips[i].w = 300;
+			gEnemyBossSpriteClips[i].h = 460;
+		}
+	}
+	/*
 	if (!gEnemyBossSpriteSheetTexture.loadFromFile("Art/EnemyBossSpriteSheet.png")) {	// Sprite sheet for Enemy Ship
 		printf("Failed to load Enemy Boss animation texture!\n");
 		success = false;
@@ -540,7 +573,7 @@ bool Game::loadMedia() {
 			gEnemyBossSpriteClips[i].h = 529;
 		}
 	}
-
+	*/
 	if (!gGreenVirusSpriteSheetTexture.loadFromFile("Art/EnemyVirus_SpriteSheet_Green.png")) {	// Sprite sheet for Enemy Orange Virus
 		printf("Failed to load Green Virus animation texture!\n");
 		success = false;
@@ -1062,7 +1095,7 @@ void Game::scrollBackground() {
 	if (backgroundLoopCounter < BACKGROUND_SCROLL_TIMES) Texture::Instance()->renderMap("middleBG", scrollingOffset + SCREEN_WIDTH, 0, SCREEN_WIDTH, SCREEN_HEIGHT_GAME);	// 2nd background (and every even number)
 	else Texture::Instance()->renderMap("endBG", scrollingOffset + SCREEN_WIDTH, 0, SCREEN_WIDTH, SCREEN_HEIGHT_GAME);														// end background
 }
-
+int eyeFrame = 0;
 void Game::renderGamePlay() {
 	// Levels
 	if (weaponScrolling > 0) weaponScrolling--;
@@ -1165,6 +1198,27 @@ void Game::renderGamePlay() {
 			}
 			else if (listOfGameObjects[index]->getSubType() == ENEMY_BOSS) {																						// 2017/02/09 Fixed the Enemy Ship animations, they are now assigned to indiviual objects with the game object frame attribute
 				listOfGameObjects[index]->render(gEnemyBossSpriteSheetTexture, &gEnemyBossSpriteClips[frames / 10], frames, 4);										// 4 the number of frames
+				//Texture::Instance()->renderMap();
+
+				if (listOfGameObjects[index]->getX() < SCREEN_WIDTH - 400) {
+					//listOfGameObjects[index]->render(gEnemyBossEyesSpriteSheetTexture, &gEnemyBossEyes[frames / 10], frames, 4);
+					//gEnemyBossEyesSpriteSheetTexture.render(listOfGameObjects[index]->getX() + 70, listOfGameObjects[index]->getY() + 225);
+
+					gEnemyBossEyesSpriteSheetTexture.render(listOfGameObjects[index]->getX() + 57, listOfGameObjects[index]->getY() + 210, &gEnemyBossEyes[frames / 5]);
+					gEnemyBossEyesSpriteSheetTexture.render(listOfGameObjects[index]->getX() + 167, listOfGameObjects[index]->getY() + 214, &gEnemyBossEyes[frames / 5]);
+					if ((frames) % 128 == 0) {		// If the eye animation reaches the last frame
+						spawnEnemyLaser(listOfGameObjects[index]->getX() + 57, listOfGameObjects[index]->getY() + 210, BLUE_VIRUS_BULLET);
+						spawnEnemyLaser(listOfGameObjects[index]->getX() + 167, listOfGameObjects[index]->getY() + 214, BLUE_VIRUS_BULLET);
+					}
+					//listOfGameObjects[index]->render(gEnemyBossEyesSpriteSheetTexture, &gEnemyBossEyes[frames / 10], frames, 8, listOfGameObjects[index]->getX() + 57, listOfGameObjects[index]->getY() + 210);
+					//listOfGameObjects[index]->render(gEnemyBossEyesSpriteSheetTexture, &gEnemyBossEyes[frames / 10], frames, 8, listOfGameObjects[index]->getX() + 170, listOfGameObjects[index]->getY() + 214);
+					//if (eyeFrame < 8) eyeFrame++;
+					//else eyeFrame = 0;
+				}
+
+				bar.enemyBossBar(listOfGameObjects[index]->getHealth());	// Health bar for enemy boss
+				gEnemyBossStatusBarTextTexture.render((SCREEN_WIDTH - gEnemyBossStatusBarTextTexture.getWidth()) / 2, 6);
+				//gEnemyBossStatusBarTextTexture.render(100, 10);
 			}
 			else if (listOfGameObjects[index]->getSubType() == VIRUS_GREEN) listOfGameObjects[index]->render(gGreenVirusSpriteSheetTexture, &gGreenVirusSpriteClips[frames / 10], frames, 6);
 			else if (listOfGameObjects[index]->getSubType() == VIRUS_ORANGE) listOfGameObjects[index]->render(gOrangeVirusSpriteSheetTexture, &gOrangeVirusSpriteClips[frames / 10], frames, 6);				// 6 the number of frames
@@ -1579,7 +1633,7 @@ void Game::destroyGameObjects() {
 		int countNanoBots = 0, countGreenVirus = 0, countOrangeVirus = 0, countBlueVirus = 0;
 		int countEnLaser = 0, countFireball = 0, countVBullet = 0;
 		int countPUHealth = 0, countPULaser = 0, countPURocket = 0, countPUtimer = 0, countPULife = 0;
-		int countP1Laser = 0, countP2Laser = 0;
+		int countP1Laser = 0, countP2Laser = 0, countP1NStar = 0, countP2NStar = 0, countP1Rocket = 0, countP2Rocket = 0;
 
 		// Count number of each object on list
 		for (unsigned int index = 0; index != listOfGameObjects.size(); ++index) {
@@ -1616,12 +1670,15 @@ void Game::destroyGameObjects() {
 			if (listOfGameObjects[index]->getType() == SCORE_TEXT) countScoreValues++;
 			// Player Weapons
 			if (listOfGameObjects[index]->getType() == PLAYER_WEAPON) countNumPlayerWeapons++;
-			if (listOfGameObjects[index]->getSubType() == LASER_P1) countP1Laser++;
-			else if (listOfGameObjects[index]->getSubType() == LASER_P2) countP2Laser++;
+			if (listOfGameObjects[index]->getSubType() == LASER_P1) countP1Laser++;					// 2017/03/18 Fixed not deleting
+			else if (listOfGameObjects[index]->getSubType() == LASER_P2) countP2Laser++;			// 2017/03/18 Fixed not deleting
+			else if (listOfGameObjects[index]->getSubType() == NINJA_STAR_P1) countP1NStar++;		// 2017/03/18 Fixed not deleting
+			else if (listOfGameObjects[index]->getSubType() == NINJA_STAR_P2) countP2NStar++;		// 2017/03/18 Fixed not deleting
+			else if (listOfGameObjects[index]->getSubType() == ROCKET_P1) countP1Rocket++;
+			else if (listOfGameObjects[index]->getSubType() == ROCKET_P2) countP2Rocket++;
 		}
 
-		std::cout << "\n\nSaws: " << countTheSaws << std::endl;
-		std::cout << "* Blood Cells: " << countTheBloodCells << std::endl;
+		std::cout << "\n\n* Blood Cells: " << countTheBloodCells << std::endl;
 		std::cout << "Large: " << countLargeBloodCells << " Small: " << countSmallBloodCells << " White: " << countWhiteBloodCells << std::endl;
 		std::cout << "* Enemies: " << countEnemies << std::endl;
 		std::cout << "Bots: " << countNanoBots << " Green: " << countGreenVirus << " Orange: " << countOrangeVirus << " Blue: " << countBlueVirus << std::endl;
@@ -1631,7 +1688,8 @@ void Game::destroyGameObjects() {
 		std::cout << "Health PU: " << countPUHealth << " Laser PU: " << countPULaser << " Rocket PU: " << countPURocket << " Timer PU: " << countPUtimer << " New Life PU: " << countPULife << std::endl;
 		std::cout << "* Score Values: " << countScoreValues << std::endl;
 		std::cout << "* Player Weapons: " << countNumPlayerWeapons << std::endl;
-		std::cout << "P1 Laser: " << countP1Laser << " P2 Laser: " << countP2Laser << std::endl;
+		std::cout << "P1 Laser: " << countP1Laser << " P2 Laser: " << countP2Laser << " P1 Ninja Star: " << countP1NStar << " P2 Ninja Star: " << countP2NStar << std::endl;
+		std::cout << "Saws: " << countTheSaws << " P1 Rocket: " << countP1Rocket << " P2 Rocket: " << countP2Rocket << std::endl;
 	}
 
 	for (unsigned int index = 0; index != listOfGameObjects.size(); ++index) {
@@ -1761,13 +1819,14 @@ void Game::spawnMovingObjects() {
 
 	if (activePowerUps < SPAWN_NUM_POWER_UPS) { spawnPowerUp(); }
 
-	if (getCurrentLevel() == LEVEL_1 && activeEnemyShips < SPAWN_NUM_ENEMY_SHIPS_LVL1) { spawnEnemyShip(); }
-	else if (getCurrentLevel() == LEVEL_2 && activeEnemyShips < SPAWN_NUM_ENEMY_SHIPS_LVL2) { spawnEnemyShip(); }
-	else if (getCurrentLevel() == LEVEL_3 && activeEnemyShips < SPAWN_NUM_ENEMY_SHIPS_LVL3) { spawnEnemyShip(); }
 
-	if (getCurrentLevel() == LEVEL_1 && activeEnemyVirus < SPAWN_NUM_ENEMY_VIRUS_LVL1) { spawnEnemyVirus(); }
-	//else if (getCurrentLevel() == LEVEL_2 && activeEnemyVirus < SPAWN_NUM_ENEMY_SHIPS_LVL2) { spawnEnemyVirus(); }
-	//else if (getCurrentLevel() == LEVEL_3 && activeEnemyVirus < SPAWN_NUM_ENEMY_SHIPS_LVL3) { spawnEnemyVirus(); }
+	if (getCurrentLevel() == LEVEL_1 && activeEnemyShips < SPAWN_NUM_ENEMY_SHIPS_LVL1 && activeEnemyBoss < 1) { spawnEnemyShip(); }
+	else if (getCurrentLevel() == LEVEL_2 && activeEnemyShips < SPAWN_NUM_ENEMY_SHIPS_LVL2 && activeEnemyBoss < 1) { spawnEnemyShip(); }
+	else if (getCurrentLevel() == LEVEL_3 && activeEnemyShips < SPAWN_NUM_ENEMY_SHIPS_LVL3 && activeEnemyBoss < 1) { spawnEnemyShip(); }
+
+	if (getCurrentLevel() == LEVEL_1 && activeEnemyVirus < SPAWN_NUM_ENEMY_VIRUS_LVL1 && backgroundLoopCounter != BACKGROUND_SCROLL_TIMES) { spawnEnemyVirus(); }
+	else if (getCurrentLevel() == LEVEL_2 && activeEnemyVirus < SPAWN_NUM_ENEMY_SHIPS_LVL2) { spawnEnemyVirus(); }
+	else if (getCurrentLevel() == LEVEL_3 && activeEnemyVirus < SPAWN_NUM_ENEMY_SHIPS_LVL3) { spawnEnemyVirus(); }
 
 	// Start the blockages halfway through the level
 	//if (numBlockages < SPAWN_NUM_BLOCKAGES && backgroundLoopCounter > BACKGROUND_SCROLL_TIMES / 2) {
@@ -1779,6 +1838,9 @@ void Game::spawnMovingObjects() {
 
 	//if (activeEnemyBoss < 1 && backgroundLoopCounter == BACKGROUND_SCROLL_TIMES) spawnEnemyBoss();
 	//if (activeEnemyBoss < 1 && getCurrentLevel() == 3 && backgroundLoopCounter == BACKGROUND_SCROLL_TIMES) spawnEnemyBoss();
+	//if (backgroundLoopCounter == BACKGROUND_SCROLL_TIMES && activeEnemyBoss < 1) spawnEnemyBoss();	// Spawn the Enemy Boss at the end of the level
+	if (activeEnemyBoss < 1) spawnEnemyBoss();	// Test: Show the boss at the start of the level
+
 }
 
 // Blockage Spawn Function
@@ -1837,7 +1899,8 @@ void Game::spawnEnemyBoss() {
 
 	y = 100;
 
-	p_EnemyBoss->spawn(x, y, -randomSpeed);
+	//p_EnemyBoss->spawn(x, y, -randomSpeed);
+	p_EnemyBoss->spawn(x, (SCREEN_HEIGHT_GAME - p_EnemyBoss->getHeight()) / 2, -5);
 	listOfGameObjects.push_back(p_EnemyBoss);
 
 	if (twoPlayer) {
@@ -1854,13 +1917,16 @@ void Game::spawnEnemyShip() {
 	listOfGameObjects.push_back(p_Enemy);
 }
 void Game::spawnEnemyVirus(int subType, int x, int y) {
-	int smallX = x, smallY = y, randomSpeed;
+	int backupX = x, backupY = y, randomSpeed;
+	bool useCoords = false;
+	if (x != 0 && y != 0) useCoords = true;
+
 	spawnRandomAttributes(x, y, randomSpeed, 150);
 
 	// Spawn the small virus at a random position close to the original virus position
 	if (subType == VIRUS_SMALL_GREEN || subType == VIRUS_SMALL_ORANGE || subType == VIRUS_SMALL_BLUE) {
-		int randomX = rand() % 60 + smallX - 15;	// Somewhere between - 15 and 45 of original position
-		int randomY = rand() % 60 + smallY - 15;
+		int randomX = rand() % 60 + backupX - 15;	// Somewhere between - 15 and 45 of original position
+		int randomY = rand() % 60 + backupY - 15;
 		int randomSpeed = rand() % 4 + 1;
 
 		GameObject* p_SmallVirus = new EnemyVirus(subType);
@@ -1884,7 +1950,10 @@ void Game::spawnEnemyVirus(int subType, int x, int y) {
 
 		GameObject* p_Virus = new EnemyVirus(subType, 3.0);							// Orange type = 1
 		p_Virus->setTimer(VIRUS_TIMER);
-		p_Virus->spawn(x, y, -randomSpeed-4  , -randomSpeed);
+		if (useCoords)
+			p_Virus->spawn(backupX, backupY, -randomSpeed - 4, -randomSpeed);
+		else
+			p_Virus->spawn(x, y, -randomSpeed - 4, -randomSpeed);
 		listOfGameObjects.push_back(p_Virus);
 		//std::cout << "distance to virus p1: " << abs(((player1.getX() * player1.getX()) + (player1.getY() * player1.getY()))) << " p2: " << abs((player2.getX() * player2.getX()) + (player2.getY() * player2.getY())) << std::endl;
 	}
@@ -2503,7 +2572,11 @@ void Game::collisionCheck() {
 			if (listOfGameObjects[index]->getSubType() == LARGE_BLOOD_CELL && player2->getSawActive())	// If the player collides with a large blood cell and the player saw is active
 				listOfGameObjects[index]->setAlive(false);
 
-			if (listOfGameObjects[index]->getType() != PLAYER_WEAPON && listOfGameObjects[index]->getType() != BLOOD_CELL && listOfGameObjects[index]->getSubType() != BLOCKAGE)
+			/*
+				Certain game objects should not be destroyed when colliding with the player
+				Blood Cells, Blockage, and Enemy Boss
+			*/
+			if (listOfGameObjects[index]->getType() != PLAYER_WEAPON && listOfGameObjects[index]->getType() != BLOOD_CELL && listOfGameObjects[index]->getSubType() != BLOCKAGE && listOfGameObjects[index]->getSubType() != ENEMY_BOSS)
 				listOfGameObjects[index]->setAlive(false);
 		}
 	}
@@ -2529,47 +2602,84 @@ void Game::collisionCheck() {
 
 			if (listOfGameObjects[weaponIndex]->getType() == PLAYER_WEAPON && listOfGameObjects[enemyIndex]->getType() == ENEMY_OBJECT) {
 				if (checkCollision(listOfGameObjects[weaponIndex]->getCollider(), listOfGameObjects[enemyIndex]->getCollider()) == true) {
-					// 2017/02/22 Updated messages to include name
-					if (listOfGameObjects[weaponIndex]->getSubType() == ROCKET_P1) {
-						infoMessage("Impact!!! Missile has taken out " + listOfGameObjects[enemyIndex]->getName() + "! Score +" + std::to_string(player1->getBonusScore()), PLAYER_1);
-						managePlayerScores(player1->getBonusScore(), PLAYER_1, listOfGameObjects[weaponIndex]->getSubType());
-					}
-					else if (twoPlayer && listOfGameObjects[weaponIndex]->getSubType() == ROCKET_P2) {
-						infoMessage("Impact!!! Missile has taken out" + listOfGameObjects[enemyIndex]->getName() + "! Score +" + std::to_string(player2->getBonusScore()), PLAYER_2);
-						managePlayerScores(player2->getBonusScore(), PLAYER_2, listOfGameObjects[weaponIndex]->getSubType());
-					}
-					/*
-						Virus enemies can be cut in half using the Players Saw or Ninja Star weapons
-						If a virus is cut in half, spawn 2 smaller virus
-					*/
-					else if (listOfGameObjects[weaponIndex]->getSubType() == SAW1 || listOfGameObjects[weaponIndex]->getSubType() == SAW2 || listOfGameObjects[weaponIndex]->getSubType() == NINJA_STAR_P1 || listOfGameObjects[weaponIndex]->getSubType() == NINJA_STAR_P2) {
-						if (listOfGameObjects[enemyIndex]->getSubType() == VIRUS_GREEN) {
-							spawnEnemyVirus(VIRUS_SMALL_GREEN, listOfGameObjects[enemyIndex]->getX(), listOfGameObjects[enemyIndex]->getY());
-							spawnEnemyVirus(VIRUS_SMALL_GREEN, listOfGameObjects[enemyIndex]->getX(), listOfGameObjects[enemyIndex]->getY());
-							activeEnemyVirusSmall += 2;																							// Increment the number of active small enemy virus
+					if (listOfGameObjects[enemyIndex]->getSubType() != ENEMY_BOSS) {
+						// 2017/02/22 Updated messages to include name
+						if (listOfGameObjects[weaponIndex]->getSubType() == ROCKET_P1) {
+							infoMessage("Impact!!! Missile has taken out " + listOfGameObjects[enemyIndex]->getName() + "! Score +" + std::to_string(player1->getBonusScore()), PLAYER_1);
+							managePlayerScores(player1->getBonusScore(), PLAYER_1, listOfGameObjects[weaponIndex]->getSubType());
+
+							if (listOfGameObjects[enemyIndex]->getSubType() == ENEMY_BOSS) listOfGameObjects[enemyIndex]->setHealth(listOfGameObjects[enemyIndex]->getHealth() - 25);
 						}
-						else if (listOfGameObjects[enemyIndex]->getSubType() == VIRUS_ORANGE) {
-							spawnEnemyVirus(VIRUS_SMALL_ORANGE, listOfGameObjects[enemyIndex]->getX(), listOfGameObjects[enemyIndex]->getY());
-							spawnEnemyVirus(VIRUS_SMALL_ORANGE, listOfGameObjects[enemyIndex]->getX(), listOfGameObjects[enemyIndex]->getY());
-							activeEnemyVirusSmall += 2;																							// Increment the number of active small enemy virus
+						else if (twoPlayer && listOfGameObjects[weaponIndex]->getSubType() == ROCKET_P2) {
+							infoMessage("Impact!!! Missile has taken out" + listOfGameObjects[enemyIndex]->getName() + "! Score +" + std::to_string(player2->getBonusScore()), PLAYER_2);
+							managePlayerScores(player2->getBonusScore(), PLAYER_2, listOfGameObjects[weaponIndex]->getSubType());
+
+							if (listOfGameObjects[enemyIndex]->getSubType() == ENEMY_BOSS) listOfGameObjects[enemyIndex]->setHealth(listOfGameObjects[enemyIndex]->getHealth() - 25);
 						}
-						else if (listOfGameObjects[enemyIndex]->getSubType() == VIRUS_BLUE) {
-							spawnEnemyVirus(VIRUS_SMALL_BLUE, listOfGameObjects[enemyIndex]->getX(), listOfGameObjects[enemyIndex]->getY());
-							spawnEnemyVirus(VIRUS_SMALL_BLUE, listOfGameObjects[enemyIndex]->getX(), listOfGameObjects[enemyIndex]->getY());
-							activeEnemyVirusSmall += 2;																							// Increment the number of active small enemy virus
+						/*
+							Virus enemies can be cut in half using the Players Saw or Ninja Star weapons
+							If a virus is cut in half, spawn 2 smaller virus
+						*/
+						else if (listOfGameObjects[weaponIndex]->getSubType() == SAW1 || listOfGameObjects[weaponIndex]->getSubType() == SAW2 || listOfGameObjects[weaponIndex]->getSubType() == NINJA_STAR_P1 || listOfGameObjects[weaponIndex]->getSubType() == NINJA_STAR_P2) {
+							if (listOfGameObjects[enemyIndex]->getSubType() == VIRUS_GREEN) {
+								spawnEnemyVirus(VIRUS_SMALL_GREEN, listOfGameObjects[enemyIndex]->getX(), listOfGameObjects[enemyIndex]->getY());
+								spawnEnemyVirus(VIRUS_SMALL_GREEN, listOfGameObjects[enemyIndex]->getX(), listOfGameObjects[enemyIndex]->getY());
+								activeEnemyVirusSmall += 2;																							// Increment the number of active small enemy virus
+							}
+							else if (listOfGameObjects[enemyIndex]->getSubType() == VIRUS_ORANGE) {
+								spawnEnemyVirus(VIRUS_SMALL_ORANGE, listOfGameObjects[enemyIndex]->getX(), listOfGameObjects[enemyIndex]->getY());
+								spawnEnemyVirus(VIRUS_SMALL_ORANGE, listOfGameObjects[enemyIndex]->getX(), listOfGameObjects[enemyIndex]->getY());
+								activeEnemyVirusSmall += 2;																							// Increment the number of active small enemy virus
+							}
+							else if (listOfGameObjects[enemyIndex]->getSubType() == VIRUS_BLUE) {
+								spawnEnemyVirus(VIRUS_SMALL_BLUE, listOfGameObjects[enemyIndex]->getX(), listOfGameObjects[enemyIndex]->getY());
+								spawnEnemyVirus(VIRUS_SMALL_BLUE, listOfGameObjects[enemyIndex]->getX(), listOfGameObjects[enemyIndex]->getY());
+								activeEnemyVirusSmall += 2;																							// Increment the number of active small enemy virus
+							}
 						}
+
+						managePlayerScores(listOfGameObjects[enemyIndex]->getScore(), listOfGameObjects[weaponIndex]->getPlayer(), listOfGameObjects[weaponIndex]->getSubType());		// 2017-02-06 Add to players score
+
+						pointsValueCounter = 0;
+						displayScoreForObject(listOfGameObjects[enemyIndex]->getX(), listOfGameObjects[enemyIndex]->getY(), listOfGameObjects[enemyIndex]->getScore(), listOfGameObjects[weaponIndex]->getPlayer());	// Display Score
+
+
+						if (listOfGameObjects[enemyIndex]->getSubType() != BLOCKAGE || listOfGameObjects[enemyIndex]->getSubType() != ENEMY_BOSS)
+							listOfGameObjects[enemyIndex]->setAlive(false);
+					}// If it is the enemy boss
+					else {
+
+						// Health points deducted for different weapons
+						if (listOfGameObjects[weaponIndex]->getSubType() == ROCKET_P1) {
+							listOfGameObjects[enemyIndex]->setHealth(listOfGameObjects[enemyIndex]->getHealth() - 20);
+						}
+						else if (listOfGameObjects[weaponIndex]->getSubType() == ROCKET_P2) {
+							listOfGameObjects[enemyIndex]->setHealth(listOfGameObjects[enemyIndex]->getHealth() - 20);
+						}
+						else if (listOfGameObjects[weaponIndex]->getSubType() == NINJA_STAR_P1) {
+							listOfGameObjects[enemyIndex]->setHealth(listOfGameObjects[enemyIndex]->getHealth() - 2);
+						}
+						else if (listOfGameObjects[weaponIndex]->getSubType() == NINJA_STAR_P2) {
+							listOfGameObjects[enemyIndex]->setHealth(listOfGameObjects[enemyIndex]->getHealth() - 2);
+						}
+						else if (listOfGameObjects[weaponIndex]->getSubType() == LASER_P1) {
+							listOfGameObjects[enemyIndex]->setHealth(listOfGameObjects[enemyIndex]->getHealth() - 1);
+						}
+						else if (listOfGameObjects[weaponIndex]->getSubType() == LASER_P2) {
+							listOfGameObjects[enemyIndex]->setHealth(listOfGameObjects[enemyIndex]->getHealth() - 1);
+						}
+
+						// If it is not a saw in contact with the enemy spawn an explosion
+						if (listOfGameObjects[weaponIndex]->getSubType() != SAW1 && listOfGameObjects[weaponIndex]->getSubType() != SAW2)
+							spawnExplosion(listOfGameObjects[weaponIndex]->getX(), listOfGameObjects[weaponIndex]->getY(), EXPLOSION);
+						/*
+						// If the Enemy Boss health is less than or equal to 0, kill it
+						if (listOfGameObjects[enemyIndex]->getHealth() <= 0) listOfGameObjects[enemyIndex]->setAlive(false);
+						*/
 					}
 
-					managePlayerScores(listOfGameObjects[enemyIndex]->getScore(), listOfGameObjects[weaponIndex]->getPlayer(), listOfGameObjects[weaponIndex]->getSubType());		// 2017-02-06 Add to players score
-
-					pointsValueCounter = 0;
-					displayScoreForObject(listOfGameObjects[enemyIndex]->getX(), listOfGameObjects[enemyIndex]->getY(), listOfGameObjects[enemyIndex]->getScore(), listOfGameObjects[weaponIndex]->getPlayer());	// Display Score
-
-
-					if (listOfGameObjects[enemyIndex]->getSubType() != BLOCKAGE)
-						listOfGameObjects[enemyIndex]->setAlive(false);
-					listOfGameObjects[weaponIndex]->setAlive(false);	// DESTROY
-				}
+					listOfGameObjects[weaponIndex]->setAlive(false);	// DESTROY the player weapon
+				} // end not enemy boss
 			}
 		}
 	}

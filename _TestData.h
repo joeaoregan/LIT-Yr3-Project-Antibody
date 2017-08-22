@@ -12,7 +12,7 @@
 
 #define NUM_PLAYERS 2						// The number of players
 
-#define BACKGROUND_SCROLL_TIMES 15			// The number of times the main background scrolls
+#define BACKGROUND_SCROLL_TIMES 12			// The number of times the main background scrolls
 #define BACKGROUND_SCROLL_SPEED 5
 
 

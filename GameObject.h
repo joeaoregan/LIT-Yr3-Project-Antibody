@@ -64,7 +64,8 @@ public:
 	// Render the game objects
 	virtual void render();
 	virtual void render(Texture &texture, int degrees = 0);
-	void render(Texture &texture,  SDL_Rect *currentClip, int &currentframe, int frames);
+	void render(Texture &texture, SDL_Rect *currentClip, int &currentframe, int frames);
+	void render(Texture &texture, SDL_Rect *currentClip, int &currentframe, int frames, int x, int y);
 
 	// Getter methods
 	int getX() const { return m_x; }									// Get GameObject X coord
@@ -84,7 +85,7 @@ public:
 	int getSubType() const { return m_SubType; }						// 2017/01/25 Return the objects type
 	int getAngle() const { return m_Angle; }							// 2017/02/07 Return the objects angle
 	std::string getTextureID() const { return m_TextureID; }			// return the texture ID
-	SDL_Rect* getCollider() { return &m_Collider; }					// Get the collider for an object
+	SDL_Rect* getCollider() { return &m_Collider; }					    // Get the collider for an object
 	int getFrames() const { return m_Frames; }							// 2017/02/09 Animation frames
 	// Timers
 	unsigned int getLastTime() const { return lastTime; }				// Get the previous time for counter

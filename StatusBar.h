@@ -34,6 +34,7 @@ public:
 	void virusTimerBlue(int x, int y, int w, float Percent);
 	void rocketPowerBar(int x, int y, int w, float time);				// Rocket timer -> build up power for rocket
 	void speedBoostBar(float healthd, int startFrom = START_LEFT);		// 2017/02/20 Speed boost bar
+	void enemyBossBar(float health);				// 2017/03/18 Added Bar for Enemy Boss
 };
 
 #endif

@@ -1,4 +1,5 @@
 /*
+	2017/03/18 Added health bar for Enemy Boss
 	2017/02/09 Added status bar class StatusBar.h for creating status bars, such as health bar
 	2017/01/18 Added health bars for players
 */
@@ -19,7 +20,13 @@ StatusBar::StatusBar() {
 
 StatusBar::~StatusBar() {
 }
-
+/*
+	2017/03/18 Health Bar for enemy boss
+*/
+void StatusBar::enemyBossBar(float health) {
+	//createStatusBar(320, 5, 640, 30, health / MAX_HEALTH, fgColour, bgColour, HORIZONTAL, START_RIGHT);
+	createStatusBar(320, 5, 640, 30, health / MAX_HEALTH, { 30, 100, 240, 255 }, { 185, 40, 210, 255 }, HORIZONTAL, START_RIGHT);
+}
 void StatusBar::speedBoostBar(float percent, int startFrom) {
 	if (ROCKET_TIMER_SET - percent == 0) createStatusBar(0, 50, 60, 10, percent / ROCKET_TIMER_SET, { 36, 136, 36, 255 }, bgColour, HORIZONTAL, startFrom);	// -10 Places 10 pixels above Player Ship
 	else createStatusBar(0, 50, 60, 10, percent / ROCKET_TIMER_SET, { 0, 255, 0, 255 }, bgColour, HORIZONTAL, startFrom);	// -10 Places 10 pixels above Player Ship

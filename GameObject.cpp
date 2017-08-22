@@ -53,6 +53,16 @@ void GameObject::render(Texture &texture, SDL_Rect *currentClip, int &currentfra
 	++currentframe;						// Go to next frame
 
 	if (currentframe >= frames * 10) {	// Cycle animation
+	//if (frames / 10 >= currentframe) {	// Cycle animation
+		currentframe = 0;
+	}
+}
+void GameObject::render(Texture &texture, SDL_Rect *currentClip, int &currentframe, int frames, int x, int y) {	// 2017/01/22 Moved from game.cpp
+	texture.render(x, y, currentClip);
+
+	++currentframe;						// Go to next frame
+
+	if (currentframe >= frames * 10) {	// Cycle animation
 		currentframe = 0;
 	}
 }
