@@ -5,30 +5,6 @@
 
 class HUD {
 public:
-	// Viewports
-	SDL_Rect gameVP;	// Main game screen view port
-	SDL_Rect UIVP;		// Menu below main game screen view port
-	SDL_Rect mapVP;		// Map indicating the ships current location in the professors body
-	SDL_Rect weaponVP1;	// Indicates the currently selected main weapon
-	SDL_Rect weaponVP2;	// Indicates the currently selected main weapon
-	SDL_Rect rocketVP1;	// Indicates the current amount of Rockets for Player 1
-	SDL_Rect rocketVP2;	// Indicates the current amount of Rockets for Player 2
-	SDL_Rect boostVP1;	// Indicates if Player 1 speed boost is active
-	SDL_Rect boostVP2;	// Indicates if Player 2 speed boost is active
-
-	// Player variables to display information for
-	int scoreP1, scoreP2;
-	bool aliveP1, aliveP2;
-	int livesP1, livesP2;
-	int gradeP1, gradeP2;
-	int rocketsP1, rocketsP2;
-	bool speedP1, speedP2;
-	float timerP1, timerP2;
-
-	void getPlayerInfo(bool a1, bool a2, int l1, int l2, int g1, int g2, int r1, int r2, bool sp1, bool sp2, float t1, float t2);
-
-	int weaponScrolling;				// Scroll the image for current default laser weapon // 2017/03/20 Moved from Game class
-
 	TTF_Font *gHUDFont = NULL;
 
 	Texture gLevelTextTexture;			// Current level displayed at top of game screen
@@ -45,11 +21,6 @@ public:
 	Texture gP2ScoreTextTexture;		// Player 2 current score
 	//Texture gTimeTextTexture;			// Countdown time displayed in game screen
 	//Texture gNumRocketsTextTexture2;	// Indicate the number of rockets for player 2
-
-	bool miniMap;						// 2017/03/20 Moved from Game class, decide between full and mini map
-
-	void render();						// 2017/03/20 Combine all Heads Up Display rendering to one main render function
-	void shipPositionOnMap();					// 2017/03/20 Positions on mini map
 
 	bool loadLevelStuff();
 	void resetHUD();

@@ -22,35 +22,10 @@
 */
 #include "HUD.h"
 #include <sstream>
-#include "GameObject.h"	// 2017/03/20 For Weapon indicators
-#include "StatusBar.h"	// 2017/03/20 Speed boost timer
-
-StatusBar HUDbar;
-
-void setViewport2(SDL_Rect &rect, int x, int y, int w, int h) {
-	rect.x = x;
-	rect.y = y;
-	rect.w = w;
-	rect.h = h;
-}
 
 unsigned int createdByTimer = 0, createdByLastTime = 0, changeEverySecond = 0;
 
 bool HUD::loadLevelStuff() {
-	miniMap = true;													// 2017/03/20 Set display mini version of map true
-
-	// View ports
-	setViewport2(gameVP, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT_GAME);	// Main Game Screen
-	setViewport2(UIVP, 0, 600, SCREEN_WIDTH, 120);					// Bottom of screen UI / Info
-	// Player 1
-	setViewport2(weaponVP1, 10, 600, 60, 60);						// Current Main Weapon Selected
-	setViewport2(rocketVP1, 70, 600, 60, 60);						// Current Main Weapon Selected
-	setViewport2(boostVP1, 130, 600, 60, 60);						// Current Main Weapon Selected
-	// Player 2
-	setViewport2(weaponVP2, SCREEN_WIDTH - 70, 600, 60, 60);		// Current Main Weapon Selected
-	setViewport2(rocketVP2, SCREEN_WIDTH - 130, 600, 60, 60);		// Current Main Weapon Selected
-	setViewport2(boostVP2, SCREEN_WIDTH - 190, 600, 60, 60);		// Current Main Weapon Selected
-
 	bool success = true;
 
 	//Texture::Instance()->loadFromRenderedTextID("Level " + std::to_string(Game::Instance()->getCurrentLevel()), "levelID", { 0, 255, 0, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 20)); // 2017/03/18 Moved from Game class
@@ -103,11 +78,6 @@ bool HUD::loadLevelStuff() {
 
 void HUD::resetHUD() {
 	//gTimeTextTexture.setFlash(false);		// Reset the timer flash
-
-	setViewport2(mapVP, (SCREEN_WIDTH - 120) / 2, 600, 120, 88);	// Reset the map to small size // 2017/03/20 Moved from Game class
-	Texture::Instance()->modifyAlpha(255, "profID");				// 2017/03/20 Moved from Game class
-
-	weaponScrolling = 60;
 }
 
 void HUD::closeLevelStuff() {
@@ -127,138 +97,6 @@ void HUD::closeLevelStuff() {
 	//gNumRocketsTextTexture2.free();
 }
 
-void HUD::render() {
-	if (weaponScrolling > 0) weaponScrolling--;
-
-	bool numPlayers2 = Game::Instance()->twoPlayer;
-	scoreP1 = Game::Instance()->player1Score;
-	scoreP2 = Game::Instance()->player2Score;
-
-	SDL_RenderSetViewport(Game::Instance()->getRenderer(), &gameVP);											// Game Viewport
-
-	displayLevelNum(Game::Instance()->getCurrentLevel());														// Display Level Number in top left corner of game screen
-
-	SDL_RenderSetViewport(Game::Instance()->getRenderer(), &UIVP);												// User Interface Viewport
-
-	playerScore(Game::Instance()->twoPlayer, Game::Instance()->player1Score, Game::Instance()->player2Score);	// Player Scores
-
-	// 2017/02/22 Add check for player being alive
-	if (Game::Instance()->twoPlayer && aliveP1 && aliveP2)														// If it is a 2 player game and both Players are alive
-		rendPlayerLives(livesP1, livesP2);																		// Show lives for both players
-	else if (aliveP1 == false && aliveP2)																		// If only player 2 is alive
-		rendPlayerLives(0, livesP2);
-	else if (aliveP1 && (aliveP2 == false && !Game::Instance()->twoPlayer))										// If it is a 2 player game and only player 1 is alive
-		rendPlayerLives(livesP1);
-
-	if (aliveP1)
-		rendPlayerLives(livesP1);																				// Lives for Player 1 when only player 1
-
-	createdByText();																							// Show creater animated text at bottom-centre of HUD
-
-	/* Professor Mini Map */
-	//SDL_RenderSetViewport(Game::Instance()->getRenderer(), &Game::Instance()->mapViewport);					// User Interface Viewport
-	SDL_RenderSetViewport(Game::Instance()->getRenderer(), &mapVP);												// User Interface Viewport
-
-	Texture::Instance()->renderMap("profID");
-	shipPositionOnMap();																						// Display ship position on map;
-
-	// Player 1 Info
-	SDL_RenderSetViewport(Game::Instance()->getRenderer(), &weaponVP1);											// Laser Grade ViewPort
-	if (gradeP1 == LASER_SINGLE) Texture::Instance()->weaponIndicator("laserPowerUpID", weaponScrolling);		// Show single laser indicator
-	else if (gradeP1 == LASER_DOUBLE) Texture::Instance()->weaponIndicator("laserPowerUpV2ID", weaponScrolling);// Show double laser indicator
-	else if (gradeP1 == LASER_TRIPLE) Texture::Instance()->weaponIndicator("laserPowerUpV3ID", weaponScrolling);// Show triple laser indicator
-
-	SDL_RenderSetViewport(Game::Instance()->getRenderer(), &rocketVP1);											// Rocket Amount ViewPort
-
-	if (aliveP1) {																								// If player 1 is alive
-		rocketIndicator(rocketsP1, PLAYER_1, aliveP1);															// Number of rockets for Player 1
-	}
-	else rocketIndicator(0, false, PLAYER_1);
-
-	SDL_RenderSetViewport(Game::Instance()->getRenderer(), &boostVP1);											// Speed Boost ViewPort for Player 1
-	if (aliveP1) speedBoostIndicator(speedP1);																	// 2017/02/22 Added check to make sure player is alive
-	else speedBoostIndicator(false);
-
-	HUDbar.speedBoostBar(timerP1);																				// Show the Player 1 speed boost status bar
-
-	// Player 2 Info
-	SDL_RenderSetViewport(Game::Instance()->getRenderer(), &weaponVP2);											// Laser Grade ViewPort for Player 2
-	if (gradeP2 == LASER_SINGLE) Texture::Instance()->weaponIndicator("laserPowerUpID", weaponScrolling);		// Show single laser indicator
-	else if (gradeP2 == LASER_DOUBLE) Texture::Instance()->weaponIndicator("laserPowerUpV2ID", weaponScrolling);// Show double laser indicator
-	else if (gradeP2 == LASER_TRIPLE) Texture::Instance()->weaponIndicator("laserPowerUpV3ID", weaponScrolling);// Show triple laser indicator
-
-	SDL_RenderSetViewport(Game::Instance()->getRenderer(), &rocketVP2);											// Rocket Amount ViewPort for Player 2
-
-	if (Game::Instance()->twoPlayer && aliveP2) {																// If it is a 2 player game and Player 2 is alive
-		rocketIndicator(rocketsP2, PLAYER_2, aliveP2);															// Number of rockets for Player 2
-	}
-	else if (Game::Instance()->twoPlayer && !aliveP2) rocketIndicator(0, false, PLAYER_2);						// If it is a 2 player game and Player 2 is not alive
-
-	SDL_RenderSetViewport(Game::Instance()->getRenderer(), &boostVP2);											// Speed Boost ViewPort for Player 2
-
-	if (Game::Instance()->twoPlayer && aliveP2) speedBoostIndicator(speedP2);									// 2017/02/22 Added check to make sure player is alive
-	else if (Game::Instance()->twoPlayer && !aliveP2) speedBoostIndicator(false);
-
-	if (Game::Instance()->twoPlayer) HUDbar.speedBoostBar(timerP1, START_RIGHT);								// If 2 player game draw Player 2 speed boost bar, bar moves in opposite direction to Player 1s
-
-	SDL_RenderSetViewport(Game::Instance()->getRenderer(), NULL);												// Reset Viewport
-
-	// Draw lines around weapon indicators
-	if (aliveP1)
-		SDL_SetRenderDrawColor(Game::Instance()->getRenderer(), 0, 255, 0, 255);								// Set Colour for squares around viewports to green
-	else if (Game::Instance()->twoPlayer && !aliveP1)
-		SDL_SetRenderDrawColor(Game::Instance()->getRenderer(), 125, 125, 125, 255);							// Set colour for box outlines grey
-
-	SDL_RenderDrawRect(Game::Instance()->getRenderer(), &weaponVP1);											// Draw squares around the Player 1 viewports
-	SDL_RenderDrawRect(Game::Instance()->getRenderer(), &rocketVP1);
-	SDL_RenderDrawRect(Game::Instance()->getRenderer(), &boostVP1);
-
-	if (Game::Instance()->twoPlayer && aliveP2)
-		SDL_SetRenderDrawColor(Game::Instance()->getRenderer(), 0, 255, 0, 255);								// Set Colour for squares around viewports to green
-	if (!Game::Instance()->twoPlayer)
-		SDL_SetRenderDrawColor(Game::Instance()->getRenderer(), 125, 125, 125, 255);							// Set draw colour to grey
-
-	SDL_RenderDrawRect(Game::Instance()->getRenderer(), &weaponVP2);											// Draw squares around the Player 2 viewports
-	SDL_RenderDrawRect(Game::Instance()->getRenderer(), &rocketVP2);
-	SDL_RenderDrawRect(Game::Instance()->getRenderer(), &boostVP2);
-}
-
-void HUD::getPlayerInfo(bool a1, bool a2, int l1, int l2, int g1, int g2, int r1, int r2, bool sp1, bool sp2, float t1, float t2) {
-	aliveP1 = a1;
-	aliveP2 = a2;
-	livesP1 = l1;
-	livesP2 = l2;
-	gradeP1 = g1;
-	gradeP2 = g2;
-	rocketsP1 = r1;
-	rocketsP2 = r2;
-	speedP1 = sp1;
-	speedP2 = sp2;
-	timerP1 = t1;
-	timerP2 = t2;
-}
-
-/*
-	2017/03/19 Minimap positions
-
-	Show the player ships position on the map
-*/
-void HUD::shipPositionOnMap() {
-	if (!miniMap) {
-		// 10, 350 start coords
-		// 180, 260 end of level one coords // start of level 2
-		//gEnemyBossEyesSpriteSheetTexture.render(10, 350, &gEnemyBossEyes[frames / 5]);	// Temp image to show positions
-		//gEnemyBossEyesSpriteSheetTexture.render(210, 260, &gEnemyBossEyes[frames / 5]);	// Temp image to show positions
-		//gEnemyBossEyesSpriteSheetTexture.render(440, 300, &gEnemyBossEyes[frames / 5]);	// Temp image to show positions
-		//gEnemyBossEyesSpriteSheetTexture.render(355, 50, &gEnemyBossEyes[frames / 5]);	// Temp image to show positions
-
-		Texture::Instance()->renderMap("mapShipID", 10, 350, 30, 14);	// Start level 1
-		Texture::Instance()->renderMap("mapShipID", 210, 260, 30, 14);	// End level 1 / start level 2
-		Texture::Instance()->renderMap("mapShipID", 440, 300, 30, 14);	// End level 2 / Start level 3
-		Texture::Instance()->renderMap("mapShipID", 355, 50, 30, 14);	// End game
-	}
-}
-
 /*
 	Displays the current level of the game
 
@@ -267,12 +105,15 @@ void HUD::shipPositionOnMap() {
 int previousLevelNum = 100;
 
 void HUD::displayLevelNum(int levelNum) {
-	if (previousLevelNum != levelNum)		// Try and only render a new one when it's needed870
+	if (previousLevelNum != levelNum)		// Try and only render a new one when it's needed
+		//gLevelTextTexture.UIText("Level " + std::to_string(levelNum));	// Render text - Use a string to render the current Level to a texture
+		//Texture::Instance()->getTexture("levelID");
 		Texture::Instance()->loadFromRenderedTextID("Level " + std::to_string(levelNum), "levelID", { 0, 255, 0, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 20));
 
-	previousLevelNum = levelNum;			// 2017/03/19 STOPS MEMORY LEAK
+	//previousLevelNum = levelNum;
+	//gLevelTextTexture.render(10, 8);
 
-	Texture::Instance()->render("levelID", 10, 8);	// 2017/03/19 Display the level number
+	Texture::Instance()->render("levelID", 10, 8);	// Display the level number
 }
 
 /*	2017/02/21: Moved from Game.cpp
@@ -414,10 +255,10 @@ void HUD::createdByText() {
 	//gCreatedByTextTexture.createdByText();
 
 	createdByTimer = SDL_GetTicks();										// Get the current game running time
-	if (createdByTimer > createdByLastTime + 1500) {						// Decrement countdown timer
-		createdByLastTime = createdByTimer;									// Store this time
-		changeEverySecond++;												// Decrement the timer
-	//std::cout << "Time: " << countdownTimer << " lastTime: " << lastTime << " currentTime: " << currentTime << std::endl;
+	if (createdByTimer > createdByLastTime + 1500) {								// Decrement countdown timer
+		createdByLastTime = createdByTimer;											// Store this time
+		changeEverySecond++;														// Decrement the timer
+																		//std::cout << "Time: " << countdownTimer << " lastTime: " << lastTime << " currentTime: " << currentTime << std::endl;
 	}
 
 	/* 2017/03/18 Cut 2 mb/sec memory leak by loading createdByTextTexture text in 3 separate textures only once in the game */

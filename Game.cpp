@@ -182,6 +182,9 @@
 
 #include "_TestData.h"				// JOE: 2017/02/09 Keeps testing functionality in one place
 #include "Game.h"					// Game header file, with functions and variabls
+#include <iostream>
+#include <fstream>
+#include <string>
 #include <sstream>					// For timer
 #include "EnemyShip.h"				// SEAN/JOE: Enemy ship class
 #include "EnemyVirus.h"				// 2017/01/10 SEAN/JOE: Added virus enemy
@@ -211,6 +214,7 @@
 #include "EnterName.h"
 #include <math.h>
 
+using namespace std;
 bool miniMap = true;
 
 Game* Game::s_pInstance = 0;
@@ -254,7 +258,7 @@ EnterName enterName1;
 // Viewports
 SDL_Rect gameViewport;		// Main game screen view port
 SDL_Rect UIViewport;		// Menu below main game screen view port
-//SDL_Rect mapViewport;		// Map indicating the ships current location in the professors body
+SDL_Rect mapViewport;		// Map indicating the ships current location in the professors body
 SDL_Rect weaponViewport1;	// Indicates the currently selected main weapon
 SDL_Rect weaponViewport2;	// Indicates the currently selected main weapon
 SDL_Rect rocketViewport1;	// Indicates the current amount of Rockets for Player 1
@@ -315,7 +319,9 @@ Texture gPlayer2Texture;			// Player 2 ship
 
 Texture gPowerUpRocketTexture;		// Texture for Rocket power up
 Texture gRocketTexture;				// Texture for Rocket weapon
-
+//Texture gNinjaStarBlueTexture(5);	// Texture for Ninja Star weapon
+//Texture gNinjaStarYellowTexture(5);	// Texture for Ninja Star weapon // 2017-01-30 with rotation angle of 5 degrees
+//Texture gSawTexture(5);				// Texture for Ninja Star weapon
 // UI
 Texture gTimeTextTexture;			// Countdown time displayed in game screen
 Texture gFPSTextTexture;			// Frames Per Second displayed at top of screen
@@ -325,7 +331,8 @@ Texture gInfoMessageP2TextTexture;	// Player notification messages for picking u
 Texture gInfoMessageTextTexture;	// Player notification messages for picking up objects etc.
 Texture gInfoMessageMapTextTexture;	// Player notification messages for picking up objects etc.
 
-// Vectors for objects that have collisions
+// Vectors for objects that have collisions - These 2 lists are the only 2 we need
+//std::vector<Texture*> listOfScoreTextures;	// The score for any object a player Kills
 std::vector<GameObject*> listOfGameObjects;		// 2017/01/31 Using to display the scores for each object killed, 2017/02/15 added Power Ups, Explosions
 
 Player* player1 = new Player();
@@ -493,6 +500,20 @@ bool Game::loadMedia() {
 	}
 
 	// Weapons
+	/*
+	if (!gNinjaStarBlueTexture.loadFromFile("Art/NinjaStarBlue.png")) {			// Ninja Star Texture
+		printf("Failed to load Blue Ninja Star texture!\n");
+		success = false;
+	}
+	if (!gNinjaStarYellowTexture.loadFromFile("Art/NinjaStarYellow.png")) {		// Ninja Star Texture
+		printf("Failed to load Yellow Ninja Star texture!\n");
+		success = false;
+	}
+	if (!gSawTexture.loadFromFile("Art/SawBlue.png")) {							// Saw Texture
+		printf("Failed to load Blue Saw texture!\n");
+		success = false;
+	}
+	*/
 	if (!gRocketTexture.loadFromFile("Art/Rocket.png")) {						// Rocket Texture
 		printf("Failed to load Rocket texture!\n");
 		success = false;
@@ -524,12 +545,23 @@ bool Game::loadMedia() {
 	}
 	else {
 		setupAnimationClip(gEnemyBossEyes, 16, 25);
+		/*
+		//Set sprite clips
+		for (unsigned int i = 0; i < 16; ++i) {
+			gEnemyBossEyes[i].x = i * 25;
+			gEnemyBossEyes[i].y = 0;
+			gEnemyBossEyes[i].w = 25;
+			gEnemyBossEyes[i].h = 25;
+		}
+		*/
 	}
 	if (!gEnemyBossSpriteSheetTexture.loadFromFile("Art/lorcanSpriteSheet.png")) {	// Sprite sheet for Enemy Ship
 		printf("Failed to load Enemy Boss animation texture!\n");
 		success = false;
 	}
 	else {
+		//setupAnimationClip(gEnemyBossSpriteClips, 4, 300);
+
 		//Set sprite clips
 		for (unsigned int i = 0; i < 4; ++i) {
 			gEnemyBossSpriteClips[i].x = i * 300;
@@ -537,6 +569,7 @@ bool Game::loadMedia() {
 			gEnemyBossSpriteClips[i].w = 300;
 			gEnemyBossSpriteClips[i].h = 460;
 		}
+
 	}
 	if (!gGreenVirusSpriteSheetTexture.loadFromFile("Art/EnemyVirus_SpriteSheet_Green.png")) {	// Sprite sheet for Enemy Orange Virus
 		printf("Failed to load Green Virus animation texture!\n");
@@ -801,6 +834,16 @@ void Game::renderGameOver() {
 		else gameWinners = "It's a draw";
 	}
 
+	//line 837 to 844 is where the file is created with the player scores at the end of game
+	ofstream myfile;
+	myfile.open("highscore.txt");
+
+	myfile << "Player One Score: " << player1Score << "\n";
+	myfile << "Player Two Score: " << player2Score << "\n";
+
+	myfile << flush;
+	myfile.close();
+
 	gameProgress();													// Times the end of game message
 
 	SDL_RenderSetViewport(getRenderer(), NULL);						// Clear the current viewport to render to full window / screen
@@ -962,22 +1005,18 @@ bool Game::playerInput(bool quit = false) {
 			case SDLK_t:
 				//gCurrentSurface = gKeyPressSurfaces[KEY_PRESS_SURFACE_UP];
 				// Go From mini map to large transparent map
-				//if (mapViewport.y == 600) {
-				if (headsUpDisplay.miniMap) {
-					//setViewport(mapViewport, (SCREEN_WIDTH - 780) / 2, 40, 900, 657);
-					setViewport(headsUpDisplay.mapVP, (SCREEN_WIDTH - 780) / 2, 40, 900, 657);
+				if (mapViewport.y == 600) {
+					setViewport(mapViewport, (SCREEN_WIDTH - 780) / 2, 40, 900, 657);
 					infoMessage("View Map");
 					Texture::Instance()->modifyAlpha(50, "profID");
-					headsUpDisplay.miniMap = false;													// 2017/03/19 Show big map ship position
+					miniMap = false;
 				}
 				// Go from large map to mini map
-				//else if (mapViewport.y == 40) {
-				else {
-					//setViewport(mapViewport, (SCREEN_WIDTH - 120) / 2, 600, 120, 88);	// 230 was 192, 168 was 140
-					setViewport(headsUpDisplay.mapVP, (SCREEN_WIDTH - 120) / 2, 600, 120, 88);	// 230 was 192, 168 was 140
+				else if (mapViewport.y == 40) {
+					setViewport(mapViewport, (SCREEN_WIDTH - 120) / 2, 600, 120, 88);	// 230 was 192, 168 was 140
 					infoMessage("Hide Map");
 					Texture::Instance()->modifyAlpha(255, "profID");
-					headsUpDisplay.miniMap = true;														// 2017/03/19 Show big map ship position
+					miniMap = true;
 				}
 				break;
 				// case SDLK_DOWN:
@@ -1013,7 +1052,7 @@ bool Game::playerInput(bool quit = false) {
 				printf("Warning: Unable to play rumble! %s\n", SDL_GetError());
 			}
 		}
-		// Menu events
+
 		menu1.handleMenuEvents(e);
 		if (getCurrentLevel() != 0) {												// If not in menu state
 			if(player1->getAlive()) player1->handleEvent(e, 1);						// Handle input for Player 1
@@ -1043,6 +1082,13 @@ void Game::fullScreenOrWindowed() {
 	SDL_SetWindowFullscreen(gWindow, windowFlag);
 }
 
+void Game::setRotatingAngle() {
+	// ROTATE GAME OBJECTS - Set angle increment for rotating textures
+	//gNinjaStarBlueTexture.setDegrees(gNinjaStarBlueTexture.getDegrees() + 5);
+	//gNinjaStarYellowTexture.setDegrees(gNinjaStarYellowTexture.getDegrees() + 5);
+	//gSawTexture.setDegrees(gSawTexture.getDegrees() + 5);
+}
+
 void Game::scrollBackground() {
 	if (backgroundLoopCounter <= BACKGROUND_SCROLL_TIMES) scrollingOffset -= BACKGROUND_SCROLL_SPEED;	// Scroll for a fixed number of times
 	if (scrollingOffset < -SCREEN_WIDTH) {
@@ -1063,7 +1109,8 @@ void Game::scrollBackground() {
 int eyeFrame = 0;
 void Game::renderGamePlay() {
 	// Levels
-	//if (weaponScrolling > 0) weaponScrolling--;
+	if (weaponScrolling > 0) weaponScrolling--;
+	setRotatingAngle();	// 2017/02/22: Angle needs to be updated each time a rotating object is drawn to screen
 	displayText();		// 2017/01/17: Display the game text
 
 	if (player1->getAlive()) gPlayer1Texture.flashGameObject(10, 4);	// 2017/01/30 Moved flashGameObject() function into LTexture
@@ -1090,7 +1137,6 @@ void Game::renderGamePlay() {
 			//SDL_RenderDrawRect(getRenderer(), &listOfGameObjects[index]->getCollider());
 			frames = listOfGameObjects[index]->getFrames();			// 2017/02/09 Fixed the explosion animations, they are now assigned to indiviual objects with the game object frame attribute
 
-			// Render Explosions
 			if (listOfGameObjects[index]->getSubType() == EXPLOSION) {
 				listOfGameObjects[index]->render(gExplosionSpriteSheetTexture, &gExplosionClips[frames / EXPLOSION_ANIMATION_FRAMES], frames, EXPLOSION_ANIMATION_FRAMES);
 				if (frames / 8 >= EXPLOSION_ANIMATION_FRAMES) {		// If the explosion reaches the last frame
@@ -1186,7 +1232,7 @@ void Game::renderGamePlay() {
 		// Render Text
 		SDL_RenderSetViewport(getRenderer(), &gameViewport);
 
-		//headsUpDisplay.displayLevelNum(getCurrentLevel()); // Displays the level number at the top left of game screen
+		headsUpDisplay.displayLevelNum(getCurrentLevel()); // Displays the level number at the top left of game screen
 		//Texture::Instance()->render("levelID", 10, 8);	// 2017/03/19 Moved to displayLevelNum() in HUD class
 
 		checkMessageTimes();								// 2017/03/19 Function to check how loong a message has been on screen, and increment message timers
@@ -1324,22 +1370,10 @@ void Game::renderGamePlay() {
 		// User Interface / Player Information Panel
 		SDL_RenderSetViewport(getRenderer(), &UIViewport);
 
-		//headsUpDisplay.playerScore(twoPlayer, player1Score, player2Score);
+		headsUpDisplay.playerScore(twoPlayer, player1Score, player2Score);
 		//headsUpDisplay.percentageNinjaStarKills(twoPlayer, ninjaStarP1Counter, ninjaStarP2Counter);
 		//headsUpDisplay.playerScoresCounter(twoPlayer, scoreTextP1counter, scoreTextP2counter);
 
-		// 2017/03/20 values needed for heads up display
-		headsUpDisplay.getPlayerInfo(player1->getAlive(), player2->getAlive(),
-			player1->getNumLives(), player2->getNumLives(),
-			player1->getLaserGrade(), player2->getLaserGrade(),
-			player1->getNumRockets(), player2->getNumRockets(),
-			player1->getSpeedBoost(), player2->getSpeedBoost(),
-			player1->boostTimer(), player2->boostTimer()
-		);
-
-		headsUpDisplay.render();			// 2017/03/20 Move HeadsUpDisplay functionality to HUD class
-
-		/*
 		// 2017/02/22 Add check for player being alive
 		if (twoPlayer && player1->getAlive() && player2->getAlive())
 			headsUpDisplay.rendPlayerLives(player1->getNumLives(), player2->getNumLives());
@@ -1352,12 +1386,12 @@ void Game::renderGamePlay() {
 			headsUpDisplay.rendPlayerLives(player1->getNumLives());
 
 		headsUpDisplay.createdByText();
-		*/
+
 		/* Professor Mini Map */
 		/* Weapon Scrolling will work of trigger buttons, press left and right to select main weapon */
-		//SDL_RenderSetViewport(getRenderer(), &mapViewport);									// UIViewport	// SDL_RenderSetViewport(getRenderer(), &gameViewport);  // UIViewport
-		//if (!levelOver) Texture::Instance()->renderMap("profID");
-		/*
+		SDL_RenderSetViewport(getRenderer(), &mapViewport);									// UIViewport	// SDL_RenderSetViewport(getRenderer(), &gameViewport);  // UIViewport
+		if (!levelOver) Texture::Instance()->renderMap("profID");
+
 		// 2017/03/19 Minimap positions
 		if (!miniMap) {
 			// 10, 350 start coords
@@ -1398,14 +1432,14 @@ void Game::renderGamePlay() {
 		else if (twoPlayer && player2->getLaserGrade() == LASER_DOUBLE) Texture::Instance()->weaponIndicator("laserPowerUpV2ID", weaponScrolling);
 		else if (twoPlayer && player2->getLaserGrade() == LASER_TRIPLE) Texture::Instance()->weaponIndicator("laserPowerUpV3ID", weaponScrolling);
 
-
 		SDL_RenderSetViewport(getRenderer(), &rocketViewport2);								// UIViewport
 
 		if (twoPlayer && player2->getAlive()) {
-			headsUpDisplay.rocketIndicator(player2->getNumRockets(), PLAYER_2, player2->getAlive());				// Number of rockets for Player 2
+			headsUpDisplay.rocketIndicator(player2->getNumRockets(), PLAYER_2, player2->getAlive());				// Number of rockets for Player 1
 		}
 		else if (twoPlayer && player2->getAlive() == false )
 			headsUpDisplay.rocketIndicator(0, false, PLAYER_2);
+
 
 		SDL_RenderSetViewport(getRenderer(), &boostViewport2);
 		if (twoPlayer && player2->getAlive()) headsUpDisplay.speedBoostIndicator(player2->getSpeedBoost());
@@ -1428,7 +1462,6 @@ void Game::renderGamePlay() {
 		SDL_RenderDrawRect(getRenderer(), &weaponViewport2);
 		SDL_RenderDrawRect(getRenderer(), &rocketViewport2);
 		SDL_RenderDrawRect(getRenderer(), &boostViewport2);
-		*/
 	}
 	else if (levelOver == true) {
 		SDL_RenderSetViewport(getRenderer(), NULL);											// UIViewport   gameViewport
@@ -1448,7 +1481,7 @@ void Game::renderGamePlay() {
 }
 
 /*
-	2017/03/19 Function to check how long a message has been on screen, and increment message timers
+	2017/03/19 Function to check how loong a message has been on screen, and increment message timers
 */
 void Game::checkMessageTimes() {
 	if (infoMessageP1Counter < MESSAGE_TIME) {
@@ -1462,6 +1495,10 @@ void Game::checkMessageTimes() {
 	if (infoMessageCounter < MESSAGE_TIME) {
 		gInfoMessageTextTexture.render((SCREEN_WIDTH - gInfoMessageTextTexture.getWidth()) / 2, ((SCREEN_HEIGHT - gInfoMessageTextTexture.getHeight()) / 2));			// Middle message General
 		infoMessageCounter++;
+	}
+	if (infoMessageP1Counter < MESSAGE_TIME) {
+		gInfoMessageP1TextTexture.render((SCREEN_WIDTH - gInfoMessageP1TextTexture.getWidth()) / 2, ((SCREEN_HEIGHT - gInfoMessageP1TextTexture.getHeight()) / 2) - 20); // Top message P1
+		infoMessageP1Counter++;
 	}
 	if (infoMessageMapCounter < MESSAGE_TIME_MAP) {
 		gInfoMessageMapTextTexture.render((SCREEN_WIDTH - gInfoMessageMapTextTexture.getWidth()) / 2, SCREEN_HEIGHT_GAME - gInfoMessageMapTextTexture.getHeight() - 5); // Top message P1
@@ -1719,6 +1756,7 @@ void Game::destroyGameObjects() {
 		}
 	}// end for
 }
+
 
 // Decide how many of each enemy / obstacle on screen at a given time
 void Game::spawnMovingObjects() {
@@ -2099,6 +2137,7 @@ int numSaws = 0;
 void Game::spawnSaw(int x, int y, int subType) {			// player to spawn for and their coords, turn on if inacive, off if active	// 2017-02-08 Updated and working OK
 	bool createSaw = false;									// Used to decide which player to create the saw for, so code doesn't need to be repeated
 
+
 	if (player1->getSawActive()) std::cout << "player 1 saw active" << std::endl;
 	else if (!player1->getSawActive()) std::cout << "player 1 saw NOT active" << std::endl;
 	if (player2->getSawActive()) std::cout << "player 2 saw active" << std::endl;
@@ -2110,6 +2149,7 @@ void Game::spawnSaw(int x, int y, int subType) {			// player to spawn for and th
 		player1->setSawActive(true);						// Show saw, set saw active function returns true value
 		player1->setShieldActive(false);					// Hide the shield if the saw is active
 		numSaws++;
+
 	}
 	else if (subType == SAW2 && !player2->getSawActive()) {
 		createSaw = true;
@@ -2152,6 +2192,7 @@ void Game::spawnSaw(int x, int y, int subType) {			// player to spawn for and th
 			}
 		}// end for
 	} // end else
+
 	//std::cout << "Num Saws: " << numSaws << std::endl;
 }
 
@@ -2233,9 +2274,8 @@ void Game::resetGame(int currentLevel) {
 	//gLevel.free();
 
 	// Reset the map of the professor
-	//setViewport(mapViewport, (SCREEN_WIDTH - 120) / 2, 600, 120, 88);	// Reset the map to small size // 2017/03/20 Moved to HUD
-	//Texture::Instance()->modifyAlpha(255, "profID");					// 2017/03/20 Moved to HUD
-	headsUpDisplay.resetHUD();											// 2017/03/20 Reset HUD
+	setViewport(mapViewport, (SCREEN_WIDTH - 120) / 2, 600, 120, 88);	// Reset the map to small size
+	Texture::Instance()->modifyAlpha(255, "profID");
 
 	std::string finalScores = "";										// Reset the final scores message
 	std::string gameWinners = "";										// Reset the game winner message
@@ -2261,7 +2301,7 @@ void Game::resetGame(int currentLevel) {
 	//displayLevelIntro = DISPLAY_LEVEL_INTRO_SCREENS;
 	backgroundLoopCounter = 0;
 	scrollingOffset = 0;
-	//weaponScrolling = 60;						// 2017/03/20 Moved to HUD class
+	weaponScrolling = 60;
 
 	// Information Messages
 	infoMessageP1Counter = MESSAGE_TIME;		// Time to display player 1 notification messages
@@ -2333,6 +2373,7 @@ void Game::resetGame(int currentLevel) {
 	levelOver = false;
 	gameOver = false;
 	noTime = false;
+
 }
 
 /*
@@ -2359,6 +2400,16 @@ void Game::collisionCheck() {
 				player1->moveLeft(true);
 			}
 
+			/*
+			// Blockage
+			if (listOfGameObjects[index]->getSubType() == BLOCKAGE) {
+				std::cout << "BLOCKAGE COLLISION PLAYER 1" << std::endl;
+				if (player1->getSawActive())
+					listOfGameObjects[index]->setAlive(false);						// If saw is active kill that enemy
+				else
+					player1->setVelX(player1->getVelX() - player1->getVelX() - BACKGROUND_SCROLL_SPEED);
+			}
+			*/
 			// Power Ups
 			if (listOfGameObjects[index]->getType() == POWER_UP) {
 				if (listOfGameObjects[index]->getSubType() == POWER_UP_HEALTH) {
