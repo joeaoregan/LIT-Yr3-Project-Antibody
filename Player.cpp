@@ -88,6 +88,7 @@ Player::Player() {
 	}
 
 	setDrawParticle(true);
+#include <math.h>
 
 	setProjectileActive(false);				// Player can spawn a rocket straight away
 	setNumRockets(3);						// The number of rockets a player has
