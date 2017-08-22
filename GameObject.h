@@ -21,6 +21,10 @@ public:
 	void spawn(int x, int y, int vx, int vy, SDL_Rect collider, int type = 0);
 
 	virtual void movement();
+	virtual void movement(int x, int y) {
+		//setY(getY() - 5);
+		//if (getY() <= 40) setAlive(false);
+	};
 
 	//void render(LTexture &texture, SDL_Renderer *rend);							// Shows the Enemy on the screen
 	void render(Texture &texture, SDL_Renderer *rend, int degrees = 0);
@@ -79,6 +83,12 @@ public:
 	int getFrames() { return m_Frames; }		// 2017/02/09 Animation frames
 	void setFrames(int f) { m_Frames = f; }
 
+	bool getLineAlgCalculated() { return lineAlgorithmCalculated; }
+	void setLineAlgCalculated(bool alg) { lineAlgorithmCalculated = alg; }
+	int dx, dy;
+
+	Texture m_Texture;
+
 private:
 	// GameObject Variables
 	std::string m_Name;				// Name of the object
@@ -96,12 +106,12 @@ private:
 
 	// 31-01 Display time
 	float m_TimeTracker;				// Time to begin displaying
-	float m_Timer;				// Time to end displaying
-	Texture m_Texture;
+	float m_Timer;					// Time to end displaying
 	//SDL_Color fontColour;			// moved to texture class
 	int m_Angle;					// 2017-02-07: Angle to rotate an object
 
 	int m_Frames;	// 2017/02/09 Number of frames for an animation
+	bool lineAlgorithmCalculated;
 };
 
 #endif

@@ -48,7 +48,9 @@ public:
 	void update();
 	void close();								// Frees media and shuts down SDL
 
-	void displayLevelSplashScreen(std::string objective);
+	//void displayLevelSplashScreen(std::string objective);
+	void displayLevelIntroScreens(int level);
+	std::string levelObjective;
 
 	void menu();
 	void playLevel(int levelNum);

@@ -7,6 +7,8 @@ class ScoreValueText : public GameObject {
 public:
 	ScoreValueText(int x, int y, int score, int player);
 	~ScoreValueText();
+
+	void movement(int x, int y);
 };
 
 #endif
