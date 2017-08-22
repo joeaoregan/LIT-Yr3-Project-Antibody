@@ -15,6 +15,7 @@ public:
 	Texture gSettingsMenuTextTexture4;
 	Texture gSettingsMenuTextTexture5;
 	Texture gSettingsMenuTextTexture6;
+	Texture gSettingsMenuTextTexture7;	// Full Screen On / Off
 
 	//Buttons objects
 	//Button gButtons[TOTAL_MAIN_MENU_BUTTONS];
@@ -23,9 +24,9 @@ public:
 	SDL_Rect gSpriteClipsSettingsMenu[TOTAL_SETTINGS_MENU_BUTTONS];
 	Texture gButtonSpriteSheetTexture2;
 
-	void closeMenuMedia();
-	void handleMenuEvents(SDL_Event& e);
-	bool loadMenuMedia();
+	bool loadSettingsMedia();
+	void closeSettingsMedia();
+	void handleSettingsEvents(SDL_Event& e);
 	void draw();
 };
 

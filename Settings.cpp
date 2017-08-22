@@ -11,12 +11,12 @@
 #include "SettingsMenu.h"
 #include <SDL_ttf.h>
 
-bool SettingsMenu::loadMenuMedia() {
+bool SettingsMenu::loadSettingsMedia() {
 	bool success = true;
 
 	gFont = TTF_OpenFont("Fonts/Retro.ttf", 16);	// Open the font
 	if (gFont == NULL) {
-		printf("XXX Failed to load lazy font! SDL_ttf Error: %s\n", TTF_GetError());
+		printf("Failed to load lazy font! SDL_ttf Error: %s\n", TTF_GetError());
 		success = false;
 	}
 	else {
@@ -34,11 +34,15 @@ bool SettingsMenu::loadMenuMedia() {
 			printf("Failed to render Music Off text texture!\n");
 			success = false;
 		}
-		if (!gSettingsMenuTextTexture4.loadFromRenderedText("Main Menu", textColour, gFont)) {
+		if (!gSettingsMenuTextTexture4.loadFromRenderedText("Full Screen On/Off", textColour, gFont)) {
+			printf("Failed to render Full Screen text texture!\n");
+			success = false;
+		}
+		if (!gSettingsMenuTextTexture5.loadFromRenderedText("Main Menu", textColour, gFont)) {
 			printf("Failed to render Main Menu text texture!\n");
 			success = false;
 		}
-		if (!gSettingsMenuTextTexture5.loadFromRenderedText("Quit", textColour, gFont)) {
+		if (!gSettingsMenuTextTexture6.loadFromRenderedText("Quit", textColour, gFont)) {
 			printf("Failed to render Quit text texture!\n");
 			success = false;
 		}
@@ -52,11 +56,13 @@ bool SettingsMenu::loadMenuMedia() {
 		gSettingsMenuTextTexture3.setX((SCREEN_WIDTH - gSettingsMenuTextTexture3.getWidth()) / 2);
 		gSettingsMenuTextTexture4.setX((SCREEN_WIDTH - gSettingsMenuTextTexture4.getWidth()) / 2);
 		gSettingsMenuTextTexture5.setX((SCREEN_WIDTH - gSettingsMenuTextTexture5.getWidth()) / 2);
+		gSettingsMenuTextTexture6.setX((SCREEN_WIDTH - gSettingsMenuTextTexture6.getWidth()) / 2);
 
 		gSettingsMenuTextTexture2.setY(200);
 		gSettingsMenuTextTexture3.setY(250);
 		gSettingsMenuTextTexture4.setY(300);
 		gSettingsMenuTextTexture5.setY(350);
+		gSettingsMenuTextTexture6.setY(400);
 	}
 
 	//Load sprites
@@ -68,28 +74,29 @@ bool SettingsMenu::loadMenuMedia() {
 		//Set sprites
 		for (int i = 0; i < TOTAL_SETTINGS_MENU_BUTTONS; ++i) {
 			gSpriteClipsSettingsMenu[i].x = 0;
-			gSpriteClipsSettingsMenu[i].y = i * 200;
-			gSpriteClipsSettingsMenu[i].w = BUTTON_WIDTH;
+			gSpriteClipsSettingsMenu[i].y = i * 250;
+			gSpriteClipsSettingsMenu[i].w = BUTTON_WIDTH_SETTINGS;
 			gSpriteClipsSettingsMenu[i].h = BUTTON_HEIGHT;
 		}
 
-		gSettingsMenuButtons[0].setPosition((SCREEN_WIDTH - BUTTON_WIDTH) / 2, gSettingsMenuTextTexture2.getY());
-		gSettingsMenuButtons[1].setPosition((SCREEN_WIDTH - BUTTON_WIDTH) / 2, gSettingsMenuTextTexture3.getY());
-		gSettingsMenuButtons[2].setPosition((SCREEN_WIDTH - BUTTON_WIDTH) / 2, gSettingsMenuTextTexture4.getY());
-		gSettingsMenuButtons[3].setPosition((SCREEN_WIDTH - BUTTON_WIDTH) / 2, gSettingsMenuTextTexture5.getY());
+		gSettingsMenuButtons[0].setPosition((SCREEN_WIDTH - BUTTON_WIDTH_SETTINGS) / 2, gSettingsMenuTextTexture2.getY());
+		gSettingsMenuButtons[1].setPosition((SCREEN_WIDTH - BUTTON_WIDTH_SETTINGS) / 2, gSettingsMenuTextTexture3.getY());
+		gSettingsMenuButtons[2].setPosition((SCREEN_WIDTH - BUTTON_WIDTH_SETTINGS) / 2, gSettingsMenuTextTexture4.getY());
+		gSettingsMenuButtons[3].setPosition((SCREEN_WIDTH - BUTTON_WIDTH_SETTINGS) / 2, gSettingsMenuTextTexture5.getY());
+		gSettingsMenuButtons[4].setPosition((SCREEN_WIDTH - BUTTON_WIDTH_SETTINGS) / 2, gSettingsMenuTextTexture6.getY());
 	}
 
 	return success;
 }
 
-void SettingsMenu::handleMenuEvents(SDL_Event& e) {
+void SettingsMenu::handleSettingsEvents(SDL_Event& e) {
 	// Handle button events
 	for (int i = 0; i < TOTAL_SETTINGS_MENU_BUTTONS; ++i) {
 		gSettingsMenuButtons[i].handleEvent(&e, i);
 	}
 }
 
-void SettingsMenu::closeMenuMedia() {
+void SettingsMenu::closeSettingsMedia() {
 	// Buttons
 	gButtonSpriteSheetTexture2.free();
 
@@ -118,6 +125,7 @@ void SettingsMenu::draw() {
 	gSettingsMenuTextTexture3.render(gSettingsMenuTextTexture3.getX(), gSettingsMenuTextTexture3.getY());	// MUSIC OFF
 	gSettingsMenuTextTexture4.render(gSettingsMenuTextTexture4.getX(), gSettingsMenuTextTexture4.getY());	// RETURN TO SETTINGS
 	gSettingsMenuTextTexture5.render(gSettingsMenuTextTexture5.getX(), gSettingsMenuTextTexture5.getY());	// QUIT GAME
+	gSettingsMenuTextTexture6.render(gSettingsMenuTextTexture6.getX(), gSettingsMenuTextTexture6.getY());	// FULL SCREEN ON / OFF
 
 	SDL_RenderPresent(Game::Instance()->getRenderer());			// Update screen
 }

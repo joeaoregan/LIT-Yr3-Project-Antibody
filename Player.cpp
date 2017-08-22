@@ -75,6 +75,7 @@ Player::Player() {
 	setColliderWidth(getWidth());
 	setColliderHeight(getHeight());
 
+	setShieldActive(true);
 	setSawActive(false);
 	setScore(0);
 	setAlive(false);

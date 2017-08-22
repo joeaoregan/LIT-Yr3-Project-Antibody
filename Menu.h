@@ -9,14 +9,16 @@ public:
 	TTF_Font *gFont = NULL;
 
 	// Menu Text
-	Texture gMenuTextTexture1;
+	Texture gMenuTextTexture1;	// Antibody
 	Texture gMenuTextTexture2;
 	Texture gMenuTextTexture3;
 	Texture gMenuTextTexture4;
 	Texture gMenuTextTexture5;
 	Texture gMenuTextTexture6;
 	Texture gMenuTextTexture7;
-	Texture gMenuTextTexture8;
+	Texture gMenuTextTexture8;	// Pause
+	Texture gMenuTextTexture9;	// Resume
+	Texture gMenuTextTexture10;	// Return to Main Menu from Pause
 
 	//Buttons objects
 	Button gButtons[TOTAL_MAIN_MENU_BUTTONS];
@@ -30,6 +32,8 @@ public:
 	bool loadMenuMedia();
 	void draw();
 	void drawPause();
+
+	void randomBackgroundColour();		// select a random background colour
 };
 
 #endif

@@ -58,7 +58,7 @@ const int ANIMATION_FRAMES = 4;				// Number of frames of animation for Enemy Sh
 const int EXPLOSION_ANIMATION_FRAMES = 12;	// Number of frames of animation for Explosions
 const int BLOOD_EXP_ANIMATION_FRAMES = 12;
 
-enum levels { MENU, LEVEL_1, LEVEL_2, LEVEL_3, PAUSE, SETTINGS, HIGH_SCORES, ENTER_NAME };
+enum gameStates { MENU, LEVEL_1, LEVEL_2, LEVEL_3, PAUSE, SETTINGS, HIGH_SCORES, ENTER_NAME };
 
 class Game {
 public:
@@ -67,6 +67,8 @@ public:
 	bool enterNameLoaded = false;
 
 	SDL_Window* gWindow = NULL;				// The window we'll be rendering to
+	int windowFlag;							// Show the game in full screen or windowed
+	void fullScreenOrWindowed();
 
 	// 27/02/2017 Game Singleton
 	static Game* Instance() {
@@ -136,6 +138,7 @@ public:
 
 	int getCurrentLevel() { return mCurrentLevel; }
 	void setCurrentLevel(int l) { mCurrentLevel = l; }
+	int levelToPause;										// Store Current Level to return to from pause
 
 	//int counter = 0;		// counter for changing alpha for flashing
 	bool gameOver = false;

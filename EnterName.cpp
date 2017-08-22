@@ -16,7 +16,7 @@ handles the transitions.
 
 SDL_Event event;
 
-bool EnterName::loadMenuMedia() {
+bool EnterName::loadNameMedia() {
 	bool success = true;
 
 	gFont = TTF_OpenFont("Fonts/Retro.ttf", 16);	// Open the font
@@ -79,7 +79,7 @@ bool EnterName::loadMenuMedia() {
 bool renderText;
 std::string inputText = "Name";
 
-void EnterName::handleMenuEvents(SDL_Event& e) {
+void EnterName::handleNameEvents(SDL_Event& e) {
 	// Handle button events
 	for (int i = 0; i < TOTAL_ENTER_NAME_BUTTONS; ++i) {
 		gNameButtons[i].handleEvent(&e, i);
@@ -89,7 +89,7 @@ void EnterName::handleMenuEvents(SDL_Event& e) {
 
 }
 
-void EnterName::closeMenuMedia() {
+void EnterName::closeNameMedia() {
 	// Buttons
 	gButtonSpriteSheetTexture4.free();
 

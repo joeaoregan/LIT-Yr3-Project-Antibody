@@ -15,12 +15,13 @@ public:
 	//Buttons objects
 	Button gReturnToMenu;
 
+	Button gScoressMenuButtons[1];
 	SDL_Rect gSpriteClipsScoresMenu[1];
 	Texture gButtonSpriteSheetTexture3;
 
-	void closeMenuMedia();
-	void handleMenuEvents(SDL_Event& e);
-	bool loadMenuMedia();
+	bool loadHighScoresMedia();
+	void closeHighScoresMedia();
+	void handleHighScoresEvents(SDL_Event& e);
 	void draw();
 };
 

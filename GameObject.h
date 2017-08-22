@@ -181,12 +181,12 @@ public:
 	void setKillRocket(bool kill = 0) { killRocket = kill; }
 	int getBonusScore() { return rocketBonusScore; }
 	void setBonusScore(int bonus = 0) { rocketBonusScore = bonus; }
+	// Shield
+	bool getShieldActive() { return shieldActive; }
+	void setShieldActive(bool active) { shieldActive = active; }			// Set the saw active
 	// Saw
 	bool getSawActive() { return sawActive; }
-	bool setSawActive(bool active) {
-		sawActive = active;			// Set the saw active
-		return true;				// Return true value to create the saw
-	}
+	void setSawActive(bool active) { sawActive = active; }			// Set the saw active
 	// Laser
 	int getLaserGrade() { return mLaserGrade; }
 	void setLaserGrade(int grade);
@@ -240,6 +240,7 @@ protected:
 	// Weapons
 	int mPlayer;
 	bool sawActive;
+	bool shieldActive;				// 2017/03/13 Turn on / off shield
 	int rocketBonusScore;
 	bool m_ProjectileActive;		// 2017/02/06 Decides if an object can fire rockets or other weapons
 	bool m_RocketBarActive;

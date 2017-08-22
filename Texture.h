@@ -51,7 +51,7 @@ public:
 																	//Creates image from font string
 	bool loadFromRenderedText(std::string textureText, SDL_Color textColor, TTF_Font* font, bool textWrapped = false);
 #endif
-	void renderMap();
+	void renderMap(std::string id = "");
 	void renderMap(std::string id, int x, int y, int width, int height);
 	//void render(int x, int y, SDL_Rect* clip = NULL, double angle = 0.0, SDL_Point* center = NULL, SDL_RendererFlip flip = SDL_FLIP_NONE);	// Renders texture at given point
 	
@@ -85,7 +85,7 @@ public:
 		
 	void setBlendMode(SDL_BlendMode blending);					// Set blending
 		
-	void modifyAlpha(Uint8 alpha);								// Set alpha modulation
+	void modifyAlpha(Uint8 alpha, std::string id = "");			// Set alpha modulation
 
 	//void flashGameObject(int &alpha, bool &flash, int rate = 10, int times = 0);
 	void flashGameObject(int rate = 10, int times = 0);

@@ -8,9 +8,10 @@
 
 //Button constants
 const int BUTTON_WIDTH = 160;
+const int BUTTON_WIDTH_SETTINGS = 250;
 const int BUTTON_HEIGHT = 40;
 const int TOTAL_MAIN_MENU_BUTTONS = 6;
-const int TOTAL_SETTINGS_MENU_BUTTONS = 4;
+const int TOTAL_SETTINGS_MENU_BUTTONS = 5;
 const int TOTAL_ENTER_NAME_BUTTONS = 2;
 
 enum ButtonSprite {

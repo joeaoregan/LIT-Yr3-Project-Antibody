@@ -71,9 +71,13 @@ void Texture::draw(std::string id, int x, int y, int width, int height, SDL_Rend
 	SDL_RenderCopyEx(Game::Instance()->getRenderer(), m_textureMap[id], &srcRect, &destRect, 0, 0, flip);
 }
 
-void Texture::renderMap() {
+void Texture::renderMap(std::string id) {
 	//void Texture::renderMap(SDL_Renderer* rend) {
-	SDL_RenderCopy(Game::Instance()->getRenderer(), mTexture, NULL, NULL);
+	if (id == "")
+		SDL_RenderCopy(Game::Instance()->getRenderer(), mTexture, NULL, NULL);
+	else
+		SDL_RenderCopy(Game::Instance()->getRenderer(), m_textureMap[id], NULL, NULL);	// render texture from map using id
+
 }
 void Texture::renderMap(std::string id, int x, int y, int width, int height) {
 	//void Texture::renderMap(std::string id, int x, int y, int width, int height, SDL_Renderer* rend) {
@@ -284,8 +288,11 @@ void Texture::flashGameObject(int rate, int times) {
 	counter++;
 }
 
-void Texture::modifyAlpha(Uint8 alpha) {
-	SDL_SetTextureAlphaMod(mTexture, alpha);			// Modulate texture alpha
+void Texture::modifyAlpha(Uint8 alpha, std::string id) {
+	if (id == "")
+		SDL_SetTextureAlphaMod(mTexture, alpha);			// Modulate texture alpha
+	else
+		SDL_SetTextureAlphaMod(m_textureMap[id], alpha);
 }
 
 /*
@@ -424,10 +431,13 @@ void Texture::clearMedia() {
 
 }
 
-const int NUM_TEXTURES2 = 20;
+const int NUM_TEXTURES2 = 23;
 
 // 2D Array of textures, with path to file, texture ID, and description for error messages
 std::string textures2[NUM_TEXTURES2][3] = {
+	// Game
+	{ "Art/Prof.png", "profID", "Professor" },		// Map texture to show the players current position inside the professor
+
 	// Background images
 	{ "Art/bgBegin720a.png", "startBG", "Starting Background" },
 	{ "Art/Background720.png", "middleBG", "Middle Background" },
@@ -445,6 +455,8 @@ std::string textures2[NUM_TEXTURES2][3] = {
 	{ "Art/LaserGreen.png", "greenLaserID", "Green Laser" },
 	{ "Art/LaserOrange.png", "orangeLaserID", "Orange Laser" },
 	{ "Art/LaserBlue.png", "blueLaserID", "Blue Laser" },
+	{ "Art/Shield1.png", "shieldP1ID", "Player 1 Shield" },
+	{ "Art/Shield2.png", "shieldP2ID", "Player 2 Shield" },
 
 	// Power Ups
 	{ "Art/PowerUpLife.png", "lifePowerUpID", "New Life Power Up" },
@@ -470,7 +482,7 @@ bool Texture::loadTextureMedia() {
 
 	// Load the textures stored in the textures array
 	for (int i = 0; i < NUM_TEXTURES2; i++) {
-		if (!Texture::Instance()->load(textures2[i][0], textures2[i][1])) {					// Game Title Logo
+		if (!load(textures2[i][0], textures2[i][1])) {					// Game Title Logo
 			std::cout << "Failed to load " << textures2[i][2] << " texture!" << std::endl;
 			success = false;
 		}

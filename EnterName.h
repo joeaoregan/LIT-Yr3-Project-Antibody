@@ -20,9 +20,9 @@ public:
 	SDL_Rect gSpriteClipsName[TOTAL_ENTER_NAME_BUTTONS];
 	Texture gButtonSpriteSheetTexture4;
 
-	void closeMenuMedia();
-	void handleMenuEvents(SDL_Event& e);
-	bool loadMenuMedia();
+	bool loadNameMedia();
+	void closeNameMedia();
+	void handleNameEvents(SDL_Event& e);
 	void draw();
 };
 
