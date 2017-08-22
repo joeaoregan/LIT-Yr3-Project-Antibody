@@ -1,6 +1,6 @@
 /*
-2017-01-17:
-Add Circular Saw weapon class
+	2017/02/21 Added check so only Ninja Stars and Saaws split viruses
+	2017/01/17 Add Circular Saw weapon class
 */
 #ifndef CIRCULAR_SAW_H
 #define CIRCULAR_SAW_H
@@ -9,8 +9,8 @@ Add Circular Saw weapon class
 
 class WeaponPlSaw : public Weapon {
 public:
-	WeaponPlSaw(int player);				// Initializes the variables
-	~WeaponPlSaw();							// Deconstructor
+	WeaponPlSaw(int player);									// Initializes the variables
+	~WeaponPlSaw();									// Deconstructor
 
 	virtual void movement(int x, int y);	// Moves the Saw
 };

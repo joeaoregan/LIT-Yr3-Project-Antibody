@@ -1,3 +1,15 @@
+/*
+	2017/01/30 Added particle texture alpha modify functionality
+	2017/01/20 Class for handling particles for the ship engine
+*/
+/*
+	PARTICLE:
+
+	The particle class handles the functionality for displaying the engine particles
+	for the players ships. A random number of aparticles is drawn to the screen each
+	frame. A random number pool is used to create the effect of the particles.
+*/
+
 #include "Particle.h"
 #include "Texture.h"
 
@@ -21,12 +33,12 @@ and then every other frame we render a semitransparent shimmer texture over it
 to make it look like the particle is shining. We then update the frame of
 animation.
 */
-void Particle::render(Texture &texture, SDL_Renderer *rend) {
-	mTexture->render(mPosX, mPosY, rend);				//Show image
+void Particle::render(Texture &texture) {
+	mTexture->render(mPosX, mPosY);				//Show image
 
 	//Show shimmer
 	if (mFrame % 3 == 0) {
-		texture.render(mPosX, mPosY, rend);
+		texture.render(mPosX, mPosY);
 	}
 
 	mFrame++;	// Animate

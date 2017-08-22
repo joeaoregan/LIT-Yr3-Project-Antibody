@@ -1,3 +1,32 @@
+/*
+	2017/02/19 Added random speed for Enemy Virus objects
+				Changed information message to warn player when all types of virus are approaching
+				Changed white blood cell movement to to destroy blue virus objects when they're split in two
+				Added different coloured explosions for Enemy Virus
+				Virus can now be cut with saw, splitting in two
+	2017/02/10 Started work on blue virus, with rotating satellite object ...I hate trigonometry!!
+				Satellite weapon fires with .5 seconds left on timer
+				Fixed score for blue virus
+	2017/02/09 Fixed virus moving towards nearest player
+				Made virus animations independent, so they don't all render same frame at the same time
+	2017/01/25 Added check for if the type of virus is newer Orange Exploding Virus or older Green Virus
+				Added alert message to notify player Exploding Orange Virus is approaching 
+				Added functionality so Orange Virus explodes after colliding with player
+	2017/01/18 Fixed virus movement to move towards the nearest player not just player 1
+	2017/01/10 updated movement() function so Virus moves towards player on Y coord
+				Added spawn functions to spawn enemies and obstacles at random coords & distances apart
+*/
+/* 
+	ENEMY VIRUS:
+
+	There are three types of virus Green, Orange, and Blue. The Green Virus can move towards the players 
+	Y position on the screen, while the player is in front of them as they move right to left. The other 
+	two virus types have the same movement. Orange Viruses have a countdown timer, and explode sending 
+	8 fireballs in 8 different directions. The Blue Virus type has a satellite object that fires when its
+	timer runs out, and can spawn another virus when the timer resets. Virus objects can be split in two
+	by the players Saw and Ninja Star weapons. When they are split into a smaller size, the viruses can 
+	by terminated by the White Blood Cells which quickly move towards them to clean them up.
+*/
 #include "EnemyVirus.h"
 
 EnemyVirus::EnemyVirus(int type, float time) {

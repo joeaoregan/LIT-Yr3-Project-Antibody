@@ -1,5 +1,12 @@
-/* 2017/01/09:
-JOE: Moved functionality common to game objects to GameObjects class reducing the code
+/*
+	2017/02/18 Moved Blood Cells to game object list
+	2017/02/09 Added indpendent animation frames
+	2017/02/07 Added independent angle to rotate each object
+	2017/01/30 Moved degrees variable to object so all rotating objects rotate at different times
+	2017/01/25 Added setSubType() function to set the objects sub-type
+	2017/02/18 Added setType() function to seet the objects type
+	2017/01/09 Moved functionality common to game objects to GameObjects class reducing the code
+	2017/01/17 Separated Player 1 and 2 scores in Game class
 */
 #ifndef GAME_OBJECTS_H
 #define GAME_OBJECTS_H
@@ -8,11 +15,11 @@ JOE: Moved functionality common to game objects to GameObjects class reducing th
 
 #define ROCKET_TIMER 3.0
 
-#include <SDL_image.h>
+#include <SDL.h>
+//#include <SDL_image.h>
 #include "Texture.h"
 #include <iostream>
 #include "Particle.h"
-#include <string.h>
 
 const int TOTAL_PARTICLES2 = 20;	// Particle count
 
@@ -58,9 +65,12 @@ public:
 
 	void destroy();
 
+	void render();
+	void render(Texture &texture, int degrees = 0);
+	void render(Texture &texture,  SDL_Rect *currentClip, int &currentframe, int frames);
+	//void render(Texture &texture, SDL_Renderer *rend, int degrees = 0);
 	//void render(LTexture &texture, SDL_Renderer *rend);	// Shows the Enemy on the screen
-	void render(Texture &texture, SDL_Renderer *rend, int degrees = 0);
-	void render(Texture &texture, SDL_Renderer *rend, SDL_Rect *currentClip, int &currentframe, int frames);
+	//void render(Texture &texture, SDL_Renderer *rend, SDL_Rect *currentClip, int &currentframe, int frames);
 
 	int getX() { return m_x; }						// Get GameObject X coord
 	int getY() { return m_y; }						// Get GameObject Y coord
@@ -92,7 +102,6 @@ public:
 	void setHealth(int health);						// set the health
 	void setNumLives(int n) { m_NumLives = n; }		// Set the number of lives for the object
 
-//	SDL_Rect getCollider() { return m_Collider; }
 	SDL_Rect* getCollider() { return &m_Collider; }
 	void setCollider(SDL_Rect collider) { m_Collider = collider; }	// 2017/01/19 Added as Sean keeps doing dumb things with the colliders
 	void setColliderWidth(int w) { m_Collider.w = w; }
@@ -167,8 +176,7 @@ public:
 	// Particles
 	bool getDrawParticle() { return drawParticle; }
 	void setDrawParticle(bool p) { drawParticle = p; }
-
-	void renderParticles(Texture &one, Texture &two, Texture &three, Texture &four, SDL_Renderer *rend);
+	void renderParticles(Texture &one, Texture &two, Texture &three, Texture &four);
 
 	// Speed boost
 	bool getSpeedBoost() { return mSpeedBoost; }
@@ -215,7 +223,7 @@ private:
 	int mPlayer;
 	bool sawActive;
 	int rocketBonusScore;
-	bool m_ProjectileActive;			// If an object can fire rockets or not
+	bool m_ProjectileActive;		// 2017/02/06 Decides if an object can fire rockets or other weapons
 	bool m_RocketBarActive;
 	int numRockets;					// The number of rockets an object has
 	bool killRocket;
@@ -230,53 +238,3 @@ private:
 };
 
 #endif
-
-/*
-// global functions friends of the GameObjects class
-//friend std::ostream& operator<<(std::ostream& os, const GameObject& aGameObject);
-
-//GameObject(int damage = 3);			// Constructor with default value of 3 for damage
-
-//std::string m_typeID;				// GameObject name
-//int m_Damage;						// Damage to reduce health after an object moves
-//int m_direction;					// CA2 - set the objects direction
-
-//	void render();
-//	void render(LTexture x);
-
-//void spawn(std::string typeID, int health, int speed);
-//void spawn(std::string typeID, int health, int speed, int x, int y);	// create an object
-//void draw();						// print to the screen the typeID and its x and y coords
-//virtual void update();				// virtual function
-//void info();						// print all info relating to the object
-
-// Getter Methods
-//std::string getID() const;			// Get GameObject name / ID
-//const int getHealth() const;		// Get GameObject health
-//int getSpeed() const;				// Get GameObject speed
-
-//int getDamage() const;				// Get GameObject Damage
-// Setter Methods
-//void setSpeed(int speed);			// Set speed between 1 and 4
-
-// Indicate where the border has been impacted
-//int reboundX = 0, reboundY = 0;		// Store impact point, to highlight
-//int getImpactX() const;				// Get the x coord of impact object
-//int getImpactY() const;				// Get the y coord of impact object
-//void setImpactX(int x);				// Set and reset objects impact x coord
-//void setImpactY(int y);				// Set and reset objects impact y coord
-
-// Change GameObject direction
-//int rebound;						// Amount to bounce back of perimeter
-//enum directionName { SW = 1, South, SE, West, East = 6, NW, North, NE };	// Use readable values for directions
-//int getDirection();					// CA2 - Get the objects direction
-//void setDirection(int d);			// Sets the direction of the GameObject (game init())
-//int direction;					// The direction GameObject is moving
-//void setRandomDirection();			// CA2 - Set a random direction for game objects
-
-//int getRandomCoord();				// Get Random Coordinate
-//void setRandomCoords(int x, int y); // NEVER USED X OR Y
-//void setRandomCoords();
-//void checkCoords();
-//void checkCoords(GameObject* objectToCheck);	// MOVED TO GAME as uniqueCoords
-*/

@@ -1,3 +1,9 @@
+/*
+	MAIN:
+
+	This is the main entry point for the game
+*/
+
 #include "Game.h"
 //#include "MainMenu.h"
 
@@ -6,6 +12,8 @@
 int main() {
 	srand(static_cast<unsigned int>(time(0)));	// Seed the random number
 
+
+	//Game::Instance()->init();
 	//MainMenu menu;	//create menu object
 
 	//menu.update();

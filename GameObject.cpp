@@ -1,4 +1,27 @@
+/*
+	2017/02/18 Moved Blood Cells to game object list
+				Added setType() function to seet the objects type
+	2017/02/09 Added indpendent animation frames
+	2017/02/07 Added independent angle to rotate each object
+	2017/01/30 Moved degrees variable to object so all rotating objects rotate at different times
+	2017/01/25 Added setSubType() function to set the objects sub-type
+	2017/01/24 Added Y padding to keep objects within the game screen boundary
+	2017/01/22 Moved render functions out of Game.cpp
+	2017/01/18 Fixed animations for game objects, with independent frame handling, m_Frames variable added
+	2017/01/09 Moved functionality common to game objects to GameObjects class reducing the code
+	2017/01/17 Separated Player 1 and 2 scores in Game class
+	2017/01/09 Added destroyGameObjects() function to destroy the game objects when finished using in Game class
+				Added moveGameObjects() funtction to move the game objects on the screen in Game class
+*/
+/*
+	GAME OBJECT:
+
+	This is the base class for all game objects within the game including player and enemy objects. A list of
+	game objects is used to handle object movement, rendering, and collisions.
+*/
+
 #include "GameObject.h"
+#include "Game.h"
 #include <math.h>
 
 // Constructor
@@ -17,12 +40,17 @@ GameObject::~GameObject() {
 }
 
 // Render the Game Objects to the screen
-void GameObject::render(Texture &texture, SDL_Renderer *rend, int degrees) {
-	texture.render(getX(), getY(), rend, NULL, degrees, NULL, SDL_FLIP_NONE);
+
+void GameObject::render() {
+	Texture mTexture;
+	mTexture.render(getX(), getY(), NULL, 0, NULL, SDL_FLIP_NONE);
+}
+void GameObject::render(Texture &texture, int degrees) {
+	texture.render(getX(), getY(), NULL, degrees, NULL, SDL_FLIP_NONE);
 }
 
-void GameObject::render(Texture &texture, SDL_Renderer *rend, SDL_Rect *currentClip, int &currentframe, int frames) {	// 2017/01/22 Moved from game.cpp
-	texture.render(getX(), getY(), rend, currentClip);
+void GameObject::render(Texture &texture, SDL_Rect *currentClip, int &currentframe, int frames) {	// 2017/01/22 Moved from game.cpp
+	texture.render(getX(), getY(), currentClip);
 
 	++currentframe;						// Go to next frame
 
@@ -114,6 +142,7 @@ void GameObject::spawn(int x, int y, SDL_Rect* collider, int player, int type) {
 	setY(y + 13);
 	setVelX(getVelocity());
 	setVelY(0);
+//	setCollider(collider);
 	setCollider((*collider));
 	setPlayer(player);
 	setSubType(type);
@@ -132,7 +161,7 @@ void GameObject::setSpeedBoost(bool boost) {
 }
 
 
-void GameObject::renderParticles(Texture &one, Texture &two, Texture &three, Texture &four, SDL_Renderer *rend) {
+void GameObject::renderParticles(Texture &one, Texture &two, Texture &three, Texture &four) {
 	//Go through particles
 	for (int i = 0; i < TOTAL_PARTICLES2; ++i) {
 		//Delete and replace dead particles
@@ -144,6 +173,6 @@ void GameObject::renderParticles(Texture &one, Texture &two, Texture &three, Tex
 
 	//Show particles
 	for (int i = 0; i < TOTAL_PARTICLES2; ++i) {
-		particles[i]->render(four, rend);
+		particles[i]->render(four);
 	}
 }

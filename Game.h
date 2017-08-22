@@ -1,4 +1,35 @@
 /*
+	2017/02/28 Fixed entry point not defined error with #define SDL_MAIN_HANDLED
+	2017/02/27 Made the Constructor private for use as a singleton
+				Moved setRotatingAngle() functions here. Sets the angle for rotating objects
+				Moved scrollBackground() function here. Scolls the background image
+	2017/02/23 Added singleton for Game class
+	2017/02/19 Added blood explosions to spawnExplosion() function
+	2017/02/17 Added identifyTrack() function to dentify the song current playing and display the name on screen
+	2017/02/16 Added infoMessage() function to display player messages for player events
+	2017/02/15 Added gameTimer() function, to ouput the current seconds remaining in the game
+	2017/02/06 Added spawnRocket() function to create rockets for players
+				Added managePlayerScores() function to handle players score
+	2017/01/25 Added spawnExplosion() functions for creating explosions when objects collide
+	2017/01/20 Added spawnSaw() function to create Saw Weapon for player
+				Added Weapons grade for spawnLaser() function to distinguish between upgrades in weapons
+	2017/01/18 Added pressButtonToContinue() function for splash screens at start of game, so player can read writing at own pace
+				Added spawnRandom() function to separate out common randomness of game object spawning
+	2017/01/17 Added displayText() function to render text used in the game
+				Added gamepadInfo() function to separate gamepad information into its own function
+				Added player decision to spawnNinjaStar() function - determines player to spawn for and their coords
+	2017/01/16 Added spawnLaser() function to spawn a laser at coords, with velocitys 
+	2017/01/10 Added spawnEnemyVirus() function to create enemy virus at random times and random y coord
+				Added spawnEnemyLaser() function, to spawn bullet objects for enemy ships
+				Added spawnBloodCell() function to create blood cells
+				Added spawnMovingObjects() function to spawn enemies and obstacles at random coords & distances apart
+	2017/01/09 Added spawnNinjaStar() function to create ninja star weapons
+				Added playerInput() function to handle input from player
+				Added renderGameObjects() function to render the game objects to the screen
+				Added moveGameObjects() function to move the game objects on the screen
+				Added destroyGameObjects() function to destroy the game objects when finished using
+				Added spawnEnemyShip() function to create enemy ships at random times and random y coord
+
 *-------------------------------------------------
 *		Game.h
 *		Sean Horgan - K00196030
@@ -10,47 +41,29 @@
 #ifndef GAME_H
 #define GAME_H
 
-//#include <SDL.h>
-//#include <SDL_ttf.h>
-//#include "Texture.h"
 
-#include <cstdlib>		// For Random Numbers
-#include <ctime>		// For Random Numbers
+#define SDL_MAIN_HANDLED	// Handling SDL main definition ourselves
+#include <SDL.h>
+#include "GameStateMachine.h"
+#include <cstdlib>			// For Random Numbers
+#include <ctime>			// For Random Numbers
 #include <list>
-#include <vector>
-#include <sstream>		// For timer
-
-#include "_TestData.h"	// 2017/02/09
 
 // Other Symbolic Constants
 #define PLAYER_1 1
 #define PLAYER_2 2
 
 // Animation
-const int ANIMATION_FRAMES = 4;							// Number of frames of animation for Enemy Ship
-const int EXPLOSION_ANIMATION_FRAMES = 12;				// Number of frames of animation for Explosions
+const int ANIMATION_FRAMES = 4;				// Number of frames of animation for Enemy Ship
+const int EXPLOSION_ANIMATION_FRAMES = 12;	// Number of frames of animation for Explosions
 const int BLOOD_EXP_ANIMATION_FRAMES = 12;
 
 //enum playerWeapons { NINJA_STAR_P1, NINJA_STAR_P2, LASER_P1, LASER_P2, SAW_P1, SAW_P2, LASER_V2_P1, LASER_V2_P2, ROCKET_P1, ROCKET_P2 };
 
-
 class Game {
 public:
-	/*
-	// Text
-	SDL_Color textColour;					// Set the text colour
-	TTF_Font *gFontRetro20;					// Globally used font 2017-01-25 Changed to Retro font which is more readable
-
-	SDL_Event e;							// Event handler
-
-	// Joystick
-	SDL_Joystick* gController1 = NULL;		// Game Controller 1 handler - Data type for a game controller is SDL_Joystick
-	SDL_Joystick* gController2 = NULL;		// Game Controller 1 handler - Data type for a game controller is SDL_Joystick
-	SDL_Haptic*	gControllerHaptic = NULL;	// 2017/01/18 Haptic (Force Feedback) added
-
 	SDL_Window* gWindow = NULL;				// The window we'll be rendering to
-	SDL_Renderer* gRenderer = NULL;			// The window renderer
-	*/
+
 	// 27/02/2017 Game Singleton
 	static Game* Instance() {
 		if (s_pInstance == 0) {
@@ -61,13 +74,21 @@ public:
 		return s_pInstance;
 	}
 
-	//SDL_Renderer* gRenderer;			// The window renderer
+	bool checkCollision(SDL_Rect *a, SDL_Rect *b);
+	
+	//SDL_Renderer* getRenderer() const { return m_pRenderer; }
+	SDL_Renderer* getRenderer() const { return gRenderer; }
 
+	int player1Score, player2Score;		// need variables to store score in case player dies
+
+	GameStateMachine* getStateMachine() { return m_pGameStateMachine; }
+	
 	bool nameEntered;
 	bool enterName();
 	//void enterName();
 
 	bool twoPlayer;
+
 
 	int gamerOverMessageDisplayCounter;	// Length of time to display game over message
 	int frames;							// Frame count for speed of Enemy animation
@@ -97,7 +118,7 @@ public:
 	int activeEnemyShips;
 	int activeEnemyVirus;
 	int activeEnemyVirusSmall;
-	
+
 	enum levels { MENU, LEVEL_1, LEVEL_2, LEVEL_3 };
 
 	void setRotatingAngle();	// 2017/02/22 Moved here. Set the angle for rotating objects
@@ -149,7 +170,6 @@ public:
 	void infoMessage(std::string message, int type = 0, int timer = 0);
 
 	void collisionCheck();
-	//bool checkCollision(SDL_Rect *a, SDL_Rect *b);
 
 	bool playerInput(bool quit);							// 2017/01/09 JOE: Handle input from player
 	void renderGameObjects();								// 2017-01-09 JOE: Render the game objects to the screen
@@ -171,17 +191,18 @@ public:
 	void managePlayerScores(int score, int player, int type);
 
 	//void setViewport(SDL_Rect &rect, int x, int y, int w, int h);
-
 	//void setupAnimationClip(SDL_Rect &rect, int frames, int amount, bool type2 = false);
 
 
-	//SDL_Renderer gRenderer;			// The window renderer
-
-
 private:
+	GameStateMachine* m_pGameStateMachine;
+
+	SDL_Renderer* gRenderer;		// P65 2017/02/27 Renderer
+
+	Game() {};						// 2017/02/27 Constructor private for singleton
+	
 	int mNumPlayers;
-	int mCurrentLevel = MENU;							// The current level of the game, 0 = menu, 1 = level 1 etc.
-	//int mCurrentLevel = LEVEL_1;						// The current level of the game, 0 = menu, 1 = level 1 etc.
+	int mCurrentLevel = MENU;		// The current level of the game, 0 = menu, 1 = level 1 etc.
 
 	static Game* s_pInstance;
 };

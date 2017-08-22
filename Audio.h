@@ -1,6 +1,12 @@
+/*
+	2017/02/09 Separated audio to it's own class
+				Fixed music not playing problem
+*/
+
 #ifndef AUDIO_H
 #define AUDIO_H
 
+#include <SDL.h>
 #include <SDL_mixer.h>				// 2017/01/09 JOE: SOUND - library we use to make audio playing easier
 #include <vector>
 
@@ -18,10 +24,10 @@ public:
 	Mix_Music *gMusic3 = NULL;
 	Mix_Music *gMusic4 = NULL;				// 2017/02/17 - The First Step - Jimmy O'Regan
 	Mix_Music *gMusic5 = NULL;				// 2017/02/22 - Virus - Joe O'Regan
-	int currentSong;						// Play a random song when the game starts
+	unsigned int currentSong;				// Play a random song when the game starts
 
 	std::vector<Mix_Music*> listOfMusic;	// List of Music tracks
-	
+
 	//The sound effects that will be used (pointers)
 	Mix_Chunk *gLaserFX1 = NULL;		// 2017/01/09 JOE: SOUND - Mix_Chunk: Data type for short sounds
 	Mix_Chunk *gLaserFX2 = NULL;		// 2017/01/17 Player 2 Laser
@@ -34,7 +40,7 @@ public:
 	bool loadMediaAudio();
 
 	void music();
-	
+
 	void laserFX_P1();
 	void laserFX_P2();
 	void ninjaFX_P1();
@@ -54,4 +60,4 @@ public:
 	void destroy();
 };
 
-#endif#pragma once
+#endif

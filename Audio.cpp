@@ -1,3 +1,19 @@
+/*
+	2017/02/17 Added identifyTrack() function to dentify the song current playing and display the name on screen
+				Started adding original music tracks to the game
+	2017/02/09 Separated audio to it's own class
+				Fixed music not playing problem
+*/
+/*
+	AUDIO:
+
+	Handles game music and sound effects.
+
+	There is a list of music objects to contain the songs. Tracks can be skipped using the keyboard and game controller.
+	An information message indicates the current track playing.
+
+	Sound effects are played when different objects are spawned such as Play and Enemy weapons, and explosions.
+*/
 #include "Audio.h"
 #include <iostream>
 
@@ -52,7 +68,7 @@ bool Audio::loadMediaAudio() {
 
 void Audio::music() {
 	//Load music
-	gMusic1 = Mix_LoadMUS("Audio/GameSong1.wav");											// Load music
+	gMusic1 = Mix_LoadMUS("Audio/GameSong1.wav");												// Load music
 	if (gMusic1 == NULL) {
 		printf("Failed to load rage music! SDL_mixer Error: %s\n", Mix_GetError());
 	}
@@ -85,7 +101,7 @@ void Audio::music() {
 	Mix_PlayMusic(listOfMusic[currentSong], -1);		// Play the currently selected song
 }
 
-int Audio::musicForwardSongName() {							// Pick next track on the list
+int Audio::musicForwardSongName() {						// Pick next track on the list
 	if (currentSong + 1 < listOfMusic.size())			// If the current song number (0 number start value) is less than the number of tracks on the list
 		currentSong++;									// go to next track on list
 	else
@@ -96,14 +112,13 @@ int Audio::musicForwardSongName() {							// Pick next track on the list
 	if (currentSong == 0) std::cout << "current song 1" << std::endl;
 	else if (currentSong == 1) std::cout << "current song 2" << std::endl;
 	else if (currentSong == 2) std::cout << "current song 3" << std::endl;
-//	else if (currentSong == 3) std::cout << "Current Song: The Last Step" << std::endl;
 	else if (currentSong == 3) std::cout << "Current Song: The First Step" << std::endl;
 	else if (currentSong == 4) std::cout << "Current Song: Virus" << std::endl;
 
 	return currentSong;
 }
 
-int Audio::musicBackSongName() {								// Pick previous track on the list
+int Audio::musicBackSongName() {						// Pick previous track on the list
 	if (currentSong > 0)
 		currentSong--;
 	else
@@ -137,16 +152,16 @@ int Audio::playMusic() {
 }
 
 /*
-int Audio::musicForward(int song, int numSongs) {								// Pick next track on the list
-	if (song + 1 < numSongs)			// If the current song number (0 number start value) is less than the number of tracks on the list
-		song++;									// go to next track on list
+int Audio::musicForward(int song, int numSongs) {		// Pick next track on the list
+	if (song + 1 < numSongs)							// If the current song number (0 number start value) is less than the number of tracks on the list
+		song++;											// go to next track on list
 	else
-		song = 0;								// or else go back to start of list
+		song = 0;										// or else go back to start of list
 
-												//Mix_PlayMusic(listOfMusic[song], -1);
+	//Mix_PlayMusic(listOfMusic[song], -1);
 	return song;
 }
-int Audio::musicBack(int song, int numSongs) {								// Pick previous track on the list
+int Audio::musicBack(int song, int numSongs) {			// Pick previous track on the list
 	if (song > 0)
 		song--;
 	else
