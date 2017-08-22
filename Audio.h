@@ -5,11 +5,9 @@
 #include <SDL_mixer.h>				// 2017/01/09 JOE: SOUND - library we use to make audio playing easier
 #include <vector>
 
-#define NUMBER_OF_SONGS 4;			// Total number of songs in the playlist
-
 class Audio {
 public:
-	//Audio();						// Initializes the variables
+	//Audio();							// Initializes the variables
 	//~Audio();
 
 
@@ -17,8 +15,7 @@ public:
 	Mix_Music *gMusic1 = NULL;				// Mix_Music: Data type for music
 	Mix_Music *gMusic2 = NULL;
 	Mix_Music *gMusic3 = NULL;
-	Mix_Music *gMusic4 = NULL;				// 2017/02/17 - The First Step - Jimmy O'Regan
-	unsigned int currentSong;				// Play a random song when the game starts
+	unsigned int currentSong;						// Play a random song when the game starts
 
 	std::vector<Mix_Music*> listOfMusic;	// List of Music tracks
 
@@ -47,9 +44,7 @@ public:
 	//int musicBack(int song, int numSongs);
 	void musicForward();
 	void musicBack();
-	int musicForwardSongName();		// 2017/02/17 Returns an int to identify the song name and artist
-	int musicBackSongName();		// 2017/02/17 Returns an int to identify the song name and artist
-	int playMusic();
+	void playMusic();
 
 	void destroy();
 };

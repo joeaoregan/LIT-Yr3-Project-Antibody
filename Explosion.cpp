@@ -3,16 +3,14 @@
 
 #include "Explosion.h"
 
-Explosion::Explosion(int x, int y, int subType) {
+Explosion::Explosion(int x, int y) {
 	setWidth(96);
 	setHeight(96);
 
 	setX(x);
 	setY(y);
 
-	setSubType(subType);
-
-	setAlive(true);
+	setType(EXPLOSION);
 }
 
 Explosion::~Explosion() {

@@ -14,6 +14,7 @@ public:
 	std::string storyPage1;
 	std::string storyPage2;
 	std::string storyPage3;
+	std::string storyPage4;
 	
 	bool initSplashScreens(SDL_Renderer *rend);
 	void closeSplashScreens();
@@ -25,19 +26,21 @@ public:
 	Texture gPressEnterSpriteSheetTexture;					// Press Enter to Continue sprite sheet
 	SDL_Rect gPressButtonToContinueSpriteClips[6];			// Sprite frames for Press Button to Continue animation
 
-	bool level1IntroScreens(SDL_Renderer *rend, Texture &virus, Texture &orangeVirus, Texture &enemyShip, Texture &Laser, Texture &Health, Texture &rocket);
-	bool level2IntroScreens(SDL_Renderer *rend, Texture &virus, Texture &orangeVirus, Texture &enemyShip);
-	bool level3IntroScreens(SDL_Renderer *rend, Texture &virus, Texture &orangeVirus, Texture &enemyShip);
+	void level1IntroScreens(SDL_Renderer *rend, Texture &virus, Texture &orangeVirus, Texture &enemyShip, Texture &Laser, Texture &Health, Texture &rocket);
+	void level2IntroScreens(SDL_Renderer *rend, Texture &virus, Texture &orangeVirus, Texture &enemyShip);
+	void level3IntroScreens(SDL_Renderer *rend, Texture &virus, Texture &orangeVirus, Texture &enemyShip);
 
 	Texture gLevelObjectiveTextTexture;// Objective for each level
 
 	void pressButtonToContinue(SDL_Renderer *rend, SDL_Event e);
 
-	void enemyInformationSplashScreen(SDL_Renderer *rend, Texture &background, Texture &tx1, Texture &tx2, Texture &tx3, Texture &img4, Texture &img5, Texture &img6);
+	void enemyInformationSplashScreenOne(SDL_Renderer *rend, Texture &background, Texture &tx1, Texture &tx2, Texture &tx3, Texture &img4, Texture &img5, Texture &img6);
+	void enemyInformationSplashScreenTwo(SDL_Renderer *rend, Texture &background, Texture &tx1, Texture &tx2, Texture &tx3, Texture &img4, Texture &img5, Texture &img6);
+	void enemyInformationSplashScreenThree(SDL_Renderer *rend, Texture &background, Texture &tx1, Texture &tx2, Texture &tx3, Texture &img4, Texture &img5, Texture &img6);
 
 	// Intro Logos
-	Texture gGameLogoTexture;		// 2017/01/18 Texture for game Splash Screen 1
-	Texture gGameCreatorsTexture;	// 2017/01/18 Texture for game Splash Screen 2
+	Texture gLogo1;		// 2017/01/18 Texture for game Splash Screen 1
+	Texture gLogo2;		// 2017/01/18 Texture for game Splash Screen 2
 
 	// Story Text
 	Texture gStoryA;	// 2017/02/01

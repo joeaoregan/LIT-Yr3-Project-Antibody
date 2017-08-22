@@ -5,10 +5,12 @@
 
 class WeaponPlRocket : public Weapon {
 public:
-	WeaponPlRocket(int player = 0);			// Initializes the variables
-	~WeaponPlRocket();						// Destructor
+	WeaponPlRocket();												// Initializes the variables
+	~WeaponPlRocket();												// Destructor
 
-	virtual void movement();				// Moves the Rocket	
+	virtual void movement();								// Moves the laser
+
+	virtual void spawn(int x, int y, SDL_Rect* collider, int player = 1, int type = 9);	// Spawn the object at the dimensions provided
 };
 
 #endif

@@ -169,48 +169,8 @@ void Texture::render(int x, int y, SDL_Renderer *rend, SDL_Rect* clip, double an
 
 	SDL_RenderCopyEx(rend, mTexture, clip, &renderQuad, angle, center, flip);	// Render to screen
 }
-/*
-	2017/02/20:
-	Function to show who created the game
-*/
-void Texture::createdByText(SDL_Renderer* rend) {
-	std::string textureText = "";
 
-	if (SDL_GetTicks() <= lastTime + 1500) {								// Decrement countdown timer
-		textureText = "ANTIBODY";
-	}
-	else if (SDL_GetTicks() > lastTime + 1500 && SDL_GetTicks() < lastTime + 3000) {
-		textureText = "A GAME BY";
-	}
-	else if (SDL_GetTicks() > lastTime + 3000 && SDL_GetTicks() < lastTime + 4500) {
-		textureText = "Seán Horgan and Joe O'Regan";
-	}
-	else if (SDL_GetTicks() >= lastTime + 4500)
-		lastTime = SDL_GetTicks();
-
-	if (!loadFromRenderedText(textureText, { 0, 255, 0, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 16), rend, true)) {		// Green Text
-		printf("Unable to render User Interface Text Texture!\n");
-	}
-}
-/*
-	2017/02/19:
-	Function to indicate if a speed boost is active or not
-*/
-void Texture::speedBoostText(std::string textureText, SDL_Renderer* rend) {
-	if (!loadFromRenderedText(textureText, { 0, 255, 0, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 13), rend, true)) {		// Green Text
-		printf("Unable to render User Interface Text Texture!\n");
-	}
-}
-/*
-	2017/02/19:
-	Function to indicate how many rockets a player has left
-*/
-void Texture::numRocketsLeft(std::string textureText, SDL_Renderer* rend) {
-	if (!loadFromRenderedText(textureText, { 0, 255, 0, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 36), rend)) {		// Green Text
-		printf("Unable to render User Interface Text Texture!\n");
-	}
-}
-/*
+/* 
 	2017-02-15:
 	Function to render the players scores, the FPS, and the current game level
 */
@@ -245,24 +205,15 @@ void Texture::UITextTimer(std::string timerText, SDL_Renderer* rend, unsigned in
 	2017/02/15:
 	Independent messages for player 1 and 2, for picking up objects and upgrading weapons etc
 */
-void Texture::UITextPlayerMessage(std::string playerMessage, SDL_Renderer* rend, int type) {
-	if (type == 0) {
-		if (!loadFromRenderedText(playerMessage, { 65, 210, 240, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 20), rend)) {	// Blue Text For General Message
-			printf("Unable to render General Info Message text texture!\n");
-		}
-	}
-	else if (type == 1) {
-		if (!loadFromRenderedText(playerMessage, { 240, 210, 65, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 20), rend)) {	// Gold Text For Player 1
+void Texture::UITextPlayerMessage(std::string playerMessage, SDL_Renderer* rend, int player) {
+	if (player == 1) {
+		if (!loadFromRenderedText(playerMessage, { 240, 210, 65, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 20), rend)) {	// Gold Text
 			printf("Unable to render player 1 Message text texture!\n");
 		}
 	}
-	else if (type == 2) {
-		if (!loadFromRenderedText(playerMessage, { 0, 255, 150, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 20), rend)) {	// Green Text For Player 2
+	else if (player == 2){
+		if (!loadFromRenderedText(playerMessage, { 65, 210, 240, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 20), rend)) {	// Blue Text
 			printf("Unable to render player 2 Message text texture!\n");
 		}
 	}
-}
-
-void Texture::renderMap( SDL_Renderer* rend) {
-	SDL_RenderCopy(rend, mTexture, NULL, NULL);
 }

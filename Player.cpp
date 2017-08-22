@@ -9,7 +9,7 @@ Added asdw keyboard movement
 #include <math.h>
 
 #define VELOCITY 10
-#define BOOST 5
+#define BOOST 2
 #define MAX_HEALTH 100
 
 //Analog joystick dead zone
@@ -52,14 +52,36 @@ Player::Player() {
 	}
 
 	drawParticle = true;
+}
 
-	setRocketActive(false);					// Player can spawn a rocket straight away
-	setNumRockets(3);						// The number of rockets a player has
+Player::Player(Texture &dark, Texture &medium, Texture &light) {
+	// Initialize the offsets
+	setX(0);
+	setY(SCREEN_HEIGHT / 2);
 
-	setTimer(ROCKET_TIMER);
-	setTimerTracker(0.0);
+	setWidth(100);
+	setHeight(47);
+	setHealth(MAX_HEALTH);
 
-	setLaserGrade(LASER_SINGLE);
+	// Initialize the velocity
+	setVelX(0);
+	setVelY(0);
+	setVelocity(VELOCITY);
+
+	setColliderWidth(getWidth());
+	setColliderHeight(getHeight());
+
+	setSawActive(false);
+	setScore(0);
+	setAlive(false);
+	setNumLives(3);							// works, game is over when both players lives are <=
+
+											//Initialize particles
+	for (int i = 0; i < TOTAL_PARTICLES; ++i) {
+		particles[i] = new Particle(getX(), getY(), dark, medium, light);
+	}
+
+	drawParticle = true;
 }
 
 bool Player::loadMediaPlayer(SDL_Renderer *rend) {
@@ -84,7 +106,6 @@ bool Player::loadMediaPlayer(SDL_Renderer *rend) {
 
 	return success;
 }
-
 
 void Player::closePlayer() {
 	// Particles
@@ -147,6 +168,15 @@ void Player::rendPlayerLives(Texture &lives, int player, SDL_Renderer *rend) {
 			lives.render(SCREEN_WIDTH - (lives.getWidth() * 3) - 30, 120 - lives.getHeight() - 10, rend);
 	}
 }
+/*
+
+void Player::render(LTexture &texture, LTexture &one, LTexture &two, LTexture &three, LTexture &four, SDL_Renderer *rend) {
+
+	renderParticles(one, two, three, four, rend);					// Show particles on top of dot
+
+	texture.render(getX(), getY(), rend);								// Show the dot 2017-01-20 Moved after, so ship is on top of particles
+}
+*/
 
 void Player::renderParticles(Texture &one, Texture &two, Texture &three, Texture &four, SDL_Renderer *rend) {
 	//Go through particles
@@ -169,7 +199,7 @@ void Player::spawnPlayerSaw(int x, int y, int type) {
 }
 
 void Player::handleEvent(SDL_Event& e, int player) {
-	if (player == 1 && getAlive()) {
+	if (player == 1) {
 		if (e.type == SDL_KEYDOWN && e.key.repeat == 0) {
 			switch (e.key.keysym.sym) {
 			case SDLK_w: moveUp(); break;
@@ -178,12 +208,13 @@ void Player::handleEvent(SDL_Event& e, int player) {
 			case SDLK_d: moveRight(); break;
 
 			// FIRE WEAPON
-			case SDLK_SPACE: game1.spawnLaser(getX(), getY(), 1); break;				// TEST NEW WEAPON
+			case SDLK_SPACE: game1.spawnLaser(getX(), getY(), 1); break;	// TEST NEW WEAPON
 			case SDLK_n: game1.spawnNinjaStar(getX(), getY(), 1); break;
-			case SDLK_e: game1.spawnSaw(getX(), getY(), SAW1); break;					// 2017/01/17 Saw Weapon added, check saw is active with if statement in spawn Saw, and activate/deactivate the weapon
-			case SDLK_f: setSpeedBoost(true);
-				game1.infoMessage("Player 1 speed boost activated", PLAYER_1); break;
-			case SDLK_c: game1.spawnRocket(getX(), getY(), PLAYER_1, ROCKET_P1, false); break;
+			//case SDLK_e: game1.spawnSaw(getX(), getY(), 1, getSawActive()); break;			// 2017/01/17 Saw Weapon added, check saw is active with if statement in spawn Saw, and activate/deactivate the weapon
+			case SDLK_e: game1.spawnSaw(getX(), getY(), SAW1); break;			// 2017/01/17 Saw Weapon added, check saw is active with if statement in spawn Saw, and activate/deactivate the weapon
+			//case SDLK_e: spawnPlayerSaw(getX(), getY(), SAW1); break;
+			case SDLK_f: setSpeedBoost(true); break;
+			case SDLK_c: game1.spawnRocket(getX(), getY(), 1, 9); break;
 			}
 		}
 		else if (e.type == SDL_KEYUP && e.key.repeat == 0) {
@@ -193,12 +224,10 @@ void Player::handleEvent(SDL_Event& e, int player) {
 			case SDLK_s: moveUp(); break;		// undo move down
 			case SDLK_a: moveRight(); break;	// undo move left
 			case SDLK_d: moveLeft(); break;		// undo move right
-
-			case SDLK_c: game1.spawnRocket(getX(), getY(), PLAYER_1, ROCKET_P1, true); break;
 			}
 		}
 	}
-	else if (player == 2 && getAlive()) {
+	else if (player == 2) {
 		if (e.type == SDL_KEYDOWN && e.key.repeat == 0) {
 			switch (e.key.keysym.sym) {
 			case SDLK_UP: moveUp(); break;
@@ -211,23 +240,17 @@ void Player::handleEvent(SDL_Event& e, int player) {
 			case SDLK_RCTRL: game1.spawnLaser(getX(), getY(), 2); break;
 			case SDLK_RSHIFT: game1.spawnNinjaStar(getX(), getY(), 2); break;
 			case SDLK_r: spawnPlayerSaw(getX(), getY(), SAW2); break;
-			case SDLK_g: setSpeedBoost(true);
-				game1.infoMessage("Player 2 speed boost activated", PLAYER_2); break;
-			case SDLK_v: game1.spawnRocket(getX(), getY(), PLAYER_2, ROCKET_P2, false); break;
+			case SDLK_g: setSpeedBoost(true); break;
+			case SDLK_v: game1.spawnRocket(getX(), getY(), 2, 9); break;
 			}
 		}
 		// If a key was released
 		else if (e.type == SDL_KEYUP && e.key.repeat == 0) {
 			switch (e.key.keysym.sym) {
-			case SDLK_UP:
-				if (getVelY() < 0) moveDown(); break;	// only
-			case SDLK_DOWN:
-				if (getVelY() > 0) moveUp(); break;
-			case SDLK_LEFT:
-				if (getVelX() < 0) moveRight(); break;
-			case SDLK_RIGHT:
-				if (getVelX() > 0) moveLeft(); break;
-			case SDLK_v: game1.spawnRocket(getX(), getY(), PLAYER_2, ROCKET_P2, true); break;
+			case SDLK_UP: moveDown(); break;
+			case SDLK_DOWN: moveUp(); break;
+			case SDLK_LEFT: moveRight(); break;
+			case SDLK_RIGHT: moveLeft(); break;
 			}
 		}
 		if (SDL_NumJoysticks() > 0) {				// Joystick present
@@ -243,7 +266,7 @@ void Player::handleEvent(SDL_Event& e, int player) {
 			else if (e.type == SDL_JOYBUTTONUP) {		// Number of buttons
 				if (e.jbutton.button == 9) {															// Pick next track on the list
 					std::cout << "Launch Rocket - Button: " << (int)e.jbutton.button << std::endl;		// shows which button has been pressed
-					game1.spawnRocket(getX(), getY(), PLAYER_2, ROCKET_P2, true);
+					game1.spawnRocket(getX(), getY(), 1, 9);
 				}
 			}
 		} // joystick present
@@ -296,39 +319,24 @@ void Player::handleEvent(SDL_Event& e, int player) {
 	*/
 }
 void Player::moveUp() {
-	//if (getVelY() > 0) setVelY(0);						// If moving down, cancel downward movement
-	//setVelY(0);
-	if (getVelY() > 0 && getVelY() < getVelocity()) setVelY(0);
-	if (getVelY() < 0 && getVelY() > -getVelocity()) setVelY(0);
-
-	if (getSpeedBoost() && getVelocity() != 0)				// If speedboost is active, and the player is moving
+	if (getSpeedBoost() && getVelocity() != 0)			// If speedboost is active, and the player is moving
 		setVelY(getVelY() - (getVelocity() + BOOST));
 	else
 		setVelY(getVelY() - getVelocity());
 }
-
 void Player::moveDown() {
-	if (getVelY() > 0 && getVelY() < getVelocity()) setVelY(0);
-	if (getVelY() < 0 && getVelY() > -getVelocity()) setVelY(0);
-
 	if (getSpeedBoost() && getVelocity() != 0)
 		setVelY(getVelY() + (getVelocity() + BOOST));
 	else
 		setVelY(getVelY() + getVelocity());
 }
 void Player::moveLeft() {
-	if (getVelX() > 0 && getVelX() < getVelocity()) setVelX(0);
-	if (getVelX() < 0 && getVelX() > -getVelocity()) setVelX(0);
-
 	if (getSpeedBoost() && getVelocity() != 0)
 		setVelX(getVelX() - (getVelocity() + BOOST));
 	else
 		setVelX(getVelX() - getVelocity());
 }
 void Player::moveRight() {
-	if (getVelX() > 0 && getVelX() < getVelocity()) setVelX(0);
-	if (getVelX() < 0 && getVelX() > -getVelocity()) setVelX(0);
-
 	if (getSpeedBoost() && getVelocity() != 0)
 		setVelX(getVelX() + (getVelocity() + BOOST));
 	else
@@ -341,7 +349,28 @@ int Player::moveDiagonal() {
 	return getVelocity() / sqrt(2);
 }
 
+void Player::movement() {
+	curTime = SDL_GetTicks();
 
+	if (getSpeedBoost() && (curTime > getBoostStartTime() + 2000)) {
+		setSpeedBoost(false);
+		std::cout << "SPEED BOOST ENDED";
+	}
+
+	GameObject::movement();
+
+	// If the ship went too far to the left or right
+	if ((getX() < 0) || ((getX() + getWidth()) > SCREEN_WIDTH)) {
+		setX(getX() - getVelX());										// Move back
+	}
+
+	setY(getY() + getVelY());											// Move the ship up or down
+
+	// If the ship went too far up or down
+	if ((getY() < 40) || ((getY() + getHeight()) > SCREEN_HEIGHT_GAME - 40)) {
+		setY(getY() - getVelY());										// Move back
+	}
+}
 
 void Player::gameControllerDPad(SDL_Event& e) {
 	if (e.jhat.value == SDL_HAT_UP) {
@@ -388,11 +417,38 @@ void Player::gameControllerDPad(SDL_Event& e) {
 		setVelY(getVelY() + moveDiagonal());
 		previous = SDL_HAT_LEFTDOWN;
 	}
-	else if (e.jhat.value == SDL_HAT_CENTERED) {
+
+	if (e.jhat.value == SDL_HAT_CENTERED) {
 		resetPreviousDirection();
-		setVelX(0);
-		setVelY(0);
 		previous = SDL_HAT_CENTERED;
+	}
+}
+
+void Player::gameControllerButton(SDL_Event& e) {
+	if (e.jbutton.button == 0) {
+		game1.spawnLaser(getX(), getY(), 2);										// Fire Laser
+		std::cout << "Laser Button: " << (int)e.jbutton.button << std::endl;		// shows which button has been pressed
+	}
+	if (e.jbutton.button == 1) {
+		game1.spawnNinjaStar(getX(), getY(), 2);									// Fire Ninja Star
+		std::cout << "Ninja Star Button: " << (int)e.jbutton.button << std::endl;	// shows which button has been pressed
+	}
+	if (e.jbutton.button == 2) {
+		game1.spawnSaw(getX(), getY(), SAW2);											// Saw Weapon
+		//spawnPlayerSaw(getX(), getY(), SAW2);
+		std::cout << "Saw Button: " << (int)e.jbutton.button << std::endl;			// shows which button has been pressed
+	}
+	if (e.jbutton.button == 3) {
+		setSpeedBoost(true);														// Speed Boost
+		std::cout << "Speed Boost: " << (int)e.jbutton.button << std::endl;			// shows which button has been pressed
+	}
+	if (e.jbutton.button == 4) {
+		game1.musicTrackBackward();															// Pick previous track on the list
+		std::cout << "Music Back: " << (int)e.jbutton.button << std::endl;			// shows which button has been pressed
+	}
+	if (e.jbutton.button == 5) {
+		game1.musicTrackForward();														// Pick next track on the list
+		std::cout << "Music Forward: " << (int)e.jbutton.button << std::endl;		// shows which button has been pressed
 	}
 }
 
@@ -409,6 +465,7 @@ void Player::resetPreviousDirection() {
 	else if (previous == SDL_HAT_RIGHT) {
 		moveLeft();
 	}
+
 	else if (previous == SDL_HAT_RIGHTUP) {
 		setVelX(getVelX() - moveDiagonal());
 		setVelY(getVelY() + moveDiagonal());
@@ -427,121 +484,10 @@ void Player::resetPreviousDirection() {
 	}
 }
 
-void Player::gameControllerButton(SDL_Event& e) {
-	if (e.jbutton.button == 0) {
-		game1.spawnLaser(getX(), getY(), 2);										// Fire Laser
-		std::cout << "Laser Button: " << (int)e.jbutton.button << std::endl;		// shows which button has been pressed
-	}
-	if (e.jbutton.button == 1) {
-		game1.spawnNinjaStar(getX(), getY(), 2);									// Fire Ninja Star
-		std::cout << "Ninja Star Button: " << (int)e.jbutton.button << std::endl;	// shows which button has been pressed
-	}
-	if (e.jbutton.button == 2) {
-		game1.spawnSaw(getX(), getY(), SAW2);										// Saw Weapon
-																					// spawnPlayerSaw(getX(), getY(), SAW2);
-		std::cout << "Saw Button: " << (int)e.jbutton.button << std::endl;			// shows which button has been pressed
-	}
-	if (e.jbutton.button == 3) {
-		setSpeedBoost(true);														// Speed Boost
-		std::cout << "Speed Boost: " << (int)e.jbutton.button << std::endl;			// shows which button has been pressed
-		game1.infoMessage("Player 2 speed boost activated", PLAYER_2);
-	}
-	if (e.jbutton.button == 4) {
-		game1.musicTrackBackward();													// Pick previous track on the list
-		std::cout << "Music Back: " << (int)e.jbutton.button << std::endl;			// shows which button has been pressed
-	}
-	if (e.jbutton.button == 5) {
-		game1.musicTrackForward();													// Pick next track on the list
-		std::cout << "Music Forward: " << (int)e.jbutton.button << std::endl;		// shows which button has been pressed
-	}
-	if (e.jbutton.button == 9) {															// Pick next track on the list
-		std::cout << "Enable Rocket - Button: " << (int)e.jbutton.button << std::endl;		// shows which button has been pressed
-		game1.spawnRocket(getX(), getY(), PLAYER_2, ROCKET_P2, false);
-	}
-}
-
-
-//void Player::initialiseRocket(bool active, bool barActive, int timer, int numRockets) {
-bool Player::initialiseRocket() {
-	setRocketActive(true);					// Set the rocket active, ready to render to screen
-	setRocketBarActive(false);				// Set the rocket power bar inactive
-	setTimer(ROCKET_TIMER);					// Reset the rocket timer
-	setNumRockets(getNumRockets() - 1);		// decrement the number of rockets
-
-	return true;							// Ready to create a rocket
-}
-
-void Player::resetRocket() {
-	setRocketActive(false);
-	setRocketBarActive(false);
-
-	setKillRocket(true);
-}
-
-void::Player::rocketScore() {
-	if (SDL_GetTicks() >= getTimerTracker() + 200) {
-		setTimerTracker(SDL_GetTicks());						// start the timer
-		setTimer(getTimer() - 0.2);								// Take away 10% of the timer
-	}
-
-	setBonusScore(50 - (50.0 * (getTimer() / ROCKET_TIMER)));	// Score increments by 5 (10% of 50)
-
-	setKillRocket(false);										// The rocket can be erased
-}
-
-
-
-//unsigned int currentTime = 0.0, lastTime = getBoostStartTime()
-
 void Player::setSpeedBoost(bool boost) {
 	mSpeedBoost = boost;
-
 	if (boost) {
 		mBoostStartTime = SDL_GetTicks();
 		std::cout << "SPEED BOOST START" << std::endl;
-	}
-	else
-		boostPercent = 3.0;
-}
-;
-
-float Player::boostTimer() {
-	//currentTime = SDL_GetTicks();
-	if (getSpeedBoost()) {
-		if (SDL_GetTicks() > lastTime + 100) {								// Decrement countdown timer
-			lastTime = SDL_GetTicks();
-
-			boostPercent -= 0.1;
-		}
-	}
-	return boostPercent;
-}
-
-void Player::movement() {
-	curTime = SDL_GetTicks();
-
-	if (getVelY() > 0 && getVelY() < getVelocity()) setVelY(0);
-	if (getVelY() < 0 && getVelY() > -getVelocity()) setVelY(0);
-	if (getVelX() > 0 && getVelX() < getVelocity()) setVelX(0);
-	if (getVelX() < 0 && getVelX() > -getVelocity()) setVelX(0);
-
-	if (getSpeedBoost() && (curTime > getBoostStartTime() + ROCKET_TIMER * 1000)) {
-		setSpeedBoost(false);
-		boostPercent = ROCKET_TIMER;
-		std::cout << "SPEED BOOST ENDED";
-	}
-
-	GameObject::movement();
-
-	// If the ship went too far to the left or right
-	if ((getX() < 0) || ((getX() + getWidth()) > SCREEN_WIDTH)) {
-		setX(getX() - getVelX());										// Move back
-	}
-
-	setY(getY() + getVelY());											// Move the ship up or down
-
-	// If the ship went too far up or down
-	if ((getY() < 40) || ((getY() + getHeight()) > SCREEN_HEIGHT_GAME - 40)) {
-		setY(getY() - getVelY());										// Move back
 	}
 }

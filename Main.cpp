@@ -1,24 +1,66 @@
 #include "Game.h"
+//#include "GameObject.h"// This breaks code
 #include <iostream>
-//#include "MainMenu.h"
+#include <fstream>
+#include <string>
 
-//#define GAME_LOOPS 20		// Number of times to loop the game
+using namespace std;
+
+string writeFile(string user) 
+{
+
+	char name[] = "Joe KKK Bloggs";
+	int num = 2500;
+	
+
+	ofstream myfile;
+	myfile.open("example.txt");
+
+	myfile << "Player Two Name: " << name << "\n";
+	myfile << "Player Two Score: " << num << "\n";
+
+	myfile << flush;
+	myfile.close();
+
+	return string();
+}
+
+string readFile(string line)
+{
+	ifstream a_file("example.txt");
+
+	if (a_file.is_open())
+	{
+		while (getline(a_file, line))
+		{
+			cout << line << '\n';
+		}
+		a_file.close();
+	}
+	else cout << "Unable to open file";
+
+	return string();
+}
 
 int main() {
-	srand(static_cast<unsigned int>(time(0)));	// Seed the random number
 
-	//MainMenu menu;	//create menu object
+	string user;
+	writeFile(user);
 
-	//menu.update();
+	string line;
+	readFile(line);
 
-	Game game;				// Create a game object
-//	std::cout << "test" << std::endl;
+	srand(static_cast<unsigned int>(time(0)));	//Seed the random number
+
+	Game game;				//Create a game object
 
 	game.update();
 
-	game.close();			// Free resources and close SDL
+	game.close();			//Free resources and close SDL*/
 
 	system("pause");
 
 	return 0;
 }
+
+

@@ -11,29 +11,25 @@ Added enemy laser projectile, velocity is a minus value as it is travelling righ
 #include <math.h>
 
 // LaserEnemy Constructor
-WeaponEnLaser::WeaponEnLaser(int subType, int rotateCenter) {
+WeaponEnLaser::WeaponEnLaser(int type, int rotateCenter) {
 	//std::cout << "Enemy Laser constuctor called.\n";
 	setWidth(50);
 	setHeight(5);
 	setVelocity(-15);
 	setVelX(-15);
 	//setVelY(0);
+	setType(type);
 	setAlive(true);
 
-	setType(ENEMY_WEAPON);	// Type of object (enemy weapon)
-	setSubType(subType);	// Subtype of weapon
-
 	// Set the name
-	if (subType == ENEMY_SHIP_LASER)
+	if (type == ENEMY_LASER)
 		setName("Enemy Laser");
-	else if (subType == VIRUS_FIREBALL)
+	else if (type == VIRUS_FIREBALL)
 		setName("Virus Fireball");
-	else if (subType == BLUE_VIRUS_BULLET) {
+	else if (type == BLUE_VIRUS_BULLET)
 		setName("Blue Virus Bullet");
-		std::cout << "BLUE VIRUS BULLET CONSTRUCTOR" << std::endl;
-	}
 
-	if (getSubType() == ENEMY_SHIP_LASER) {
+	if (getType() == 0) {
 		setColliderWidth(getWidth());
 		setColliderHeight(getHeight());
 	}
@@ -75,7 +71,7 @@ void WeaponEnLaser::movement() {
 	//else if (getY() > (SCREEN_HEIGHT_GAME - 40)) setAlive(false);	// 600 - 40 for pink border
 	//else setAlive(true);
 }
-/*
+
 void WeaponEnLaser::movement(int centerX, int centerY, float timer) {	
 	if (centerX < SCREEN_WIDTH) {
 		rotateCounter %= 360;
@@ -89,4 +85,3 @@ void WeaponEnLaser::movement(int centerX, int centerY, float timer) {
 			GameObject::movement();					// Fire the satellite bullet object
 	}
 }
-*/

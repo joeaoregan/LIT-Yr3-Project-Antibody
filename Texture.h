@@ -34,8 +34,6 @@ public:
 		
 	void modifyAlpha(Uint8 alpha);								// Set alpha modulation
 
-	void renderMap(SDL_Renderer* rend);
-
 	//void flashGameObject(int &alpha, bool &flash, int rate = 10, int times = 0);
 	void flashGameObject(int rate = 10, int times = 0);
 	int getAlpha() { return mAlpha; }		
@@ -64,14 +62,9 @@ public:
 	SDL_Color getFontColour();
 	void setFontColour(SDL_Color f);
 
-	void UIText(std::string textureText, SDL_Renderer* rend);								// Render Text for player scores, FPS, and current Level
+	void UIText(std::string textureText, SDL_Renderer* rend);			// Render Text for player scores, FPS, and current Level
 	void UITextTimer(std::string timerText, SDL_Renderer* rend, unsigned int Timer);		// Render Text for Game Timer
-	void UITextPlayerMessage(std::string playerMessage, SDL_Renderer* rend, int type = 0);
-	void numRocketsLeft(std::string textureText, SDL_Renderer* rend);						// 2017/02/19 Indicate the number of rockets each player has left
-	void speedBoostText(std::string textureText, SDL_Renderer* rend);						// 2017/02/20 Indicates a speedboost is active
-	void createdByText(SDL_Renderer* rend);						// 2017/02/20			
-
-	unsigned int lastTime;
+	void UITextPlayerMessage(std::string playerMessage, SDL_Renderer* rend, int player);
 
 private:	
 	// 31/01/2017 display score value of killed enemy, at enemy coords

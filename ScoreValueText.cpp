@@ -17,8 +17,8 @@ ScoreValueText::ScoreValueText(int x, int y, int score, int player) {
 	setColliderWidth(getWidth());
 	setColliderHeight(getHeight());
 
-	if (player % 2 == 0) setSubType(1);
-	else if (player % 2 == 1) setSubType(2);		// NEEDS TO BE ADJUSTED FOR ROCKETS
+	if (player % 2 == 0) setType(1);
+	else if (player % 2 == 1) setType(2);		// NEEDS TO BE ADJUSTED FOR ROCKETS
 
 	setLineAlgCalculated(false);
 }

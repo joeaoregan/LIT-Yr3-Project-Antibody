@@ -5,6 +5,7 @@
 #include "Texture.h"
 #include "Particle.h"
 
+
 // The Player ship that will move around on the screen
 
 /* 
@@ -21,7 +22,7 @@ const int TOTAL_PARTICLES = 20;	// Particle count
 class Player : public GameObject {
 public:				
 	Player();							// Initializes the variables
-	//Player(Texture &dark, Texture &medium, Texture &light);				// 2017/01/20 Particles
+	Player(Texture &dark, Texture &medium, Texture &light);				//2017/01/20 Particles
 
 	// Particles
 	Texture gDarkBlueParticleTexture;	// Dark blue engine particle
@@ -46,8 +47,6 @@ public:
 	// Speed boost
 	bool getSpeedBoost() { return mSpeedBoost; }
 	unsigned int getBoostStartTime() { return mBoostStartTime; }
-	void setBoostStartTime(unsigned int time) { mBoostStartTime = time; }
-	float boostTimer();
 	void setSpeedBoost(bool boost);
 
 	// Movement
@@ -57,19 +56,18 @@ public:
 	void moveRight();
 	int moveDiagonal();
 	
+	// Saw
+	bool getSawActive() { return sawActive; }
+	void setSawActive(bool active) { sawActive = active; }
+
+	// Laser
+	int getLaserGrade() { return mLaserGrade; }
+	void setLaserGrade(int grade) { mLaserGrade = grade; }
+
 	void render(Texture &player, Texture &dark, Texture &medium, Texture &light, Texture &shimmer, SDL_Renderer *rend);	// Shows the ship with particles on the screen
 	void rendPlayerLives(Texture &lives, int player, SDL_Renderer *rend);
 	bool getDrawParticle() { return drawParticle; }
 	void setDrawParticle(bool p) { drawParticle = p; }
-
-	//void initialiseRocket(bool active, bool barActive, int timer, int numRockets);	// 2017/02/19 Move rocket reset parameters here
-	bool initialiseRocket();	// 2017/02/19 Move rocket reset parameters here
-	void resetRocket();			// 2017/02/19 Reset the player rocket and rocket power bar
-	void rocketScore();			// 2017/02/19 set the timer and score for the rocket
-
-
-	float boostPercent = 3.0;
-	unsigned int lastTime = 0.0;
 
 private:
 	bool mSpeedBoost;
@@ -80,6 +78,10 @@ private:
 	void renderParticles(Texture &one, Texture &two, Texture &three, Texture &four, SDL_Renderer *rend);
 
 	bool drawParticle;
+
+	int mLaserGrade;
+
+	bool sawActive;
 };
 
 #endif

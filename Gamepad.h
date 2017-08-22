@@ -1,9 +1,9 @@
 #ifndef GAMEPAD_H
 #define GAMEPAD_H
-#include <string.h>
 
 #include <SDL.h>
 #include <iostream>
+#include <string.h>
 
 void gamepadInfo(SDL_Joystick* gController1, SDL_Joystick* gController2, SDL_Event e) {
 	if (SDL_NumJoysticks() > 0) {
