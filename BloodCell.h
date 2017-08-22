@@ -19,6 +19,7 @@ public:
 	int getMovement() { return mMovement; }
 	void setMovement(int movement) { mMovement = movement; }
 
+	virtual void movement(int targetx, int targetY);
 
 private:
 	int mMovement;

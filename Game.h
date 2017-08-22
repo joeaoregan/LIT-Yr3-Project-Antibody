@@ -56,6 +56,7 @@ public:
 	int activePowerUps;
 	int activeEnemyShips;
 	int activeEnemyVirus;
+	int activeEnemyVirusSmall;
 
 	enum levels { MENU, LEVEL_1, LEVEL_2, LEVEL_3 };
 
@@ -80,12 +81,12 @@ public:
 
 	void resetGame(int level);								// Reset game to this level
 
-	void spawnExplosion(int x, int y, int type);		// 2017/01/25 Added explosions // 2017/02/19 Added blood explosions
+	void spawnExplosion(int x, int y, int subType);			// 2017/01/25 Added explosions // 2017/02/19 Added blood explosions
 
 	void spawnMovingObjects();
 	void spawnPlayer(int player);
 	void spawnEnemyShip();									// 2017/01/09 JOE: added function to create enemy ships at random times and random y coord
-	void spawnEnemyVirus();									// 2017/01/10 JOE: added function to create enemy virus at random times and random y coord
+	void spawnEnemyVirus(int x = 0, int y = 0, int type = 0);						// 2017/01/10 JOE: added function to create enemy virus at random times and random y coord
 	void spawnBloodCell(int type = 0);						// 2017/01/10 JOE: add function to create blood cells
 	void spawnLaser(int x, int y, int player, int v = 20, int grade = 0);	// 2017/01/16 spawn a laser at coords, with velocitys 2017/01/20 added Weapons grade
 	void spawnEnemyLaser(int x, int y, int type = 0, int whichVirus = 0);						// 2017/01/10

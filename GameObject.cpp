@@ -39,21 +39,21 @@ void GameObject::spawn(int x, int y, int vx, int vy) {
 	setAlive(true);
 }
 
-void GameObject::spawn(int x, int y, int vx, SDL_Rect collider) {
+void GameObject::spawn(int x, int y, int vx, SDL_Rect* collider) {
 	m_x = x;
 	m_y = y;
 	m_xVel = vx;
 	m_yVel = vx;	// 2017-01-10 JOE: use same velocity for x and y
-	m_Collider = collider;
+	m_Collider = (*collider);
 }
 
-void GameObject::spawn(int x, int y, int vx, int vy, SDL_Rect collider, int type) {
+void GameObject::spawn(int x, int y, int vx, int vy, SDL_Rect* collider, int subType) {
 	m_x = x;
 	m_y = y;
 	m_xVel = vx;
 	m_yVel = vy;	// 2017-01-10 JOE: use same velocity for x and y
-	m_Collider = collider;
-	m_SubType = type;
+	m_Collider = (*collider);
+	m_SubType = subType;
 	setAlive(true);
 }
 
@@ -65,6 +65,10 @@ void GameObject::movement() {
 	setColliderX(getX());
 	setColliderY(getY());
 
+	destroy();
+}
+
+void GameObject::destroy() {
 	// Destroy Game Object moving off screen on Y axis
 	if (getY() <= 40) setAlive(false);								// Once it reaches the pink border
 	else if (getY() >= (SCREEN_HEIGHT_GAME - 40)) setAlive(false);	// 600 - 40 for pink border
@@ -75,6 +79,7 @@ void GameObject::movement() {
 	else if (getX() < -getWidth() - 20) setAlive(false);			// If the object if off screen to the left
 	else setAlive(true);
 }
+
 
 void GameObject::movement(int centerX, int centerY, float timer) {
 	if (centerX < SCREEN_WIDTH) {
@@ -102,12 +107,12 @@ void GameObject::setHealth(int h) {
 }
 
 
-void GameObject::spawn(int x, int y, SDL_Rect collider, int player, int type) {
+void GameObject::spawn(int x, int y, SDL_Rect* collider, int player, int type) {
 	setX(x + 57);
 	setY(y + 13);
 	setVelX(getVelocity());
 	setVelY(0);
-	setCollider(collider);
+	setCollider((*collider));
 	setPlayer(player);
 	setSubType(type);
 }

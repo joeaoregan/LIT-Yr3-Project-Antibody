@@ -39,6 +39,7 @@
 
 #include <math.h>
 
+
 /***************************************************************************************************************************/
 /******************************************** TURN STUFF ON AND OFF FOR TESTING ********************************************/
 
@@ -77,17 +78,29 @@ SDL_Rect weaponViewport2;			// Indicates the currently selected main weapon
 Texture gProfessorMapTexture;		// Map texture to show the players current position inside the professor
 //Texture gWeapon;					// Background texture
 
-SDL_Rect gEnemySpriteClips[ANIMATION_FRAMES];			// Sprite frames for Enemy Ship animation
-SDL_Rect gOrangeVirusSpriteClips[6];					// Sprite frames for Orange Virus animation
-SDL_Rect gBlueVirusSpriteClips[6];						// Sprite frames for Blue Virus animation
-SDL_Rect gExplosionClips[EXPLOSION_ANIMATION_FRAMES];	// Sprite frames for Explosion animation
+SDL_Rect gEnemySpriteClips[ANIMATION_FRAMES];				// Sprite frames for Enemy Ship animation
+SDL_Rect gGreenVirusSpriteClips[6];							// Sprite frames for Orange Virus animation
+SDL_Rect gOrangeVirusSpriteClips[6];						// Sprite frames for Orange Virus animation
+SDL_Rect gBlueVirusSpriteClips[6];							// Sprite frames for Blue Virus animation
+
+SDL_Rect gSmallGreenVirusSpriteClips[6];					// Sprite frames for Small Green Virus animation
+SDL_Rect gSmallOrangeVirusSpriteClips[6];					// Sprite frames for Small Orange Virus animation
+SDL_Rect gSmallBlueVirusSpriteClips[6];						// Sprite frames for Small Blue Virus animation
+
+SDL_Rect gExplosionClips[EXPLOSION_ANIMATION_FRAMES];		// Sprite frames for Explosion animation
 SDL_Rect gBloodExplosionClips[BLOOD_EXP_ANIMATION_FRAMES];	// Sprite frames for Explosion animation
 
-Texture gEnemySpriteSheetTexture;		// Enemy sprite sheet
-Texture gExplosionSpriteSheetTexture;	// explosion sprite sheet
-Texture gBloodExplosionSpriteSheetTexture;	// explosion sprite sheet
-Texture gOrangeVirusSpriteSheetTexture;	// Orange Virus sprite sheet
-Texture gBlueVirusSpriteSheetTexture;	// Orange Virus sprite sheet
+Texture gEnemySpriteSheetTexture;			// Enemy sprite sheet
+Texture gExplosionSpriteSheetTexture;		// Explosion sprite sheet
+Texture gBloodExplosionSpriteSheetTexture;	// Blood explosion sprite sheet
+
+Texture gGreenVirusSpriteSheetTexture;		// Green Virus sprite sheet
+Texture gOrangeVirusSpriteSheetTexture;		// Orange Virus sprite sheet
+Texture gBlueVirusSpriteSheetTexture;		// Blue Virus sprite sheet
+
+Texture gSmallGreenVirusSpriteSheetTexture;	// Small Green Virus sprite sheet
+Texture gSmallOrangeVirusSpriteSheetTexture;// Small Orange Virus sprite sheet
+Texture gSmallBlueVirusSpriteSheetTexture;	// Small Blue Virus sprite sheet
 
 SDL_Event e;							// Event handler
 
@@ -430,7 +443,21 @@ bool Game::loadMedia() {
 		}
 	}
 
-//	if (!gOrangeVirusSpriteSheetTexture.loadFromFile("Art/OrangeVirusSpriteSheet.png", gRenderer)) {	// Sprite sheet for Enemy Orange Virus
+	if (!gGreenVirusSpriteSheetTexture.loadFromFile("Art/EnemyVirus_SpriteSheet_Green.png", gRenderer)) {	// Sprite sheet for Enemy Orange Virus
+		printf("Failed to load Green Virus animation texture!\n");
+		success = false;
+	}
+	else {
+		//Set sprite clips
+		for (unsigned int i = 0; i < 6; ++i) {
+			if (i < 4) gGreenVirusSpriteClips[i].x = i * 75;
+			if (i == 5) gGreenVirusSpriteClips[i].x = 2 * 75;
+			if (i == 6) gGreenVirusSpriteClips[i].x = 1 * 75;
+			gGreenVirusSpriteClips[i].y = 0;
+			gGreenVirusSpriteClips[i].w = 75;
+			gGreenVirusSpriteClips[i].h = 75;
+		}
+	}
 	if (!gOrangeVirusSpriteSheetTexture.loadFromFile("Art/EnemyVirus_SpriteSheet_Orange.png", gRenderer)) {	// Sprite sheet for Enemy Orange Virus
 		printf("Failed to load Orange Virus animation texture!\n");
 		success = false;
@@ -438,7 +465,7 @@ bool Game::loadMedia() {
 	else {
 		//Set sprite clips
 		for (unsigned int i = 0; i < 6; ++i) {
-			if(i < 4) gOrangeVirusSpriteClips[i].x = i * 75;
+			if (i < 4) gOrangeVirusSpriteClips[i].x = i * 75;
 			if (i == 5) gOrangeVirusSpriteClips[i].x = 2 * 75;
 			if (i == 6) gOrangeVirusSpriteClips[i].x = 1 * 75;
 			gOrangeVirusSpriteClips[i].y = 0;
@@ -447,7 +474,6 @@ bool Game::loadMedia() {
 		}
 	}
 
-//	if (!gBlueVirusSpriteSheetTexture.loadFromFile("Art/EnemyVirusBlue_SpriteSheet.png", gRenderer)) {	// Sprite sheet for Enemy Blue Virus
 	if (!gBlueVirusSpriteSheetTexture.loadFromFile("Art/EnemyVirus_SpriteSheet_Blue.png", gRenderer)) {	// Sprite sheet for Enemy Blue Virus
 		printf("Failed to load Blue Virus animation texture!\n");
 		success = false;
@@ -461,6 +487,51 @@ bool Game::loadMedia() {
 			gBlueVirusSpriteClips[i].y = 0;
 			gBlueVirusSpriteClips[i].w = 75;
 			gBlueVirusSpriteClips[i].h = 75;
+		}
+	}
+	if (!gSmallGreenVirusSpriteSheetTexture.loadFromFile("Art/EnemyVirus_SpriteSheet_Green_Small.png", gRenderer)) {	// Sprite sheet for Enemy Blue Virus
+		printf("Failed to load Small Blue Virus animation texture!\n");
+		success = false;
+	}
+	else {
+		//Set sprite clips
+		for (unsigned int i = 0; i < 6; ++i) {
+			if (i < 4) gSmallGreenVirusSpriteClips[i].x = i * 40;
+			if (i == 5) gSmallGreenVirusSpriteClips[i].x = 2 * 40;
+			if (i == 6) gSmallGreenVirusSpriteClips[i].x = 1 * 40;
+			gSmallGreenVirusSpriteClips[i].y = 0;
+			gSmallGreenVirusSpriteClips[i].w = 40;
+			gSmallGreenVirusSpriteClips[i].h = 40;
+		}
+	}
+	if (!gSmallOrangeVirusSpriteSheetTexture.loadFromFile("Art/EnemyVirus_SpriteSheet_Orange_Small.png", gRenderer)) {	// Sprite sheet for Enemy Blue Virus
+		printf("Failed to load Small Blue Virus animation texture!\n");
+		success = false;
+	}
+	else {
+		//Set sprite clips
+		for (unsigned int i = 0; i < 6; ++i) {
+			if (i < 4) gSmallOrangeVirusSpriteClips[i].x = i * 40;
+			if (i == 5) gSmallOrangeVirusSpriteClips[i].x = 2 * 40;
+			if (i == 6) gSmallOrangeVirusSpriteClips[i].x = 1 * 40;
+			gSmallOrangeVirusSpriteClips[i].y = 0;
+			gSmallOrangeVirusSpriteClips[i].w = 40;
+			gSmallOrangeVirusSpriteClips[i].h = 40;
+		}
+	}
+	if (!gSmallBlueVirusSpriteSheetTexture.loadFromFile("Art/EnemyVirus_SpriteSheet_Blue_Small.png", gRenderer)) {	// Sprite sheet for Enemy Blue Virus
+		printf("Failed to load Small Blue Virus animation texture!\n");
+		success = false;
+	}
+	else {
+		//Set sprite clips
+		for (unsigned int i = 0; i < 6; ++i) {
+			if (i < 4) gSmallBlueVirusSpriteClips[i].x = i * 40;
+			if (i == 5) gSmallBlueVirusSpriteClips[i].x = 2 * 40;
+			if (i == 6) gSmallBlueVirusSpriteClips[i].x = 1 * 40;
+			gSmallBlueVirusSpriteClips[i].y = 0;
+			gSmallBlueVirusSpriteClips[i].w = 40;
+			gSmallBlueVirusSpriteClips[i].h = 40;
 		}
 	}
 
@@ -883,9 +954,12 @@ void Game::renderGameObjects() {
 
 		//if (gameOver == false) {
 			SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
-			//SDL_RenderDrawRect(gRenderer, &player1.getCollider());
+			SDL_RenderDrawRect(gRenderer, player1->getCollider());
 
 			for (unsigned int index = 0; index != listOfGameObjects.size(); ++index) {
+				SDL_RenderDrawRect(gRenderer, listOfGameObjects[index]->getCollider());
+				frames = listOfGameObjects[index]->getFrames();		// 2017/02/09 Fixed the explosion animations, they are now assigned to indiviual objects with the game object frame attribute
+
 				// Render Saws
 				if (listOfGameObjects[index]->getSubType() == SAW1) listOfGameObjects[index]->render(gSawTexture, gRenderer, gSawTexture.getDegrees());
 				else if (listOfGameObjects[index]->getSubType() == SAW2) listOfGameObjects[index]->render(gSawTexture, gRenderer, gSawTexture.getDegrees());
@@ -898,7 +972,7 @@ void Game::renderGameObjects() {
 
 				// Render Explosions
 				else if (listOfGameObjects[index]->getSubType() == EXPLOSION) {
-					frames = listOfGameObjects[index]->getFrames();		// 2017/02/09 Fixed the explosion animations, they are now assigned to indiviual objects with the game object frame attribute
+					//frames = listOfGameObjects[index]->getFrames();		// 2017/02/09 Fixed the explosion animations, they are now assigned to indiviual objects with the game object frame attribute
 					listOfGameObjects[index]->render(gExplosionSpriteSheetTexture, gRenderer, &gExplosionClips[frames / EXPLOSION_ANIMATION_FRAMES], frames, EXPLOSION_ANIMATION_FRAMES);
 					listOfGameObjects[index]->setFrames(frames);
 					if (frames / 8 >= EXPLOSION_ANIMATION_FRAMES) {		// If the explosion reaches the last frame
@@ -911,7 +985,7 @@ void Game::renderGameObjects() {
 				else if (listOfGameObjects[index]->getSubType() == BLOOD_EXPLOSION) {
 					gBloodExplosionSpriteSheetTexture.setAlpha(100);
 					gBloodExplosionSpriteSheetTexture.modifyAlpha(gBloodExplosionSpriteSheetTexture.getAlpha());
-					frames = listOfGameObjects[index]->getFrames();		// 2017/02/09 Fixed the explosion animations, they are now assigned to indiviual objects with the game object frame attribute
+					//frames = listOfGameObjects[index]->getFrames();		// 2017/02/09 Fixed the explosion animations, they are now assigned to indiviual objects with the game object frame attribute
 					listOfGameObjects[index]->render(gBloodExplosionSpriteSheetTexture, gRenderer, &gBloodExplosionClips[frames / BLOOD_EXP_ANIMATION_FRAMES], frames, BLOOD_EXP_ANIMATION_FRAMES);
 					listOfGameObjects[index]->setFrames(frames);
 					if (frames / 8 >= BLOOD_EXP_ANIMATION_FRAMES) {		// If the explosion reaches the last frame
@@ -945,13 +1019,16 @@ void Game::renderGameObjects() {
 
 				// Render Enemies
 				else if (listOfGameObjects[index]->getSubType() == ENEMY_SHIP) {
-					frames = listOfGameObjects[index]->getFrames();																										// 2017/02/09 Fixed the Enemy Ship animations, they are now assigned to indiviual objects with the game object frame attribute
+					//frames = listOfGameObjects[index]->getFrames();																										// 2017/02/09 Fixed the Enemy Ship animations, they are now assigned to indiviual objects with the game object frame attribute
 					listOfGameObjects[index]->render(gEnemySpriteSheetTexture, gRenderer, &gEnemySpriteClips[frames / 10], frames, 4);							// 4 the number of frames
-					listOfGameObjects[index]->setFrames(frames);
+					//listOfGameObjects[index]->setFrames(frames);
 				}
-				else if (listOfGameObjects[index]->getSubType() == VIRUS_GREEN) listOfGameObjects[index]->render(gEnemyVirusTexture, gRenderer);
-				else if (listOfGameObjects[index]->getSubType() == VIRUS_ORANGE) listOfGameObjects[index]->render(gOrangeVirusSpriteSheetTexture, gRenderer, &gOrangeVirusSpriteClips[frames / 10], frames, 6);	// 6 the number of frames
-				else if (listOfGameObjects[index]->getSubType() == VIRUS_BLUE) listOfGameObjects[index]->render(gBlueVirusSpriteSheetTexture, gRenderer, &gBlueVirusSpriteClips[frames / 10], frames, 6);		// 6 the number of frames
+				else if (listOfGameObjects[index]->getSubType() == VIRUS_GREEN) listOfGameObjects[index]->render(gGreenVirusSpriteSheetTexture, gRenderer, &gGreenVirusSpriteClips[frames / 10], frames, 6);
+				else if (listOfGameObjects[index]->getSubType() == VIRUS_ORANGE) listOfGameObjects[index]->render(gOrangeVirusSpriteSheetTexture, gRenderer, &gOrangeVirusSpriteClips[frames / 10], frames, 6);				// 6 the number of frames
+				else if (listOfGameObjects[index]->getSubType() == VIRUS_BLUE) listOfGameObjects[index]->render(gBlueVirusSpriteSheetTexture, gRenderer, &gBlueVirusSpriteClips[frames / 10], frames, 6);					// 6 the number of frames
+				else if (listOfGameObjects[index]->getSubType() == VIRUS_GREEN_SMALL) listOfGameObjects[index]->render(gSmallGreenVirusSpriteSheetTexture, gRenderer, &gSmallGreenVirusSpriteClips[frames / 10], frames, 6);	// 6 the number of frames
+				else if (listOfGameObjects[index]->getSubType() == VIRUS_ORANGE_SMALL) listOfGameObjects[index]->render(gSmallOrangeVirusSpriteSheetTexture, gRenderer, &gSmallOrangeVirusSpriteClips[frames / 10], frames, 6);	// 6 the number of frames
+				else if (listOfGameObjects[index]->getSubType() == VIRUS_BLUE_SMALL) listOfGameObjects[index]->render(gSmallBlueVirusSpriteSheetTexture, gRenderer, &gSmallBlueVirusSpriteClips[frames / 10], frames, 6);	// 6 the number of frames
 
 				// Weapons
 				else if (listOfGameObjects[index]->getSubType() == NINJA_STAR_P1)
@@ -971,6 +1048,8 @@ void Game::renderGameObjects() {
 				else if (listOfGameObjects[index]->getSubType() == ROCKET_P2)
 					listOfGameObjects[index]->render(gRocketTexture, gRenderer, listOfGameObjects[index]->getAngle());
 				// Set the object alpha value
+
+				listOfGameObjects[index]->setFrames(frames);	// increment the frames
 
 				listOfGameObjects[index]->m_Texture.modifyAlpha(listOfGameObjects[index]->m_Texture.getAlpha());
 			}
@@ -1181,13 +1260,15 @@ void Game::displayScoreForObject(int Xcoord, int Ycoord, int score, int player) 
 	GameObject* p_PointsValue = new ScoreValueText(Xcoord, Ycoord, score, player);
 
 	//if (player % 2 == 0) {
-	if (player == PLAYER1_SCORE) {
+	//if (player == PLAYER1_SCORE) {
+	if (player == PLAYER_1) {
 		p_PointsValue->setSubType(PLAYER1_SCORE);
 		if (!p_PointsValue->m_Texture.loadFromRenderedText("+" + std::to_string(score), { 240, 210, 65, 255 }, gFontRetro20, gRenderer)) {	// Gold Text
 			printf("Unable to render player text texture!\n");
 		}
 	}
-	else if (player % 2 == 1) {
+	//else if (player % 2 == 1) {
+	else if (player == PLAYER_2) {
 		p_PointsValue->setSubType(PLAYER2_SCORE);
 		if (!p_PointsValue->m_Texture.loadFromRenderedText("+" + std::to_string(score), { 0, 0, 255, 255 }, gFontRetro20, gRenderer)) {		// Blue Text
 			printf("Unable to render player text texture!\n");
@@ -1198,15 +1279,15 @@ void Game::displayScoreForObject(int Xcoord, int Ycoord, int score, int player) 
 }
 
 void Game::moveGameObjects() {
-	if (player1->getAlive()) player1->movement();										// Update ship movement
+	if (player1->getAlive()) player1->movement();											// Update ship movement
 	if (player2->getAlive()) player2->movement();
 
 	// Cycle through list of Game Objects and move them, Player scores, and Power Ups so far
 	for (unsigned int index = 0; index != listOfGameObjects.size(); ++index) {
 		if (listOfGameObjects[index]->getSubType() == PLAYER1_SCORE) {
-			listOfGameObjects[index]->movement(player1->getX(), player1->getY());		// Move the score to Player 1 ship
+			listOfGameObjects[index]->movement(player1->getX(), player1->getY());			// Move the score to Player 1 ship
 		}
-		else if (listOfGameObjects[index]->getSubType() == PLAYER2_SCORE) {				// Move the score to Player 2 ship
+		else if (listOfGameObjects[index]->getSubType() == PLAYER2_SCORE) {					// Move the score to Player 2 ship
 			listOfGameObjects[index]->movement(player2->getX(), player2->getY());
 		}
 		else if (listOfGameObjects[index]->getSubType() == SAW1) {							// Move Player 1 saw
@@ -1220,8 +1301,8 @@ void Game::moveGameObjects() {
 			spawnEnemyLaser(listOfGameObjects[index]->getX(), listOfGameObjects[index]->getY(), ENEMY_SHIP_LASER);
 		}
 		else if (listOfGameObjects[index]->getSubType() == VIRUS_GREEN || listOfGameObjects[index]->getSubType() == VIRUS_ORANGE || listOfGameObjects[index]->getSubType() == VIRUS_BLUE) {					// Move Enemy Virus, tracking the player movement
-			if (listOfGameObjects[index]->getX() > SCREEN_WIDTH && listOfGameObjects[index]->getX() < SCREEN_WIDTH + 10 && listOfGameObjects[index]->getSubType() == 1) {
-				infoMessage("Exploding Orange Virus Approaching");
+			if (listOfGameObjects[index]->getX() > SCREEN_WIDTH && listOfGameObjects[index]->getX() < SCREEN_WIDTH + 10) {	// When a virus is within 10 pixels of appearing on screen
+					infoMessage(listOfGameObjects[index]->getName() + " Approaching");	// 2017/02/19 Added information message indicates virus is approaching
 			}
 
 			if ((abs(player1->getX() - listOfGameObjects[index]->getX()) * abs(player1->getX() - listOfGameObjects[index]->getX())) +			// Distance on X axis between player 1 and virus squared
@@ -1233,6 +1314,23 @@ void Game::moveGameObjects() {
 			}
 			else {
 				listOfGameObjects[index]->movement(player2->getX(), player2->getY());
+			}
+		}
+		else if (listOfGameObjects[index]->getSubType() == WHITE_BLOOD_CELL && activeEnemyVirusSmall > 0) {
+			//infoMessage("Number of small blue viruses: " + std::to_string(activeEnemyVirusSmall));
+
+			int nearestSmallBlueVirus = 1280 * 1280 + 600 * 600;	// Furthest distance objects can be apart on screen
+
+			// The White blood cell can attack smaller sized virus objects
+			for (unsigned int smallVirusIndex = 0; smallVirusIndex != listOfGameObjects.size(); ++smallVirusIndex) {
+				if (listOfGameObjects[smallVirusIndex]->getType() == SMALL_VIRUS) {
+					if (abs(listOfGameObjects[smallVirusIndex]->getX() - listOfGameObjects[index]->getX()) * abs(listOfGameObjects[smallVirusIndex]->getX() - listOfGameObjects[index]->getX()) +
+						abs(listOfGameObjects[smallVirusIndex]->getY() - listOfGameObjects[index]->getY()) * abs(listOfGameObjects[smallVirusIndex]->getY() - listOfGameObjects[index]->getY()) < nearestSmallBlueVirus)
+						nearestSmallBlueVirus = abs(listOfGameObjects[smallVirusIndex]->getX() - listOfGameObjects[index]->getX()) * abs(listOfGameObjects[smallVirusIndex]->getX() - listOfGameObjects[index]->getX()) +
+						abs(listOfGameObjects[smallVirusIndex]->getY() - listOfGameObjects[index]->getY()) * abs(listOfGameObjects[smallVirusIndex]->getY() - listOfGameObjects[index]->getY()) < nearestSmallBlueVirus;
+
+					listOfGameObjects[index]->movement(listOfGameObjects[smallVirusIndex]->getX(), listOfGameObjects[smallVirusIndex]->getY());	// move towards nearest small virus
+				}
 			}
 		}
 		else listOfGameObjects[index]->movement();
@@ -1264,7 +1362,7 @@ void Game::destroyGameObjects() {
 
 		if (!listOfGameObjects[index]->getAlive()) {
 			// Decrement the number active on screen
-			if (listOfGameObjects[index]->getSubType() == LARGE_BLOOD_CELL) activeBloodCells--;					// Decrement active blood cells when one is deleted
+			if (listOfGameObjects[index]->getSubType() == LARGE_BLOOD_CELL) activeBloodCells--;				// Decrement active blood cells when one is deleted
 			else if (listOfGameObjects[index]->getSubType() == SMALL_BLOOD_CELL) activeSmallBloodCells--;	// Decrement active small blood cells when one is deleted
 			else if (listOfGameObjects[index]->getSubType() == WHITE_BLOOD_CELL) activeWhiteBloodCells--;	// Decrement active white blood cells when one is deleted
 			else if (listOfGameObjects[index]->getSubType() == ENEMY_SHIP) activeEnemyShips--;				// Decrement active enemy ships when one is deleted
@@ -1277,6 +1375,7 @@ void Game::destroyGameObjects() {
 			else if (listOfGameObjects[index]->getSubType() == ROCKET_P2) {
 				player2->setRocketActive(false);
 			}
+			else if (listOfGameObjects[index]->getType() == SMALL_VIRUS) activeEnemyVirusSmall--;
 
 			if (listOfGameObjects[index]->getType() == PLAYER_WEAPON && listOfGameObjects[index]->getSubType() != SAW1 && listOfGameObjects[index]->getSubType() != SAW2) { // 201702/19 Added check for saws
 				spawnExplosion(listOfGameObjects[index]->getX(), listOfGameObjects[index]->getY(), EXPLOSION);			// Expode Player Weapon when it is destroyed
@@ -1354,41 +1453,42 @@ void Game::spawnEnemyShip() {
 	int x, y, randomSpeed;
 
 	GameObject* p_Enemy = new EnemyShip();
-	spawnRandom(x, y, randomSpeed, 50, p_Enemy->getHeight());
-	p_Enemy->spawn(x, y, -randomSpeed, (*p_Enemy->getCollider()));
+	spawnRandom(x, y, randomSpeed, 50, p_Enemy->getHeight(), 1);
+	p_Enemy->spawn(x, y, -randomSpeed, p_Enemy->getCollider());
 	listOfGameObjects.push_back(p_Enemy);
 }
-void Game::spawnEnemyVirus() {
-	int x, y, randomSpeed;
+void Game::spawnEnemyVirus(int x, int y, int subType) {
+	int smallX = x, smallY = y, randomSpeed;
 	spawnRandom(x, y, randomSpeed, 150);
-	int randomExplodingVirus = rand() % 4 + 1;							// 1 in 4 chance of Orange Exploding Virus
-	///int randomExplodingVirus = 1;										// TEST Orange Virus
+	int randomX = rand() % 60 + smallX - 15;	// Somewhere between - 15 and 45 of original position
+	int randomY = rand() % 60 + smallY - 15;
 
-	if (randomExplodingVirus == 2) {
-		GameObject* p_OrangeVirus = new EnemyVirus(VIRUS_ORANGE, 3.0);		// Orange type = 1
-		p_OrangeVirus->setTimer(3.0);
-		//std::cout << "Enemy Virus Spawned. Timer: " << p_OrangeVirus->getTimer() << std::endl;
-		p_OrangeVirus->spawn(x, y, -4, -2, (*p_OrangeVirus->getCollider()), VIRUS_ORANGE);
-		listOfGameObjects.push_back(p_OrangeVirus);
-		//std::cout << "distance to virus p1: " << abs(((player1.getX() * player1.getX()) + (player1.getY() * player1.getY()))) << " p2: " << abs((player2.getX() * player2.getX()) + (player2.getY() * player2.getY())) << std::endl;
-	}
-	else if (randomExplodingVirus == 1) {
-		GameObject* p_BlueVirus = new EnemyVirus(VIRUS_BLUE, 3.0);		// BLUE type = 2
-		//std::cout << "Enemy Virus Spawned. Timer: " << p_BlueVirus->getTimer() << std::endl;
-		p_BlueVirus->spawn(x, y, -4, -2, (*p_BlueVirus->getCollider()), VIRUS_BLUE);
-		listOfGameObjects.push_back(p_BlueVirus);
+	if (subType == VIRUS_GREEN_SMALL || subType == VIRUS_ORANGE_SMALL || subType == VIRUS_BLUE_SMALL) {
+		GameObject* p_SmallVirus = new EnemyVirus(subType);
+		p_SmallVirus->spawn(randomX, randomY, -2, -1, p_SmallVirus->getCollider(), subType);
+		p_SmallVirus->setType(SMALL_VIRUS);
+		listOfGameObjects.push_back(p_SmallVirus);
 	}
 	else {
-		GameObject* p_GreenVirus = new EnemyVirus(VIRUS_GREEN, 0);			// Green type = 0
-		p_GreenVirus->spawn(x, y, -4, -2, (*p_GreenVirus->getCollider()), VIRUS_GREEN);
-		listOfGameObjects.push_back(p_GreenVirus);
+		int randomExplodingVirus = rand() % 4 + 1;								// 1 in 4 chance of Orange Exploding Virus
+		//int randomExplodingVirus = 1;											// TEST Orange Virus
+		if (randomExplodingVirus == 1) subType = VIRUS_ORANGE;
+		else if (randomExplodingVirus == 2) subType = VIRUS_BLUE;
+		else subType = VIRUS_GREEN;
+
+		GameObject* p_Virus = new EnemyVirus(subType, 3.0);		// Orange type = 1
+		p_Virus->setTimer(3.0);
+		//std::cout << "Enemy Virus Spawned. Timer: " << p_OrangeVirus->getTimer() << std::endl;
+		p_Virus->spawn(x, y, -randomSpeed, -randomSpeed, p_Virus->getCollider(), subType);
+		listOfGameObjects.push_back(p_Virus);
+		//std::cout << "distance to virus p1: " << abs(((player1.getX() * player1.getX()) + (player1.getY() * player1.getY()))) << " p2: " << abs((player2.getX() * player2.getX()) + (player2.getY() * player2.getY())) << std::endl;
 	}
 }
-void Game::spawnBloodCell(int type) {
+void Game::spawnBloodCell(int subType) {
 	int x, y, randomSpeed;
 	GameObject* p_BloodCell = new BloodCell();
 
-	p_BloodCell->setSubType(type);	// Set the type of Blood Cell
+	p_BloodCell->setSubType(subType);	// Set the type of Blood Cell
 
 	spawnRandom(x, y, randomSpeed, 200, p_BloodCell->getHeight());
 	//p_BloodCell->spawn(x, y, -randomSpeed, p_BloodCell->getDistanceBetween());	// 2017/01/24 Added Y padding to keep objects with the game screen boundary
@@ -1417,7 +1517,7 @@ void Game::spawnPowerUp() {
 void Game::spawnRandom(int &x, int &y, int &randomSpeed, int xMuliplier, int yPadding, int speed) {	// 2017-01-20 Separate out common randomness
 	int randomX = rand() % 5 + 1;
 	int randomY = rand() % 8 + 1;												// A number between 1 and 8
-	randomSpeed = rand() % 3 + speed;
+	randomSpeed = rand() % 4 + speed;
 
 	x = SCREEN_WIDTH + (randomX * xMuliplier);
 	y = 40 + (randomY * ((SCREEN_HEIGHT_GAME - yPadding - 80) / 8));			// 40 top and bottom, yPadding, object height
@@ -1429,7 +1529,7 @@ void Game::spawnExplosion(int x, int y, int subType) {
 	p_Explosion->spawn(x, y - 30);								// Spawn the explosion at the given x & y coords
 	listOfGameObjects.push_back(p_Explosion);					// Add explosion to list of game objects
 
-	if (subType = EXPLOSION) audio.explosionFX();				// Play explosion sound effect
+	if (subType == EXPLOSION) audio.explosionFX();				// Play explosion sound effect
 }
 
 void Game::spawnLaser(int x, int y, int player, int velocity, int grade) {
@@ -1550,7 +1650,7 @@ void Game::spawnRocket(int x, int y, int player, int type, bool launch) {
 
 		if (createRocket) {
 			GameObject* p_Rocket = new WeaponPlRocket(player);				// Create a rocket
-			p_Rocket->spawn(x, y, (*p_Rocket->getCollider()), player, type);	// spawn for the player
+			p_Rocket->spawn(x, y, p_Rocket->getCollider(), player, type);	// spawn for the player
 
 			//std::cout << "Rocket Spawned" << std::endl;
 			listOfGameObjects.push_back(p_Rocket);							// Add rocket to game object list
@@ -1705,37 +1805,61 @@ void Game::collisionCheck() {
 	// Check Weapons Sub-Type For Collisions With Enemy Sub-Type
 	for (unsigned int weaponIndex = 0; weaponIndex != listOfGameObjects.size(); weaponIndex++) {
 		for (unsigned int enemyIndex = 0; enemyIndex != listOfGameObjects.size(); enemyIndex++) {
+			//if (checkCollision(listOfGameObjects[weaponIndex]->getCollider(), listOfGameObjects[enemyIndex]->getCollider()) == true) {
 
-
-			// 2017/02/19 If there is a collison between ninja stars and large blood cells
-			if ((listOfGameObjects[weaponIndex]->getSubType() == NINJA_STAR_P1 || listOfGameObjects[weaponIndex]->getSubType() == NINJA_STAR_P2) && listOfGameObjects[enemyIndex]->getSubType() == LARGE_BLOOD_CELL) {
-				if (checkCollision(listOfGameObjects[weaponIndex]->getCollider(), listOfGameObjects[enemyIndex]->getCollider()) == true) {
-					listOfGameObjects[enemyIndex]->setAlive(false);
-					listOfGameObjects[weaponIndex]->setAlive(false);	// DESTROY
-				}
-			}
-
-
-			if (listOfGameObjects[weaponIndex]->getType() == PLAYER_WEAPON && listOfGameObjects[enemyIndex]->getType() == ENEMY_OBJECT) {
-				if (checkCollision(listOfGameObjects[weaponIndex]->getCollider(), listOfGameObjects[enemyIndex]->getCollider()) == true) {
-					if (listOfGameObjects[weaponIndex]->getSubType() == ROCKET_P1) {
-						infoMessage("Impact!!! Missile has taken out an Enemy Virus! Score +" + std::to_string(rocket1BonusScore), PLAYER_1);
-						managePlayerScores(rocket1BonusScore, PLAYER_1, listOfGameObjects[weaponIndex]->getSubType());
+				// If a white blood cell collides with a small virus, the small virus is destroyed
+				if (listOfGameObjects[weaponIndex]->getSubType() == WHITE_BLOOD_CELL && listOfGameObjects[enemyIndex]->getType() == SMALL_VIRUS) {
+					if (checkCollision(listOfGameObjects[weaponIndex]->getCollider(), listOfGameObjects[enemyIndex]->getCollider()) == true) {
+						listOfGameObjects[enemyIndex]->setAlive(false);	// Destroy the small virus
+						//infoMessage("DESTROY BLUE VIRUS");
 					}
-					else if (listOfGameObjects[weaponIndex]->getSubType() == ROCKET_P2) {
-						infoMessage("Impact!!! Missile has taken out an Enemy Virus! Score +" + std::to_string(rocket2BonusScore), PLAYER_2);
-						managePlayerScores(rocket2BonusScore, PLAYER_2, listOfGameObjects[weaponIndex]->getSubType());
-					}
-
-					managePlayerScores(listOfGameObjects[enemyIndex]->getScore(), listOfGameObjects[weaponIndex]->getPlayer(), listOfGameObjects[weaponIndex]->getSubType());		// 2017-02-06 Add to players score
-
-					pointsValueCounter = 0;
-					displayScoreForObject(listOfGameObjects[enemyIndex]->getX(), listOfGameObjects[enemyIndex]->getY(), listOfGameObjects[enemyIndex]->getScore(), listOfGameObjects[weaponIndex]->getSubType());	// Display Score
-
-					listOfGameObjects[enemyIndex]->setAlive(false);
-					listOfGameObjects[weaponIndex]->setAlive(false);	// DESTROY
 				}
-			}
+
+				// 2017/02/19 If there is a collison between ninja stars and large blood cells
+				if ((listOfGameObjects[weaponIndex]->getSubType() == NINJA_STAR_P1 || listOfGameObjects[weaponIndex]->getSubType() == NINJA_STAR_P2) && listOfGameObjects[enemyIndex]->getSubType() == LARGE_BLOOD_CELL) {
+					if (checkCollision(listOfGameObjects[weaponIndex]->getCollider(), listOfGameObjects[enemyIndex]->getCollider()) == true) {
+						listOfGameObjects[enemyIndex]->setAlive(false);
+						listOfGameObjects[weaponIndex]->setAlive(false);	// DESTROY
+					}
+				}
+
+				if (listOfGameObjects[weaponIndex]->getType() == PLAYER_WEAPON && listOfGameObjects[enemyIndex]->getType() == ENEMY_OBJECT) {
+					if (checkCollision(listOfGameObjects[weaponIndex]->getCollider(), listOfGameObjects[enemyIndex]->getCollider()) == true) {
+						if (listOfGameObjects[weaponIndex]->getSubType() == ROCKET_P1) {
+							infoMessage("Impact!!! Missile has taken out an Enemy Virus! Score +" + std::to_string(rocket1BonusScore), PLAYER_1);
+							managePlayerScores(rocket1BonusScore, PLAYER_1, listOfGameObjects[weaponIndex]->getSubType());
+						}
+						else if (listOfGameObjects[weaponIndex]->getSubType() == ROCKET_P2) {
+							infoMessage("Impact!!! Missile has taken out an Enemy Virus! Score +" + std::to_string(rocket2BonusScore), PLAYER_2);
+							managePlayerScores(rocket2BonusScore, PLAYER_2, listOfGameObjects[weaponIndex]->getSubType());
+						}
+
+						managePlayerScores(listOfGameObjects[enemyIndex]->getScore(), listOfGameObjects[weaponIndex]->getPlayer(), listOfGameObjects[weaponIndex]->getSubType());		// 2017-02-06 Add to players score
+
+						pointsValueCounter = 0;
+						displayScoreForObject(listOfGameObjects[enemyIndex]->getX(), listOfGameObjects[enemyIndex]->getY(), listOfGameObjects[enemyIndex]->getScore(), listOfGameObjects[weaponIndex]->getPlayer());	// Display Score
+
+						if (listOfGameObjects[enemyIndex]->getSubType() == VIRUS_GREEN) {
+							spawnEnemyVirus(listOfGameObjects[enemyIndex]->getX(), listOfGameObjects[enemyIndex]->getY(), VIRUS_GREEN_SMALL);
+							spawnEnemyVirus(listOfGameObjects[enemyIndex]->getX(), listOfGameObjects[enemyIndex]->getY(), VIRUS_GREEN_SMALL);
+							activeEnemyVirusSmall += 2;																							// Increment the number of active small enemy virus
+						}
+						else if (listOfGameObjects[enemyIndex]->getSubType() == VIRUS_ORANGE) {
+							spawnEnemyVirus(listOfGameObjects[enemyIndex]->getX(), listOfGameObjects[enemyIndex]->getY(), VIRUS_ORANGE_SMALL);
+							spawnEnemyVirus(listOfGameObjects[enemyIndex]->getX(), listOfGameObjects[enemyIndex]->getY(), VIRUS_ORANGE_SMALL);
+							activeEnemyVirusSmall += 2;																							// Increment the number of active small enemy virus
+						}
+						else if (listOfGameObjects[enemyIndex]->getSubType() == VIRUS_BLUE) {
+							spawnEnemyVirus(listOfGameObjects[enemyIndex]->getX(), listOfGameObjects[enemyIndex]->getY(), VIRUS_BLUE_SMALL);
+							spawnEnemyVirus(listOfGameObjects[enemyIndex]->getX(), listOfGameObjects[enemyIndex]->getY(), VIRUS_BLUE_SMALL);
+							activeEnemyVirusSmall += 2;																							// Increment the number of active small enemy virus
+						}
+
+						listOfGameObjects[enemyIndex]->setAlive(false);
+						listOfGameObjects[weaponIndex]->setAlive(false);	// DESTROY
+					}
+				}
+			//}
 		}
 	}
 }
@@ -1833,6 +1957,7 @@ void Game::resetGame(int currentLevel) {
 	activeSmallBloodCells = 0;
 	activePowerUps = 0;
 	activeEnemyShips = 0;
+	activeEnemyVirusSmall = 0;
 
 	if (currentLevel == MENU) displayGameIntro = DISPLAY_GAME_INTRO_SCREENS;
 	displayLevelIntro = DISPLAY_LEVEL_INTRO_SCREENS;

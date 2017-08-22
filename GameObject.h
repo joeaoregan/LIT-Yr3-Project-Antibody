@@ -20,9 +20,10 @@ enum GameObjectTypes {
 	ENEMY_SHIP_LASER, BLUE_VIRUS_BULLET, VIRUS_FIREBALL, EXPLOSION, BLOOD_EXPLOSION,					// Bullets & Explosions
 	SAW1, SAW2,																							// Saw
 	LARGE_BLOOD_CELL, SMALL_BLOOD_CELL, WHITE_BLOOD_CELL,												// Blood Cells
-	ENEMY_SHIP, VIRUS_GREEN, VIRUS_ORANGE, VIRUS_BLUE,													// Virus
+	ENEMY_SHIP,																							// Enemies
+	VIRUS_GREEN, VIRUS_ORANGE, VIRUS_BLUE, VIRUS_GREEN_SMALL, VIRUS_ORANGE_SMALL, VIRUS_BLUE_SMALL,		// Virus
 	NINJA_STAR_P1, NINJA_STAR_P2, LASER_P1, LASER_P2, LASER_V2_P1, LASER_V2_P2, ROCKET_P1, ROCKET_P2,	// Weapons
-	BLOOD_CELL, PLAYER_WEAPON, ENEMY_WEAPON, ENEMY_OBJECT, POWER_UP										// Main type of object
+	BLOOD_CELL, PLAYER_WEAPON, ENEMY_WEAPON, ENEMY_OBJECT, POWER_UP, SMALL_VIRUS						// Main type of object
 };
 
 class GameObject {
@@ -34,13 +35,13 @@ public:
 
 	void spawn(int x, int y, int vx = 0, int vy = 0);
 
-	virtual void spawn(int x, int y, int vx, SDL_Rect collider);
+	virtual void spawn(int x, int y, int vx, SDL_Rect* collider);
 
 	virtual void spawn(int x, int y, int velocity, int player, int type = 0) {}			// Player laser
 
-	virtual void spawn(int x, int y, SDL_Rect collider, int player = 1, int type = 9);	// Spawn the object at the dimensions provided --> Rocket
+	virtual void spawn(int x, int y, SDL_Rect* collider, int player = 1, int type = 9);	// Spawn the object at the dimensions provided --> Rocket
 
-	virtual void spawn(int x, int y, int vx, int vy, SDL_Rect collider, int type = 0);
+	virtual void spawn(int x, int y, int vx, int vy, SDL_Rect* collider, int type = 0);
 
 	virtual void movement();
 	void movement(int centerX, int centerY, float timer);
@@ -49,6 +50,8 @@ public:
 				//if (getY() <= 40) setAlive(false);
 	};
 	//virtual void movement(int x, int y, int z) {};
+
+	void destroy();
 
 	//void render(LTexture &texture, SDL_Renderer *rend);							// Shows the Enemy on the screen
 	void render(Texture &texture, SDL_Renderer *rend, int degrees = 0);
@@ -118,7 +121,7 @@ public:
 	int rotateCounter;	// degrees the satellite object has rotated
 	//int rotateCenter;
 	bool satelliteObjectAlive;
-	int whichVirusAssignedTo;
+	unsigned int whichVirusAssignedTo;
 
 	bool getRocketBarActive() { return m_RocketBarActive; }
 	void setRocketBarActive(bool rocket) { m_RocketBarActive = rocket; }

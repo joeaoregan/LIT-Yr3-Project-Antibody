@@ -1,17 +1,32 @@
 #include "EnemyVirus.h"
 
 EnemyVirus::EnemyVirus(int type, float time) {
-	if(type == VIRUS_GREEN)
-		setScore(10);						// Value for killing object
-	else if (type == VIRUS_ORANGE)
-		setScore(15);
-	else if (type == VIRUS_BLUE)
-		setScore(20);
+	setType(ENEMY_OBJECT);
 
-	setWidth(75);
-	setHeight(75);
+	setWidth(60);
+	setHeight(60);
 
 	setVelocity(3);
+
+	if (type == VIRUS_GREEN) {
+		setScore(10);						// Value for killing object
+		setName("Green Virus");
+	}
+	else if (type == VIRUS_ORANGE) {
+		setScore(15);
+		setName("Exploding Orange Virus");
+	}
+	else if (type == VIRUS_BLUE) {
+		setScore(20);
+		setName("Blue Virus");
+	}
+	else if (type == VIRUS_BLUE_SMALL) {
+		setScore(5);
+		setWidth(45);
+		setHeight(45);
+		setVelocity(1);		
+		setName("Small Blue Virus");
+	}
 
 	setColliderWidth(getWidth());
 	setColliderHeight(getHeight());
@@ -22,8 +37,6 @@ EnemyVirus::EnemyVirus(int type, float time) {
 	setTimerTracker(0.0);
 
 	setFrames(0);
-
-	setType(ENEMY_OBJECT);
 }
 
 EnemyVirus::~EnemyVirus() {
@@ -31,17 +44,23 @@ EnemyVirus::~EnemyVirus() {
 }
 
 void EnemyVirus::movement(int shipX, int shipY) {
-	GameObject::movement();
-
-	if (getX() < SCREEN_WIDTH - getWidth()) {				// If the object is on the screen
+	if (getType() != SMALL_VIRUS && getX() < SCREEN_WIDTH - getWidth()) {	// If the object is on the screen
 		if (getX() > shipX) {
 			if (getY() - shipY >= 0) {
 				if (getY() - shipY >= getVelocity())
-					setY(getY() - getVelocity());			// No need to make smaller movements at the moment, as velocity is v.low anyway
+					setY(getY() - getVelocity());							// No need to make smaller movements at the moment, as velocity is v.low anyway
 			}
 			else if (getY() - shipY < 0) {
 				setY(getY() + getVelocity());
 			}
-		}
+
+			setColliderX(getX() + 6);
+			setColliderY(getY() + 10);
+
+			setX(getX() + getVelX());
+			GameObject::destroy();		// Destroy the object when it moves off screen
+		}		
 	}
+	else
+		GameObject::movement();			// Normal right to left movement
 }
