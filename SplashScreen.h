@@ -20,6 +20,7 @@ public:
 	Texture gLevel2a;	// 2017/01/18 Texture for level Splash Screen 2
 	Texture gLevel3a;	// 2017/01/18 Texture for level Splash Screen 3
 
+	Texture test;
 
 	//Texture gEnemyShipTextureA;			// Enemy Ship for info screen
 	//Texture gEnemyVirusTextureA;			// Enemy Virus
@@ -29,7 +30,7 @@ public:
 	//Texture gLevelObjectiveTextTextureA;// Objective for each level
 
 
-	//TTF_Font *gFontRetro20A = TTF_OpenFont("Fonts/Retro.ttf", 20);
+	TTF_Font *gFontRetro20A = TTF_OpenFont("Fonts/Retro.ttf", 20);
 
 	//bool displaySplashScreens(SDL_Renderer *rend, Texture *texture1, Texture *texture2);
 	bool displayGameIntroSplashScreens(SDL_Renderer *rend);

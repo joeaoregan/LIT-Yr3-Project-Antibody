@@ -16,6 +16,10 @@ EnemyVirus::EnemyVirus(int type, float time) {
 
 	setType(type);						// 2017-01-25 type of game object
 	setTimer(time);
+
+	setTimerTracker(0.0);
+
+	setFrames(0);
 }
 
 EnemyVirus::~EnemyVirus() {

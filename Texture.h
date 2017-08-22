@@ -14,14 +14,13 @@
 
 class Texture {
 public:		
-	Texture(int degrees = 0);									// Initializes variables
+	Texture(int degrees = 0);										// Initializes variables
 		
-	~Texture();												// Deallocates memory
-
+	~Texture();														// Deallocates memory
 
 	SDL_Texture* loadTexture(std::string path, SDL_Renderer *rend);	// Loads individual image as texture
 
-	bool loadFromFile(std::string path, SDL_Renderer *rend);	// Loads image at specified path	2017-01-19 Added Renderer
+	bool loadFromFile(std::string path, SDL_Renderer *rend);		// Loads image at specified path	2017-01-19 Added Renderer
 #ifdef _SDL_TTF_H
 	//Creates image from font string
 	bool loadFromRenderedText(std::string textureText, SDL_Color textColor, TTF_Font* font, SDL_Renderer* rend, bool textWrapped = false);
@@ -60,7 +59,6 @@ public:
 	bool getFlash() { return mFlash; }
 	void setFlash(bool flash) { mFlash = flash; }
 
-
 	SDL_Color getFontColour();
 	void setFontColour(SDL_Color f);
 
@@ -82,7 +80,7 @@ private:
 	// 23/01/2017 Added these
 	int m_X;
 	int m_Y;
-	int m_Alpha;
+	int m_Alpha;	// Textures alpha value
 
 	SDL_Color txtColour;
 };

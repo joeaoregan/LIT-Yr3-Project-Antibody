@@ -1,7 +1,7 @@
 #ifndef FPS_H
 #define FPS_H
 
-#include "FPS.h"
+//#include "FPS.h"
 #define FRAME_VALUES 10
 
 class FPS {

@@ -12,9 +12,6 @@ public:
 	~EnemyVirus();							// Destructor
 	
 	virtual void movement(int playerX, int playerY);
-
-	float getTimer() { return bombTimer; }
-	void setTimer(int t) { bombTimer = t; }
 };
 
 #endif

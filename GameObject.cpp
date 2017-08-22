@@ -1,7 +1,5 @@
 #include "GameObject.h"
 
-#define MAX_HEALTH 100
-
 // Constructor
 //GameObject::GameObject(int damage) :	// Constructor has default value for damage of 3
 //	m_Damage(damage)
@@ -25,23 +23,11 @@ void GameObject::render(Texture &texture, SDL_Renderer *rend, int degrees) {
 void GameObject::render(Texture &texture, SDL_Renderer *rend, SDL_Rect *currentClip, int &currentframe, int frames) {	// 2017/01/22 Moved from game.cpp
 	texture.render(getX(), getY(), rend, currentClip);
 
-	++currentframe;								// Go to next frame
+	++currentframe;						// Go to next frame
 
 	if (currentframe >= frames * 10) {	// Cycle animation
 		currentframe = 0;
 	}
-}
-
-int GameObject::getStartTime() { return m_StartTime; }
-int GameObject::getEndTime() { return m_EndTime; }
-void GameObject::setStartTime(int t) { m_StartTime = t; }
-void GameObject::setEndTime(int t) { m_EndTime = t; }
-
-Texture GameObject::getTexture() {
-	return m_Texture;
-}
-void GameObject::setTexture(Texture texture) {
-	m_Texture = texture;
 }
 
 void GameObject::spawn(int x, int y, int vx, int vy) {
@@ -86,11 +72,6 @@ void GameObject::movement() {
 	if ((getX() > SCREEN_WIDTH && getVelX() > 0)) setAlive(false);	// 2017/02/08 Need to check if velocity is negative, or power ups & blood cells don't appear on screen
 	else if (getX() < -getWidth()) setAlive(false);
 	else setAlive(true);
-}
-
-// Getter and Setter methods
-int GameObject::getMaxHealth() {
-	return MAX_HEALTH;
 }
 
 void GameObject::setHealth(int h) {

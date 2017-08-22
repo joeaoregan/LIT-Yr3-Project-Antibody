@@ -4,6 +4,8 @@ JOE: Moved functionality common to game objects to GameObjects class reducing th
 #ifndef GAME_OBJECTS_H
 #define GAME_OBJECTS_H
 
+#define MAX_HEALTH 100
+
 #include <SDL.h>
 #include <SDL_image.h>
 #include "Texture.h"
@@ -35,7 +37,7 @@ public:
 	int getHeight() { return m_Height; }			// return the objects height
 	std::string getName() { return m_Name; }		// return the objects name
 	int getHealth() { return m_Health; }			// return the objects health
-	int getMaxHealth();
+	int getMaxHealth() { return MAX_HEALTH; }
 	int getNumLives() { return m_NumLives; }
 	int getType() { return m_Type; }				// 2017/01/25 Return the objects type
 	int getAngle() { return m_Angle; }				// 2017/02/07 Return the objects angle
@@ -66,13 +68,16 @@ public:
 	//SDL_Color getFontColour();
 	//void setFontColour(SDL_Color f);
 
-	int getStartTime();
-	int getEndTime();
-	void setStartTime(int t);
-	void setEndTime(int t);
+	float getTimerTracker() { return m_TimeTracker; }
+	float getTimer() { return m_Timer; }
+	void setTimerTracker(float t) { m_TimeTracker = t; }
+	void setTimer(float t) { m_Timer = t; }
 
-	Texture getTexture();
-	void setTexture(Texture texture);
+	Texture getTexture() { return m_Texture; }
+	void setTexture(Texture texture) { m_Texture = texture; }
+
+	int getFrames() { return m_Frames; }		// 2017/02/09 Animation frames
+	void setFrames(int f) { m_Frames = f; }
 
 private:
 	// GameObject Variables
@@ -90,11 +95,13 @@ private:
 	int m_Type;						// Integer value to indicate the type of game object POWER UP, VIRUS
 
 	// 31-01 Display time
-	int m_StartTime;				// Time to begin displaying
-	int m_EndTime;					// Time to end displaying
+	float m_TimeTracker;				// Time to begin displaying
+	float m_Timer;				// Time to end displaying
 	Texture m_Texture;
 	//SDL_Color fontColour;			// moved to texture class
 	int m_Angle;					// 2017-02-07: Angle to rotate an object
+
+	int m_Frames;	// 2017/02/09 Number of frames for an animation
 };
 
 #endif

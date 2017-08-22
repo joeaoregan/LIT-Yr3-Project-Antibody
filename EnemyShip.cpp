@@ -20,6 +20,8 @@ EnemyShip::EnemyShip() {					// Constructor
 	// Initialise Collider
 	setColliderWidth(getWidth());
 	setColliderHeight(getHeight());
+
+	setFrames(0);
 }
 
 EnemyShip::~EnemyShip() {					// Destructor

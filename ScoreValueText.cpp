@@ -8,7 +8,7 @@ ScoreValueText::ScoreValueText(int x, int y, int score, int player) {
 	setName("+" + std::to_string(score));		// Individual string
 	setX(x);
 	setY(y);
-	setStartTime(SDL_GetTicks());				// Set time the object was created
+	setTimerTracker(SDL_GetTicks());				// Set time the object was created
 	setScore(score);							// the value of the object
 	setAlive(true);								// set it active on the screen
 	//setType(player);							// Is it a score for player 1 or player 2

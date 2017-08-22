@@ -23,7 +23,6 @@ void Texture::setFontColour(SDL_Color f) {
 	txtColour = f;
 }
 
-
 SDL_Texture* Texture::loadTexture(std::string path, SDL_Renderer *rend) {
 	//The final texture
 	SDL_Texture* newTexture = NULL;
@@ -85,7 +84,6 @@ bool Texture::loadFromRenderedText(std::string textureText, SDL_Color textColor,
 		textSurface = TTF_RenderText_Solid(font, textureText.c_str(), textColor);	//Render text surface
 	else
 		textSurface = TTF_RenderText_Blended_Wrapped(font, textureText.c_str(), textColor, 1000);
-
 
 	if (textSurface != NULL) {
 		//Create texture from surface pixels
@@ -156,10 +154,10 @@ void Texture::flashGameObject(int rate, int times) {
 	counter++;
 }
 
-
 void Texture::modifyAlpha(Uint8 alpha) {
 	SDL_SetTextureAlphaMod(mTexture, alpha);			// Modulate texture alpha
 }
+
 // render(int x, int y, SDL_Renderer *rend, SDL_Rect* clip = NULL, double angle = 0.0, SDL_Point* center = NULL, SDL_RendererFlip flip = SDL_FLIP_NONE);
 void Texture::render(int x, int y, SDL_Renderer *rend, SDL_Rect* clip, double angle, SDL_Point* center, SDL_RendererFlip flip) {
 	SDL_Rect renderQuad = { x, y, mWidth, mHeight };	// Set rendering space and render to screen
