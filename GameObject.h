@@ -83,6 +83,8 @@ public:
 	int getAngle() { return m_Angle; }				// 2017/02/07 Return the objects angle
 	std::string getTextureID() { return m_TextureID; }		// return the texture ID
 	void setTextureID(std::string t) { m_TextureID = t; }	// Set the texture ID
+	std::string getMessage() { return m_Message; }		// return the texture ID
+	void setMessage(std::string m) { m_Message = m; }	// Set the texture ID
 
 	void setX(int x) { m_x = x; }					// Set GameObject X coord
 	void setY(int y) { m_y = y; }					// Set GameObject Y coord
@@ -182,6 +184,7 @@ public:
 	void setBoostPercent(float speed) { boostPercent = speed; }
 
 protected:
+	std::string m_Message;			// 2017/03/04 Added messages specific to the object, mostly for power ups
 	// GameObject Variables
 	std::string m_Name;				// Name of the object
 	std::string m_TextureID;		// ID for the texture associated with the object

@@ -3,110 +3,52 @@
 
 //#include <SDL_ttf.h>
 #include "Texture.h"
+#include <iostream>
 
 class SplashScreen {
 public:
-	// Game Title & Created By SplashScreens
-	bool displayGameIntroSplashScreens();
-	void scrollCreatedBySplashScreen(int startAt = 0, int seconds = 1);
-
-	// Level 1 Logo & Info Screens
-	bool level1IntroScreens(int level);
-	void scrollDownLogo(int level, int startAt);
-	void infoScreenEnemies(int level, int seconds, int startAt);
-	void infoScreenPowerUps(int level, int seconds, int startAt);
-	void infoScreenStory(int level, int seconds, int startAt);
-	void level1FinalScore();
-
-	std::string levelObjective;
-	
-	// Scroll text up the screen, from a start point to an end point
-	void scrollUpText(std::string backgroundID, Texture & text, int seconds = 0, int rate = 15, int startAt = SCREEN_HEIGHT, int stopAt = 300); // 2017/02/26 Edited to take an ID. Change rate to increase speed, higher number = faster
-
-	// Press Any Key To Continue
-	void pressButtonToContinue(SDL_Event e);
-
-	// Level 2 Logo & Info Screens
-	//bool level2IntroScreens(SDL_Renderer *rend);
-	void scrollRightL2Logo(int startAt);
-
-
-	Texture gFinalScoreTextTexture;		// Final score displayed at end of level / end of game
-	Texture gGameWinnerTextTexture;		// Game winner displayed at end of game
-	Texture gGameOverTextTexture;		// End of game, game over texture
-
-	//Texture gEnemyShipTexture;			// Enemy Ship for info screen
-	//Texture gVirusGreenTexture;			// Enemy Virus
-	//Texture gVirusOrangeTexture;		// Enemy Virus Orange
-	//Texture gVirusBlueTexture;			// Enemy Virus Blue
-
-	Texture gPressEnterSpriteSheetTexture;	// Press Enter to Continue sprite sheet
-
-	Texture gLevelObjectiveTextTexture;// Objective for each level
-
-	// Story Text
-	Texture gStoryA;	// 2017/02/01
-	Texture gStoryB;	// 2017/02/01
-	Texture gStoryC;	// 2017/02/01
-
-						// Splash Screens / Logos
-	Texture gLevel1;	// 2017/01/18 Texture for level Splash Screen 1
-	Texture gLevel2;	// 2017/01/18 Texture for level Splash Screen 2
-	Texture gLevel3;	// 2017/01/18 Texture for level Splash Screen 3
-
-	Texture test;
-
-	// Images for information Splash Screen
-	//Texture gEnemyShipTextureA;			// Enemy Ship for info screen	USING SAME IMAGES AS GAME SPRITES
-	//Texture gEnemyVirusTextureA;		// Enemy Virus
-	//Texture gEnemyVirusOrangeTextureA;	// Enemy Virus Orange
-
-
-	//Texture gLevelObjectiveTextTextureA;// Objective for each level
-	std::string storyPage1;
-	std::string storyPage2;
-	std::string storyPage3;
-	
+	// Set up / Close Splash Screens
 	bool initSplashScreens();
 	void closeSplashScreens();
-	void level2FinalScore();
-	void level3FinalScore();
+
+	// Game Title & Created By SplashScreens
+	bool displayGameTitleScreens();
+
+	// Level 1 Logo & Info Screens
+	bool levelIntroScreens(int level);
+	void infoScreenEnemies(int level, int seconds, int startAt = SCREEN_HEIGHT);
+	void infoScreenPowerUps(int level, int seconds, int startAt = SCREEN_HEIGHT);
+	void infoScreenStory(int level, int seconds, int startAt = SCREEN_HEIGHT);
 	void endOfGame(int level, std::string finalScore = "", std::string winner = "");
 
-	SDL_Rect gPressButtonToContinueSpriteClips[6];			// Sprite frames for Press Button to Continue animation
+	// Scroll text up the screen, from a start point to an end point
+	void scrollUpText(std::string backgroundID, Texture & text, int seconds = 0, int rate = 15, int startAt = SCREEN_HEIGHT, int stopAt = 300); // 2017/02/26 Edited to take an ID. Change rate to increase speed, higher number = faster
+																																				// Press Any Key To Continue
+	void pressButtonToContinue(SDL_Event e);
 
-	//bool level3IntroScreens(SDL_Renderer *rend);
+	// Splash Screens textures
+	Texture gFinalScoreTextTexture;					// Final score displayed at end of level / end of game
+	Texture gGameWinnerTextTexture;					// Game winner displayed at end of game
+	Texture gGameOverTextTexture;					// End of game, game over texture
+	Texture gPressEnterSpriteSheetTexture;			// Press Enter to Continue sprite sheet
+	Texture gObjectiveTextTexture;					// Objective for each level
+	Texture gStoryA, gStoryB, gStoryC;				// 2017/02/01 Story Text
 
-
-
-	//void enemyInformationSplashScreen(SDL_Renderer *rend, Texture &background, Texture &orangeVirus, Texture &enemyShip, Texture &health, Texture &laser);
-	
-	TTF_Font *gFont = NULL;
-
-	//bool displaySplashScreens(SDL_Renderer *rend, Texture *texture1, Texture *texture2);
-
-	//void displayLevelSplashScreen(std::string objective, SDL_Renderer *rend, int level);
-
-	//void scrollUpLogo(SDL_Renderer *rend, Texture &texture, int seconds = 1, int rate = 5); 
-	void scrollVerticalLogo(Texture &texture, int seconds = 1, int rate = 10, int startAt = -SCREEN_HEIGHT, int stopAt = 0);	// Default is scroll down from top, -600 starts above the screen
-
-	//void scrollUpText(SDL_Renderer *rend, Texture &background, Texture & text, int seconds, int rate = 15, int startAt = SCREEN_HEIGHT, int stopAt = 300); // Change rate to increase speed, higher number = faster
+	std::string levelObjective;						// Objective for each level
+	std::string storyPage1, storyPage2, storyPage3;	// The story, can spread over 3 screens
 
 
-	SDL_Color textColour;
+	SDL_Rect gPressButtonToContinueSpriteClips[6];	// Sprite frames for Press Button to Continue animation
 
-	//std::string l1Objective = "Destroy enemy virus and ships      \nThe player with the highest score\nIs the winner";
-	//std::string l2Objective = "Destroy more enemy virus and ships\nThe player with the highest score\nIs the winner";
-	//std::string l3Objective = "Destroy even more enemy virus and ships\nThe player with the highest score\nIs the winner";
+	TTF_Font *gFont = NULL;							// The font to be used for rendered text
 
-	//void displaySplashScreens(SDL_Renderer *rend, Texture *texture1, Texture *texture2, bool *displayIntro);
+	SDL_Color textColour;							// The text colour for rendered text
 
-	//SplashScreen(int x, int y, Texture &one, Texture &two, Texture &three);		// Constructor: Initialize position and animation
-
-	//void render(Texture &texture, SDL_Renderer *rend);						// Shows the particle
-
-//private:
-	//int mPosX, mPosY;			// Offsets
+													// Level Background Functions
+	std::string chooseBackground(int level);																						// 2017/03/06 Choose the level background image to display
+	void scrollRandomBackground(std::string textureID, int rate = 20, int seconds = 0);												// 2017/03/06 Random direction to scroll the background
+	void scrollLogoHorizontal(std::string textureID, int seconds = 0, int rate = 20, int startAt = -SCREEN_WIDTH, int stopAt = 0);	// Default is scroll from Left to Right
+	void scrollLogoVertical(std::string textureID, int seconds = 1, int rate = 10, int startAt = -SCREEN_HEIGHT, int stopAt = 0);	// Default is scroll down from top, -600 starts above the screen
 };
 
 #endif

@@ -27,52 +27,45 @@ bool Menu::loadMenuMedia() {
 	else {
 		SDL_Color textColour = { 0,0,0 };
 
-		if (!gMenuTextTexture1.loadFromRenderedText("ANTIBODY", textColour, TTF_OpenFont("Fonts/Retro.ttf", 100))) {
+		//if (!gMenuTextTexture1.loadFromRenderedText("ANTIBODY", textColour, TTF_OpenFont("Fonts/Retro.ttf", 100))) {
+		if (!gMenuTextTexture1.loadFromRenderedTextID("ANTIBODY", "menuHeadingID", textColour, TTF_OpenFont("Fonts/Retro.ttf", 100))) {
 			printf("Failed to render text texture!\n");
 			success = false;
 		}
-		if (!gMenuTextTexture8.loadFromRenderedText("PAUSE", textColour, TTF_OpenFont("Fonts/Retro.ttf", 100))) {
+		
+		if (!gMenuTextTexture8.loadFromRenderedTextID("PAUSE", "menuPauseID", textColour, TTF_OpenFont("Fonts/Retro.ttf", 100))) {
+		//if (!gMenuTextTexture8.loadFromRenderedText("PAUSE", textColour, TTF_OpenFont("Fonts/Retro.ttf", 100))) {
 			printf("Failed to render text texture!\n");
 			success = false;
 		}
-		if (!gMenuTextTexture2.loadFromRenderedText("Story", textColour, gFont)) {	// can take out the new textColor objects
-			printf("Failed to render text texture!\n");
-			success = false;
-		}
-		if (!gMenuTextTexture3.loadFromRenderedText("1 Player", textColour, gFont)) {
-			printf("Failed to render text texture!\n");
-			success = false;
-		}
-		if (!gMenuTextTexture4.loadFromRenderedText("2 Player", textColour, gFont)) {
-			printf("Failed to render text texture!\n");
-			success = false;
-		}
-		if (!gMenuTextTexture5.loadFromRenderedText("Settings", textColour, gFont)) {
-			printf("Failed to render text texture!\n");
-			success = false;
-		}
-		if (!gMenuTextTexture6.loadFromRenderedText("High Scores", textColour, gFont)) {
-			printf("Failed to render text texture!\n");
-			success = false;
-		}
-		if (!gMenuTextTexture7.loadFromRenderedText("Quit", textColour, gFont)) {
+		
+		if (!gMenuTextTexture2.loadFromRenderedTextID("Story", "menuStoryID", textColour, gFont)) {
+		//if (!gMenuTextTexture2.loadFromRenderedText("Story", textColour, gFont)) {	// can take out the new textColor objects
 			printf("Failed to render text texture!\n");
 			success = false;
 		}
 
-		gMenuTextTexture2.setX((SCREEN_WIDTH - gMenuTextTexture2.getWidth()) / 2);
-		gMenuTextTexture3.setX((SCREEN_WIDTH - gMenuTextTexture3.getWidth()) / 2);
-		gMenuTextTexture4.setX((SCREEN_WIDTH - gMenuTextTexture4.getWidth()) / 2);
-		gMenuTextTexture5.setX((SCREEN_WIDTH - gMenuTextTexture5.getWidth()) / 2);
-		gMenuTextTexture6.setX((SCREEN_WIDTH - gMenuTextTexture6.getWidth()) / 2);
-		gMenuTextTexture7.setX((SCREEN_WIDTH - gMenuTextTexture7.getWidth()) / 2);
-
-		gMenuTextTexture2.setY(200);
-		gMenuTextTexture3.setY(250);
-		gMenuTextTexture4.setY(300);
-		gMenuTextTexture5.setY(350);
-		gMenuTextTexture6.setY(400);
-		gMenuTextTexture7.setY(450);
+		if (!gMenuTextTexture3.loadFromRenderedTextID("1 Player", "menu1PlayerID", textColour, gFont)) {
+		//if (!gMenuTextTexture3.loadFromRenderedText("1 Player", textColour, gFont)) {
+			printf("Failed to render text texture!\n");
+			success = false;
+		}
+		if (!gMenuTextTexture4.loadFromRenderedTextID("2 Player", "menu2PlayerID", textColour, gFont)) {
+			printf("Failed to render text texture!\n");
+			success = false;
+		}
+		if (!gMenuTextTexture5.loadFromRenderedTextID("Settings", "menuSettingsID", textColour, gFont)) {
+			printf("Failed to render text texture!\n");
+			success = false;
+		}
+		if (!gMenuTextTexture6.loadFromRenderedTextID("High Scores", "menuHighScoresID", textColour, gFont)) {
+			printf("Failed to render text texture!\n");
+			success = false;
+		}
+		if (!gMenuTextTexture7.loadFromRenderedTextID("Quit", "menuQuitID", textColour, gFont)) {
+			printf("Failed to render text texture!\n");
+			success = false;
+		}
 	}
 
 	//Load sprites
@@ -89,12 +82,12 @@ bool Menu::loadMenuMedia() {
 			gSpriteClipsMenu[i].h = BUTTON_HEIGHT;
 		}
 
-		gMenuButtons[0].setPosition((SCREEN_WIDTH - BUTTON_WIDTH) / 2, gMenuTextTexture2.getY());
-		gMenuButtons[1].setPosition((SCREEN_WIDTH - BUTTON_WIDTH) / 2, gMenuTextTexture3.getY());
-		gMenuButtons[2].setPosition((SCREEN_WIDTH - BUTTON_WIDTH) / 2, gMenuTextTexture4.getY());
-		gMenuButtons[3].setPosition((SCREEN_WIDTH - BUTTON_WIDTH) / 2, gMenuTextTexture5.getY());
-		gMenuButtons[4].setPosition((SCREEN_WIDTH - BUTTON_WIDTH) / 2, gMenuTextTexture6.getY());
-		gMenuButtons[5].setPosition((SCREEN_WIDTH - BUTTON_WIDTH) / 2, gMenuTextTexture7.getY());
+		gMenuButtons[0].setPosition((SCREEN_WIDTH - BUTTON_WIDTH) / 2, 200);
+		gMenuButtons[1].setPosition((SCREEN_WIDTH - BUTTON_WIDTH) / 2, 250);
+		gMenuButtons[2].setPosition((SCREEN_WIDTH - BUTTON_WIDTH) / 2, 300);
+		gMenuButtons[3].setPosition((SCREEN_WIDTH - BUTTON_WIDTH) / 2, 350);
+		gMenuButtons[4].setPosition((SCREEN_WIDTH - BUTTON_WIDTH) / 2, 400);
+		gMenuButtons[5].setPosition((SCREEN_WIDTH - BUTTON_WIDTH) / 2, 450);
 	}
 
 	return success;
@@ -131,14 +124,18 @@ void Menu::draw() {
 		//gMenuButtons[i].render(gButtonSpriteSheetTexture, rend, &gSpriteClipsMenu[gMenuButtons[i].mCurrentSprite]);
 	}
 
-	gMenuTextTexture1.render((SCREEN_WIDTH - gMenuTextTexture1.getWidth()) / 2, (SCREEN_HEIGHT - gMenuTextTexture1.getHeight()) / 12);
-	gMenuTextTexture2.render(gMenuTextTexture2.getX(), gMenuTextTexture2.getY());	// STORY
-	gMenuTextTexture3.render(gMenuTextTexture3.getX(), gMenuTextTexture3.getY());	// GAME_1PLAYER
-	gMenuTextTexture4.render(gMenuTextTexture4.getX(), gMenuTextTexture4.getY());	// GAME_2PLAYER
-	gMenuTextTexture5.render(gMenuTextTexture5.getX(), gMenuTextTexture5.getY());	// SETTINGS
-	gMenuTextTexture6.render(gMenuTextTexture6.getX(), gMenuTextTexture6.getY());	// HIGH_SCORES
-	gMenuTextTexture7.render(gMenuTextTexture7.getX(), gMenuTextTexture7.getY());	// QUIT
+	//int w, h;
+	//SDL_QueryTexture(Texture::Instance()->getTexture("menuHeadingID"), NULL, NULL, &w, &h);
+	
+	gMenuTextTexture1.render("menuHeadingID", (SCREEN_WIDTH - gMenuTextTexture1.getWidth()) / 2, (SCREEN_HEIGHT - gMenuTextTexture1.getHeight()) / 12);
 
+	gMenuTextTexture2.render("menuStoryID", (SCREEN_WIDTH - gMenuTextTexture2.getWidth()) / 2, 200);
+	gMenuTextTexture3.render("menu1PlayerID", (SCREEN_WIDTH - gMenuTextTexture3.getWidth()) / 2, 250);
+	gMenuTextTexture4.render("menu2PlayerID", (SCREEN_WIDTH - gMenuTextTexture4.getWidth()) / 2, 300);
+	gMenuTextTexture5.render("menuSettingsID", (SCREEN_WIDTH - gMenuTextTexture5.getWidth()) / 2, 350);
+	gMenuTextTexture6.render("menuHighScoresID", (SCREEN_WIDTH - gMenuTextTexture6.getWidth()) / 2, 400);
+	gMenuTextTexture7.render("menuQuitID", (SCREEN_WIDTH - gMenuTextTexture7.getWidth()) / 2, 450);
+	
 	SDL_RenderPresent(Game::Instance()->getRenderer());			// Update screen
 }
 
@@ -148,7 +145,6 @@ void Menu::drawPause() {
 
 	for (int i = 0; i < TOTAL_BUTTONS; ++i) {
 		gMenuButtons[i].render(gButtonSpriteSheetTexture, &gSpriteClipsMenu[gMenuButtons[i].mCurrentSprite]);
-		//gMenuButtons[i].render(gButtonSpriteSheetTexture, rend, &gSpriteClipsMenu[gMenuButtons[i].mCurrentSprite]);
 	}
 
 	gMenuTextTexture8.setX((SCREEN_WIDTH - gMenuTextTexture8.getWidth()) / 2);

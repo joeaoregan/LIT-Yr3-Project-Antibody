@@ -52,6 +52,7 @@ public:
 	bool loadFromRenderedText(std::string textureText, SDL_Color textColor, TTF_Font* font, bool textWrapped = false);
 #endif
 	void renderMap();
+	void renderMap(std::string id, int x, int y);
 	void renderMap(std::string id, int x, int y, int width, int height);
 	//void render(int x, int y, SDL_Rect* clip = NULL, double angle = 0.0, SDL_Point* center = NULL, SDL_RendererFlip flip = SDL_FLIP_NONE);	// Renders texture at given point
 	

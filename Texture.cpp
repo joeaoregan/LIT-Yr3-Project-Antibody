@@ -1,4 +1,5 @@
 /*
+	2017/03/06 Moved texture information to array for loading
 	2017/02/28 Moved background texture loading to texture map
 	2017/02/26 Added singletons for Game and Texture
 	2017/02/09 Set a display time for textures such as information messages
@@ -12,11 +13,12 @@
 /*
 	TEXTURE:
 
-	This class manages all texture functionality for the game. Loading textures from, storing them to
-	a map for indexing, and then rendering to screen. There are functions to render textures from text,
+	This class manages all texture functionality for the game. Loading textures from, storing them to 
+	a map for indexing, and then rendering to screen. There are functions to render textures from text, 
 	and also to handle the alpha value of objects, to make them transparent or flash.
 */
 #include "Texture.h"
+#include <iostream>
 
 Texture* Texture::s_pInstance = 0;
 
@@ -57,7 +59,7 @@ bool Texture::load(std::string fileName, std::string id) {
 
 void Texture::draw(std::string id, int x, int y, int width, int height, SDL_RendererFlip flip) {
 //void Texture::draw(std::string id, int x, int y, int width, int height, SDL_Renderer* rend, SDL_RendererFlip flip) {
-//	SDL_Rect renderQuad = { x, y, mWidth, mHeight };	// Set rendering space and render to screen
+	SDL_Rect renderQuad = { x, y, mWidth, mHeight };	// Set rendering space and render to screen
 	SDL_Rect srcRect;
 	SDL_Rect destRect;
 
@@ -74,6 +76,13 @@ void Texture::draw(std::string id, int x, int y, int width, int height, SDL_Rend
 void Texture::renderMap() {
 	//void Texture::renderMap(SDL_Renderer* rend) {
 	SDL_RenderCopy(Game::Instance()->getRenderer(), mTexture, NULL, NULL);
+}
+void Texture::renderMap(std::string id, int x, int y) {
+	//void Texture::renderMap(std::string id, int x, int y, int width, int height, SDL_Renderer* rend) {
+	SDL_Rect renderQuad = { x, y, mWidth, mHeight };	// Set rendering space and render to screen
+
+
+	SDL_RenderCopyEx(Game::Instance()->getRenderer(), m_textureMap[id], NULL, &renderQuad, 0, NULL, SDL_FLIP_NONE);	// Render to screen
 }
 void Texture::renderMap(std::string id, int x, int y, int width, int height) {
 	//void Texture::renderMap(std::string id, int x, int y, int width, int height, SDL_Renderer* rend) {
@@ -166,7 +175,7 @@ bool Texture::loadFromFile(std::string path) {
 }
 
 bool Texture::loadFromRenderedTextID(std::string textureText, std::string id, SDL_Color textColor, TTF_Font* font, bool textWrapped) {
-	//SDL_Texture* textXXX = 0;
+	SDL_Texture* textXXX = 0;
 //bool Texture::loadFromRenderedTextID(SDL_Texture* text, std::string textureText, std::string id, SDL_Color textColor, TTF_Font* font, SDL_Renderer* renderer, bool textWrapped) {
 	free();	//Get rid of preexisting texture
 
@@ -177,8 +186,8 @@ bool Texture::loadFromRenderedTextID(std::string textureText, std::string id, SD
 
 	if (textSurface != NULL) {
 		//Create texture from surface pixels
-		mTexture = SDL_CreateTextureFromSurface(Game::Instance()->getRenderer(), textSurface);
-		if (mTexture == NULL) {
+		textXXX = SDL_CreateTextureFromSurface(Game::Instance()->getRenderer(), textSurface);
+		if (textXXX == NULL) {
 			printf("Unable to create texture from rendered text! SDL Error: %s\n", SDL_GetError());
 		}
 		else {
@@ -194,9 +203,9 @@ bool Texture::loadFromRenderedTextID(std::string textureText, std::string id, SD
 	}
 
 	//if (mTexture != 0) {
-	if (mTexture != 0) {
+	if (textXXX != 0) {
 		//m_textureMap[id] = mTexture;	// Add to texture map
-		m_textureMap[id] = mTexture;	// Add to texture map
+		m_textureMap[id] = textXXX;	// Add to texture map
 		return true;
 	}
 
@@ -304,13 +313,14 @@ void Texture::speedBoostText(std::string textureText) {
 	Function to indicate how many rockets a player has left
 */
 void Texture::numRocketsLeft(std::string textureText) {
-	free();
+	std::cout << "numRocketsLeft" << textureText << std::endl;
+	//free();
 //void Texture::numRocketsLeft(std::string textureText, SDL_Renderer* rend) {
 	if (!loadFromRenderedText(textureText, { 0, 255, 0, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 36))) {		// Green Text
 		printf("numRocketsLeft(): Unable to render Num Rockets Left User Interface Text Texture!\n");
 	}
 }
-/*
+/* 
 	2017-02-15:
 	Function to render the players scores, the FPS, and the current game level
 */
@@ -356,7 +366,7 @@ void Texture::UITextTimer(std::string timerText, unsigned int Timer) {
 
 //std::string previous1, previous2, previous3;
 void Texture::UITextPlayerMessage(std::string playerMessage, int type) {
-
+	
 	free();
 //void Texture::UITextPlayerMessage(std::string playerMessage, SDL_Renderer* rend, int type) {
 	if (type == 0) {
@@ -423,130 +433,57 @@ txtColour = f;
 void Texture::clearMedia() {
 
 }
+const int NUM_TEXTURES2 = 20;
+
+// 2D Array of textures, with path to file, texture ID, and description for error messages
+std::string textures2[NUM_TEXTURES2][3] = {
+	// Background images
+	{ "Art/bgBegin720a.png", "startBG", "Starting Background" },
+	{ "Art/Background720.png", "middleBG", "Middle Background" },
+	{ "Art/bgEnd720a.png", "endBG", "End Background" },
+
+	// Init the objects to give information on
+	{ "Art/EnemyShip.png", "enemyShipID", "Enemy Ship Info" },
+	{ "Art/VirusGreen.png", "greenVirusID", "Green Virus Info" },
+	{ "Art/VirusOrange.png", "orangeVirusID", "Orange Virus Info" },
+	{ "Art/VirusBlue.png", "blueVirusID", "Blue Virus Info" },
+
+	// Weapons
+	{ "Art/VirusFireball.png", "fireballID", "Fire Ball Weapon" },
+	{ "Art/EnemyVirusSatellite.png", "satelliteID", "Virus Satellite Projectile" },
+	{ "Art/LaserGreen.png", "greenLaserID", "Green Laser" },
+	{ "Art/LaserOrange.png", "orangeLaserID", "Orange Laser" },
+	{ "Art/LaserBlue.png", "blueLaserID", "Blue Laser" },
+
+	// Power Ups
+	{ "Art/PowerUpLife.png", "lifePowerUpID", "New Life Power Up" },
+	{ "Art/PowerUpClock.png", "checkpointPowerUpID", "Checkpoint // Timer Power Up" },
+	{ "Art/PowerUpRocket.png", "rocketPowerUpID", "Rocket Power Up" },
+	{ "Art/PowerUpHealthBox.png", "healthPowerUpID", "Health Power Up" },
+	{ "Art/PowerUpLaser.png", "laserPowerUpID", "Laser Power Up" },
+
+	// Laser Grades
+	{ "Art/LaserGunV2.png", "laserPowerUpV2ID", "Double Laser HUD" },
+	{ "Art/LaserGunV3.png", "laserPowerUpV3ID", "Triple Laser HUD" },
+
+	// Obstacles
+	{ "Art/Blockage.png", "blockageID", "Blockage" }
+};
+
 bool Texture::loadTextureMedia() {
-//bool Texture::loadTextureMedia(SDL_Renderer* rend) {
+	//bool Texture::loadTextureMedia(SDL_Renderer* rend) {
 
 	lastTime = SDL_GetTicks();
 
 	bool success = true;
-	// Particles
 
-	// Backgrounds
-	if (!load("Art/bgBegin720a.png", "startBG")) {								// 09/01 Edited background to be 800 x 600 instead of 600 * 480
-		printf("Failed to load background texture!\n");							// Start Backround
-		success = false;
-	}
-	if (!load("Art/Background720.png", "middleBG")) {							// Middle Background
-		printf("Failed to load start background texture!\n");
-		success = false;
-	}
-	if (!Instance()->load("Art/bgEnd720a.png", "endBG")) {						// End Background
-		printf("Failed to load end background texture!\n");
-		success = false;
-	}
-	// Init the game title and credit screens
-	if (!Instance()->load("Art/Logo1720.png", "logoL1ID")) {					// Game Title Logo
-		printf("Failed to load Logo 1 - Game Logo texture!\n");
-		success = false;
-	}
-	if (!Instance()->load("Art/Logo2720.png", "creatorL1ID")) {					// Game Creators Logo
-		printf("Failed to load Logo 2 - Game Creators texture!\n");
-		success = false;
-	}
-
-	// Level backdrops
-	if (!Instance()->load("Art/Level1720.png", "level1ID")) {					// Level 1 backdrop
-		printf("Failed to load Level 1 texture!\n");
-		success = false;
-	}
-	if (!Instance()->load("Art/Level2720.png", "level2ID")) {					// Level 2 backdrop
-		printf("Failed to load Level 2 texture!\n");
-		success = false;
-	}
-	if (!Instance()->load("Art/Level3720.png", "level3ID")) {					// Level 3 backdrop
-		printf("Failed to load Level 3 texture!\n");
-		success = false;
-	}
-
-	// Init the objects to give information on
-	if (!Instance()->load("Art/EnemyShip.png", "enemyShipID")) {				// Enemy Ship
-		printf("Failed to load Enemy Ship texture!\n");
-		success = false;
-	}
-	if (!Instance()->load("Art/VirusGreen.png", "greenVirusID")) {				// Green Virus
-		printf("Failed to load Green Enemy Virus texture!\n");
-		success = false;
-	}
-	if (!Instance()->load("Art/VirusOrange.png", "orangeVirusID")) {			// Orange Virus
-		printf("Failed to load Orange Enemy Virus texture!\n");
-		success = false;
-	}
-	if (!Instance()->load("Art/VirusBlue.png", "blueVirusID")) {				// Blue Virus
-		printf("Failed to load Orange Enemy Virus texture!\n");
-		success = false;
-	}
-
-	// Weapons
-	if (!Instance()->load("Art/VirusFireball.png", "fireballID")) {				// Orange Virus Projectile
-		printf("Failed to load Enemy Virus Orange Fireball texture!\n");
-		success = false;
-	}
-	if (!Instance()->load("Art/EnemyVirusSatellite.png", "satelliteID")) {		// Blue Virus Projectile
-		printf("Failed to load Enemy Virus Orange Fireball texture!\n");
-		success = false;
-	}
-	if (!Instance()->load("Art/LaserGreen.png", "greenLaserID")) {				// Player 2 Laser
-		printf("Failed to load Green Laser texture!\n");
-		success = false;
-	}
-	if (!Instance()->load("Art/LaserOrange.png", "orangeLaserID")) {			// Player 1 Projectile
-		printf("Failed to load Orange Laser texture!\n");
-		success = false;
-	}
-	if (!Instance()->load("Art/LaserBlue.png", "blueLaserID")) {				// Enemy Ship Laser
-		printf("Failed to load Blue Laser texture!\n");
-		success = false;
-	}
-
-	// Power Ups
-	if (!Instance()->load("Art/PowerUpLife.png", "lifePowerUpID")) {			// New Life Power Up
-		printf("Failed to load New Life texture!\n");
-		success = false;
-	}
-	if (!Instance()->load("Art/PowerUpClock.png", "checkpointPowerUpID")) {		// Checkpoint Power Up
-		printf("Failed to load Checkpoint texture!\n");
-		success = false;
-	}
-	if (!Instance()->load("Art/PowerUpRocket.png", "rocketPowerUpID")) {		// Rocket Power Up
-		printf("Failed to load Power Up - Rocket texture!\n");
-		success = false;
-	}
-	if (!Instance()->load("Art/PowerUpHealthBox.png", "healthPowerUpID")) {		// Health Power Up
-		printf("Failed to load Health Power Up texture!\n");
-		success = false;
-	}
-	if (!Instance()->load("Art/PowerUpLaser.png", "laserPowerUpID")) {			// Laser Power Up
-		printf("Failed to load Laser Power Up texture!\n");
-		success = false;
-	}
-
-	// Laser Grades
-	if (!Instance()->load("Art/LaserGunV2.png", "laserPowerUpV2ID")) {			// Laser Grade 2
-		printf("Failed to load Laser V2 Power Up texture!\n");
-		success = false;
-	}
-	if (!Instance()->load("Art/LaserGunV3.png", "laserPowerUpV3ID")) {			// Laser Grade 3
-		printf("Failed to load Laser V3 Power Up texture!\n");
-		success = false;
-	}
-
-	// Obstacles
-	if (!Instance()->load("Art/Blockage.png", "blockageID")) {					// Blockage
-		printf("Failed to load Blockage texture!\n");
-		success = false;
+	// Load the textures stored in the textures array
+	for (int i = 0; i < NUM_TEXTURES2; i++) {
+		if (!Texture::Instance()->load(textures2[i][0], textures2[i][1])) {					// Game Title Logo
+			std::cout << "Failed to load " << textures2[i][2] << " texture!" << std::endl;
+			success = false;
+		}
 	}
 
 	return success;
 }
-
-

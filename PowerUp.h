@@ -37,30 +37,38 @@ public:
 			setWidth(60);
 			setName("Health Power Up");
 			setTextureID("healthPowerUpID");
+			//setMessage("Player has increased their health!!!");
 		}
 		else if (subType == POWER_UP_LASER) {
 			setHeight(48);
 			setWidth(60);
 			setName("Laser Power Up");
 			setTextureID("laserPowerUpID");
+			//setMessage("Player has upgraded their laser!!!");
 		}
 		else if (subType == POWER_UP_ROCKET) {
 			setHeight(60);
 			setWidth(30);
 			setName("Rocket Power Up");
 			setTextureID("rocketPowerUpID");
+			//setMessage("Player has collected a Rocket!!! Rockets: " + std::to_string(getNumRockets()));
 		}
 		else if (subType == POWER_UP_CHECKPOINT) {
 			setHeight(60);
 			setWidth(60);
 			setName("Checkpoint Power Up");
 			setTextureID("checkpointPowerUpID");
+			///setMessage("Checkpoint Reached!!! 20 Seconds Added!");
 		}
 		else if (subType == POWER_UP_LIVES) {
 			setHeight(29);
 			setWidth(60);
 			setName("New Life Power Up");
 			setTextureID("lifePowerUpID");
+			//if(getNumLives() < MAX_NUM_LIVES)
+			//	setMessage("Player has increased their number of lives!!!");
+			//else
+			//	setMessage("Player 1 has already has the max number of lives!!!");
 		}
 
 		setVelocity(1);

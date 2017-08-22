@@ -49,7 +49,7 @@ bool PlayState::onExit() {
 	//	m_gameObjects.clear();
 	//	TheTextureManager::Instance()->clearFromTextureMap("helicopter");
 	// clear the texture manager
-	for (unsigned int i = 0; i < m_textureIDList.size(); i++) {								// P152 Texture clearing code
+	for (int i = 0; i < m_textureIDList.size(); i++) {								// P152 Texture clearing code
 		Texture::Instance()->clearFromTextureMap(m_textureIDList[i]);
 	}
 

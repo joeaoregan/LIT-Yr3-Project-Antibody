@@ -10,6 +10,7 @@
 #include "Button.h"
 #include "Game.h"
 #include "Menu.h"
+#include <iostream>
 
 enum { STORY, GAME_1PLAYER, GAME_2PLAYER, SETTINGS, HIGH_SCORES, QUIT };
 
@@ -28,7 +29,7 @@ void Button::setPosition(int x, int y) {
 }
 
 void Button::handleEvent(SDL_Event* e, int buttonSelected) {
-//	SDL_Color textColorOne = { 255, 255, 255 };
+	SDL_Color textColorOne = { 255, 255, 255 };
 	//If mouse event happened
 	if (e->type == SDL_MOUSEMOTION || e->type == SDL_MOUSEBUTTONDOWN || e->type == SDL_MOUSEBUTTONUP) {
 		//Get mouse position
@@ -150,7 +151,7 @@ void Button::handleEvent(SDL_Event* e, int buttonSelected) {
 }
 
 // Render the current button sprite at the button position
-//
+// 
 void Button::render(Texture &texture, SDL_Rect *currentClip) {
 	texture.render(mPosition.x, mPosition.y, currentClip);	// Show current button spriteCHANGED - RENDERER IS ADDED
 //void Button::render(Texture &texture, SDL_Renderer *rend, SDL_Rect *currentClip) {

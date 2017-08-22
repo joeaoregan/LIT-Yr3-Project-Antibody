@@ -7,15 +7,15 @@
 
 class Particle {
 public:
-	Texture gShimmer, one, two, three, four, five, six;			// Type of particle
+	Texture gShimmer, one, two, three, four, five, six;					// Type of particle
 
 	Particle() {};
 	Particle(int x, int y, int type = 0);
-	Particle(int x, int y, Texture &one, Texture &two, Texture &three);		// Constructor: Initialize position and animation
+	Particle(int x, int y, Texture &one, Texture &two, Texture &three);	// Constructor: Initialize position and animation
 	
-	void render();											// Shows the particle
+	void render();														// Shows the particle
 
-	bool isDead(bool drawParticle);											// Checks if particle is dead, 2017/01/20 Doesn't draw a trail if moving left
+	bool isDead(bool drawParticle);										// Checks if particle is dead, 2017/01/20 Doesn't draw a trail if moving left
 	
 	void initPlayerEngine(int x, int y);
 	void initRocketTrail(int x, int y);
