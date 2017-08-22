@@ -52,6 +52,9 @@ Player::Player() {
 	}
 
 	drawParticle = true;
+
+	setRocketActive(false);					// Player can spawn a rocket straight away
+	setNumRockets(0);						// The number of rockets a player has
 }
 
 bool Player::loadMediaPlayer(SDL_Renderer *rend) {
@@ -138,15 +141,6 @@ void Player::rendPlayerLives(Texture &lives, int player, SDL_Renderer *rend) {
 			lives.render(SCREEN_WIDTH - (lives.getWidth() * 3) - 30, 120 - lives.getHeight() - 10, rend);
 	}
 }
-/*
-
-void Player::render(LTexture &texture, LTexture &one, LTexture &two, LTexture &three, LTexture &four, SDL_Renderer *rend) {
-
-	renderParticles(one, two, three, four, rend);					// Show particles on top of dot
-
-	texture.render(getX(), getY(), rend);								// Show the dot 2017-01-20 Moved after, so ship is on top of particles
-}
-*/
 
 void Player::renderParticles(Texture &one, Texture &two, Texture &three, Texture &four, SDL_Renderer *rend) {
 	//Go through particles
@@ -169,7 +163,7 @@ void Player::spawnPlayerSaw(int x, int y, int type) {
 }
 
 void Player::handleEvent(SDL_Event& e, int player) {
-	if (player == 1) {
+	if (player == 1 && getAlive()) {
 		if (e.type == SDL_KEYDOWN && e.key.repeat == 0) {
 			switch (e.key.keysym.sym) {
 			case SDLK_w: moveUp(); break;
@@ -178,13 +172,12 @@ void Player::handleEvent(SDL_Event& e, int player) {
 			case SDLK_d: moveRight(); break;
 
 			// FIRE WEAPON
-			case SDLK_SPACE: game1.spawnLaser(getX(), getY(), 1); break;	// TEST NEW WEAPON
+			case SDLK_SPACE: game1.spawnLaser(getX(), getY(), 1); break;				// TEST NEW WEAPON
 			case SDLK_n: game1.spawnNinjaStar(getX(), getY(), 1); break;
-			//case SDLK_e: game1.spawnSaw(getX(), getY(), 1, getSawActive()); break;			// 2017/01/17 Saw Weapon added, check saw is active with if statement in spawn Saw, and activate/deactivate the weapon
-			case SDLK_e: game1.spawnSaw(getX(), getY(), SAW1); break;			// 2017/01/17 Saw Weapon added, check saw is active with if statement in spawn Saw, and activate/deactivate the weapon
-			//case SDLK_e: spawnPlayerSaw(getX(), getY(), SAW1); break;
-			case SDLK_f: setSpeedBoost(true); break;
-			case SDLK_c: game1.spawnRocket(getX(), getY(), 1, 9); break;
+			case SDLK_e: game1.spawnSaw(getX(), getY(), SAW1); break;					// 2017/01/17 Saw Weapon added, check saw is active with if statement in spawn Saw, and activate/deactivate the weapon
+			case SDLK_f: setSpeedBoost(true);
+				game1.infoMessage("Player 1 speed boost activated", PLAYER_1); break;
+			case SDLK_c: game1.spawnRocket(getX(), getY(), PLAYER_1, 9); break;
 			}
 		}
 		else if (e.type == SDL_KEYUP && e.key.repeat == 0) {
@@ -197,7 +190,7 @@ void Player::handleEvent(SDL_Event& e, int player) {
 			}
 		}
 	}
-	else if (player == 2) {
+	else if (player == 2 && getAlive()) {
 		if (e.type == SDL_KEYDOWN && e.key.repeat == 0) {
 			switch (e.key.keysym.sym) {
 			case SDLK_UP: moveUp(); break;
@@ -210,17 +203,22 @@ void Player::handleEvent(SDL_Event& e, int player) {
 			case SDLK_RCTRL: game1.spawnLaser(getX(), getY(), 2); break;
 			case SDLK_RSHIFT: game1.spawnNinjaStar(getX(), getY(), 2); break;
 			case SDLK_r: spawnPlayerSaw(getX(), getY(), SAW2); break;
-			case SDLK_g: setSpeedBoost(true); break;
-			case SDLK_v: game1.spawnRocket(getX(), getY(), 2, 9); break;
+			case SDLK_g: setSpeedBoost(true);
+				game1.infoMessage("Player 2 speed boost activated", PLAYER_2); break;
+			case SDLK_v: game1.spawnRocket(getX(), getY(), PLAYER_2, 9); break;
 			}
 		}
 		// If a key was released
 		else if (e.type == SDL_KEYUP && e.key.repeat == 0) {
 			switch (e.key.keysym.sym) {
-			case SDLK_UP: moveDown(); break;
-			case SDLK_DOWN: moveUp(); break;
-			case SDLK_LEFT: moveRight(); break;
-			case SDLK_RIGHT: moveLeft(); break;
+			case SDLK_UP:
+				if (getVelY() < 0) moveDown(); break;	// only
+			case SDLK_DOWN:
+				if (getVelY() > 0) moveUp(); break;
+			case SDLK_LEFT:
+				if (getVelX() < 0) moveRight(); break;
+			case SDLK_RIGHT:
+				if (getVelX() > 0) moveLeft(); break;
 			}
 		}
 		if (SDL_NumJoysticks() > 0) {				// Joystick present
@@ -289,11 +287,15 @@ void Player::handleEvent(SDL_Event& e, int player) {
 	*/
 }
 void Player::moveUp() {
+	//if (getVelY() > 0) setVelY(0);						// If moving down, cancel downward movement
+	//setVelY(0);
+
 	if (getSpeedBoost() && getVelocity() != 0)			// If speedboost is active, and the player is moving
 		setVelY(getVelY() - (getVelocity() + BOOST));
 	else
 		setVelY(getVelY() - getVelocity());
 }
+
 void Player::moveDown() {
 	if (getSpeedBoost() && getVelocity() != 0)
 		setVelY(getVelY() + (getVelocity() + BOOST));
@@ -387,38 +389,11 @@ void Player::gameControllerDPad(SDL_Event& e) {
 		setVelY(getVelY() + moveDiagonal());
 		previous = SDL_HAT_LEFTDOWN;
 	}
-
-	if (e.jhat.value == SDL_HAT_CENTERED) {
+	else if (e.jhat.value == SDL_HAT_CENTERED) {
 		resetPreviousDirection();
+		setVelX(0);
+		setVelY(0);
 		previous = SDL_HAT_CENTERED;
-	}
-}
-
-void Player::gameControllerButton(SDL_Event& e) {
-	if (e.jbutton.button == 0) {
-		game1.spawnLaser(getX(), getY(), 2);										// Fire Laser
-		std::cout << "Laser Button: " << (int)e.jbutton.button << std::endl;		// shows which button has been pressed
-	}
-	if (e.jbutton.button == 1) {
-		game1.spawnNinjaStar(getX(), getY(), 2);									// Fire Ninja Star
-		std::cout << "Ninja Star Button: " << (int)e.jbutton.button << std::endl;	// shows which button has been pressed
-	}
-	if (e.jbutton.button == 2) {
-		game1.spawnSaw(getX(), getY(), SAW2);											// Saw Weapon
-		//spawnPlayerSaw(getX(), getY(), SAW2);
-		std::cout << "Saw Button: " << (int)e.jbutton.button << std::endl;			// shows which button has been pressed
-	}
-	if (e.jbutton.button == 3) {
-		setSpeedBoost(true);														// Speed Boost
-		std::cout << "Speed Boost: " << (int)e.jbutton.button << std::endl;			// shows which button has been pressed
-	}
-	if (e.jbutton.button == 4) {
-		game1.musicTrackBackward();															// Pick previous track on the list
-		std::cout << "Music Back: " << (int)e.jbutton.button << std::endl;			// shows which button has been pressed
-	}
-	if (e.jbutton.button == 5) {
-		game1.musicTrackForward();														// Pick next track on the list
-		std::cout << "Music Forward: " << (int)e.jbutton.button << std::endl;		// shows which button has been pressed
 	}
 }
 
@@ -435,7 +410,6 @@ void Player::resetPreviousDirection() {
 	else if (previous == SDL_HAT_RIGHT) {
 		moveLeft();
 	}
-
 	else if (previous == SDL_HAT_RIGHTUP) {
 		setVelX(getVelX() - moveDiagonal());
 		setVelY(getVelY() + moveDiagonal());
@@ -451,6 +425,35 @@ void Player::resetPreviousDirection() {
 	else if (previous == SDL_HAT_LEFTUP) {
 		setVelX(getVelX() + moveDiagonal());
 		setVelY(getVelY() + moveDiagonal());
+	}
+}
+
+void Player::gameControllerButton(SDL_Event& e) {
+	if (e.jbutton.button == 0) {
+		game1.spawnLaser(getX(), getY(), 2);										// Fire Laser
+		std::cout << "Laser Button: " << (int)e.jbutton.button << std::endl;		// shows which button has been pressed
+	}
+	if (e.jbutton.button == 1) {
+		game1.spawnNinjaStar(getX(), getY(), 2);									// Fire Ninja Star
+		std::cout << "Ninja Star Button: " << (int)e.jbutton.button << std::endl;	// shows which button has been pressed
+	}
+	if (e.jbutton.button == 2) {
+		game1.spawnSaw(getX(), getY(), SAW2);										// Saw Weapon
+																					// spawnPlayerSaw(getX(), getY(), SAW2);
+		std::cout << "Saw Button: " << (int)e.jbutton.button << std::endl;			// shows which button has been pressed
+	}
+	if (e.jbutton.button == 3) {
+		setSpeedBoost(true);														// Speed Boost
+		std::cout << "Speed Boost: " << (int)e.jbutton.button << std::endl;			// shows which button has been pressed
+		game1.infoMessage("Player 2 speed boost activated", PLAYER_2);
+	}
+	if (e.jbutton.button == 4) {
+		game1.musicTrackBackward();													// Pick previous track on the list
+		std::cout << "Music Back: " << (int)e.jbutton.button << std::endl;			// shows which button has been pressed
+	}
+	if (e.jbutton.button == 5) {
+		game1.musicTrackForward();													// Pick next track on the list
+		std::cout << "Music Forward: " << (int)e.jbutton.button << std::endl;		// shows which button has been pressed
 	}
 }
 

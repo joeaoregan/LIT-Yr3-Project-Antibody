@@ -5,7 +5,6 @@
 #include "Texture.h"
 #include "Particle.h"
 
-
 // The Player ship that will move around on the screen
 
 /* 

@@ -97,6 +97,11 @@ public:
 	bool satelliteObjectAlive;
 	unsigned int whichVirusAssignedTo;
 
+	bool getRocketActive() { return m_RocketActive; }
+	void setRocketActive(bool rocket) { m_RocketActive = rocket; }
+	int getNumRockets() { return numRockets; }
+	void setNumRockets(int rocket) { numRockets = rocket; }
+
 private:
 	// GameObject Variables
 	std::string m_Name;				// Name of the object
@@ -113,13 +118,16 @@ private:
 	int m_Type;						// Integer value to indicate the type of game object POWER UP, VIRUS
 
 	// 31-01 Display time
-	float m_TimeTracker;				// Time to begin displaying
+	float m_TimeTracker;			// Time to begin displaying
 	float m_Timer;					// Time to end displaying
 	//SDL_Color fontColour;			// moved to texture class
 	int m_Angle;					// 2017-02-07: Angle to rotate an object
 
-	int m_Frames;	// 2017/02/09 Number of frames for an animation
+	int m_Frames;					// 2017/02/09 Number of frames for an animation
 	bool lineAlgorithmCalculated;
+
+	bool m_RocketActive;			// If an object can fire rockets or not
+	int numRockets;					// The number of rockets an object has
 };
 
 #endif

@@ -15,7 +15,7 @@ public:
 	Mix_Music *gMusic1 = NULL;				// Mix_Music: Data type for music
 	Mix_Music *gMusic2 = NULL;
 	Mix_Music *gMusic3 = NULL;
-	unsigned int currentSong;				// Play a random song when the game starts
+	int currentSong;						// Play a random song when the game starts
 
 	std::vector<Mix_Music*> listOfMusic;	// List of Music tracks
 
