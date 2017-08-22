@@ -36,8 +36,8 @@ public:
 	//void init();
 	SDL_Point mPosition;
 
-	ButtonSprite getButtonSprite();
-	void setButtonSprite(ButtonSprite bs);
+	ButtonSprite getButtonSprite() { return mCurrentSprite; }
+	void setButtonSprite(ButtonSprite bs) { mCurrentSprite = bs; }
 
 	ButtonSprite mCurrentSprite;		// Currently used global sprite - Sprite enumeration
 };

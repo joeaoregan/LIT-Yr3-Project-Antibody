@@ -9,16 +9,12 @@ public:
 	Weapon();
 	~Weapon();
 
-	int getPlayer();
-	void setPlayer(int p = 0);
+	int getPlayer() { return mPlayer; }
+	void setPlayer(int p = 0) { mPlayer = p; }
+	
+	int getGrade() { return mGrade; }
+	void setGrade(int g) { mGrade = g; }
 
-	int getAngle();
-	void setAngle(int a);
-
-	int getGrade();
-	void setGrade(int g);
-
-	void render(LTexture &texture, SDL_Renderer *rend, int degrees = 0);				// Shows the Ninja Star on the screen - 2017/01/17 Add player decision
 	void handleEvent(SDL_Event& e, int player);
 
 private:

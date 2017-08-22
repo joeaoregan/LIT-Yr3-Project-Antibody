@@ -14,50 +14,53 @@ public:
 	GameObject();
 	~GameObject();												// Deconstructor
 
-	virtual void spawn();
-	virtual void spawn(int x, int y);
-	void spawn(int x, int y, int vx);							// spawn with coords & velocity
-	void spawn(int x, int y, int vx, int vy);
-	void spawn(int x, int y, int vx, SDL_Rect collider);
-	void spawn(int x, int y, int vx, int vy, SDL_Rect collider, int type = 0);
+	void spawn(int x, int y, int vx = 0, int vy = 0);
+	void spawn(int x, int y, int vx, SDL_Rect* collider);
+	void spawn(int x, int y, int vx, int vy, SDL_Rect* collider, int type = 0);
+
 	virtual void movement();
+
+	//void render(LTexture &texture, SDL_Renderer *rend);							// Shows the Enemy on the screen
 	void render(LTexture &texture, SDL_Renderer *rend, int degrees = 0);
+	void render(LTexture &texture, SDL_Renderer *rend, SDL_Rect *currentClip, int &currentframe, int frames);
 
-	int getX();					// Get GameObject X coord
-	int getY();					// Get GameObject Y coord
-	int getVelX();
-	int getVelY();
-	int getVelocity();
-	bool getAlive();
-	int getScore();
-	int getWidth();
-	int getHeight();
-	std::string getName();
-	int getHealth();
+	int getX() { return m_x; }						// Get GameObject X coord
+	int getY() { return m_y; }						// Get GameObject Y coord
+	int getVelX() { return m_xVel; }
+	int getVelY() { return m_yVel; }
+	int getVelocity() { return m_Velocity; }		// return the velocity
+	bool getAlive() { return m_Alive; }				// return if the object is alive
+	int getScore() { return m_Score; }				// return the objects score
+	int getWidth() { return m_Width; }				// return the objects width
+	int getHeight() { return m_Height; }			// return the objects height
+	std::string getName() { return m_Name; }		// return the objects name
+	int getHealth() { return m_Health; }			// return the objects health
 	int getMaxHealth();
-	int getNumLives();
-	int getType();
+	int getNumLives() { return m_NumLives; }
+	int getType() { return m_Type; }				// 2017/01/25 Return the objects type
+	int getAngle() { return m_Angle; }				// 2017/02/07 Return the objects angle
 
-	void setX(int x);			// Set GameObject X coord
-	void setY(int y);			// Set GameObject Y coord
-	void setVelX(int x);
-	void setVelY(int y);
-	void setVelocity(int v);
-	void setAlive(bool alive);
-	void setWidth(int w);		// set the objects width
-	void setHeight(int h);		// set the objects height
-	void setScore(int s);
-	void setName(std::string name);
-	void setHealth(int health);			// set the health
-	void setNumLives(int n);
+	void setX(int x) { m_x = x; }					// Set GameObject X coord
+	void setY(int y) { m_y = y; }					// Set GameObject Y coord
+	void setVelX(int x) { m_xVel = x; }				// Set the velocity on the X axis
+	void setVelY(int y) { m_yVel = y; }				// Set the velocity on the Y axis
+	void setVelocity(int v) { m_Velocity = v; }		// Set the objects velocity
+	void setAlive(bool alive) { m_Alive = alive; }	// Set the object alive or not
+	void setWidth(int w) { m_Width = w; }			// set the objects width
+	void setHeight(int h) { m_Height = h; }			// set the objects height
+	void setScore(int s) { m_Score = s; }			// Set the objects score
+	void setName(std::string n) { m_Name = n; }		// Set the objects name
+	void setHealth(int health);						// set the health
+	void setNumLives(int n) { m_NumLives = n; }		// Set the number of lives for the object
 
-	SDL_Rect getCollider();
-	void setCollider(SDL_Rect collider);	// 2017/01/19 Added as Sean keeps doing dumb things with the colliders
-	void setColliderWidth(int w);
-	void setColliderHeight(int h);
-	void setColliderX(int x);
-	void setColliderY(int y);
-	void setType(int t);
+	SDL_Rect* getCollider() { return &m_Collider; }
+	void setCollider(SDL_Rect collider) { m_Collider = collider; }			// 2017/01/19 Added as Sean keeps doing dumb things with the colliders
+	void setColliderWidth(int w) { m_Collider.w = w; }
+	void setColliderHeight(int h) { m_Collider.h = h; }
+	void setColliderX(int x) { m_Collider.x = x; }
+	void setColliderY(int y) { m_Collider.y = y; }
+	void setType(int t) { m_Type = t; }				// 2017/01/25 Set the objects type
+	void setAngle(int a) { m_Angle = a; }
 
 	//SDL_Color getFontColour();
 	//void setFontColour(SDL_Color f);
@@ -89,11 +92,13 @@ private:
 	int m_StartTime;				// Time to begin displaying
 	int m_EndTime;					// Time to end displaying
 	LTexture m_Texture;
-	//SDL_Color fontColour;	// moved to texture class
+	//SDL_Color fontColour;			// moved to texture class
+	int m_Angle;					// 2017-02-07: Angle to rotate an object
 };
 
 #endif
 
+/*
 // global functions friends of the GameObjects class
 //friend std::ostream& operator<<(std::ostream& os, const GameObject& aGameObject);
 
@@ -140,4 +145,5 @@ private:
 //void setRandomCoords(int x, int y); // NEVER USED X OR Y
 //void setRandomCoords();
 //void checkCoords();
-//void checkCoords(GameObject* objectToCheck);	// MOVED TO GAME as uniqueCoords	
+//void checkCoords(GameObject* objectToCheck);	// MOVED TO GAME as uniqueCoords
+*/

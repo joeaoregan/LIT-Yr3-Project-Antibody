@@ -34,35 +34,28 @@ public:
 
 	//void flashGameObject(int &alpha, bool &flash, int rate = 10, int times = 0);
 	void flashGameObject(int rate = 10, int times = 0);
-
-	int getAlpha();
-		
-	void setAlpha(int a);
+	int getAlpha() { return mAlpha; }		
+	void setAlpha(int a) { mAlpha = a; }
 
 	//void render(int x, int y, SDL_Rect* clip = NULL, double angle = 0.0, SDL_Point* center = NULL, SDL_RendererFlip flip = SDL_FLIP_NONE);	// Renders texture at given point
 	void render(int x, int y, SDL_Renderer *rend, SDL_Rect* clip = NULL, double angle = 0.0, SDL_Point* center = NULL, SDL_RendererFlip flip = SDL_FLIP_NONE);
 
 	// 23/01/2017 Added these
-	int getX();
-	int getY();
-	void setX(int x);
-	void setY(int y);
-
-	// 23/01/2017 Added these
-	int m_X;
-	int m_Y;
-	int m_Alpha;
-
+	int getX() { return m_X; }
+	int getY() { return m_Y; }
+	void setX(int x) { m_X = x; }
+	void setY(int y) { m_Y = y; }
+	
 	// Gets image dimensions
-	int getWidth();
-	int getHeight();
+	int getWidth() { return mWidth; }
+	int getHeight() { return mHeight; }
 
 	// Rotation Angle
-	int getDegrees();
-	void setDegrees(int d);
+	int getDegrees() { return mDegrees; }
+	void setDegrees(int d) { mDegrees = d % 360; }	// returns degrees from 0 to 360
 
-	bool getFlash();
-	void setFlash(bool flash);
+	bool getFlash() { return mFlash; }
+	void setFlash(bool flash) { mFlash = flash; }
 
 
 	SDL_Color getFontColour();
@@ -83,6 +76,10 @@ private:
 	int mDegrees;
 	bool mFlash;
 
+	// 23/01/2017 Added these
+	int m_X;
+	int m_Y;
+	int m_Alpha;
 
 	SDL_Color txtColour;
 };

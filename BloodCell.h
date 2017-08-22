@@ -15,16 +15,15 @@ public:
 	~BloodCell();
 	
 	virtual void movement();
-	//void render();							// Shows the Blood Cell on the screen
-	void render(LTexture &texture, SDL_Renderer *rend, int degrees);
-	int getMovement();
-	void setMovement(int movement);
-	int getDistanceBetween();
-	void setDistanceBetween(int d);
+
+	int getMovement() { return mMovement; }
+	void setMovement(int movement) { mMovement = movement; }
+	int getDistanceBetween() { return mDistanceBetween; }
+	void setDistanceBetween(int d) { mDistanceBetween = d; }
 
 	// 2017/01/30 Added rotation direction, so Blood Cells can rotate both forwards and backwards
-	int getRotationDirection();
-	void setRotationDirection(int d);
+	int getRotationDirection() { return mRotationDirection; }
+	void setRotationDirection(int d) { mRotationDirection = d; }
 
 private:
 	int mMovement;

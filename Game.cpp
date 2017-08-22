@@ -12,8 +12,6 @@
 #include <SDL_ttf.h>
 #include "Game.h"					// Game header file, with functions and variabls
 #include <sstream>					// For timer
-#include <string.h>
-#include <math.h>
 #include <SDL_mixer.h>				// 2017/01/09 JOE: SOUND - library we use to make audio playing easier
 #include "LTexture.h"				// Game textures
 #include "Player.h"					// Player class
@@ -30,12 +28,13 @@
 #include "Explosion.h"				// 2017/01/25 Added explosions for Player Laser colliding with Enemy Ships and Virus
 #include "FPS.h"
 #include "Rocket.h"					// 2017-02-06
+#include <string.h>
+#include <math.h>
 
 bool p1RocketActive = false;
 bool p2RocketActive = false;
 
-//bool checkCollision(SDL_Rect *a, SDL_Rect *b);
-bool checkCollision(SDL_Rect a, SDL_Rect b);
+bool checkCollision(SDL_Rect *a, SDL_Rect *b);
 
 FPS fps;							// 2017/02/01 Moved FPS functionality to it's own class
 
@@ -102,7 +101,7 @@ SDL_Haptic*	gControllerHaptic = NULL;	// 2017/01/18 Haptic (Force Feedback) adde
 Mix_Music *gMusic1 = NULL;				// Mix_Music: Data type for music
 Mix_Music *gMusic2 = NULL;
 Mix_Music *gMusic3 = NULL;
-int currentSong;						// Play a random song when the game starts
+unsigned int currentSong;				// Play a random song when the game starts
 
 //The sound effects that will be used (pointers)
 Mix_Chunk *gNinjaFX1 = NULL;		// 2017/01/09 JOE: SOUND - Mix_Chunk: Data type for short sounds
@@ -322,7 +321,7 @@ bool Game::init() {
 		}
 
 		// Create window
-		gWindow = SDL_CreateWindow("ANTIBODY v1.09 by Joe O'Regan & Se\u00E1n Horgan: Rocket (Control Direction), Updated Scoring Function", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);	/* Window name */
+		gWindow = SDL_CreateWindow("Antibody", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);	/* Window name */
 		if (gWindow == NULL) {
 			printf("Window could not be created! SDL Error: %s\n", SDL_GetError());
 			success = false;
@@ -365,7 +364,7 @@ bool Game::loadMedia() {
 
 	textColour = { 255, 255, 255, 255 };
 
-	gFontLazy30Menu = TTF_OpenFont(".\\Fonts\\Lazy.ttf", 30);	// Open the font
+	gFontLazy30Menu = TTF_OpenFont("Fonts/Lazy.ttf", 30);	// Open the font
 	if (gFontLazy30Menu == NULL) {
 		printf("XXX Failed to load lazy font! SDL_ttf Error: %s\n", TTF_GetError());
 		success = false;
@@ -405,7 +404,7 @@ bool Game::loadMedia() {
 	}
 
 	//Load sprites
-	if (!gButtonSpriteSheetTexture.loadFromFile(".\\Art\\buttonOne.png", gRenderer)) {		// CHANGED ADDED RENDERER TO FUNCTION
+	if (!gButtonSpriteSheetTexture.loadFromFile("Art/buttonOne.png", gRenderer)) {		// CHANGED ADDED RENDERER TO FUNCTION
 		printf("Failed to load button sprite texture!\n");
 		success = false;
 	}
@@ -424,36 +423,36 @@ bool Game::loadMedia() {
 		gMenuButtons[3].setPosition((SCREEN_WIDTH - BUTTON_WIDTH) / 2, gMenuTextTexture5.getY());
 	}
 
-	gTest = loadTexture(".\\Art\\Prof.png");
+	gTest = loadTexture("Art/Prof.png");
 	if (gTest == NULL) {
 		printf("Failed to load Professor texture image!\n");
 		success = false;
 	}
-//	gWeapon = loadTexture(".\\Art\\LaserGun2.png");
+//	gWeapon = loadTexture("Art/LaserGun2.png");
 //	if (gWeapon == NULL) {
 //		printf("Failed to load LaserGun texture image!\n");
 //		success = false;
 //	}
 	// Particles
-	if (!gDarkBlueParticleTexture.loadFromFile(".\\Art\\particleDarkBlue.bmp", gRenderer)) {	// Load Dark Particle texture
+	if (!gDarkBlueParticleTexture.loadFromFile("Art/particleDarkBlue.bmp", gRenderer)) {	// Load Dark Particle texture
 		printf("Failed to load red texture!\n");
 		success = false;
 	}
-	if (!gMediumBlueParticlTexture.loadFromFile(".\\Art\\particleMediumBlue.bmp", gRenderer)) {	// Load Medium Particle texture
+	if (!gMediumBlueParticlTexture.loadFromFile("Art/particleMediumBlue.bmp", gRenderer)) {	// Load Medium Particle texture
 		printf("Failed to load green texture!\n");
 		success = false;
 	}
-	if (!gLightBlueParticleTexture.loadFromFile(".\\Art\\particleLightBlue.bmp", gRenderer)) {	// Load Light Particle texture
+	if (!gLightBlueParticleTexture.loadFromFile("Art/particleLightBlue.bmp", gRenderer)) {	// Load Light Particle texture
 		printf("Failed to load blue texture!\n");
 		success = false;
 	}
-	if (!gShimmerTexture.loadFromFile(".\\Art\\shimmer.bmp", gRenderer)) {						// Load shimmer texture
+	if (!gShimmerTexture.loadFromFile("Art/shimmer.bmp", gRenderer)) {						// Load shimmer texture
 		printf("Failed to load shimmer texture!\n");
 		success = false;
 	}
 
 	// Open the font
-	gFontRetro20 = TTF_OpenFont(".\\Fonts\\Retro.ttf", 20);
+	gFontRetro20 = TTF_OpenFont("Fonts/Retro.ttf", 20);
 	if (gFontRetro20 == NULL) {
 		printf("Failed to load lazy font! SDL_ttf Error: %s\n", TTF_GetError());
 		success = false;
@@ -462,13 +461,13 @@ bool Game::loadMedia() {
 		textColour = { 255, 0, 0, 255 };													// Set text color for three names RED
 		TTF_SetFontStyle(gFontRetro20, TTF_STYLE_BOLD);										// Use bold font
 
-		if (!gCreatedByTextTexture.loadFromRenderedText("A Game By Seán Horgan And Joe O'Regan", textColour, gFontRetro20, gRenderer)) {
+		if (!gCreatedByTextTexture.loadFromRenderedText("A Game By Seán Horgan and Joe O'Regan", textColour, gFontRetro20, gRenderer)) {
 			printf("Unable to render prompt text texture!\n");
 			success = false;
 		}
 	}
 
-	gFontRetro40 = TTF_OpenFont(".\\Fonts\\Retro.ttf", 40);
+	gFontRetro40 = TTF_OpenFont("Fonts/Retro.ttf", 40);
 	if (gFontRetro40 == NULL) {
 		printf("Failed to load kunstler font! SDL_ttf Error: %s\n", TTF_GetError());
 		success = false;
@@ -479,133 +478,133 @@ bool Game::loadMedia() {
 	}
 
 	// Load Textures
-	if (!gPlayer1Texture.loadFromFile(".\\Art\\Player1Ship.png", gRenderer)) {					// Ship Texture
+	if (!gPlayer1Texture.loadFromFile("Art/Player1Ship.png", gRenderer)) {					// Ship Texture
 		printf("Failed to load Player 1 texture!\n");
 		success = false;
 	}
-	if (!gPlayer2Texture.loadFromFile(".\\Art\\Player2ShipOld.png", gRenderer)) {					// Ship Texture
+	if (!gPlayer2Texture.loadFromFile("Art/Player2ShipOld.png", gRenderer)) {					// Ship Texture
 		printf("Failed to load Player 2 texture!\n");
 		success = false;
 	}
-	if (!gP1LivesTexture.loadFromFile(".\\Art\\Player1ShipSmall.png", gRenderer)) {				// Ship Texture
+	if (!gP1LivesTexture.loadFromFile("Art/Player1ShipSmall.png", gRenderer)) {				// Ship Texture
 		printf("Failed to load Player 1 Small Ship texture!\n");
 		success = false;
 	}
-	if (!gP2LivesTexture.loadFromFile(".\\Art\\Player2ShipSmallOld.png", gRenderer)) {				// Ship Texture
+	if (!gP2LivesTexture.loadFromFile("Art/Player2ShipSmallOld.png", gRenderer)) {				// Ship Texture
 		printf("Failed to load Player 2 Small Ship texture!\n");
 		success = false;
 	} // gVirusFireballTexture
-	if (!gVirusFireballTexture.loadFromFile(".\\Art\\VirusFireball.png", gRenderer)) {				// Enemy Virus Texture
+	if (!gVirusFireballTexture.loadFromFile("Art/VirusFireball.png", gRenderer)) {				// Enemy Virus Texture
 		printf("Failed to load Enemy Virus Orange Fireball texture!\n");
 		success = false;
 	}
-	if (!gEnemyShipTexture.loadFromFile(".\\Art\\EnemyShip.png", gRenderer)) {				// Enemy Virus Texture
+	if (!gEnemyShipTexture.loadFromFile("Art/EnemyShip.png", gRenderer)) {				// Enemy Virus Texture
 		printf("Failed to load Enemy Ship texture!\n");
 		success = false;
 	}
-	if (!gEnemyVirusTexture.loadFromFile(".\\Art\\VirusGreen.png", gRenderer)) {				// Enemy Virus Texture
+	if (!gEnemyVirusTexture.loadFromFile("Art/VirusGreen.png", gRenderer)) {				// Enemy Virus Texture
 		printf("Failed to load Enemy Virus texture!\n");
 		success = false;
 	}
-	if (!gEnemyVirusOrangeTexture.loadFromFile(".\\Art\\VirusOrange.png", gRenderer)) {				// Enemy Virus Texture
+	if (!gEnemyVirusOrangeTexture.loadFromFile("Art/VirusOrange.png", gRenderer)) {				// Enemy Virus Texture
 		printf("Failed to load Enemy Virus Orange texture!\n");
 		success = false;
 	}
-	if (!gBloodCellTexture.loadFromFile(".\\Art\\BloodCell.png", gRenderer)) {					// 10/01 Added Large Blood Cell
+	if (!gBloodCellTexture.loadFromFile("Art/BloodCell.png", gRenderer)) {					// 10/01 Added Large Blood Cell
 		printf("Failed to load Blood Cell texture!\n");
 		success = false;
 	}
-	if (!gBloodCellSmallTexture.loadFromFile(".\\Art\\BloodCellSmall.png", gRenderer)) {		// 10/01 Added Small Blood Cell
+	if (!gBloodCellSmallTexture.loadFromFile("Art/BloodCellSmall.png", gRenderer)) {		// 10/01 Added Small Blood Cell
 		printf("Failed to load Small Blood Cell texture!\n");
 		success = false;
 	}
-	if (!gBGTexture.loadFromFile(".\\Art\\Background720.png", gRenderer)) {						// 09/01 Edited background to be 800 x 600 instead of 600 * 480
+	if (!gBGTexture.loadFromFile("Art/Background720.png", gRenderer)) {						// 09/01 Edited background to be 800 x 600 instead of 600 * 480
 		printf("Failed to load background texture!\n");
 		success = false;
 	}
-	if (!gBGStartTexture.loadFromFile(".\\Art\\bgBegin720a.png", gRenderer)) {						// Background start texture
+	if (!gBGStartTexture.loadFromFile("Art/bgBegin720a.png", gRenderer)) {						// Background start texture
 		printf("Failed to load start background texture!\n");
 		success = false;
 	}
-	if (!gBGEndTexture.loadFromFile(".\\Art\\bgEnd720a.png", gRenderer)) {							// Background end texture
+	if (!gBGEndTexture.loadFromFile("Art/bgEnd720a.png", gRenderer)) {							// Background end texture
 		printf("Failed to load end background texture!\n");
 		success = false;
 	}
-	if (!gLaserGreenTexture.loadFromFile(".\\Art\\LaserGreen.png", gRenderer)) {				// Green Laser Texture
+	if (!gLaserGreenTexture.loadFromFile("Art/LaserGreen.png", gRenderer)) {				// Green Laser Texture
 		printf("Failed to load Green Laser texture!\n");
 		success = false;
 	}
-	if (!gLaserOrangeTexture.loadFromFile(".\\Art\\LaserOrange.png", gRenderer)) {				// Green Laser Texture
+	if (!gLaserOrangeTexture.loadFromFile("Art/LaserOrange.png", gRenderer)) {				// Green Laser Texture
 		printf("Failed to load Orange Laser texture!\n");
 		success = false;
 	}
-	if (!gLaserBlueTexture.loadFromFile(".\\Art\\LaserBlue.png", gRenderer)) {					// Blue Laser Texture
+	if (!gLaserBlueTexture.loadFromFile("Art/LaserBlue.png", gRenderer)) {					// Blue Laser Texture
 		printf("Failed to load Blue Laser texture!\n");
 		success = false;
 	}
-	if (!gNinjaStarBlueTexture.loadFromFile(".\\Art\\NinjaStarBlue.png", gRenderer)) {			// Ninja Star Texture
+	if (!gNinjaStarBlueTexture.loadFromFile("Art/NinjaStarBlue.png", gRenderer)) {			// Ninja Star Texture
 		printf("Failed to load Blue Ninja Star texture!\n");
 		success = false;
 	}
-	if (!gNinjaStarYellowTexture.loadFromFile(".\\Art\\NinjaStarYellow.png", gRenderer)) {		// Ninja Star Texture
+	if (!gNinjaStarYellowTexture.loadFromFile("Art/NinjaStarYellow.png", gRenderer)) {		// Ninja Star Texture
 		printf("Failed to load Yellow Ninja Star texture!\n");
 		success = false;
 	}
-	if (!gRocketTexture.loadFromFile(".\\Art\\Rocket.png", gRenderer)) {		// Ninja Star Texture
+	if (!gRocketTexture.loadFromFile("Art/Rocket.png", gRenderer)) {		// Ninja Star Texture
 		printf("Failed to load Rocket texture!\n");
 		success = false;
 	}
-	if (!gPowerUpRocketTexture.loadFromFile(".\\Art\\Rocket.png", gRenderer)) {		// Ninja Star Texture
+	if (!gPowerUpRocketTexture.loadFromFile("Art/Rocket.png", gRenderer)) {		// Ninja Star Texture
 		printf("Failed to load Power Up - Rocket texture!\n");
 		success = false;
 	}
-	if (!gSawTexture.loadFromFile(".\\Art\\SawBlue.png", gRenderer)) {							// Ninja Star Texture
+	if (!gSawTexture.loadFromFile("Art/SawBlue.png", gRenderer)) {							// Ninja Star Texture
 		printf("Failed to load Blue Saw texture!\n");
 		success = false;
 	}
-	if (!gGameOverTextTexture.loadFromFile(".\\Art\\GameOver1.png", gRenderer)) {				// Game Over Text
+	if (!gGameOverTextTexture.loadFromFile("Art/GameOver1.png", gRenderer)) {				// Game Over Text
 		printf("Failed to load Game Over texture!\n");
 		success = false;
 	}
-	if (!gWhiteBloodCellTexture.loadFromFile(".\\Art\\WhiteCell.png", gRenderer)) {				// 10/01 Added Blood Cell
+	if (!gWhiteBloodCellTexture.loadFromFile("Art/WhiteCell.png", gRenderer)) {				// 10/01 Added Blood Cell
 		printf("Failed to load White Blood Cell texture!\n");
 		success = false;
 	}
-	if (!gPowerUpHealthTexture.loadFromFile(".\\Art\\PowerUpHealthBox.png", gRenderer)) {				// 10/01 Added Power Up - Load Power Up texture
+	if (!gPowerUpHealthTexture.loadFromFile("Art/PowerUpHealthBox.png", gRenderer)) {				// 10/01 Added Power Up - Load Power Up texture
 		printf("Failed to load Health Power Up texture!\n");
 		success = false;
 	}
-	if (!gPowerUpLaserTexture.loadFromFile(".\\Art\\PowerUpLaser.png", gRenderer)) {				// 10/01 Added Power Up - Load Power Up texture
+	if (!gPowerUpLaserTexture.loadFromFile("Art/PowerUpLaser.png", gRenderer)) {				// 10/01 Added Power Up - Load Power Up texture
 		printf("Failed to load Laser Power Up texture!\n");
 		success = false;
 	}
-	if (!gPowerUpLaserTextureV2.loadFromFile(".\\Art\\LaserGunV3.png", gRenderer)) {				// 10/01 Added Power Up - Load Power Up texture
+	if (!gPowerUpLaserTextureV2.loadFromFile("Art/LaserGunV3.png", gRenderer)) {				// 10/01 Added Power Up - Load Power Up texture
 		printf("Failed to load Laser V2 Power Up texture!\n");
 		success = false;
 	}
-	if (!gLogo1.loadFromFile(".\\Art\\Logo1720.png", gRenderer)) {									// 10/01 Added Power Up - Load Power Up texture
+	if (!gLogo1.loadFromFile("Art/Logo1720.png", gRenderer)) {									// 10/01 Added Power Up - Load Power Up texture
 		printf("Failed to load Logo 1 texture!\n");
 		success = false;
 	}
-	if (!gLogo2.loadFromFile(".\\Art\\Logo2720.png", gRenderer)) {									// 10/01 Added Power Up - Load Power Up texture
+	if (!gLogo2.loadFromFile("Art/Logo2720.png", gRenderer)) {									// 10/01 Added Power Up - Load Power Up texture
 		printf("Failed to load Logo 2 texture!\n");
 		success = false;
 	}
-	if (!gLevel1.loadFromFile(".\\Art\\Level1720.png", gRenderer)) {								// 10/01 Added Power Up - Load Power Up texture
+	if (!gLevel1.loadFromFile("Art/Level1720.png", gRenderer)) {								// 10/01 Added Power Up - Load Power Up texture
 		printf("Failed to load Level 1 texture!\n");
 		success = false;
 	}
-	if (!gLevel2.loadFromFile(".\\Art\\Level2720.png", gRenderer)) {								// 10/01 Added Power Up - Load Power Up texture
+	if (!gLevel2.loadFromFile("Art/Level2720.png", gRenderer)) {								// 10/01 Added Power Up - Load Power Up texture
 		printf("Failed to load Level 2 texture!\n");
 		success = false;
 	}
-	if (!gLevel3.loadFromFile(".\\Art\\Level3720.png", gRenderer)) {								// 10/01 Added Power Up - Load Power Up texture
+	if (!gLevel3.loadFromFile("Art/Level3720.png", gRenderer)) {								// 10/01 Added Power Up - Load Power Up texture
 		printf("Failed to load Level 3 texture!\n");
 		success = false;
 	}
 
 	//Load sprite sheet texture
-	if (!gPressEnterSpriteSheetTexture.loadFromFile(".\\Art\\PressEnterSpriteSheet2.png", gRenderer)) {	// Sprite sheet for Press Enter Button
+	if (!gPressEnterSpriteSheetTexture.loadFromFile("Art/PressEnterSpriteSheet2.png", gRenderer)) {	// Sprite sheet for Press Enter Button
 		printf("Failed to load walking animation texture!\n");
 		success = false;
 	}
@@ -624,7 +623,7 @@ bool Game::loadMedia() {
 		}
 	}
 
-	if (!gEnemySpriteSheetTexture.loadFromFile(".\\Art\\EnemySpriteSheet2.png", gRenderer)) {	// Sprite sheet for Enemy Ship
+	if (!gEnemySpriteSheetTexture.loadFromFile("Art/EnemySpriteSheet2.png", gRenderer)) {	// Sprite sheet for Enemy Ship
 		printf("Failed to load Enemy Ship animation texture!\n");
 		success = false;
 	}
@@ -637,7 +636,7 @@ bool Game::loadMedia() {
 			gEnemySpriteClips[i].h = 50;
 		}
 	}
-	if (!gOrangeVirusSpriteSheetTexture.loadFromFile(".\\Art\\EnemyVirus_SpriteSheet_Orange.png", gRenderer)) {	// Sprite sheet for Enemy Ship
+	if (!gOrangeVirusSpriteSheetTexture.loadFromFile("Art/EnemyVirus_SpriteSheet_Orange.png", gRenderer)) {	// Sprite sheet for Enemy Ship
 		printf("Failed to load Orange Virus animation texture!\n");
 		success = false;
 	}
@@ -653,7 +652,7 @@ bool Game::loadMedia() {
 		}
 	}
 
-	if (!gExplosionSpriteSheetTexture.loadFromFile(".\\Art\\Explosion.png", gRenderer)) {	// Sprite sheet for Explosions
+	if (!gExplosionSpriteSheetTexture.loadFromFile("Art/Explosion.png", gRenderer)) {	// Sprite sheet for Explosions
 		printf("Failed to load Enemy Ship animation texture!\n");
 		success = false;
 	}
@@ -668,54 +667,54 @@ bool Game::loadMedia() {
 	}
 
 	//Load music
-	gMusic1 = Mix_LoadMUS(".\\Audio\\GameSong1.wav");											// Load music
+	gMusic1 = Mix_LoadMUS("Audio/GameSong1.wav");											// Load music
 	if (gMusic1 == NULL) {
 		printf("Failed to load rage music! SDL_mixer Error: %s\n", Mix_GetError());
 		success = false;
 	}
-	gMusic2 = Mix_LoadMUS(".\\Audio\\GameSong2.mp3");											// Load music
+	gMusic2 = Mix_LoadMUS("Audio/GameSong2.mp3");											// Load music
 	if (gMusic2 == NULL) {
 		printf("Failed to load rage music! SDL_mixer Error: %s\n", Mix_GetError());
 		success = false;
 	}
-	gMusic3 = Mix_LoadMUS(".\\Audio\\GameSong3.mp3");											// Load music
+	gMusic3 = Mix_LoadMUS("Audio/GameSong3.mp3");											// Load music
 	if (gMusic3 == NULL) {
 		printf("Failed to load rage music! SDL_mixer Error: %s\n", Mix_GetError());
 		success = false;
 	}
 
 	//Load sound effects
-	gNinjaFX1 = Mix_LoadWAV(".\\Audio\\Swoosh1.wav");														// Load sound effects
+	gNinjaFX1 = Mix_LoadWAV("Audio/Swoosh1.wav");														// Load sound effects
 	if (gNinjaFX1 == NULL) {
 		printf("Failed to load P1 ninja star sound effect! SDL_mixer Error: %s\n", Mix_GetError());
 		success = false;
 	}
-	gNinjaFX2 = Mix_LoadWAV(".\\Audio\\Swoosh2.wav");														// Load sound effects
+	gNinjaFX2 = Mix_LoadWAV("Audio/Swoosh2.wav");														// Load sound effects
 	if (gNinjaFX2 == NULL) {
 		printf("Failed to load P2 ninja star sound effect! SDL_mixer Error: %s\n", Mix_GetError());
 		success = false;
 	}
-	gLaserFX1 = Mix_LoadWAV(".\\Audio\\Laser1.wav");														// Load sound effects
+	gLaserFX1 = Mix_LoadWAV("Audio/Laser1.wav");														// Load sound effects
 	if (gLaserFX1 == NULL) {
 		printf("Failed to load P1 laser beam sound effect! SDL_mixer Error: %s\n", Mix_GetError());
 		success = false;
 	}
-	gLaserFX2 = Mix_LoadWAV(".\\Audio\\Laser2.wav");														// Load sound effects
+	gLaserFX2 = Mix_LoadWAV("Audio/Laser2.wav");														// Load sound effects
 	if (gLaserFX2 == NULL) {
 		printf("Failed to load P2 laser beam sound effect! SDL_mixer Error: %s\n", Mix_GetError());
 		success = false;
 	}
-	gLaserEFX = Mix_LoadWAV(".\\Audio\\LaserEnemy.wav");													// Load sound effects
+	gLaserEFX = Mix_LoadWAV("Audio/LaserEnemy.wav");													// Load sound effects
 	if (gLaserEFX == NULL) {
 		printf("Failed to load enemy laser beam sound effect! SDL_mixer Error: %s\n", Mix_GetError());
 		success = false;
 	}
-	gExplosionFX = Mix_LoadWAV(".\\Audio\\explosion.wav");													// Load sound effects
+	gExplosionFX = Mix_LoadWAV("Audio/explosion.wav");													// Load sound effects
 	if (gExplosionFX == NULL) {
 		printf("Failed to load explosion sound effect! SDL_mixer Error: %s\n", Mix_GetError());
 		success = false;
 	}
-	gSawFX = Mix_LoadWAV(".\\Audio\\Saw.wav");																// Load sound effects
+	gSawFX = Mix_LoadWAV("Audio/Saw.wav");																// Load sound effects
 	if (gSawFX == NULL) {
 		printf("Failed to load Saw sound effect! SDL_mixer Error: %s\n", Mix_GetError());
 		success = false;
@@ -863,7 +862,7 @@ void Game::update(){
 				quit = playerInput(quit);				// 2017/01/09 JOE: Handle input from player
 
 				//if (displayIntro) displayGameLogos();	// 2017/01/18 Splash screens at start of game
-				if (getCurrentLevel() == 0 && displayIntro) displaySplashScreens();	// 2017/01/18 Splash screens at start of game
+				//if (getCurrentLevel() == 0 && displayIntro) displaySplashScreens();	// 2017/01/18 Splash screens at start of game
 				//if (getCurrentLevel() == MENU) menu();
 
 				if (getCurrentLevel() != 0) playLevel(getCurrentLevel());
@@ -954,7 +953,7 @@ void Game::resetGame(int currentLevel) {	// Reset a level or the game
 }
 
 void Game::playLevel(int levelNum) {
-	if (displayLevelIntro && levelNum == LEVEL_1) displayLevelSplashScreen(l1Objective);
+	//if (displayLevelIntro && levelNum == LEVEL_1) displayLevelSplashScreen(l1Objective);	// Display splash screens
 	//else if (displayLevelIntro && levelNum == LEVEL_2) displayLevelSplashScreen(l2Objective);
 	//else if (displayLevelIntro && levelNum == LEVEL_3) displayLevelSplashScreen(l3Objective);
 	displayLevelIntro = false;
@@ -991,12 +990,18 @@ void Game::displaySplashScreens() {
 	displayIntro = false;
 }
 
+
+
+
+
 std::string story1 = "The player must avoid contact with Enemy Viruses\nThe Viruses will move towards the nearest player\n\n\nThe Orange Virus moves towards the nearest player\nAnd explodes when its timer has run out\n\n\nThe Enemy Ship fires lasers\nAs it crosses the screen right to left";
-std::string story2 = "Story 2 blah blah \nFill this\nIn Later";
-std::string story3 = "Story 3 blah blah blah\nFill this\nIn Later";
+std::string story2 = "Story 2 blah blah \nBrian fill this\nIn Later";
+std::string story3 = "Story 3 blah blah blah\nBrian fill this\nIn Later";
 
 void Game::displayLevelSplashScreen(std::string objective) {
+
 	// STORY
+
 	textColour = {255,255,255,255};
 	if (!gStory1.loadFromRenderedText(story1, textColour, gFontRetro20, gRenderer, true)) {
 		printf("Unable to render level game objective texture!\n");
@@ -1321,7 +1326,7 @@ void Game::displayText() {
 }
 
 bool Game::playerInput(bool quit = false) {
-	SDL_Color textColor = { 0, 255, 0, 255 };	//Set text color as green
+//	SDL_Color textColor = { 0, 255, 0, 255 };	//Set text color as green
 
 	// In memory text stream
 	// string streams - function like iostreams only instead of reading or writing to the console, they allow you to read and write to a string in memory
@@ -1530,18 +1535,18 @@ void Game::renderGameObjects() {
 
 			// Cycle through list of Enemy Ships and Virus and render to screen
 			for (unsigned int index = 0; index != listOfEnemyShips.size(); ++index) {
-				listOfEnemyShips[index]->render(gEnemySpriteSheetTexture, gRenderer, &gEnemySpriteClips[enemyFrame / 10], enemyFrame);
+				listOfEnemyShips[index]->render(gEnemySpriteSheetTexture, gRenderer, &gEnemySpriteClips[enemyFrame / 10], enemyFrame, 4);				// 4 the number of frames
 				//SDL_RenderDrawRect(gRenderer, &listOfEnemyShips[index]->getCollider());
 			}
 			for (unsigned int index = 0; index != listOfEnemyVirus.size(); ++index) {
 				if (listOfEnemyVirus[index]->getType() == GREEN) listOfEnemyVirus[index]->render(gEnemyVirusTexture, gRenderer);
-				else if (listOfEnemyVirus[index]->getType() == ORANGE) listOfEnemyVirus[index]->render(gOrangeVirusSpriteSheetTexture, gRenderer, &gOrangeVirusSpriteClips[enemyFrame / 10], enemyFrame);
+				else if (listOfEnemyVirus[index]->getType() == ORANGE) listOfEnemyVirus[index]->render(gOrangeVirusSpriteSheetTexture, gRenderer, &gOrangeVirusSpriteClips[enemyFrame / 10], enemyFrame, 6); // 6 the number of frames
 				//SDL_RenderDrawRect(gRenderer, &listOfEnemyVirus[index]->getCollider());
 			}
 
 			// Cycle through list of Explosions and render to screen
 			for (unsigned int index = 0; index != listOfExplosions.size(); ++index) {
-				listOfExplosions[index]->render(gExplosionSpriteSheetTexture, gRenderer, &gExplosionClips[explosionFrame / 8], explosionFrame);
+				listOfExplosions[index]->render(gExplosionSpriteSheetTexture, gRenderer, &gExplosionClips[explosionFrame / 8], explosionFrame, 12);
 				//SDL_RenderDrawRect(gRenderer, &listOfExplosions[index]->getCollider());
 				//std::cout << "ExplosionFrame: " << explosionframe << std::endl;
 				if (explosionFrame / 8 >= EXPLOSION_ANIMATION_FRAMES) {
@@ -1580,7 +1585,7 @@ void Game::renderGameObjects() {
 				else if (listOfPlayerWeapons[index]->getType() == LASER_V2_P2)
 					listOfPlayerWeapons[index]->render(gLaserGreenTexture, gRenderer);
 				else if (listOfPlayerWeapons[index]->getType() == ROCKET)
-					listOfPlayerWeapons[index]->render(gRocketTexture, gRenderer);
+					listOfPlayerWeapons[index]->render(gRocketTexture, gRenderer, listOfPlayerWeapons[index]->getAngle());
 
 				//SDL_RenderDrawRect(gRenderer, &listOfPlayerWeapons[index]->getCollider());										// Draw the collider for each Weapon object
 			}
@@ -2032,7 +2037,7 @@ void Game::spawnLaser(int x, int y, int player, int velocity, int grade) {
 		grade = player1.getLaserGrade();
 		p_Laser1->setType(LASER_P1);
 		p_Laser1->setPlayer(PLAYER_1);
-		p_Laser1->setCollider(p_Laser1->getCollider());
+		p_Laser1->setCollider((*p_Laser1->getCollider()));
 	}
 	else if (player == PLAYER_2) {
 		p_Laser1->spawn(x + 65, y + 25, velocity, LASER_P2);
@@ -2186,14 +2191,13 @@ void Game::spawnSaw(int x, int y, int player) {				// player to spawn for and th
 }
 
 //bool Game::checkCollision(SDL_Rect *a, SDL_Rect *b) {
-bool checkCollision(SDL_Rect a, SDL_Rect b) {
+bool checkCollision(SDL_Rect *a, SDL_Rect *b) {
 	//The sides of the rectangles
 	int leftA, leftB;
 	int rightA, rightB;
 	int topA, topB;
 	int bottomA, bottomB;
 
-/*
 	//Calculate the sides of rect A
 	leftA = (*a).x;
 	rightA = (*a).x + (*a).w;
@@ -2205,12 +2209,6 @@ bool checkCollision(SDL_Rect a, SDL_Rect b) {
 	rightB = (*b).x + (*b).w;
 	topB = (*b).y;
 	bottomB = (*b).y + (*b).h;
-*/
-	//Calculate the sides of rect A
-	leftA = a.x;
-	rightA = a.x + a.w;
-	topA = a.y;
-	bottomA = a.y + a.h;
 
 	//If any of the sides from A are outside of B
 	if (bottomA <= topB) {
