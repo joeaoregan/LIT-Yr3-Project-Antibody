@@ -70,8 +70,8 @@ public:
 
 	void destroy();
 
-	void render();
-	void render(Texture &texture, int degrees = 0);
+	virtual void render();
+	virtual void render(Texture &texture, int degrees = 0);
 	void render(Texture &texture,  SDL_Rect *currentClip, int &currentframe, int frames);
 	//void render(Texture &texture, SDL_Renderer *rend, int degrees = 0);
 	//void render(LTexture &texture, SDL_Renderer *rend);	// Shows the Enemy on the screen
@@ -179,9 +179,9 @@ public:
 	void setLaserGrade(int grade);
 
 	// Particles
-	bool getDrawParticle() { return drawParticle; }
-	void setDrawParticle(bool p) { drawParticle = p; }
-	void renderParticles(Texture &one, Texture &two, Texture &three, Texture &four);
+	//bool getDrawParticle() { return drawParticle; }
+	//void setDrawParticle(bool p) { drawParticle = p; }
+	//void renderParticles(Texture &one, Texture &two, Texture &three, Texture &four);
 
 	// Speed boost
 	bool getSpeedBoost() { return mSpeedBoost; }
@@ -218,7 +218,7 @@ private:
 	int m_Angle;					// 2017-02-07: Angle to rotate an object
 
 	int m_Frames;					// 2017/02/09 Number of frames for an animation
-	bool lineAlgorithmCalculated;
+	bool lineAlgorithmCalculated;	// Used in scoreText
 
 	// 2017/02/18 Moved Blood Cells
 	int mDistanceBetween;			// Distance between Blood Cells spawning
@@ -239,7 +239,7 @@ private:
 
 	// particles
 	bool drawParticle;
-	Particle* particles[TOTAL_PARTICLES2];	// The particles
+	//Particle* particles[TOTAL_PARTICLES2];	// The particles
 };
 
 #endif

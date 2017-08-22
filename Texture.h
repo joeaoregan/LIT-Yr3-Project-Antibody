@@ -21,7 +21,7 @@
 #define SCREEN_HEIGHT_GAME 600
 
 class Texture {
-public:
+public:		
 	static Texture* Instance() {
 		if (s_pInstance == 0) {
 			s_pInstance = new Texture();
@@ -74,19 +74,19 @@ public:
 	//void render(int x, int y, SDL_Rect* clip = NULL, double angle = 0.0, SDL_Point* center = NULL, SDL_RendererFlip flip = SDL_FLIP_NONE);	// Renders texture at given point
 	void render(int x, int y, SDL_Renderer *rend, SDL_Rect* clip = NULL, double angle = 0.0, SDL_Point* center = NULL, SDL_RendererFlip flip = SDL_FLIP_NONE);
 */
-
-
+	
+	
 	void free();												// Deallocates texture
-
+		
 	void setColor(Uint8 red, Uint8 green, Uint8 blue);			// Set color modulation
-
+		
 	void setBlendMode(SDL_BlendMode blending);					// Set blending
-
+		
 	void modifyAlpha(Uint8 alpha);								// Set alpha modulation
 
 	//void flashGameObject(int &alpha, bool &flash, int rate = 10, int times = 0);
 	void flashGameObject(int rate = 10, int times = 0);
-	int getAlpha() { return mAlpha; }
+	int getAlpha() { return mAlpha; }		
 	void setAlpha(int a) { mAlpha = a; }
 
 	// 23/01/2017 Added these
@@ -94,7 +94,7 @@ public:
 	int getY() { return m_Y; }
 	void setX(int x) { m_X = x; }
 	void setY(int y) { m_Y = y; }
-
+	
 	// Gets image dimensions
 	int getWidth() { return mWidth; }
 	int getHeight() { return mHeight; }
@@ -102,27 +102,27 @@ public:
 	// Rotation Angle
 	int getDegrees() { return mDegrees; }
 	void setDegrees(int d) { mDegrees = d % 360; }	// returns degrees from 0 to 360
-
+	
 	bool getFlash() { return mFlash; }
 	void setFlash(bool flash) { mFlash = flash; }
-
-	SDL_Color getFontColour();
-	void setFontColour(SDL_Color f);
+	
+	//SDL_Color getFontColour();
+	//void setFontColour(SDL_Color f);
 
 
 	void UIText(std::string textureText, int fontSize = 20);								// Render Text for player scores, FPS, and current Level
-	void UITextTimer(std::string timerText, unsigned int Timer);		// Render Text for Game Timer
+	void UITextTimer(std::string timerText, unsigned int Timer);							// Render Text for Game Timer
 	void UITextPlayerMessage(std::string playerMessage, int type = 0);
-	void numRocketsLeft(std::string textureText);						// 2017/02/19 Indicate the number of rockets each player has left
-	void speedBoostText(std::string textureText);						// 2017/02/20 Indicates a speedboost is active
-	void createdByText();						// 2017/02/20
+	void numRocketsLeft(std::string textureText);											// 2017/02/19 Indicate the number of rockets each player has left
+	void speedBoostText(std::string textureText);											// 2017/02/20 Indicates a speedboost is active
+	void createdByText();						// 2017/02/20			
 	/*
 	void UIText(std::string textureText, SDL_Renderer* rend);								// Render Text for player scores, FPS, and current Level
 	void UITextTimer(std::string timerText, SDL_Renderer* rend, unsigned int Timer);		// Render Text for Game Timer
 	void UITextPlayerMessage(std::string playerMessage, SDL_Renderer* rend, int type = 0);
 	void numRocketsLeft(std::string textureText, SDL_Renderer* rend);						// 2017/02/19 Indicate the number of rockets each player has left
 	void speedBoostText(std::string textureText, SDL_Renderer* rend);						// 2017/02/20 Indicates a speedboost is active
-	void createdByText(SDL_Renderer* rend);						// 2017/02/20
+	void createdByText(SDL_Renderer* rend);													// 2017/02/20			
 	*/
 	unsigned int lastTime;
 
@@ -133,6 +133,14 @@ public:
 	void clearTextureMap() { m_textureMap.clear(); }
 
 	void clearFromTextureMap(std::string id) { m_textureMap.erase(id); }
+
+	void clearMedia();	// 2017/03/01
+
+	SDL_Texture* getTexture(std::string id) {
+		return m_textureMap[id];
+	}
+
+	void renderP(int x, int y);
 
 private:
 
@@ -152,14 +160,14 @@ private:
 	int mHeight;
 	int mAlpha;
 	int mDegrees;
-	bool mFlash;
+	bool mFlash;	// endOfGame, spawnPlayer, collisionCheck
 
 	// 23/01/2017 Added these
 	int m_X;
 	int m_Y;
-	int m_Alpha;	// Textures alpha value
+	//int m_Alpha;	// Textures alpha value
 
-	SDL_Color txtColour;
+	//SDL_Color txtColour;
 };
 
 #endif

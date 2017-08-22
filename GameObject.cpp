@@ -160,7 +160,7 @@ void GameObject::setSpeedBoost(bool boost) {
 		boostPercent = 3.0;
 }
 
-
+/*
 void GameObject::renderParticles(Texture &one, Texture &two, Texture &three, Texture &four) {
 	//Go through particles
 	for (int i = 0; i < TOTAL_PARTICLES2; ++i) {
@@ -176,7 +176,7 @@ void GameObject::renderParticles(Texture &one, Texture &two, Texture &three, Tex
 		particles[i]->render(four);
 	}
 }
-
+*/
 
 void GameObject::setLaserGrade(int grade) {
 	if (grade > LASER_TRIPLE) grade = LASER_TRIPLE;	// 2017/03/01 Triple laser is the highest grade of laser

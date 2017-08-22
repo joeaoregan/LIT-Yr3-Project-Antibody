@@ -24,8 +24,6 @@ public:
 	~EnemyVirus();							// Destructor
 	
 	virtual void movement(int playerX, int playerY);
-
-	WeaponEnLaser* laser;
 };
 
 #endif

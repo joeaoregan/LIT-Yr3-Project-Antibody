@@ -48,6 +48,12 @@ WeaponPlRocket::WeaponPlRocket(int player) {
 	//setGrade(0);	// Basic Rocket = 0
 
 	setAlive(true);	// Make sure Rocket is alive from the beginning
+
+
+					//Initialize particles
+	for (int i = 0; i < TOTAL_PARTICLES_R; ++i) {
+		particlesR[i] = new Particle(getX(), getY(), 1);
+	}
 }
 
 // Laser Destructor
@@ -61,4 +67,31 @@ void WeaponPlRocket::movement() {
 
 	if (getY() > SCREEN_HEIGHT_GAME - 40) setAlive(false);
 	else if (getY() < 40) setAlive(false);
+}
+
+
+void WeaponPlRocket::render(Texture &texture, int degrees) {
+
+	GameObject::render(texture, degrees);
+	renderRocketParticles();
+
+	//std::cout << "Rocket Render" << std::endl;
+	//texture.render(getX(), getY(), NULL, degrees, NULL, SDL_FLIP_NONE);
+
+}
+
+void WeaponPlRocket::renderRocketParticles() {
+	//Go through particles
+	for (int i = 0; i < TOTAL_PARTICLES_R; ++i) {
+		//Delete and replace dead particles
+		if (particlesR[i]->isDead(getDrawParticle())) {
+			delete particlesR[i];
+			particlesR[i] = new Particle(getX() + 15, getY() + 10, 1);
+		}
+	}
+
+	//Show particles
+	for (int i = 0; i < TOTAL_PARTICLES_R; ++i) {
+		particlesR[i]->render();
+	}
 }

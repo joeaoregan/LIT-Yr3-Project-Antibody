@@ -24,7 +24,7 @@ ScoreValueText::ScoreValueText(int x, int y, int score, int player) {
 	setTimerTracker(SDL_GetTicks());			// Set time the object was created
 	setScore(score);							// the value of the object
 	setAlive(true);								// set it active on the screen
-	setVelocity(5);
+	setVelocity(8);
 	//setType(player);							// Is it a score for player 1 or player 2
 	setColliderWidth(getWidth());
 	setColliderHeight(getHeight());

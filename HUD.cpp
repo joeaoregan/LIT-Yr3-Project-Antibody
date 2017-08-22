@@ -79,7 +79,7 @@ void HUD::gameTime(int currentTime, SDL_Renderer *rend) {
 
 	//gTimeTextTexture.UITextTimer(timeText.str().c_str(), rend, currentTime);			// Render Text - Use a string to render the current Game Time to a Texture
 
-	//gTimeTextTexture.modifyAlpha(gTimeTextTexture.getAlpha());							// Flash the timer
+	//gTimeTextTexture.modifyAlpha(gTimeTextTexture.getAlpha());						// Flash the timer
 	gTimeTextTexture.render(SCREEN_WIDTH - gTimeTextTexture.getWidth() - 10, 8, rend);	// LAZY
 }
 */

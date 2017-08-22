@@ -81,7 +81,8 @@ Player::Player() {
 
 	//Initialize particles
 	for (int i = 0; i < TOTAL_PARTICLES; ++i) {
-		particles[i] = new Particle(getX(), getY(), gDarkBlueParticleTexture, gMediumBlueParticlTexture, gLightBlueParticleTexture);
+		//particles[i] = new Particle(getX(), getY(), gDarkBlueParticleTexture, gMediumBlueParticlTexture, gLightBlueParticleTexture);
+		particles[i] = new Particle(getX(), getY());
 	}
 
 	setDrawParticle(true);
@@ -95,65 +96,27 @@ Player::Player() {
 	setLaserGrade(LASER_SINGLE);
 }
 
-bool Player::loadMediaPlayer() {
-//bool Player::loadMediaPlayer(SDL_Renderer *rend) {
-	bool success = true;
-	// Particles
-	if (!gDarkBlueParticleTexture.loadFromFile("Art/particleDarkBlue.bmp")) {	// Load Dark Particle texture
-		printf("Failed to load red texture!\n");
-		success = false;
-	}
-	if (!gMediumBlueParticlTexture.loadFromFile("Art/particleMediumBlue.bmp")) {	// Load Medium Particle texture
-		printf("Failed to load green texture!\n");
-		success = false;
-	}
-	if (!gLightBlueParticleTexture.loadFromFile("Art/particleLightBlue.bmp")) {	// Load Light Particle texture
-		printf("Failed to load blue texture!\n");
-		success = false;
-	}
-	if (!gShimmerTexture.loadFromFile("Art/shimmer.bmp")) {						// Load shimmer texture
-		printf("Failed to load shimmer texture!\n");
-		success = false;
-	}
-
-	return success;
-}
-
-
-void Player::closePlayer() {
-	// Particles
-	gDarkBlueParticleTexture.free();
-	gMediumBlueParticlTexture.free();
-	gLightBlueParticleTexture.free();
-	gShimmerTexture.free();
-}
-
 // 2017/01/22 Separated player render() from game.cpp
 void Player::render(Texture &player) {
-//void Player::render(Texture &player, SDL_Renderer *rend) {
-	//Set texture transparency
-	gDarkBlueParticleTexture.modifyAlpha(100);	// Alpha of 192 gives particles a semi transparent look
-	gMediumBlueParticlTexture.modifyAlpha(100);
-	gLightBlueParticleTexture.modifyAlpha(100);
-	gShimmerTexture.modifyAlpha(150);
-
 	if (getAlive()) {																			// 2017/01/22 If the player is alive render the player, with particles
-		renderParticles(gDarkBlueParticleTexture, gMediumBlueParticlTexture, gLightBlueParticleTexture, gShimmerTexture);
+		renderParticles();
 		player.render(getX(), getY());
 	}
 }
 
-// 2017/01/22 Separated player render() from game.cpp
-void Player::render(Texture &player, Texture &dark, Texture &medium, Texture &light, Texture &shimmer) {
-	//Set texture transparency
-	dark.modifyAlpha(100);	// Alpha of 192 gives particles a semi transparent look
-	medium.modifyAlpha(100);
-	light.modifyAlpha(100);
-	shimmer.modifyAlpha(150);
+void Player::renderParticles() {
+	//Go through particles
+	for (int i = 0; i < TOTAL_PARTICLES; ++i) {
+		//Delete and replace dead particles
+		if (particles[i]->isDead(getDrawParticle())) {
+			delete particles[i];
+			particles[i] = new Particle(getX() + 9, getY() + 30);
+		}
+	}
 
-	if (getAlive()) {																			// 2017/01/22 If the player is alive render the player, with particles
-		renderParticles(dark, medium, light, shimmer);
-		player.render(getX(), getY());
+	//Show particles
+	for (int i = 0; i < TOTAL_PARTICLES; ++i) {
+		particles[i]->render();
 	}
 }
 
@@ -181,23 +144,6 @@ void Player::rendPlayerLives(Texture &lives, int player) {
 		if (getNumLives() > 2)
 			//lives.render(SCREEN_WIDTH - (lives.getWidth() * 3) - 10, SCREEN_HEIGHT - lives.getHeight() - 10, rend);
 			lives.render(SCREEN_WIDTH - (lives.getWidth() * 3) - 30, 120 - lives.getHeight() - 10);
-	}
-}
-
-void Player::renderParticles(Texture &one, Texture &two, Texture &three, Texture &four) {
-//void Player::renderParticles(Texture &one, Texture &two, Texture &three, Texture &four, SDL_Renderer *rend) {
-	//Go through particles
-	for (int i = 0; i < TOTAL_PARTICLES; ++i) {
-		//Delete and replace dead particles
-		if (particles[i]->isDead(getDrawParticle())) {
-			delete particles[i];
-			particles[i] = new Particle(getX() + 9, getY() + 30, one, two, three);
-		}
-	}
-
-	//Show particles
-	for (int i = 0; i < TOTAL_PARTICLES; ++i) {
-		particles[i]->render(four);
 	}
 }
 

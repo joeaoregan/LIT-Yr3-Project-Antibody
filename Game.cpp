@@ -195,6 +195,7 @@ Audio audio1;
 StatusBar bar;
 SplashScreen splash;
 FPS fps;							// 2017/02/01 Moved FPS functionality to it's own class
+Particle particle;
 
 // Viewports
 SDL_Rect gameViewport;				// Main game screen view port
@@ -269,7 +270,7 @@ Texture gInfoMessageP2TextTexture;	// Player notification messages for picking u
 Texture gInfoMessageTextTexture;	// Player notification messages for picking up objects etc.
 
 // Vectors for objects that have collisions - These 2 lists are the only 2 we need
-std::vector<Texture*> listOfScoreTextures;		// The score for any object a player Kills
+//std::vector<Texture*> listOfScoreTextures;		// The score for any object a player Kills
 std::vector<GameObject*> listOfGameObjects;		// 2017/01/31 Using to display the scores for each object killed, 2017/02/15 added Power Ups, Explosions
 
 Player* player1 = new Player();
@@ -407,12 +408,13 @@ bool Game::loadMedia() {
 
 	menu1.loadMediaMenu();						// Load buttons etc
 
-	success = player1->loadMediaPlayer();		// Load particles for each player
-	success = player2->loadMediaPlayer();		// Load particles for each player
+	//success = player1->loadMediaPlayer();		// Load particles for each player
+	//success = player2->loadMediaPlayer();		// Load particles for each player
 	//if (twoPlayer) success = player2->loadMediaPlayer();		// Load particles for each player
 
 	success = audio1.loadMediaAudio();
 	success = headsUpDisplay.loadLevelStuff();			// 2017/02/21 Separated heads up display object initialisation to the class for loading textures for player lives etc
+	success = particle.initParticle();
 
 	if (!gProfessorMapTexture.loadFromFile("Art/Prof.png")) {			// Load Dark Particle texture
 		printf("Failed to load Professor texture image!\n");
@@ -657,14 +659,15 @@ void Game::close() {
 	fps.fpsclose();
 	splash.closeSplashScreens();	// Close splash screen stuff
 	menu1.closeMenu();				// Close menu stuff
-	player1->closePlayer();
-	player2->closePlayer();
 	audio1.destroy();				// Close audio files
 	headsUpDisplay.closeLevelStuff();
+	particle.closeParticle();
 
 	// Empty Lists
 	listOfGameObjects.clear();		// Scores, Power Ups, Explosions
-	listOfScoreTextures.clear();
+	//listOfScoreTextures.clear();
+
+	Texture::Instance()->clearTextureMap();
 
 	// Quit SDL subsystems
 	IMG_Quit();
@@ -749,7 +752,6 @@ bool Game::enterName() {
 			else if (e.key.keysym.sym == SDLK_RETURN) {
 				player1->setName(inputText);
 				//Game::Instance()->setName(inputText);
-				//readyTextTimer = SDL_GetTicks();
 				nameEntered = true;
 			}
 		}
@@ -1381,8 +1383,8 @@ void Game::renderGameObjects() {
 		SDL_RenderSetViewport(getRenderer(), &weaponViewport2);  // UIViewport
 		//if (twoPlayer && player2->getLaserGrade() == LASER_SINGLE) gPowerUpLaserTexture.render(weaponScrolling, 5);			// 1st
 		if (twoPlayer && player2->getLaserGrade() == LASER_SINGLE) Texture::Instance()->weaponIndicator("laserPowerUpID", weaponScrolling);
-		//else if (twoPlayer && player2->getLaserGrade() == LASER_TRIPLE) gPowerUpLaserTextureV2.render(weaponScrolling, 5);	// 1st
-		else if (twoPlayer && player2->getLaserGrade() == LASER_TRIPLE) Texture::Instance()->weaponIndicator("laserV2PowerUpID", weaponScrolling);
+		else if (twoPlayer && player2->getLaserGrade() == LASER_DOUBLE) Texture::Instance()->weaponIndicator("laserPowerUpV2ID", weaponScrolling);
+		else if (twoPlayer && player2->getLaserGrade() == LASER_TRIPLE) Texture::Instance()->weaponIndicator("laserPowerUpV3ID", weaponScrolling);
 
 		SDL_RenderSetViewport(getRenderer(), &rocketViewport2);								// UIViewport
 		if (twoPlayer && player2->getAlive()) {
@@ -1744,6 +1746,7 @@ void Game::spawnExplosion(int x, int y, int subType) {
 }
 
 void Game::spawnLaser(int x, int y, int player, int grade, int velocity) {
+
 	std::cout << "Laser Grade: " << grade << std::endl;
 
 	GameObject* p_Laser1 = new WeaponPlLaser(player);
@@ -2008,7 +2011,7 @@ void Game::collisionCheck() {
 			}
 			else if (listOfGameObjects[index]->getSubType() == POWER_UP_LASER) {
 				player2->setScore(player2->getScore() + listOfGameObjects[index]->getScore());
-				player2->setLaserGrade(player1->getLaserGrade() + 1);
+				player2->setLaserGrade(player2->getLaserGrade() + 1);
 				Laser2 = true;
 				infoMessage("Player 2 has upgraded their laser!!!", PLAYER_2);
 			}
@@ -2297,7 +2300,7 @@ void Game::resetGame(int currentLevel) {
 	// Delete all objects on screen
 	if (gameOver || levelOver) {
 		listOfGameObjects.clear();		// Scores, Power Ups, Explosions
-		listOfScoreTextures.clear();
+		//listOfScoreTextures.clear();
 	}
 
 	levelOver = false;

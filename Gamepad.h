@@ -30,7 +30,7 @@ void gamepadInfo(SDL_Joystick* gController1, SDL_Joystick* gController2, SDL_Eve
 
 		std::cout << "joystick instance id: " << SDL_JoystickInstanceID(gController1) << std::endl;
 
-		for (unsigned int i = 0; i < SDL_NumJoysticks(); ++i) {
+		for (int i = 0; i < SDL_NumJoysticks(); ++i) {
 			const char *name = SDL_GameControllerNameForIndex(i);
 			if (name) {
 				printf("Joystick %i has game controller name '%s'\n", i, name);
