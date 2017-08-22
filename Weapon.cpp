@@ -34,9 +34,9 @@ void Weapon::handleEvent(SDL_Event& e, int player) {
 		}
 
 		// Move rocket for Player 2 with gamepad
-
-		else if (e.type == SDL_JOYAXISMOTION) {	// Set movement for D-Pad
-
+	}
+	else if (player == 2) {
+		if (e.type == SDL_JOYAXISMOTION) {	// Set movement for D-Pad
 			if (e.jaxis.axis == 4) {
 				if (e.jaxis.value > JOYSTICK_DEAD_ZONE) {
 					//m_joystickValues[whichOne].second->setY(1);

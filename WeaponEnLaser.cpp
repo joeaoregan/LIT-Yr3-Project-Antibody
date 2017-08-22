@@ -18,18 +18,18 @@ WeaponEnLaser::WeaponEnLaser(int type, int rotateCenter) {
 	setVelocity(-15);
 	setVelX(-15);
 	//setVelY(0);
-	setType(type);
+	setSubType(type);
 	setAlive(true);
 
 	// Set the name
-	if (type == ENEMY_LASER)
+	if (type == ENEMY_SHIP_LASER)
 		setName("Enemy Laser");
 	else if (type == VIRUS_FIREBALL)
 		setName("Virus Fireball");
 	else if (type == BLUE_VIRUS_BULLET)
 		setName("Blue Virus Bullet");
 
-	if (getType() == 0) {
+	if (getSubType() == 0) {
 		setColliderWidth(getWidth());
 		setColliderHeight(getHeight());
 	}
@@ -71,7 +71,7 @@ void WeaponEnLaser::movement() {
 	//else if (getY() > (SCREEN_HEIGHT_GAME - 40)) setAlive(false);	// 600 - 40 for pink border
 	//else setAlive(true);
 }
-
+/*
 void WeaponEnLaser::movement(int centerX, int centerY, float timer) {	
 	if (centerX < SCREEN_WIDTH) {
 		rotateCounter %= 360;
@@ -85,3 +85,4 @@ void WeaponEnLaser::movement(int centerX, int centerY, float timer) {
 			GameObject::movement();					// Fire the satellite bullet object
 	}
 }
+*/

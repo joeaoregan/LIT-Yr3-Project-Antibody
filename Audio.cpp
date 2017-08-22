@@ -64,17 +64,50 @@ void Audio::music() {
 	if (gMusic3 == NULL) {
 		printf("Failed to load rage music! SDL_mixer Error: %s\n", Mix_GetError());
 	}
+	gMusic4 = Mix_LoadMUS("Audio/TheFirstStep.mp3");											// Load music
+	if (gMusic4 == NULL) {
+		printf("Failed to load rage music! SDL_mixer Error: %s\n", Mix_GetError());
+	}
 
 	// Add songs to vector
 	listOfMusic.push_back(gMusic1);						// Add tracks to the music array
 	listOfMusic.push_back(gMusic2);
 	listOfMusic.push_back(gMusic3);
+	listOfMusic.push_back(gMusic4);
 
-	currentSong = rand() % 3;							// Play a random song on start up
+	currentSong = rand() % NUMBER_OF_SONGS;				// Play a random song on start up
 
 	Mix_PlayMusic(listOfMusic[currentSong], -1);		// Play the currently selected song
 }
-void Audio::musicForward() {								// Pick next track on the list
+
+int Audio::musicForwardSongName() {							// Pick next track on the list
+	if (currentSong + 1 < listOfMusic.size())			// If the current song number (0 number start value) is less than the number of tracks on the list
+		currentSong++;									// go to next track on list
+	else
+		currentSong = 0;								// or else go back to start of list
+
+	Mix_PlayMusic(listOfMusic[currentSong], -1);
+
+	if (currentSong == 0) std::cout << "current song 1" << std::endl;
+	else if (currentSong == 1) std::cout << "current song 2" << std::endl;
+	else if (currentSong == 2) std::cout << "current song 3" << std::endl;
+	else if (currentSong == 3) std::cout << "Current Song: The Last Step" << std::endl;
+
+	return currentSong;
+}
+
+int Audio::musicBackSongName() {								// Pick previous track on the list
+	if (currentSong > 0)
+		currentSong--;
+	else
+		currentSong = listOfMusic.size() - 1;
+
+	Mix_PlayMusic(listOfMusic[currentSong], -1);
+
+	return currentSong;
+}
+
+void Audio::musicForward() {							// Pick next track on the list
 	if (currentSong + 1 < listOfMusic.size())			// If the current song number (0 number start value) is less than the number of tracks on the list
 		currentSong++;									// go to next track on list
 	else
@@ -91,8 +124,9 @@ void Audio::musicBack() {								// Pick previous track on the list
 	Mix_PlayMusic(listOfMusic[currentSong], -1);
 }
 
-void Audio::playMusic() {
+int Audio::playMusic() {
 	Mix_PlayMusic(listOfMusic[currentSong], -1);
+	return currentSong;
 }
 
 /*
@@ -171,4 +205,6 @@ void Audio::destroy() {
 	gMusic2 = NULL;
 	Mix_FreeMusic(gMusic3);	// Free music
 	gMusic3 = NULL;
+	Mix_FreeMusic(gMusic4);	// Free music
+	gMusic4 = NULL;
 }

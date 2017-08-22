@@ -205,15 +205,51 @@ void Texture::UITextTimer(std::string timerText, SDL_Renderer* rend, unsigned in
 	2017/02/15:
 	Independent messages for player 1 and 2, for picking up objects and upgrading weapons etc
 */
-void Texture::UITextPlayerMessage(std::string playerMessage, SDL_Renderer* rend, int player) {
-	if (player == 1) {
-		if (!loadFromRenderedText(playerMessage, { 240, 210, 65, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 20), rend)) {	// Gold Text
+void Texture::UITextPlayerMessage(std::string playerMessage, SDL_Renderer* rend, int type) {
+	if (type == 0) {
+		if (!loadFromRenderedText(playerMessage, { 65, 210, 240, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 20), rend)) {	// Blue Text For General Message
+			printf("Unable to render General Info Message text texture!\n");
+		}
+	}
+	else if (type == 1) {
+		if (!loadFromRenderedText(playerMessage, { 240, 210, 65, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 20), rend)) {	// Gold Text For Player 1
 			printf("Unable to render player 1 Message text texture!\n");
 		}
 	}
-	else if (player == 2){
-		if (!loadFromRenderedText(playerMessage, { 65, 210, 240, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 20), rend)) {	// Blue Text
+	else if (type == 2) { 
+		if (!loadFromRenderedText(playerMessage, { 0, 255, 150, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 20), rend)) {	// Green Text For Player 2
 			printf("Unable to render player 2 Message text texture!\n");
 		}
+	}
+}
+
+void Texture::renderMap( SDL_Renderer* rend) {
+	SDL_RenderCopy(rend, mTexture, NULL, NULL);
+}
+
+
+void Texture::rendPlayerLives(int lives, Texture &texture, int player, SDL_Renderer *rend) {
+	if (player == 1) {
+		if (lives > 0)
+			//lives.render(10, SCREEN_HEIGHT - lives.getHeight() - 10, rend);
+			texture.render(10, 120 - texture.getHeight() - 10, rend);
+		if (lives > 1)
+			//lives.render(10 + lives.getWidth(), SCREEN_HEIGHT - lives.getHeight() - 10, rend);
+			texture.render(20 + texture.getWidth(), 120 - texture.getHeight() - 10, rend);
+		if (lives > 2)
+			//lives.render(10 + (lives.getWidth() * 2), SCREEN_HEIGHT - lives.getHeight() - 10, rend);
+			texture.render(30 + (texture.getWidth() * 2), 120 - texture.getHeight() - 10, rend);
+	}
+	// Texture Has Different Coordinates Depending on the player
+	if (player == 2) {
+		if (lives > 0)
+			//lives.render(SCREEN_WIDTH - lives.getWidth() - 10, SCREEN_HEIGHT - lives.getHeight() - 10, rend);
+			texture.render(SCREEN_WIDTH - texture.getWidth() - 10, 120 - texture.getHeight() - 10, rend);
+		if (lives > 1)
+			//lives.render(SCREEN_WIDTH - (lives.getWidth() * 2) - 10, SCREEN_HEIGHT - lives.getHeight() - 10, rend);
+			texture.render(SCREEN_WIDTH - (texture.getWidth() * 2) - 20, 120 - texture.getHeight() - 10, rend);
+		if (lives > 2)
+			//lives.render(SCREEN_WIDTH - (lives.getWidth() * 3) - 10, SCREEN_HEIGHT - lives.getHeight() - 10, rend);
+			texture.render(SCREEN_WIDTH - (texture.getWidth() * 3) - 30, 120 - texture.getHeight() - 10, rend);
 	}
 }

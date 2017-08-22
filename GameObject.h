@@ -6,31 +6,60 @@ JOE: Moved functionality common to game objects to GameObjects class reducing th
 
 #define MAX_HEALTH 100
 
+#define ROCKET_TIMER 2.0
+
 #include <SDL.h>
 #include <SDL_image.h>
 #include "Texture.h"
 #include <iostream>
+#include "Particle.h"
 
-enum GameObjectTypes { PLAYER1_SCORE, PLAYER2_SCORE, POWER_UP_HEALTH, POWER_UP_LASER, POWER_UP_ROCKET, EXPLOSION, SAW1, SAW2 };
+enum GameObjectTypes {
+	PLAYER, PLAYER_1, PLAYER_2,																			// Player
+	PLAYER1_SCORE, PLAYER2_SCORE,																		// Scores
+	POWER_UP_HEALTH, POWER_UP_LASER, POWER_UP_ROCKET, POWER_UP_CHECKPOINT,								// Power ups
+	ENEMY_SHIP_LASER, BLUE_VIRUS_BULLET, VIRUS_FIREBALL, EXPLOSION,										// Bullets
+	SAW1, SAW2,																							// Saw
+	BLOOD_CELL, SMALL_BLOOD_CELL, WHITE_BLOOD_CELL,														// Blood Cells
+	ENEMY_SHIP, VIRUS_GREEN, VIRUS_ORANGE, VIRUS_BLUE,													// Virus
+	NINJA_STAR_P1, NINJA_STAR_P2, LASER_P1, LASER_P2, LASER_V2_P1, LASER_V2_P2, ROCKET_P1, ROCKET_P2,	// Weapons
+	PLAYER_WEAPON, ENEMY_OBJECT, POWER_UP																// General-type of object
+};
 
 class GameObject {
 public:
 	GameObject();
 	~GameObject();												// Deconstructor
 
+	Texture gDarkBlueParticleTexture;	// Dark blue engine particle
+	Texture gMediumBlueParticlTexture;	// Medium blue engine particle
+	Texture gLightBlueParticleTexture;	// Light blue engine particle
+	Texture gShimmerTexture;			// Shimmer engine particle
+
+	virtual void handleEvent(SDL_Event& e, int player) {}
+
 	void spawn(int x, int y, int vx = 0, int vy = 0);
-	void spawn(int x, int y, int vx, SDL_Rect collider);
-	void spawn(int x, int y, int vx, int vy, SDL_Rect collider, int type = 0);
+
+	virtual void spawn(int x, int y, int vx, SDL_Rect* collider);
+
+	virtual void spawn(int x, int y, int velocity, int player, int type = 0) {}			// Player laser
+
+	virtual void spawn(int x, int y, SDL_Rect* collider, int player = 1, int type = 9);	// Spawn the object at the dimensions provided --> Rocket
+
+	virtual void spawn(int x, int y, int vx, int vy, SDL_Rect* collider, int type = 0);
 
 	virtual void movement();
+	void movement(int centerX, int centerY, float timer);
 	virtual void movement(int x, int y) {
 		//setY(getY() - 5);
 				//if (getY() <= 40) setAlive(false);
 	};
 	//virtual void movement(int x, int y, int z) {};
 
+	virtual void renderPlayer(Texture &texture, SDL_Renderer *rend) {};
+
 	//void render(LTexture &texture, SDL_Renderer *rend);							// Shows the Enemy on the screen
-	void render(Texture &texture, SDL_Renderer *rend, int degrees = 0);
+	virtual void render(Texture &texture, SDL_Renderer *rend, int degrees = 0);
 	void render(Texture &texture, SDL_Renderer *rend, SDL_Rect *currentClip, int &currentframe, int frames);
 
 	int getX() { return m_x; }						// Get GameObject X coord
@@ -46,7 +75,8 @@ public:
 	int getHealth() { return m_Health; }			// return the objects health
 	int getMaxHealth() { return MAX_HEALTH; }
 	int getNumLives() { return m_NumLives; }
-	int getType() { return m_Type; }				// 2017/01/25 Return the objects type
+	int getSubType() { return m_SubType; }				// 2017/01/25 Return the objects type
+	int getType() { return m_GeneralType; }		// 2017/02/18 Return the objects sub-type
 	int getAngle() { return m_Angle; }				// 2017/02/07 Return the objects angle
 
 	void setX(int x) { m_x = x; }					// Set GameObject X coord
@@ -62,14 +92,14 @@ public:
 	void setHealth(int health);						// set the health
 	void setNumLives(int n) { m_NumLives = n; }		// Set the number of lives for the object
 
-//	SDL_Rect getCollider() { return m_Collider; }
 	SDL_Rect* getCollider() { return &m_Collider; }
 	void setCollider(SDL_Rect collider) { m_Collider = collider; }			// 2017/01/19 Added as Sean keeps doing dumb things with the colliders
 	void setColliderWidth(int w) { m_Collider.w = w; }
 	void setColliderHeight(int h) { m_Collider.h = h; }
 	void setColliderX(int x) { m_Collider.x = x; }
 	void setColliderY(int y) { m_Collider.y = y; }
-	void setType(int t) { m_Type = t; }				// 2017/01/25 Set the objects type
+	void setSubType(int t) { m_SubType = t; }				// 2017/01/25 Set the objects type
+	void setType(int t) { m_GeneralType = t; }		// 2017/02/18 Set the objects sub-type
 	void setAngle(int a) { m_Angle = a; }
 
 	//SDL_Color getFontColour();
@@ -97,6 +127,51 @@ public:
 	bool satelliteObjectAlive;
 	unsigned int whichVirusAssignedTo;
 
+	bool getRocketBarActive() { return m_RocketBarActive; }
+	void setRocketBarActive(bool rocket) { m_RocketBarActive = rocket; }
+	bool getRocketActive() { return m_RocketActive; }
+	void setRocketActive(bool rocket) { m_RocketActive = rocket; }
+	int getNumRockets() { return numRockets; }
+	void setNumRockets(int rocket) { numRockets = rocket; }
+
+	// Blood Cells
+	int getDistanceBetween() { return mDistanceBetween; }
+	void setDistanceBetween(int d) { mDistanceBetween = d; }
+
+	int getRotationDirection() { return mRotationDirection; }		// 2017/01/30 Added rotation direction, so Blood Cells can rotate both forwards and backwards
+	void setRotationDirection(int d) { mRotationDirection = d; }	// 2017/02/18 Moved Blood Cells to game object list
+
+	// Weapons
+	int getPlayer() { return mPlayer; }
+	void setPlayer(int p = 0) { mPlayer = p; }
+
+	// Player Speed boost
+	bool getSpeedBoost() { return mSpeedBoost; }
+	unsigned int getBoostStartTime() { return mBoostStartTime; }
+	void setSpeedBoost(bool boost);
+	bool getDrawParticle() { return drawParticle; }
+	void setDrawParticle(bool p) { drawParticle = p; }
+
+	// Saw
+	bool getSawActive() { return sawActive; }
+	void setSawActive(bool active) { sawActive = active; }
+
+	// Laser
+	int getLaserGrade() { return mLaserGrade; }
+	void setLaserGrade(int grade) { mLaserGrade = grade; }
+
+	// Player stuff
+	//void renderParticles(Texture &one, Texture &two, Texture &three, Texture &four, SDL_Renderer *rend);
+	void renderParticles(Texture &four, SDL_Renderer *rend, bool drawParticle, int x, int y);
+	void renderPlayerParticles(int x, int y, bool drawParticle, SDL_Renderer *rend);
+
+	bool loadMediaPlayer(SDL_Renderer *rend);
+	void closePlayer();
+
+	void createParticle(int x, int y);
+
+	//void rendPlayerLives(int lives, Texture &texture, int player, SDL_Renderer *rend);
+
 private:
 	// GameObject Variables
 	std::string m_Name;				// Name of the object
@@ -110,16 +185,38 @@ private:
 	int m_Score;					// Score value for killing or collecting an object
 	int m_NumLives;
 
-	int m_Type;						// Integer value to indicate the type of game object POWER UP, VIRUS
+	int m_SubType;						// Integer value to indicate the type of game object POWER UP, VIRUS
+	int m_GeneralType;
 
 	// 31-01 Display time
-	float m_TimeTracker;				// Time to begin displaying
+	float m_TimeTracker;			// Time to begin displaying
 	float m_Timer;					// Time to end displaying
 	//SDL_Color fontColour;			// moved to texture class
 	int m_Angle;					// 2017-02-07: Angle to rotate an object
 
-	int m_Frames;	// 2017/02/09 Number of frames for an animation
+	int m_Frames;					// 2017/02/09 Number of frames for an animation
 	bool lineAlgorithmCalculated;
+
+	bool m_RocketActive;			// If an object can fire rockets or not
+	bool m_RocketBarActive;
+	int numRockets;					// The number of rockets an object has
+
+	// 2017/02/18 Moved Blood Cells
+	int mDistanceBetween;						// Distance between Blood Cells spawning
+	int mRotationDirection;						// Direction to rotate Blood Cell (-1 = anticlockwise, 1 = clockwise)
+
+	// Weapons
+	int mPlayer;
+
+	// Player
+	bool mSpeedBoost;
+	unsigned int mBoostStartTime;
+
+	bool drawParticle;
+	int mLaserGrade;
+	bool sawActive;
+
+	Particle* particles[TOTAL_PARTICLES];	// The particles
 };
 
 #endif

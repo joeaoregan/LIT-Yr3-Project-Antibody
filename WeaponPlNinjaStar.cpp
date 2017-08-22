@@ -15,6 +15,8 @@ WeaponPlNinjaStar::WeaponPlNinjaStar() {
 	setColliderWidth(getWidth());
 	setColliderHeight(getHeight());
 
+	setAlive(true);
+	setType(PLAYER_WEAPON);
 	//setAlive(true);
 }
 

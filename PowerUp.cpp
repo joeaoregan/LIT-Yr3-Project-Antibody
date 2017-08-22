@@ -1,7 +1,7 @@
 #include "PowerUp.h"
 
 PowerUp::PowerUp(int type, int score) {
-	setType(type);
+	setSubType(type);
 	setScore(score);
 	
 	if (type == POWER_UP_HEALTH) {			// Change dimensions for different types of power ups
@@ -19,6 +19,13 @@ PowerUp::PowerUp(int type, int score) {
 		setWidth(30);
 		setName("Rocket Power Up");
 	}
+	if (type == POWER_UP_CHECKPOINT) {
+		setHeight(60);
+		setWidth(60);
+		setName("Checkpoint Power Up");
+	}
+
+	setType(POWER_UP);
 
 	setVelocity(1);
 

@@ -1,11 +1,11 @@
 #include "EnemyVirus.h"
 
 EnemyVirus::EnemyVirus(int type, float time) {
-	if(type == GREEN)
+	if(type == VIRUS_GREEN)
 		setScore(10);						// Value for killing object
-	else if (type == ORANGE)
+	else if (type == VIRUS_ORANGE)
 		setScore(15);
-	else if (type == BLUE)
+	else if (type == VIRUS_BLUE)
 		setScore(20);
 
 	setWidth(75);
@@ -16,12 +16,14 @@ EnemyVirus::EnemyVirus(int type, float time) {
 	setColliderWidth(getWidth());
 	setColliderHeight(getHeight());
 
-	setType(type);						// 2017-01-25 type of game object
+	setSubType(type);						// 2017-01-25 type of game object
 	setTimer(time);
 
 	setTimerTracker(0.0);
 
 	setFrames(0);
+
+	setType(ENEMY_OBJECT);
 }
 
 EnemyVirus::~EnemyVirus() {

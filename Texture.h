@@ -34,6 +34,8 @@ public:
 		
 	void modifyAlpha(Uint8 alpha);								// Set alpha modulation
 
+	void renderMap(SDL_Renderer* rend);
+
 	//void flashGameObject(int &alpha, bool &flash, int rate = 10, int times = 0);
 	void flashGameObject(int rate = 10, int times = 0);
 	int getAlpha() { return mAlpha; }		
@@ -64,7 +66,10 @@ public:
 
 	void UIText(std::string textureText, SDL_Renderer* rend);			// Render Text for player scores, FPS, and current Level
 	void UITextTimer(std::string timerText, SDL_Renderer* rend, unsigned int Timer);		// Render Text for Game Timer
-	void UITextPlayerMessage(std::string playerMessage, SDL_Renderer* rend, int player);
+	void UITextPlayerMessage(std::string playerMessage, SDL_Renderer* rend, int type = 0);
+
+
+	void rendPlayerLives(int lives, Texture &texture, int player, SDL_Renderer *rend);
 
 private:	
 	// 31/01/2017 display score value of killed enemy, at enemy coords
