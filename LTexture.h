@@ -39,7 +39,17 @@ public:
 	//void render(int x, int y, SDL_Rect* clip = NULL, double angle = 0.0, SDL_Point* center = NULL, SDL_RendererFlip flip = SDL_FLIP_NONE);	// Renders texture at given point
 	void render(int x, int y, SDL_Renderer *rend, SDL_Rect* clip = NULL, double angle = 0.0, SDL_Point* center = NULL, SDL_RendererFlip flip = SDL_FLIP_NONE);
 
-	
+	// 23/01/2017 Added these
+	int getX();
+	int getY();
+	void setX(int x);
+	void setY(int y);
+
+	// 23/01/2017 Added these
+	int m_X;
+	int m_Y;
+	int m_Alpha;
+
 	// Gets image dimensions
 	int getWidth();
 	int getHeight();

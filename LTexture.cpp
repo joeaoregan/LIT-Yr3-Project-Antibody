@@ -121,3 +121,17 @@ int LTexture::getWidth() {
 int LTexture::getHeight() {
 	return mHeight;
 }
+
+// 23/01/2017 Added these
+int LTexture::getX() {
+	return m_X;
+}
+int LTexture::getY() {
+	return m_Y;
+}
+void LTexture::setX(int x) {
+	m_X = x;
+}
+void LTexture::setY(int y) {
+	m_Y = y;
+}
