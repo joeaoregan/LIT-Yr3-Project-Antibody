@@ -25,6 +25,26 @@
 
 const int TOTAL_PARTICLES2 = 20;	// Particle count
 
+/*
+enum GameObjectTypes {
+	BLOOD_CELL, PLAYER_WEAPON, ENEMY_WEAPON, ENEMY_OBJECT, POWER_UP, SMALL_VIRUS, BLOCKAGE,				// Main type of object
+	MAP_ALERT, SCORE_TEXT																				// Scores
+};
+enum GameObjectSubTypes {
+	PLAYER, PLAYER1, PLAYER2,
+	PLAYER1_SCORE, PLAYER2_SCORE,																		// Scores
+	POWER_UP_HEALTH, POWER_UP_LASER, POWER_UP_ROCKET, POWER_UP_CHECKPOINT, POWER_UP_LIVES,				// Power ups
+	ENEMY_SHIP_LASER, BLUE_VIRUS_BULLET, VIRUS_FIREBALL,												// Bullets
+	EXPLOSION, BLOOD_EXPLOSION, GREEN_VIRUS_EXPLOSION, ORANGE_VIRUS_EXPLOSION, BLUE_VIRUS_EXPLOSION,	// Explosions
+	SAW1, SAW2,																							// Saw
+	LARGE_BLOOD_CELL, SMALL_BLOOD_CELL, WHITE_BLOOD_CELL,												// Blood Cells
+	ENEMY_SHIP, ENEMY_BOSS,																				// Enemies
+	VIRUS_GREEN, VIRUS_ORANGE, VIRUS_BLUE, VIRUS_SMALL_GREEN, VIRUS_SMALL_ORANGE, VIRUS_SMALL_BLUE,		// Virus
+	LASER_P1, LASER_P2, LASER_V2_P1, LASER_V2_P2, LASER_V3_P1, LASER_V3_P2,								// Player Laser
+	NINJA_STAR_P1, NINJA_STAR_P2, ROCKET_P1, ROCKET_P2,													// Misc Weapons
+};
+*/
+
 enum GameObjectTypes {
 	PLAYER, PLAYER1, PLAYER2,
 	SCORE_TEXT,																							// Scores

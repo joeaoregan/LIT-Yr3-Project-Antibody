@@ -114,8 +114,10 @@ public:
 
 	// Scrolling
 	int backgroundLoopCounter;							// Number of times the background image has looped
-	int scrollingOffset;								// 2017/01/10 JOE: Declare the background scrolling offset (Moved as stops background scrolling when in the render function)
+	//int scrollingOffset;								// 2017/01/10 JOE: Declare the background scrolling offset (Moved as stops background scrolling when in the render function) // Moved to ScrollingBackground class
 	//int weaponScrolling;								// Scroll the image for current default laser weapon // 2017/03/20 Moved to HUD class
+	//void scrollBackground();							// 2017/02/22 Moved here. Scoll the background // 2017/03/21 Moved to ScrollingBackground class
+	//void setRotatingAngle();							// 2017/02/22 Moved here. Set the angle for rotating objects // No longer needed angle set in move() function for rotating objects
 
 	// Game Messages
 	int pointsValueCounter;								// Time to display score for killing Enemy message
@@ -137,8 +139,6 @@ public:
 	int activeEnemyVirusSmall;
 	int activeEnemyBoss;
 
-	//void setRotatingAngle();	// 2017/02/22 Moved here. Set the angle for rotating objects // No longer needed angle set in move() function for rotating objects
-	void scrollBackground();	// 2017/02/22 Moved here. Scoll the background
 
 	int getCurrentLevel() { return mCurrentLevel; }
 	void setCurrentLevel(int l) { mCurrentLevel = l; }

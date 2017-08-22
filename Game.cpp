@@ -1,4 +1,5 @@
 /*
+	2017/03/21 Added ScrollingBackground class to handle background scrolling and rendering
 	2017/03/20 Moved additional render functionality from Game class
 				Fixed memory leak after moving level number rendering to HUD class
 	2017/03/19 Added ship start and end point positions to mini map
@@ -215,6 +216,7 @@
 #include "SettingsMenu.h"
 #include "HighScores.h"
 #include "EnterName.h"
+#include "ScrollingBackground.h"	// 2017/03/21 JOE: Class for scrolling background
 #include <math.h>
 
 bool miniMap = true;
@@ -256,6 +258,7 @@ Particle particle;
 SettingsMenu settings;
 HighScores highScore;
 EnterName enterName1;
+ScrollingBackground scrollBG;		// 2017/03/21 Scroll background
 
 // Animation frames
 SDL_Rect gEnemySpriteClips[ANIMATION_FRAMES];	// Sprite frames for Enemy Ship animation
@@ -1030,7 +1033,7 @@ void Game::fullScreenOrWindowed() {
 
 	SDL_SetWindowFullscreen(gWindow, windowFlag);
 }
-
+/*
 void Game::scrollBackground() {
 	if (backgroundLoopCounter <= BACKGROUND_SCROLL_TIMES) scrollingOffset -= BACKGROUND_SCROLL_SPEED;	// Scroll for a fixed number of times
 	if (scrollingOffset < -SCREEN_WIDTH) {
@@ -1048,6 +1051,7 @@ void Game::scrollBackground() {
 	if (backgroundLoopCounter < BACKGROUND_SCROLL_TIMES) Texture::Instance()->renderMap("middleBG", scrollingOffset + SCREEN_WIDTH, 0, SCREEN_WIDTH, SCREEN_HEIGHT_GAME);	// 2nd background (and every even number)
 	else Texture::Instance()->renderMap("endBG", scrollingOffset + SCREEN_WIDTH, 0, SCREEN_WIDTH, SCREEN_HEIGHT_GAME);														// end background
 }
+*/
 int eyeFrame = 0;
 void Game::renderGamePlay() {
 	// Levels
@@ -1064,7 +1068,8 @@ void Game::renderGamePlay() {
 	SDL_RenderSetViewport(getRenderer(), &gameViewport);				// Set the viewport to Game Screen
 
 	if (levelOver == false && gameOver == false) {
-		scrollBackground();
+		//scrollBackground();
+		scrollBG.render();
 
 		//if (gameOver == false) {
 		SDL_SetRenderDrawColor(getRenderer(), 0xFF, 0xFF, 0xFF, 0xFF);
@@ -1380,6 +1385,8 @@ void Game::displayScoreForObject(int Xcoord, int Ycoord, int score, int player) 
 void Game::moveGameObjects() {
 	if (player1->getAlive()) player1->move();												// Update ship movement
 	if (player2->getAlive()) player2->move();
+
+	scrollBG.move();
 
 	// Cycle through list of Game Objects and move them, Player scores, and Power Ups so far
 	for (unsigned int index = 0; index != listOfGameObjects.size(); ++index) {
@@ -2148,7 +2155,7 @@ void Game::resetGame(int currentLevel) {
 		displayGameIntro = DISPLAY_GAME_INTRO_SCREENS;
 	//displayLevelIntro = DISPLAY_LEVEL_INTRO_SCREENS;
 	backgroundLoopCounter = 0;
-	scrollingOffset = 0;
+//	scrollingOffset = 0;						// 2017/03/21 Moved to ScrollingBackground class
 	//weaponScrolling = 60;						// 2017/03/20 Moved to HUD class
 
 	// Information Messages
