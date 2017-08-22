@@ -1,4 +1,5 @@
 #include "GameObject.h"
+#include <math.h>
 
 // Constructor
 //GameObject::GameObject(int damage) :	// Constructor has default value for damage of 3
@@ -47,14 +48,14 @@ void GameObject::spawn(int x, int y, int vx, SDL_Rect* collider) {
 	setCollider((*collider));
 }
 
-void GameObject::spawn(int x, int y, int vx, int vy, SDL_Rect* collider, int type) {
+void GameObject::spawn(int x, int y, int vx, int vy, SDL_Rect* collider, int subType) {
 	m_x = x;
 	m_y = y;
 	m_xVel = vx;
 	m_yVel = vy;	// 2017-01-10 JOE: use same velocity for x and y
 //	m_Collider = collider;
 	setCollider((*collider));
-	m_Type = type;
+	m_SubType = subType;
 	setAlive(true);
 }
 
@@ -66,6 +67,10 @@ void GameObject::movement() {
 	setColliderX(getX());
 	setColliderY(getY());
 
+	destroy();
+}
+
+void GameObject::destroy() {
 	// Destroy Game Object moving off screen on Y axis
 	if (getY() <= 40) setAlive(false);								// Once it reaches the pink border
 	else if (getY() >= (SCREEN_HEIGHT_GAME - 40)) setAlive(false);	// 600 - 40 for pink border
@@ -73,8 +78,23 @@ void GameObject::movement() {
 
 	// Destroy Game Object moving off screen on X axis
 	if ((getX() > SCREEN_WIDTH && getVelX() > 0)) setAlive(false);	// 2017/02/08 Need to check if velocity is negative, or power ups & blood cells don't appear on screen
-	else if (getX() < -getWidth()) setAlive(false);
+	else if (getX() < -getWidth() - 20) setAlive(false);			// If the object if off screen to the left
 	else setAlive(true);
+}
+
+
+void GameObject::movement(int centerX, int centerY, float timer) {
+	if (centerX < SCREEN_WIDTH) {
+		rotateCounter %= 360;
+		if (timer != 0.5) {
+			setX(70 * cos(rotateCounter * 3.1415926f / 180.0f) + centerX);		// rotate the bullet object
+			setY(70 * sin(rotateCounter * 3.1415926f / 180.0f) + centerY);
+
+			rotateCounter += 3;
+		}
+		else
+			movement();					// Fire the satellite bullet object
+	}
 }
 
 void GameObject::setHealth(int h) {
@@ -86,4 +106,45 @@ void GameObject::setHealth(int h) {
 		m_Health = 100;
 	else
 		m_Health = h;
+}
+
+
+void GameObject::spawn(int x, int y, SDL_Rect* collider, int player, int type) {
+	setX(x + 57);
+	setY(y + 13);
+	setVelX(getVelocity());
+	setVelY(0);
+//	m_Collider = collider;
+	setCollider((*collider));
+	setPlayer(player);
+	setSubType(type);
+}
+
+// 2017-02-21 Moved from Player.cpp
+void GameObject::setSpeedBoost(bool boost) {
+	mSpeedBoost = boost;
+
+	if (boost) {
+		setBoostStartTime(SDL_GetTicks());
+		std::cout << "SPEED BOOST START" << std::endl;
+	}
+	else
+		boostPercent = 3.0;
+}
+
+
+void GameObject::renderParticles(Texture &one, Texture &two, Texture &three, Texture &four, SDL_Renderer *rend) {
+	//Go through particles
+	for (int i = 0; i < TOTAL_PARTICLES2; ++i) {
+		//Delete and replace dead particles
+		if (particles[i]->isDead(getDrawParticle())) {
+			delete particles[i];
+			particles[i] = new Particle(getX() + 9, getY() + 30, one, two, three);
+		}
+	}
+
+	//Show particles
+	for (int i = 0; i < TOTAL_PARTICLES2; ++i) {
+		particles[i]->render(four, rend);
+	}
 }

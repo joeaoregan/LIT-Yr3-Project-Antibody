@@ -6,8 +6,9 @@ Saw Weapon
 
 // Saw Constructor
 WeaponPlSaw::WeaponPlSaw(int type) {
+	setType(PLAYER_WEAPON);		// 2017/02/19 Can't be set as PLAYER_WEAPON, as this causes an explosion (fixed with if statement in call to explosion)
 	//setPlayer(player);
-	setType(type);
+	setSubType(type);
 	std::cout << "Saw constuctor called.\n";
 	setWidth(40);
 	setHeight(40);

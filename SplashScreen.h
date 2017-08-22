@@ -6,15 +6,18 @@
 
 class SplashScreen {
 public:
-
 	Texture gFinalScoreTextTexture;		// Final score displayed at end of level / end of game
 	Texture gGameWinnerTextTexture;		// Game winner displayed at end of game
 	Texture gGameOverTextTexture;		// End of game, game over texture
 
+	Texture gEnemyShipTexture;			// Enemy Ship for info screen
+	Texture gVirusGreenTexture;			// Enemy Virus
+	Texture gVirusOrangeTexture;	// Enemy Virus Orange
+	Texture gVirusBlueTexture;		// Enemy Virus Blue
+
 	std::string storyPage1;
 	std::string storyPage2;
 	std::string storyPage3;
-	std::string storyPage4;
 	
 	bool initSplashScreens(SDL_Renderer *rend);
 	void closeSplashScreens();
@@ -26,21 +29,19 @@ public:
 	Texture gPressEnterSpriteSheetTexture;					// Press Enter to Continue sprite sheet
 	SDL_Rect gPressButtonToContinueSpriteClips[6];			// Sprite frames for Press Button to Continue animation
 
-	void level1IntroScreens(SDL_Renderer *rend, Texture &virus, Texture &orangeVirus, Texture &enemyShip, Texture &Laser, Texture &Health, Texture &rocket);
-	void level2IntroScreens(SDL_Renderer *rend, Texture &virus, Texture &orangeVirus, Texture &enemyShip);
-	void level3IntroScreens(SDL_Renderer *rend, Texture &virus, Texture &orangeVirus, Texture &enemyShip);
+	bool level1IntroScreens(SDL_Renderer *rend, Texture &Laser, Texture &Health, Texture &rocket);
+	bool level2IntroScreens(SDL_Renderer *rend);
+	bool level3IntroScreens(SDL_Renderer *rend);
 
 	Texture gLevelObjectiveTextTexture;// Objective for each level
 
 	void pressButtonToContinue(SDL_Renderer *rend, SDL_Event e);
 
-	void enemyInformationSplashScreenOne(SDL_Renderer *rend, Texture &background, Texture &tx1, Texture &tx2, Texture &tx3, Texture &img4, Texture &img5, Texture &img6);
-	void enemyInformationSplashScreenTwo(SDL_Renderer *rend, Texture &background, Texture &tx1, Texture &tx2, Texture &tx3, Texture &img4, Texture &img5, Texture &img6);
-	void enemyInformationSplashScreenThree(SDL_Renderer *rend, Texture &background, Texture &tx1, Texture &tx2, Texture &tx3, Texture &img4, Texture &img5, Texture &img6);
+	void enemyInformationSplashScreen(SDL_Renderer *rend, Texture &background, Texture &tx1, Texture &tx2, Texture &tx3, Texture &img4, Texture &img5);
 
 	// Intro Logos
-	Texture gLogo1;		// 2017/01/18 Texture for game Splash Screen 1
-	Texture gLogo2;		// 2017/01/18 Texture for game Splash Screen 2
+	Texture gGameLogoTexture;		// 2017/01/18 Texture for game Splash Screen 1
+	Texture gGameCreatorsTexture;	// 2017/01/18 Texture for game Splash Screen 2
 
 	// Story Text
 	Texture gStoryA;	// 2017/02/01

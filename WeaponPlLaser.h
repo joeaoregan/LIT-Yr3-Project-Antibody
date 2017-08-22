@@ -16,14 +16,14 @@ JOE: Moved functionality common to game objects to GameObjects class reducing th
 
 class WeaponPlLaser : public Weapon {
 public:
-	WeaponPlLaser(int angle = 0, int grade = 0);
+	WeaponPlLaser(int player, int angle = 0, int grade = 0);
 	~WeaponPlLaser();												// Destructor
 	
 	virtual void movement();								// Moves the laser	
 
 	void render(int player, Texture &orange, Texture &green, SDL_Renderer *rend);	// 2017/01/22 added textures to renderer
 
-	void spawn(int x, int y, int velocity, int player, int type = 0);
+	virtual void spawn(int x, int y, int velocity, int player, int type = 0);
 };
 
 #endif

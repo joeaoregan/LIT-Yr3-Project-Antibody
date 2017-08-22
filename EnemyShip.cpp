@@ -2,7 +2,9 @@
 #include "EnemyShip.h"
 
 EnemyShip::EnemyShip() {					// Constructor
+	setSubType(ENEMY_SHIP);
 	setScore(25);							// Value for killing object
+	setDamage(15);
 
 	// Initialise Dimensions
 	setWidth(100);
@@ -22,6 +24,10 @@ EnemyShip::EnemyShip() {					// Constructor
 	setColliderHeight(getHeight());
 
 	setFrames(0);
+
+	setType(ENEMY_OBJECT);
+
+	setName("Enemy Ship");
 }
 
 EnemyShip::~EnemyShip() {					// Destructor

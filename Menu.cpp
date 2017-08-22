@@ -75,6 +75,7 @@ void Menu::handleMenuEvents(SDL_Event& e) {
 }
 
 void Menu::closeMenu() {
+	// Buttons
 	gButtonSpriteSheetTexture.free();
 
 	// Menu

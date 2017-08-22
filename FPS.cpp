@@ -13,6 +13,14 @@ void FPS::fpsinit() {
 	frametimelast = SDL_GetTicks();
 }
 
+void FPS::fpsclose() {
+	gFPSTextTexture.free();
+}
+
+void FPS::rendFPS(std::string fpsText, SDL_Renderer *rend) {
+	gFPSTextTexture.UIText(fpsText, rend);						// Render text - Use a string to render the current FPS to a texture
+	gFPSTextTexture.render((SCREEN_WIDTH - 150) / 2, 8, rend);
+}
 
 float FPS::getFPS() { return framespersecond; }
 void FPS::setFPS(float fps) { framespersecond = fps; }

@@ -1,11 +1,14 @@
 #ifndef FPS_H
 #define FPS_H
 
-//#include "FPS.h"
+#include "Texture.h"
+
 #define FRAME_VALUES 10
 
 class FPS {
 public:
+	Texture gFPSTextTexture;			// Frames Per Second displayed at top of screen
+
 	// FPS
 	Uint32 frametimes[FRAME_VALUES];	// An array to store frame times:
 	Uint32 frametimelast;				// Last calculated SDL_GetTicks
@@ -16,9 +19,12 @@ public:
 
 	void fpsinit();
 	void fpsthink();
+	void fpsclose();
 
 	float getFPS();
 	void setFPS(float fps);
+
+	void rendFPS(std::string fpsText, SDL_Renderer *rend);
 };
 
 #endif
