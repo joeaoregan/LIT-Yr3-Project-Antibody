@@ -1,47 +1,13 @@
 /* 2017-01-09:
 Weapons will inherit from weapon
 */
-
 #include "Weapon.h"
 
 // Constructor
-Weapon::Weapon() {
-
-}
+Weapon::Weapon() { }
 
 // Deconstructors
-Weapon::~Weapon() {
-
-}
-
-int Weapon::getPlayer() {
-	return mPlayer;
-}
-
-void Weapon::setPlayer(int p) {
-	mPlayer = p;
-}
-
-int Weapon::getAngle() {
-	return mAngle;
-}
-void Weapon::setAngle(int a) {
-	mAngle = a;
-}
-
-int Weapon::getGrade() {
-	return mGrade;
-}
-void Weapon::setGrade(int g) {
-	mGrade = g;
-}
-
-
-
-// Render the Ninja Star objects to the screen
-void Weapon::render(LTexture &texture, SDL_Renderer *rend, int degrees) {
-	texture.render(getX(), getY(), rend, NULL, degrees, NULL, SDL_FLIP_NONE);
-}
+Weapon::~Weapon() { }
 
 void Weapon::handleEvent(SDL_Event& e, int player) {
 	if (player == 1) {
@@ -49,9 +15,9 @@ void Weapon::handleEvent(SDL_Event& e, int player) {
 			switch (e.key.keysym.sym) {
 			case SDLK_PLUS:													// +/= or + on keypad
 			case SDLK_KP_PLUS:
-			case SDLK_EQUALS: setVelY(getVelY() - getVelocity()); break;	// Up
+			case SDLK_EQUALS: setVelY(getVelY() - getVelocity()); setAngle(-10); break;	// Up
 			case SDLK_KP_MINUS:
-			case SDLK_MINUS: setVelY(getVelY() + getVelocity()); break;		// Down
+			case SDLK_MINUS: setVelY(getVelY() + getVelocity()); setAngle(10); break;		// Down
 			}
 		}
 		else if (e.type == SDL_KEYUP && e.key.repeat == 0) {
@@ -59,9 +25,9 @@ void Weapon::handleEvent(SDL_Event& e, int player) {
 			switch (e.key.keysym.sym) {
 			case SDLK_PLUS:													// +/= or + on keypad
 			case SDLK_KP_PLUS:
-			case SDLK_EQUALS: setVelY(getVelY() + getVelocity()); break;	// Up
+			case SDLK_EQUALS: setVelY(getVelY() + getVelocity()); setAngle(0); break;	// Up
 			case SDLK_KP_MINUS:
-			case SDLK_MINUS: setVelY(getVelY() - getVelocity()); break;		// undo move down 
+			case SDLK_MINUS: setVelY(getVelY() - getVelocity()); setAngle(0); break;		// undo move down 
 			}
 		}
 	}

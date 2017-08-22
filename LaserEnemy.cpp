@@ -11,12 +11,15 @@ Added enemy laser projectile, velocity is a minus value as it is travelling righ
 
 // LaserEnemy Constructor
 LaserEnemy::LaserEnemy(int type) {
-	//std::cout << "Enemy Laser constuctor called.\n";
+	std::cout << "Enemy Laser constuctor called.\n";
 	setWidth(50);
 	setHeight(5);
-	setVelocity(15);
+	setVelocity(-15);
+	setVelX(-15);
+	//setVelY(0);
 	setType(type);
 	setAlive(true);
+	setName("Enemy Laser");
 
 	if (getType() == 0) {
 		setColliderWidth(getWidth());
@@ -38,27 +41,8 @@ void LaserEnemy::movement() {
 	GameObject::movement();
 	setY(getY() + getVelY());
 
-	setColliderX(getX());
-	setColliderY(getY());
-
 	// destroy laser beam once it is offscreen
-	if (getY() < 40) setAlive(false);			// Once it reaches the pink border
-	else if (getY() > (SCREEN_HEIGHT_GAME - 40)) setAlive(false);	// 600 - 40 for pink border
-	else setAlive(true);
-
-	if (getX() < -getWidth()) setAlive(false);	// The width of the object off the screen
-	else if (getX() > SCREEN_WIDTH) setAlive(false);	// offscreen to the right
-	else setAlive(true);
-}
-
-void LaserEnemy::spawn(int x, int y, SDL_Rect collider) {
-	setX(x - 20);
-	setY(y + 30);
-	setVelX(-getVelocity());	// Minus value as travelling right to left
-	setVelY(0);
-	setCollider(collider);
-}
-
-void LaserEnemy::render(LTexture &texture, SDL_Renderer *rend) { // 2017/01/22 Moved from game.cpp
-	texture.render(getX(), getY(), rend);
+	//if (getY() < 40) setAlive(false);			// Once it reaches the pink border
+	//else if (getY() > (SCREEN_HEIGHT_GAME - 40)) setAlive(false);	// 600 - 40 for pink border
+	//else setAlive(true);
 }

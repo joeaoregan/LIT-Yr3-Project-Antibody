@@ -1,7 +1,5 @@
 #include "BloodCell.h"
-//#define MOVEMENT 250
 int up = 0, down = 250;
-
 
 BloodCell::BloodCell(int type) {
 	//setColliderR(getWidth() / 2);		// Set circular collider
@@ -14,7 +12,7 @@ BloodCell::BloodCell(int type) {
 	setMovement(200);
 	setDistanceBetween(100);
 
-	if (getType() == BLOOD_CELL) {
+	if (getType() == BLOOD_CELL) {					// Set dimensions for different types of blood cells
 		setWidth(100);
 		setHeight(55);
 	}
@@ -36,7 +34,7 @@ BloodCell::BloodCell(int type) {
 }
 
 BloodCell::~BloodCell() {
-
+	std::cout << "Blood Cell Destroyed" << std::endl;
 }
 
 //void EnemyVirus::movement(Ship ship) {	// No need for full ship object, just ship y coord will do
@@ -53,34 +51,4 @@ void BloodCell::movement() {
 		down += 1;
 		if (down >= getMovement()) up = 0;
 	}
-
-	// destroy blood cell once it is offscreen
-	if (getX() < -getWidth()) setAlive(false);
-	else setAlive(true);
-}
-
-void BloodCell::render(LTexture &texture, SDL_Renderer *rend, int degrees) {
-	texture.render(getX(), getY(), rend, NULL, degrees, NULL, SDL_FLIP_NONE);
-}
-
-int BloodCell::getMovement() {
-	return mMovement;
-}
-void BloodCell::setMovement(int move) {
-	mMovement = move;
-}
-
-int BloodCell::getDistanceBetween() {
-	return mDistanceBetween;
-}
-void BloodCell::setDistanceBetween(int d) {
-	mDistanceBetween = d;
-}
-
-// Rotate the object
-int BloodCell::getRotationDirection() {
-	return mRotationDirection;
-}
-void BloodCell::setRotationDirection(int d) {
-	mRotationDirection = d;
 }

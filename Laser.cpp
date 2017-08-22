@@ -17,22 +17,6 @@ JOE: Moved functionality common to game objects to GameObjects class reducing th
 #include "Laser.h"
 #include "Player.h"
 
-// Laser Constructor
-Laser::Laser() {
-	//std::cout << "Laser constuctor called.\n";
-
-	setWidth(50);
-	setHeight(5);
-	setVelocity(15);
-
-	setColliderWidth(getWidth());
-	setColliderHeight(getHeight());
-
-	setAngle(0);	// Fire straight
-	setGrade(0);	// Basic Laser = 0, Triple Laser = 1
-
-	setAlive(true);	// Make sure laser is alive from the beginning
-}
 Laser::Laser(int angle, int grade) {
 	//std::cout << "Laser constuctor called.\n";
 
@@ -48,23 +32,6 @@ Laser::Laser(int angle, int grade) {
 
 	setAlive(true);
 }
-Laser::Laser(int type) {
-	//std::cout << "Laser constuctor called.\n";
-
-	setWidth(50);
-	setHeight(5);
-	setVelocity(15);
-
-	setColliderWidth(getWidth());
-	setColliderHeight(getHeight());
-
-	setAngle(0);	// Fire straight
-	setGrade(0);	// Basic Laser = 0, Triple Laser = 1
-	setType(type);
-
-	setAlive(true);
-}
-
 
 // Laser Destructor
 Laser::~Laser(){
@@ -82,13 +49,6 @@ void Laser::movement() {
 			setY(getY() - 3);
 		}
 	//}
-
-	setColliderX(getX());
-	setColliderY(getY());
-
-	// destroy laser beam once it is offscreen
-	if (getX() > SCREEN_WIDTH) setAlive(false);
-	else setAlive(true);
 }
 
 void Laser::spawn(int x, int y, int velocity, int player, int type) {
@@ -98,22 +58,6 @@ void Laser::spawn(int x, int y, int velocity, int player, int type) {
 	setVelX(velocity);
 	setPlayer(player);
 	setType(type);
-}
-/*
-void Laser::spawn(int x, int y, int velocity, int player) {
-	setX(x);
-	setY(y);
-	//setVelocity(velocity);
-	setVelX(velocity);
-	setPlayer(player);
-}
-*/
-void Laser::spawn(int x, int y, SDL_Rect collider) {
-	setX(x + 65);
-	setY(y + 30);
-	setVelX(getVelocity());
-	setVelY(0);
-	setCollider( collider);
 }
 
 // Render the laser objects to the screen // 2017/01/22 Moved from game.cpp

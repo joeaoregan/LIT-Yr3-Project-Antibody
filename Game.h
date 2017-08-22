@@ -50,15 +50,13 @@ public:
 	int whiteBloodCellsActive;
 	int smallBloodCellsActive;
 
-	void score(int type);		// calc the scores
-
 	enum levels { MENU, LEVEL_1, LEVEL_2, LEVEL_3 };
 	enum powerUpTypes { HEALTH = 1, LASER };
 	enum virusType { GREEN, ORANGE };
 	enum playerWeapons {NINJA_STAR_P1, NINJA_STAR_P2, LASER_P1, LASER_P2, SAW_P1, SAW_P2, LASER_V2_P1, LASER_V2_P2, ROCKET};
 
-	int getCurrentLevel();
-	void setCurrentLevel(int l);
+	int getCurrentLevel() { return mCurrentLevel; }
+	void setCurrentLevel(int l) { mCurrentLevel = l; }
 
 	//int counter = 0;		// counter for changing alpha for flashing
 	bool gameOver = false;
@@ -121,10 +119,10 @@ public:
 
 	void spawnRandom(int &x, int &y, int &randomSpeed, int xMuliplier = 0, int yPadding = 80, int speed = 1);
 
-	int getNumPlayers();
-	void setNumPlayers(int n);
+	int getNumPlayers() { return mNumPlayers; }
+	void setNumPlayers(int n) { mNumPlayers = n; }
 	void managePlayerHealth(int player, int score, std::string name = "Game Object");
-	void managePlayerScores(int score, int player);
+	void managePlayerScores(int score, int player, int type);
 
 	static Game* Instance() {
 		if (s_pInstance == 0) {

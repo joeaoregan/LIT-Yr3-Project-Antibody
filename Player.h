@@ -6,7 +6,7 @@
 
 // The Player ship that will move around on the screen
 
-/*
+/* 
 2017-01-04:
 Fixed dimensions of ship
 */
@@ -18,23 +18,21 @@ const int TOTAL_PARTICLES = 20;	// Particle count
 
 
 class Player : public GameObject {
-public:
+public:				
 	Player();							// Initializes the variables
 	Player(LTexture &dark, LTexture &medium, LTexture &light);				// 2017/01/20 Particles
 
-	SDL_Rect mCollider;				// Players Hit Box
-
 	//void handleEvent(SDL_Event& e);
 	void handleEvent(SDL_Event& e, int player);	// Takes key presses and adjusts the ship's velocity
-	virtual void movement();		// Moves the ship
+	virtual void movement();		// Moves the ship	
 	//void render();					// Shows the ship on the screen
 	void gameControllerDPad(SDL_Event& e);
 	void gameControllerButton(SDL_Event& e);
 	void resetPreviousDirection();
 
 	// Speed boost
-	bool getSpeedBoost();
-	unsigned int getBoostStartTime();
+	bool getSpeedBoost() { return mSpeedBoost; }
+	unsigned int getBoostStartTime() { return mBoostStartTime; }
 	void setSpeedBoost(bool boost);
 
 	// Movement
@@ -43,28 +41,19 @@ public:
 	void moveLeft();
 	void moveRight();
 	int moveDiagonal();
-
-//	SDL_Rect getCollider();
-	SDL_Rect* getCollider() {
-        return &mCollider;
-	}
-	void setShipColX(int x);					// get the ships X position
-	void setShipColY(int y);					// get the ships Y position
-
+	
 	// Saw
-	bool getSawActive();
-	void setSawActive(bool active);
-	bool sawActive;
+	bool getSawActive() { return sawActive; }
+	void setSawActive(bool active) { sawActive = active; }
 
 	// Laser
-	int getLaserGrade();
-	void setLaserGrade(int grade);
+	int getLaserGrade() { return mLaserGrade; }
+	void setLaserGrade(int grade) { mLaserGrade = grade; }
 
-	void render(LTexture &player, LTexture &dark, LTexture &medium, LTexture &light, LTexture &shimmer, SDL_Renderer *rend);
+	void render(LTexture &player, LTexture &dark, LTexture &medium, LTexture &light, LTexture &shimmer, SDL_Renderer *rend);	// Shows the ship with particles on the screen
 	void rendPlayerLives(LTexture &lives, int player, SDL_Renderer *rend);
-	//void render(LTexture &texture, LTexture &one, LTexture &two, LTexture &three, LTexture &four, SDL_Renderer *rend);	// Shows the ship with particles on the screen
-	bool getDrawParticle();
-	void setDrawParticle(bool p);
+	bool getDrawParticle() { return drawParticle; }
+	void setDrawParticle(bool p) { drawParticle = p; }
 
 private:
 	bool mSpeedBoost;
@@ -77,6 +66,8 @@ private:
 	bool drawParticle;
 
 	int mLaserGrade;
+
+	bool sawActive;
 };
 
 #endif
