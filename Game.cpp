@@ -65,7 +65,7 @@ void setupAnimationClip(SDL_Rect rect[], int frames, int amount, bool type2 = fa
 // Classes
 Menu menu1;
 HUD headsUpDisplay;
-Audio audio;
+Audio audio1;
 StatusBar bar;
 SplashScreen splash;
 FPS fps;							// 2017/02/01 Moved FPS functionality to it's own class
@@ -285,7 +285,7 @@ bool Game::loadMedia() {
 	menu1.loadMediaMenu(gRenderer);						// Load buttons etc
 	success = player1->loadMediaPlayer(gRenderer);		// Load particles for each player
 	success = player2->loadMediaPlayer(gRenderer);		// Load particles for each player
-	success = audio.loadMediaAudio();
+	success = audio1.loadMediaAudio();
 	success = headsUpDisplay.loadLevelStuff(gRenderer);			// 2017/02/21 Load player lives
 
 	if (!gProfessorMapTexture.loadFromFile("Art/Prof.png", gRenderer)) {			// Load Dark Particle texture
@@ -500,14 +500,14 @@ bool Game::loadMedia() {
 	}
 
 	//if (MUSIC_ON) audio.music();		// EDIT IN _TestData.h
-	audio.music();		// EDIT IN _TestData.h
+	audio1.music();		// EDIT IN _TestData.h
 
 	return success;
 }
 
 void setupAnimationClip(SDL_Rect rect[], int frames, int amount, bool type2) {
 	if (!type2) {
-		for (unsigned int i = 0; i < frames; ++i) {
+		for (int i = 0; i < frames; ++i) {
 			rect[i].x = i * amount;
 			rect[i].y = 0;
 			rect[i].w = amount;
@@ -599,7 +599,7 @@ void Game::close() {
 	menu1.closeMenu();				// Close menu stuff
 	player1->closePlayer();
 	player2->closePlayer();
-	audio.destroy();				// Close audio files
+	audio1.destroy();				// Close audio files
 	headsUpDisplay.closeLevelStuff();
 
 	// Empty Lists
@@ -676,9 +676,14 @@ void Game::displayText() {
 	std::stringstream timeText;
 	timeText.str("");													// Set text to be rendered - string stream - print the time since timer last started - initialise empty
 
-	if (!levelOver) {
+	if (!levelOver && !gameOver) {
 		if (countdownTimer > 0 && countdownTimer <= GAME_TIMER) {
 			timeText << "Time: " << countdownTimer;					// Set the game timer
+
+			gTimeTextTexture.UITextTimer(timeText.str().c_str(), gRenderer, countdownTimer);	// Render Text - Use a string to render the current Game Time to a Texture
+
+			gFPSTextTexture.UIText(framesPerSec.str().c_str(), gRenderer);						// Render text - Use a string to render the current FPS to a texture
+
 			levelOver = false;
 		} else
 			if (countdownTimer <= 0 || countdownTimer > GAME_TIMER + 6) {
@@ -686,15 +691,12 @@ void Game::displayText() {
 			if (getCurrentLevel() == MAX_NUM_LEVELS) gameOver = true;
 		}
 
-		gTimeTextTexture.UITextTimer(timeText.str().c_str(), gRenderer, countdownTimer);	// Render Text - Use a string to render the current Game Time to a Texture
-
-		gameTimer();													// Set the count down timer
+		gameTimer();																		// Set the count down timer - decrement by 1 second
 
 		//headsUpDisplay.gameTime(countdownTimer, gRenderer);
 
-		gTimeTextTexture.UITextTimer(timeText.str().c_str(), gRenderer, countdownTimer);	// Render Text - Use a string to render the current Game Time to a Texture
+		//gTimeTextTexture.UITextTimer(timeText.str().c_str(), gRenderer, countdownTimer);	// Render Text - Use a string to render the current Game Time to a Texture
 
-		gFPSTextTexture.UIText(framesPerSec.str().c_str(), gRenderer);						// Render text - Use a string to render the current FPS to a texture
 		//FPSTextTexture.render((SCREEN_WIDTH - 150) / 2, 8, gRenderer);
 		//fps.rendFPS(framesPerSec.str().c_str(), gRenderer);
 
@@ -703,13 +705,13 @@ void Game::displayText() {
 		if (infoMessageGeneral != "") gInfoMessageTextTexture.UITextPlayerMessage(infoMessageGeneral, gRenderer);	// Render Text - Use a string to render General notifications
 	}
 
-	if (levelOver == true) {
+	else if (levelOver == true) {
 		//std::cout << "Level " << getCurrentLevel() << " Complete" << std::endl;
 		//gamerOverMessageDisplayCounter = 0;
 		gameProgress();
 	}// Levels
 
-	if (gameOver == true) {
+	else if (gameOver == true) {
 		if (player1Score > player2Score)
 			gameWinners = "Player 1 Wins";
 		else if (player2Score > player1Score)
@@ -758,7 +760,7 @@ bool Game::playerInput(bool quit = false) {
 			// Play/Pause music on a m key press, stop music on 0
 			case SDLK_m:
 				if (Mix_PlayingMusic() == 0) {							// If there is no music playing
-					int song = audio.playMusic();
+					int song = audio1.playMusic();
 					identifyTrack(song);
 					infoMessage("Music Play");
 				}
@@ -832,12 +834,12 @@ bool Game::playerInput(bool quit = false) {
 }
 
 void Game::musicTrackForward() {
-	int songName = audio.musicForwardSongName();
+	int songName = audio1.musicForwardSongName();
 	identifyTrack(songName);
 	infoMessage("Music Track Skip Forwards");
 }
 void Game::musicTrackBackward() {
-	int songName = audio.musicBackSongName();
+	int songName = audio1.musicBackSongName();
 	identifyTrack(songName);
 	infoMessage("Music Track Skip Backwards");
 }
@@ -856,7 +858,11 @@ void Game::identifyTrack(int songName) {
 	}
 	else if (songName == 3) {
 		infoMessage("Artist: Jim O'Regan", 1);
-		infoMessage("Song Title: The Last Step", 2);
+		infoMessage("Song Title: The First Step", 2);
+	}
+	else if (songName == 4) {
+		infoMessage("Artist: Joe O'Regan", 1);
+		infoMessage("Song Title: Virus", 2);
 	}
 }
 
@@ -919,7 +925,7 @@ void Game::renderGameObjects() {
 
 	SDL_RenderSetViewport(gRenderer, &gameViewport);				// Set the viewport
 
-	if (levelOver == false) {
+	if (levelOver == false && gameOver == false) {
 		scrollBackground();
 
 		//if (gameOver == false) {
@@ -1271,8 +1277,7 @@ void Game::renderGameObjects() {
 		resetGame(getCurrentLevel() + 1);
 		if (getCurrentLevel() >	MAX_NUM_LEVELS) gameOver = true;
 	}
-
-	if (gameOver == true) {
+	else if (gameOver == true) {
 		SDL_RenderSetViewport(gRenderer, NULL);  // UIViewport   gameViewport
 		splash.endOfGame(gRenderer, getCurrentLevel(), finalScores, gameWinners);
 	}
@@ -1578,7 +1583,7 @@ void Game::spawnExplosion(int x, int y, int subType) {
 	p_Explosion->spawn(x, y - 30);								// Spawn the explosion at the given x & y coords
 	listOfGameObjects.push_back(p_Explosion);					// Add explosion to list of game objects
 
-	if (subType == EXPLOSION) audio.explosionFX();				// Play explosion sound effect
+	if (subType == EXPLOSION) audio1.explosionFX();				// Play explosion sound effect
 }
 
 void Game::spawnLaser(int x, int y, int player, int velocity, int grade) {
@@ -1613,8 +1618,8 @@ void Game::spawnLaser(int x, int y, int player, int velocity, int grade) {
 	}
 
 	if (!gameOver) {
-		if (player == 1) audio.laserFX_P1();
-		else if (player == 2) audio.laserFX_P2();
+		if (player == 1) audio1.laserFX_P1();
+		else if (player == 2) audio1.laserFX_P2();
 	}
 }
 void Game::spawnEnemyLaser(int xCoord, int yCoord, int type, int whichVirus) {
@@ -1626,7 +1631,7 @@ void Game::spawnEnemyLaser(int xCoord, int yCoord, int type, int whichVirus) {
 			p_LaserE->spawn(xCoord - 20, yCoord + 30, p_LaserE->getVelocity());
 			listOfGameObjects.push_back(p_LaserE);
 
-			audio.laserFX_Enemy();
+			audio1.laserFX_Enemy();
 		}
 	}
 	else if(type == VIRUS_FIREBALL){
@@ -1680,8 +1685,8 @@ void Game::spawnNinjaStar(int x, int y, int player) {					// player to spawn for
 
 	listOfGameObjects.push_back(p_NinjaStar);							// Add to game objects list
 	if (!gameOver) {
-		if (player == 1) audio.ninjaFX_P1();							// Play a different sound effect depending on the player
-		else if (player == 2) audio.ninjaFX_P2();
+		if (player == 1) audio1.ninjaFX_P1();							// Play a different sound effect depending on the player
+		else if (player == 2) audio1.ninjaFX_P2();
 	}
 }
 void Game::spawnRocket(int x, int y, int player, int type, bool launch) {
@@ -1721,7 +1726,7 @@ void Game::spawnSaw(int x, int y, int subType) {		// player to spawn for and the
 		GameObject* p_Saw = new WeaponPlSaw(subType);		// Create new saw
 		p_Saw->spawn(x + 65, y + 25);					// Spawn the saw at the given x & y coords
 		listOfGameObjects.push_back(p_Saw);				// Add the saw to the game object list
-		if (!gameOver) audio.sawFX();					// Play the sound effect for the saw starting
+		if (!gameOver) audio1.sawFX();					// Play the sound effect for the saw starting
 	}
 	else if (!createSaw) {
 		for (unsigned int index = 0; index != listOfGameObjects.size(); ++index) {
@@ -1992,14 +1997,15 @@ void Game::managePlayerHealth(int player, int score, std::string name) {
 				player2->setHealth(100);
 			}
 		}
-
-		if (player2->getAlive() && SDL_HapticRumblePlay(gControllerHaptic, 0.9, 500) != 0) {	// Haptic (Force Feedback) Play rumble at 75% strenght for 500 milliseconds 2017/01/20 Moved to player 2, was rumbling for both players
-			printf("Warning: Unable to play rumble! %s\n", SDL_GetError());
+		if (SDL_NumJoysticks() > 0) {
+			if (player2->getAlive() && SDL_HapticRumblePlay(gControllerHaptic, 0.9, 500) != 0) {	// Haptic (Force Feedback) Play rumble at 75% strenght for 500 milliseconds 2017/01/20 Moved to player 2, was rumbling for both players
+				printf("Warning: Unable to play rumble! %s\n", SDL_GetError());
+			}
 		}
 	}
 
 	if (score > 0) {
-		audio.explosionFX();
+		audio1.explosionFX();
 		if (player == PLAYER_1) std::cout << "Player 1 has collided with " << name << "! Health: " << player1->getHealth() << std::endl;
 		if (player == PLAYER_2) std::cout << "Player 2 has collided with " << name << "! Health: " << player2->getHealth() << std::endl;
 	}

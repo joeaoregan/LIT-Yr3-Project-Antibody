@@ -100,7 +100,7 @@ bool Texture::loadFromRenderedText(std::string textureText, SDL_Color textColor,
 		SDL_FreeSurface(textSurface);	//Get rid of old surface
 	}
 	else {
-		printf("Unable to render text surface! SDL_ttf Error: %s\n", TTF_GetError());
+		printf("loadFromRenderedText(): Unable to render text surface! SDL_ttf Error: %s\n", TTF_GetError());
 	}
 
 	return mTexture != NULL;	// Return success
@@ -174,22 +174,26 @@ void Texture::render(int x, int y, SDL_Renderer *rend, SDL_Rect* clip, double an
 	Function to show who created the game
 */
 void Texture::createdByText(SDL_Renderer* rend) {
-	std::string textureText = "";
+	std::string textureText = "ANTIBODY";
+	SDL_Color txtColour = { 0, 255, 0, 255 };
 
-	if (SDL_GetTicks() <= lastTime + 1500) {								// Decrement countdown timer
+	if (SDL_GetTicks() > 0 && SDL_GetTicks() <= lastTime + 1500) {								// Decrement countdown timer
 		textureText = "ANTIBODY";
+		txtColour = { 50, 200, 255, 255 };	// light blue
 	}
 	else if (SDL_GetTicks() > lastTime + 1500 && SDL_GetTicks() < lastTime + 3000) {
 		textureText = "A GAME BY";
+		txtColour = { 0, 255, 0, 255 };
 	}
 	else if (SDL_GetTicks() > lastTime + 3000 && SDL_GetTicks() < lastTime + 4500) {
 		textureText = "Seán Horgan and Joe O'Regan";
+		txtColour = { 0, 255, 0, 255 };
 	}
 	else if (SDL_GetTicks() >= lastTime + 4500)
 		lastTime = SDL_GetTicks();
 
-	if (!loadFromRenderedText(textureText, { 0, 255, 0, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 16), rend, true)) {		// Green Text
-		printf("Unable to render Created By Text Texture!\n");
+	if (!loadFromRenderedText(textureText, txtColour, TTF_OpenFont("Fonts/Retro.ttf", 16), rend, true)) {		// Green Text
+		printf("createdByText(): Unable to render Created By Text Texture!\n");
 	}
 }
 /*
@@ -198,7 +202,7 @@ void Texture::createdByText(SDL_Renderer* rend) {
 */
 void Texture::speedBoostText(std::string textureText, SDL_Renderer* rend) {
 	if (!loadFromRenderedText(textureText, { 0, 255, 0, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 13), rend, true)) {		// Green Text
-		printf("Unable to render Speed Boost User Interface Text Texture!\n");
+		printf("speedBoostText(): Unable to render Speed Boost User Interface Text Texture!\n");
 	}
 }
 /*
@@ -207,7 +211,7 @@ void Texture::speedBoostText(std::string textureText, SDL_Renderer* rend) {
 */
 void Texture::numRocketsLeft(std::string textureText, SDL_Renderer* rend) {
 	if (!loadFromRenderedText(textureText, { 0, 255, 0, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 36), rend)) {		// Green Text
-		printf("Unable to render Num Rockets Left User Interface Text Texture!\n");
+		printf("numRocketsLeft(): Unable to render Num Rockets Left User Interface Text Texture!\n");
 	}
 }
 /*

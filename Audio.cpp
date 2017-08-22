@@ -56,17 +56,21 @@ void Audio::music() {
 	if (gMusic1 == NULL) {
 		printf("Failed to load rage music! SDL_mixer Error: %s\n", Mix_GetError());
 	}
-	gMusic2 = Mix_LoadMUS("Audio/GameSong2.mp3");											// Load music
+	gMusic2 = Mix_LoadMUS("Audio/GameSong2.mp3");												// Load music
 	if (gMusic2 == NULL) {
 		printf("Failed to load rage music! SDL_mixer Error: %s\n", Mix_GetError());
 	}
-	gMusic3 = Mix_LoadMUS("Audio/GameSong3.mp3");											// Load music
+	gMusic3 = Mix_LoadMUS("Audio/GameSong3.mp3");												// Load music
 	if (gMusic3 == NULL) {
 		printf("Failed to load rage music! SDL_mixer Error: %s\n", Mix_GetError());
 	}
-	gMusic4 = Mix_LoadMUS("Audio/TheFirstStep.mp3");											// Load music
+	gMusic4 = Mix_LoadMUS("OriginalMusic/1TheFirstStep.mp3");									// Load music
 	if (gMusic4 == NULL) {
-		printf("Failed to load rage music! SDL_mixer Error: %s\n", Mix_GetError());
+		printf("Failed to load The First Step music! SDL_mixer Error: %s\n", Mix_GetError());
+	}
+	gMusic5 = Mix_LoadMUS("OriginalMusic/2Virus.mp3");											// Load music
+	if (gMusic5 == NULL) {
+		printf("Failed to load Virus music! SDL_mixer Error: %s\n", Mix_GetError());
 	}
 
 	// Add songs to vector
@@ -74,6 +78,7 @@ void Audio::music() {
 	listOfMusic.push_back(gMusic2);
 	listOfMusic.push_back(gMusic3);
 	listOfMusic.push_back(gMusic4);
+	listOfMusic.push_back(gMusic5);
 
 	currentSong = rand() % NUMBER_OF_SONGS;				// Play a random song on start up
 
@@ -91,7 +96,9 @@ int Audio::musicForwardSongName() {							// Pick next track on the list
 	if (currentSong == 0) std::cout << "current song 1" << std::endl;
 	else if (currentSong == 1) std::cout << "current song 2" << std::endl;
 	else if (currentSong == 2) std::cout << "current song 3" << std::endl;
-	else if (currentSong == 3) std::cout << "Current Song: The Last Step" << std::endl;
+//	else if (currentSong == 3) std::cout << "Current Song: The Last Step" << std::endl;
+	else if (currentSong == 3) std::cout << "Current Song: The First Step" << std::endl;
+	else if (currentSong == 4) std::cout << "Current Song: Virus" << std::endl;
 
 	return currentSong;
 }
@@ -152,11 +159,11 @@ int Audio::musicBack(int song, int numSongs) {								// Pick previous track on 
 
 void Audio::laserFX_P1() {
 	//if (player == 1) Mix_PlayChannel(-1, gLaserFX1, 0);		// Different sound for each player laser
-	Mix_PlayChannel(-1, gLaserFX1, 0);		// Different sound for each player laser				
+	Mix_PlayChannel(-1, gLaserFX1, 0);		// Different sound for each player laser
 }
 
 void Audio::laserFX_P2() {
-	Mix_PlayChannel(-1, gLaserFX2, 0);		// Different sound for each player laser				
+	Mix_PlayChannel(-1, gLaserFX2, 0);		// Different sound for each player laser
 }
 
 void Audio::ninjaFX_P1() {
@@ -197,7 +204,7 @@ void Audio::destroy() {
 	Mix_FreeChunk(gSawFX);			// Free a sound effect
 	gSawFX = NULL;
 
-	
+
 	//Free the music
 	Mix_FreeMusic(gMusic1);	// Free music
 	gMusic1 = NULL;
@@ -207,4 +214,6 @@ void Audio::destroy() {
 	gMusic3 = NULL;
 	Mix_FreeMusic(gMusic4);	// Free music
 	gMusic4 = NULL;
+	Mix_FreeMusic(gMusic5);	// Free music
+	gMusic5 = NULL;
 }

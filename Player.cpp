@@ -341,8 +341,6 @@ int Player::moveDiagonal() {
 	return getVelocity() / sqrt(2);
 }
 
-
-
 void Player::gameControllerDPad(SDL_Event& e) {
 	if (e.jhat.value == SDL_HAT_UP) {
 		resetPreviousDirection();

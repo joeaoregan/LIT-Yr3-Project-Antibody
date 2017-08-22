@@ -5,7 +5,7 @@
 #include <SDL_mixer.h>				// 2017/01/09 JOE: SOUND - library we use to make audio playing easier
 #include <vector>
 
-#define NUMBER_OF_SONGS 4;			// Total number of songs in the playlist
+#define NUMBER_OF_SONGS 5;			// Total number of songs in the playlist
 
 class Audio {
 public:
@@ -18,7 +18,8 @@ public:
 	Mix_Music *gMusic2 = NULL;
 	Mix_Music *gMusic3 = NULL;
 	Mix_Music *gMusic4 = NULL;				// 2017/02/17 - The First Step - Jimmy O'Regan
-	unsigned int currentSong;						// Play a random song when the game starts
+	Mix_Music *gMusic5 = NULL;				// 2017/02/22 - Virus - Joe O'Regan
+	unsigned int currentSong;				// Play a random song when the game starts
 
 	std::vector<Mix_Music*> listOfMusic;	// List of Music tracks
 
