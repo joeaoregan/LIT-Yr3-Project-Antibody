@@ -39,8 +39,8 @@ void Button::setPosition(int x, int y) {
 }
 
 void Button::handleEvent(SDL_Event* e, int buttonSelected) {
-	SDL_Color textColorOne = { 255, 255, 255 };	//If mouse event happened	
-	
+//	SDL_Color textColorOne = { 255, 255, 255 };	//If mouse event happened
+
 	if (e->type == SDL_MOUSEMOTION || e->type == SDL_MOUSEBUTTONDOWN || e->type == SDL_MOUSEBUTTONUP) {
 		//Get mouse position
 		//MainMenu menu;
@@ -48,10 +48,10 @@ void Button::handleEvent(SDL_Event* e, int buttonSelected) {
 		SDL_GetMouseState(&x, &y);
 
 		bool inside = true;											// Check if mouse is in button
-		
+
 		if (x < mPosition.x) inside = false;						// Mouse is left of the button
-		else if (x > mPosition.x + BUTTON_WIDTH) inside = false;	// Mouse is right of the button		
-		else if (y < mPosition.y) inside = false;					// Mouse above the button		
+		else if (x > mPosition.x + BUTTON_WIDTH) inside = false;	// Mouse is right of the button
+		else if (y < mPosition.y) inside = false;					// Mouse above the button
 		else if (y > mPosition.y + BUTTON_HEIGHT) inside = false;	// Mouse below the button
 
 		//Mouse is outside button
@@ -101,7 +101,7 @@ void Button::handleEvent(SDL_Event* e, int buttonSelected) {
 					}
 					else if (buttonSelected == GAME_1PLAYER) {
 						std::cout << "Selected: 1 Player Game!" << std::endl;
-						Game::Instance()->setCurrentLevel(LEVEL_1);								// TEST ENTER NAME
+						Game::Instance()->setCurrentLevel(LEVEL_1);					// TEST ENTER NAME
 						//Game::Instance()->setCurrentLevel(ENTER_NAME);
 						Game::Instance()->twoPlayer = false;
 						Game::Instance()->displayLevelIntro = false;
@@ -117,13 +117,14 @@ void Button::handleEvent(SDL_Event* e, int buttonSelected) {
 						Game::Instance()->setCurrentLevel(SETTINGS);
 					}
 					else if (buttonSelected == MENU_TO_HIGH_SCORES) {
+						//highScoresButton.loadMedia();								// Load the media for High Scores
 						Game::Instance()->setCurrentLevel(HIGH_SCORES);
 						std::cout << "Selected: View High Scores" << std::endl;
 					}
 					else if (buttonSelected == QUIT) {
 						std::cout << "Selected: Quit The Game" << std::endl;
 						Game::Instance()->close();
-						//Game::Instance()->setCurrentLevel(ENTER_NAME);		// TEST ENTER NAME
+						//Game::Instance()->setCurrentLevel(ENTER_NAME);			// TEST ENTER NAME
 					}
 				}
 
@@ -174,7 +175,7 @@ void Button::handleEvent(SDL_Event* e, int buttonSelected) {
 						//Game::Instance()->highScoresLoaded = false;			// High Scores media not loaded after clearing NEED TO SET CLEAR
 					}
 				}
-
+				/*
 				// Handle button events for Enter Name menu
 				else if (Game::Instance()->getCurrentLevel() == ENTER_NAME) {
 					if (buttonSelected == RESET) {
@@ -183,10 +184,11 @@ void Button::handleEvent(SDL_Event* e, int buttonSelected) {
 					}
 					if (buttonSelected == NAME_TO_MENU) {
 						Game::Instance()->setCurrentLevel(MENU);
+						//Game::Instance()->enterName1->closeNameMedia();
 						//Game::Instance()->highScoresLoaded = false;		// High Scores media not loaded after clearing NEED TO SET CLEAR
 					}
 				}
-
+				*/
 				std::cout << "Level: " << Game::Instance()->getCurrentLevel() << std::endl; // Display current level
 
 				// USE THIS ONE TO HIGHLIGHT
@@ -206,7 +208,7 @@ void Button::handleEvent(SDL_Event* e, int buttonSelected) {
 }
 
 // Render the current button sprite at the button position
-// 
+//
 void Button::render(Texture &texture, SDL_Rect *currentClip) {
 	texture.render(mPosition.x, mPosition.y, currentClip);	// Show current button spriteCHANGED - RENDERER IS ADDED
 //void Button::render(Texture &texture, SDL_Renderer *rend, SDL_Rect *currentClip) {

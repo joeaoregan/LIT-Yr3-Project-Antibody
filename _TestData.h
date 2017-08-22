@@ -25,7 +25,7 @@
 #define MESSAGE_TIME_MAP 200				// Player Information Message, Stays on screen for a couple of seconds
 
 // Display the game splash screens
-#define DISPLAY_GAME_INTRO_SCREENS false	// needs to be true when game is complete
+#define DISPLAY_GAME_INTRO_SCREENS true	// needs to be true when game is complete
 #define DISPLAY_LEVEL_INTRO_SCREENS false	// needs to be true when game is complete
 
 #define MUSIC_ON false

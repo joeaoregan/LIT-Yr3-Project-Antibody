@@ -208,14 +208,13 @@
 #include "Explosion.h"				// 2017/01/25 JOE: Added explosions for Player Laser colliding with Enemy Ships and Virus
 #include "FPS.h"					// 2017/02/01 SEAN/JOE: Class for handling frames for second
 #include "SplashScreen.h"			// 2017/02/08 JOE: Class for displaying splash screens
-#include "ScoreValueText.h"			// 2017-02-09 JOE: Class for displaying values of scores for destroying objects
+#include "ScoreValueText.h"			// 2017/02/09 JOE: Class for displaying values of scores for destroying objects
 #include "StatusBar.h"				// 2017/02/09 JOE: Class for creating status bars, such as health bar
 #include "CollisionStuff.h"			// 2017/02/09 JOE: Class for handling collisions between objects
 #include "Gamepad.h"				// 2017/02/09 JOE: Class for handling gamepad functionality
 #include "Audio.h"					// 2017/02/09 JOE: Class for handling music and sound effects
 #include "HUD.h"					// 2017/02/21 JOE: Class for handling displaying objects on heads up display
 #include "EnemyBoss.h"				// 2017/02/03 JOE: Class for handling Enemy Boss objects
-#include "GameStateMachine.h"		// 2017/02/03 JOE: Class for handling Game State Machine (Finite State Machine)
 #include "Blockage.h"
 #include "randomMessageGenerator.h"	// 2017/02/04 JOE: Class for randomising messages
 #include "SettingsMenu.h"
@@ -237,7 +236,6 @@ int activeEnemyBoss;
 bool miniMap = true;
 
 Game* Game::s_pInstance = 0;
-GameStateMachine* m_pGameStateMachine;	// P109 Add GameStateMachine as a member of the Game class
 
 std::stringstream framesPerSec;			// In memory text stream - string streams - function like iostreams only instead of reading or writing to the console, they allow you to read and write to a string in memory
 
@@ -280,9 +278,9 @@ EnterName enterName1;
 SDL_Rect gEnemySpriteClips[ANIMATION_FRAMES];	// Sprite frames for Enemy Ship animation
 SDL_Rect gEnemyBossSpriteClips[6];				// Sprite frames for Enemy Boss animation
 SDL_Rect gEnemyBossEyes[16];					// Sprite frames for Enemy Boss Small Blue Virus generation animation
-SDL_Rect gGreenVirusSpriteClips[6];				// Sprite frames for Orange Virus animation
-SDL_Rect gOrangeVirusSpriteClips[6];			// Sprite frames for Orange Virus animation
-SDL_Rect gBlueVirusSpriteClips[6];				// Sprite frames for Blue Virus animation
+//SDL_Rect gGreenVirusSpriteClips[6];				// Sprite frames for Orange Virus animation
+//SDL_Rect gOrangeVirusSpriteClips[6];			// Sprite frames for Orange Virus animation
+//SDL_Rect gBlueVirusSpriteClips[6];				// Sprite frames for Blue Virus animation
 SDL_Rect gSmallGreenVirusSpriteClips[6];		// Sprite frames for Small Green Virus animation
 SDL_Rect gSmallOrangeVirusSpriteClips[6];		// Sprite frames for Small Orange Virus animation
 SDL_Rect gSmallBlueVirusSpriteClips[6];			// Sprite frames for Small Blue Virus animation
@@ -291,11 +289,11 @@ Texture gEnemyBossSpriteSheetTexture;			// Enemy Boss sprite sheet
 Texture gEnemyBossEyesSpriteSheetTexture;		// Enemy Boss Eyes sprite sheet
 Texture gEnemyBossStatusBarTextTexture;			// Identify the Enemy Boss on the health bar
 
-Texture gSmallGreenVirusSpriteSheetTexture;	// Small Green Virus sprite sheet
-Texture gSmallOrangeVirusSpriteSheetTexture;// Small Orange Virus sprite sheet
-Texture gSmallBlueVirusSpriteSheetTexture;	// Small Blue Virus sprite sheet
+Texture gSmallGreenVirusSpriteSheetTexture;		// Small Green Virus sprite sheet
+Texture gSmallOrangeVirusSpriteSheetTexture;	// Small Orange Virus sprite sheet
+Texture gSmallBlueVirusSpriteSheetTexture;		// Small Blue Virus sprite sheet
 
-SDL_Event e;							// Event handler
+SDL_Event eXXX;							// Event handler
 
 // Joystick
 SDL_Joystick* gController1 = NULL;		// Game Controller 1 handler - Data type for a game controller is SDL_Joystick
@@ -304,7 +302,7 @@ SDL_Haptic*	gControllerHaptic = NULL;	// 2017/01/18 Haptic (Force Feedback) adde
 
 // Text
 SDL_Color textColour;				// Set the text colour
-TTF_Font *gFontRetro20;				// Globally used font 2017-01-25 Changed to Retro font which is more readable
+TTF_Font *gFontRetro20;				// Globally used font 2017/01/25 Changed to Retro font which is more readable
 
 // Objects and weapons
 Texture gPlayer1Texture;			// Player 1 ship
@@ -512,14 +510,14 @@ bool Game::loadMedia() {
 		success = false;
 	}
 	else {
-		setupAnimationClip(gSmallOrangeVirusSpriteClips, 6, 40, true);									// Set sprite clips
+		setupAnimationClip(gSmallOrangeVirusSpriteClips, 6, 40, true);										// Set sprite clips
 	}
-	if (!gSmallBlueVirusSpriteSheetTexture.loadFromFile("Art/EnemyVirus_SpriteSheet_Blue_Small.png")) {	// Sprite sheet for Enemy Blue Virus
+	if (!gSmallBlueVirusSpriteSheetTexture.loadFromFile("Art/EnemyVirus_SpriteSheet_Blue_Small.png")) {		// Sprite sheet for Enemy Blue Virus
 		printf("Failed to load Small Blue Virus animation texture!\n");
 		success = false;
 	}
 	else {
-		setupAnimationClip(gSmallBlueVirusSpriteClips, 6, 40, true);									// Set sprite clips
+		setupAnimationClip(gSmallBlueVirusSpriteClips, 6, 40, true);										// Set sprite clips
 	}
 	/*
 	if (!gExplosionSpriteSheetTexture.loadFromFile("Art/Explosion.png")) {								// Sprite sheet for Explosions
@@ -563,7 +561,7 @@ bool Game::loadMedia() {
 
 void setupAnimationClip(SDL_Rect rect[], int frames, int amount, bool type2) {
 	if (!type2) {
-		for (int i = 0; i < frames; ++i) {
+		for (unsigned int i = 0; i < frames; ++i) {
 			rect[i].x = i * amount;
 			rect[i].y = 0;
 			rect[i].w = amount;
@@ -612,7 +610,7 @@ void Game::close() {
 	gControllerHaptic = NULL;
 
 	// Destroy window
-	SDL_DestroyRenderer(gRenderer);
+	//SDL_DestroyRenderer(gRenderer);
 	SDL_DestroyWindow(gWindow);
 	gWindow = NULL;
 	//gRenderer = NULL;
@@ -644,8 +642,8 @@ void Game::update(){
 		if (!loadMedia()) {
 			printf("Failed to load media!\n");
 		} else {
-			if (SDL_PollEvent(&e) != 0) {
-				gamepadInfo(gController1, gController2, e);					// 2017/02/09 Display gamepad information, moved to separate header file
+			if (SDL_PollEvent(&eXXX) != 0) {
+				gamepadInfo(gController1, gController2, eXXX);					// 2017/02/09 Display gamepad information, moved to separate header file
 			}
 			// MAIN GAME LOOP:  While application is running
 			while (!quit) {
@@ -654,35 +652,28 @@ void Game::update(){
 				// Input
 				quit = playerInput(quit);									// 2017/01/09 JOE: Handle input from player
 
-				// Update
-				if (getCurrentLevel() == MENU) menu1.draw();				// New
-				else if (getCurrentLevel() == PAUSE) menu1.drawPause();		// New
-				else if (getCurrentLevel() != MENU && getCurrentLevel() != PAUSE && getCurrentLevel() != SETTINGS && getCurrentLevel() != HIGH_SCORES && getCurrentLevel() != ENTER_NAME) playLevel(getCurrentLevel());
-				else if (getCurrentLevel() == SETTINGS && settingsMenuLoaded == false) {
-					settingsMenuLoaded = settings.loadSettingsMedia();
-					settings.draw();
-				}
-				else if (getCurrentLevel() == HIGH_SCORES && highScoresLoaded == false) {
-					highScoresLoaded = highScore.loadHighScoresMedia();
-					highScore.draw();
-				}
-				else if (getCurrentLevel() == ENTER_NAME && enterNameLoaded == false) {
-				//else if (getCurrentLevel() == HIGH_SCORES && enterNameLoaded == false) {
-					enterNameLoaded = enterName1.loadNameMedia();
-					enterName1.draw();
-				}
-				//if (!nameEntered) enterName();
+				// Titles
+				//if (getCurrentLevel() == MENU && displayGameIntro) displayGameIntro = splash.displayGameTitleScreens();	// 2017/01/18 Splash screens at start of game, Game Title & Game Creators
 
+				// Update
+				//if (getCurrentLevel() == MENU) menu1.draw();				// New
+				//else if (getCurrentLevel() == PAUSE) menu1.drawPause();	// New
+				//else
+				//if (getCurrentLevel() != MENU && getCurrentLevel() != PAUSE && getCurrentLevel() != SETTINGS && getCurrentLevel() != HIGH_SCORES && getCurrentLevel() != ENTER_NAME)
+				if (getCurrentLevel() == LEVEL_1 || getCurrentLevel() == LEVEL_2 || getCurrentLevel() == LEVEL_3)
+					playLevel(getCurrentLevel());
+
+				//if (!nameEntered) enterName();
 				//if(getCurrentLevel() == 1) enterName();
 				//else {
 				//if (getCurrentLevel() == PAUSE)
-					fps1.updateFPS();			// Update the FPS
+				fps1.updateFPS();			// Update the FPS
 
 				// Render
 				render();
 
 				// Clear
-				destroyGameObjects();										// 2017-01-09 JOE: Destroy the game objects when finished on the screen
+				destroyGameObjects();										// 2017/01/09 JOE: Destroy the game objects when finished on the screen
 				//}
 			}
 		}
@@ -693,22 +684,41 @@ void Game::playLevel(int levelNum) {
 	//if (!nameEntered)
 		//nameEntered = enterName();
 	//else
-	if (displayLevelIntro)
-		displayLevelIntros(levelNum);	// Set true or false in _test.cpp
+	if (displayLevelIntro) displayLevelIntros(levelNum);	// Set true or false in _test.cpp
 
 	if (!gameOver) {
 		// 2017/03/04 Display a message at the start of each level
 		if (countdownTimer == GAME_TIMER) infoMessage(randomLevelMessageGenerator(getCurrentLevel()), 3);
 
 		spawnMovingObjects();				// 2017/01/10 JOE: Spawn enemies and obstacles at random coords & distances apart
-		moveGameObjects();					// 2017-01-09 JOE: Move the game objects on the screen
+		moveGameObjects();					// 2017/01/09 JOE: Move the game objects on the screen
 		collisionCheck();					// Check collisions between 2 objects
 	}
 }
 
 void Game::render() {
-	if (!gameOver) renderGamePlay();					// 2017-01-09 JOE: Render the game objects to the screen
-	else if (gameOver) renderGameOver();
+	if (getCurrentLevel() == MENU) {
+		menu1.draw();				// New
+	}
+	else if (getCurrentLevel() == PAUSE) {
+		menu1.drawPause();		// New
+	}
+	else if (getCurrentLevel() == SETTINGS && settingsMenuLoaded == false) {
+		//settingsMenuLoaded = settings.loadSettingsMedia();
+		settings.draw();
+	}
+	else if (getCurrentLevel() == HIGH_SCORES && highScoresLoaded == false) {
+		//highScoresLoaded = highScore.loadMedia();
+		highScore.draw();
+	}
+	else if (getCurrentLevel() == ENTER_NAME && enterNameLoaded == false) {
+		enterNameLoaded = enterName1.loadNameMedia();
+		enterName1.draw();
+	}
+	else {
+		if (!gameOver) renderGamePlay();					// 2017/01/09 JOE: Render the game objects to the screen
+		else if (gameOver) renderGameOver();
+	}
 }
 
 void Game::renderGameOver() {
@@ -758,7 +768,7 @@ void Game::displayLevelIntros(int level) {
 	displayLevelIntro = splash.levelIntroScreens(getCurrentLevel());	// Display level story and info screens
 
 	//if (level <= MAX_NUM_LEVELS) splash.pressButtonToContinue(e);
-	if (level == LEVEL_1 || level == LEVEL_2 || level == LEVEL_3) splash.pressButtonToContinue(e);
+	if (level == LEVEL_1 || level == LEVEL_2 || level == LEVEL_3) splash.pressButtonToContinue(eXXX);
 }
 
 void Game::renderTimer(unsigned int &timer) {
@@ -838,14 +848,14 @@ void Game::displayText() {
 }
 
 bool Game::playerInput(bool quit = false) {
-	while (SDL_PollEvent(&e) != 0) {
-		if (e.type == SDL_QUIT) {	// User requests quit	EXIT - CLOSE WINDOW
+	while (SDL_PollEvent(&eXXX) != 0) {
+		if (eXXX.type == SDL_QUIT) {	// User requests quit	EXIT - CLOSE WINDOW
 			quit = true;
-		}							// Reset start time on return keypress
-		else if (e.type == SDL_KEYDOWN) {
+		}								// Reset start time on return keypress
+		else if (eXXX.type == SDL_KEYDOWN) {
 		//else if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_RETURN) {
 
-			switch (e.key.keysym.sym) {
+			switch (eXXX.key.keysym.sym) {
 			// Play/Pause music on a m key press, stop music on 0
 			case SDLK_m:
 				Audio::Instance()->playPauseMusic(); break;				// 2017/03/17 Altered function to play / pause the music in Audio class
@@ -858,7 +868,7 @@ bool Game::playerInput(bool quit = false) {
 			case SDLK_ESCAPE:
 				if (getCurrentLevel() == LEVEL_1 || getCurrentLevel() == LEVEL_2 || getCurrentLevel() == LEVEL_3) {
 					levelToPause = getCurrentLevel();	// Store the existing level number
-					setCurrentLevel(PAUSE);				// 2017-03-13 Add if statement for esc press
+					setCurrentLevel(PAUSE);				// 2017/03/13 Add if statement for esc press
 				}
 				else setCurrentLevel(MENU);
 				break;
@@ -905,8 +915,8 @@ bool Game::playerInput(bool quit = false) {
 			}
 		}
 
-		else if (e.type == SDL_KEYUP) {
-			switch (e.key.keysym.sym) {
+		else if (eXXX.type == SDL_KEYUP) {
+			switch (eXXX.key.keysym.sym) {
 			case SDLK_F1:
 				gFPSTextTexture.free();
 				framesPerSec.str("");
@@ -916,24 +926,25 @@ bool Game::playerInput(bool quit = false) {
 			}
 		}
 		//Joystick button press
-		else if (e.type == SDL_JOYBUTTONDOWN) {
+		else if (eXXX.type == SDL_JOYBUTTONDOWN) {
 			//Play rumble at 75% strenght for 500 milliseconds
 			if (SDL_HapticRumblePlay(gControllerHaptic, 0.5, 50) != 0) {
 				printf("Warning: Unable to play rumble! %s\n", SDL_GetError());
 			}
 		}
 		// Menu events
-		menu1.handleMenuEvents(e);
+		menu1.handleMenuEvents(eXXX);
+
 		if (getCurrentLevel() != 0) {												// If not in menu state
-			if(player1->getAlive()) player1->handleEvent(e, 1);						// Handle input for Player 1
-			if (player2->getAlive()) player2->handleEvent(e, 2);					// Handle input for Player 2
+			if (player1->getAlive()) player1->handleEvent(eXXX, 1);					// Handle input for Player 1
+			if (twoPlayer && player2->getAlive()) player2->handleEvent(eXXX, 2);					// Handle input for Player 2
 
 			for (unsigned int index = 0; index != listOfGameObjects.size(); ++index) {
 				if (listOfGameObjects[index]->getSubType() == ROCKET_P1 && listOfGameObjects[index]->getPlayer() == PLAYER_1) {
-					listOfGameObjects[index]->handleEvent(e, PLAYER_1);
+					listOfGameObjects[index]->handleEvent(eXXX, PLAYER_1);
 				}
 				else if (listOfGameObjects[index]->getSubType() == ROCKET_P2 && listOfGameObjects[index]->getPlayer() == PLAYER_2) {
-					listOfGameObjects[index]->handleEvent(e, PLAYER_2);
+					listOfGameObjects[index]->handleEvent(eXXX, PLAYER_2);
 				}
 			}
 		}
@@ -951,7 +962,6 @@ void Game::fullScreenOrWindowed() {
 	SDL_SetWindowFullscreen(gWindow, windowFlag);
 }
 
-int eyeFrame = 0;
 void Game::renderGamePlay() {
 	// Levels
 	displayText();														// 2017/01/17: Display the game text, info messages etc
@@ -970,11 +980,11 @@ void Game::renderGamePlay() {
 		if (levelOver == false && gameOver == false) {
 			SDL_SetRenderDrawColor(getRenderer(), 0xFF, 0xFF, 0xFF, 0xFF);
 
-			//if (player1->getAlive()) SDL_RenderDrawRect(getRenderer(), &player1->getCollider());					// Player 1 collider rectangle graphic
-			//if (twoPlayer && player2->getAlive()) SDL_RenderDrawRect(getRenderer(), &player2->getCollider());		// Player 2 collider rectangle graphic
+			if (player1->getAlive()) SDL_RenderDrawRect(getRenderer(), player1->getCollider());					// Player 1 collider rectangle graphic
+			if (twoPlayer && player2->getAlive()) SDL_RenderDrawRect(getRenderer(), player2->getCollider());		// Player 2 collider rectangle graphic
 
 			for (unsigned int index = 0; index != listOfGameObjects.size(); ++index) {
-				//SDL_RenderDrawRect(getRenderer(), &listOfGameObjects[index]->getCollider());	// Draw object colliders
+				SDL_RenderDrawRect(getRenderer(), listOfGameObjects[index]->getCollider());	// Draw object colliders
 				frames = listOfGameObjects[index]->getNumFrames();			// 2017/02/09 Fixed the explosion animations, they are now assigned to indiviual objects with the game object frame attribute
 
 				if (listOfGameObjects[index]->getSubType() == ENEMY_BOSS) {																						// 2017/02/09 Fixed the Enemy Ship animations, they are now assigned to indiviual objects with the game object frame attribute
@@ -1207,6 +1217,7 @@ void Game::displayScoreForObject(int Xcoord, int Ycoord, int score, int player) 
 }
 
 void Game::moveGameObjects() {
+	//player1->setCollider({ player1->getX(), player1->getY(), player1->getWidth(), player1->getHeight() });
 	if (player1->getAlive()) player1->move();												// Update ship movement
 	if (player2->getAlive()) player2->move();
 
@@ -1261,7 +1272,7 @@ bool Game::moveToPlayer1(int x, int y) {
 }
 
 /*
-	2017-02-16 Display player messages for player events, added to a function
+	2017/02/16 Display player messages for player events, added to a function
 */
 void Game::infoMessage(std::string message, int type, int timer) {
 	if (type == 0) {
@@ -1678,7 +1689,7 @@ void Game::spawnPowerUp() {
 	p_PowerUp->spawn(x, y, -5);													// 2017/01/16 USES OVERLOADED FUNCTION -- CHECK
 	listOfGameObjects.push_back(p_PowerUp);
 }
-void Game::spawnRandomAttributes(int &x, int &y, int &randomSpeed, int xMuliplier, int yPadding, int speed) {	// 2017-01-20 Separate out common randomness of game object spawning
+void Game::spawnRandomAttributes(int &x, int &y, int &randomSpeed, int xMuliplier, int yPadding, int speed) {	// 2017/01/20 Separate out common randomness of game object spawning
 	int randomX = rand() % 5 + 1;
 	int randomY = rand() % 8 + 1;												// A number between 1 and 8
 	randomSpeed = rand() % 4 + speed;
@@ -1741,7 +1752,7 @@ void Game::spawnEnemyLaser(int xCoord, int yCoord, int subType, int whichVirus) 
 	if (subType == ENEMY_SHIP_LASER) {							// first type and visible on screen, start shooting
 		//int distanceBetweenShots = ((rand() % 3 + 1) * 50) + 60;						// 2017/01/20 More random shooting from enemies 2017/03/16 Moved check to Enemy Ship move()
 																						// if (shipX % 100 == 0) {
-		//if (xCoord % distanceBetweenShots < 2) {										// 2017-01-20 Not all ships were firing
+		//if (xCoord % distanceBetweenShots < 2) {										// 2017/01/20 Not all ships were firing
 			GameObject* p_LaserE = new WeaponEnLaser(ENEMY_SHIP_LASER);
 			totalEnemyBullets++;
 			p_LaserE->spawn(xCoord - 20, yCoord + 30, p_LaserE->getVelocity());
@@ -1841,7 +1852,7 @@ void Game::spawnRocket(int x, int y, int player, int type, bool launch) {
 
 int numSaws = 0;
 
-void Game::spawnSaw(int x, int y, int subType) {			// player to spawn for and their coords, turn on if inacive, off if active	// 2017-02-08 Updated and working OK
+void Game::spawnSaw(int x, int y, int subType) {			// player to spawn for and their coords, turn on if inacive, off if active	// 2017/02/08 Updated and working OK
 	bool createSaw = false;									// Used to decide which player to create the saw for, so code doesn't need to be repeated
 
 	if (player1->getSawActive()) std::cout << "player 1 saw active" << std::endl;
@@ -2322,7 +2333,7 @@ void Game::collisionCheck() {
 							}
 						}
 
-						managePlayerScores(listOfGameObjects[enemyIndex]->getScore(), listOfGameObjects[weaponIndex]->getPlayer(), listOfGameObjects[weaponIndex]->getSubType());		// 2017-02-06 Add to players score
+						managePlayerScores(listOfGameObjects[enemyIndex]->getScore(), listOfGameObjects[weaponIndex]->getPlayer(), listOfGameObjects[weaponIndex]->getSubType());	// 2017/02/06 Add to players score
 
 						displayScoreForObject(listOfGameObjects[enemyIndex]->getX(), listOfGameObjects[enemyIndex]->getY(), listOfGameObjects[enemyIndex]->getScore(), listOfGameObjects[weaponIndex]->getPlayer());	// Display Score
 

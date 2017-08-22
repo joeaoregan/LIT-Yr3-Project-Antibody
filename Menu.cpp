@@ -171,8 +171,8 @@ void Menu::closeMenuMedia() {
 // Name: Draw()
 // Role: Render the menu buttons#
 void Menu::draw() {
-	SDL_SetRenderDrawColor(Game::Instance()->getRenderer(), 117, 10, 10, 255);
-	//randomBackgroundColour();
+	//SDL_SetRenderDrawColor(Game::Instance()->getRenderer(), 117, 10, 10, 255);
+	randomBackgroundColour();
 	SDL_RenderClear(Game::Instance()->getRenderer());
 
 	SDL_SetTextureAlphaMod(Texture::Instance()->getTexture("shipOutlineID"), 100);					// Lower the alpha value of the ship outline image
@@ -212,8 +212,6 @@ void Menu::draw() {
 	SDL_RenderSetViewport(Game::Instance()->getRenderer(), NULL);									// Clear the current viewport to render to full window / screen
 
 	SDL_RenderPresent(Game::Instance()->getRenderer());												// Update screen
-
-
 }
 
 
@@ -263,8 +261,6 @@ void Menu::drawPause() {
 	SDL_RenderSetViewport(Game::Instance()->getRenderer(), NULL);									// Clear the current viewport to render to full window / screen
 	SDL_RenderPresent(Game::Instance()->getRenderer());												// Update screen
 }
-
-bool changeMenuBGColour = true;
 
 // Name: randomBackgroundColour()
 // Role: Select a random background image for the menu

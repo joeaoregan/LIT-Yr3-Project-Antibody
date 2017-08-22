@@ -40,10 +40,12 @@
 
 #define SDL_MAIN_HANDLED	// Handling SDL main definition ourselves
 #include <SDL.h>
-#include "GameStateMachine.h"
 #include <cstdlib>			// For Random Numbers
 #include <ctime>			// For Random Numbers
 #include <list>
+#include <string>
+#include <iostream>
+#include <vector>
 
 // Other Symbolic Constants
 #define PLAYER_1 1
@@ -131,8 +133,8 @@ public:
 	// States
 	int getCurrentLevel() { return mCurrentLevel; }		// Get the current level
 	void setCurrentLevel(int l) { mCurrentLevel = l; }	// Set the current level
-	void displayLevelIntros(int level);				// Display the intro / objective screens at the start of each level
-	bool enterName();									// Enter the name for the player before beginning the game
+	void displayLevelIntros(int level);					// Display the intro / objective screens at the start of each level
+	//bool enterName();									// Enter the name for the player before beginning the game
 	void playLevel(int levelNum);						// Play each level
 
 	// Rendering

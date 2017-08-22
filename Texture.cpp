@@ -1,8 +1,8 @@
 /*	---------------------------------------------------------------------------------------------------------------------
 	- Name:					Texture.cpp
 	- Description:			cpp file for the Texture class.
-	- Information:			This class manages all texture functionality for the game. Loading textures from, storing them to 
-							a map for indexing, and then rendering to screen. There are functions to render textures from text, 
+	- Information:			This class manages all texture functionality for the game. Loading textures from, storing them to
+							a map for indexing, and then rendering to screen. There are functions to render textures from text,
 							and also to handle the alpha value of objects, to make them transparent or flash.
 	- Log:
 		2017/03/22		Added animation sprite sheets to the Texture map
@@ -116,14 +116,14 @@ void Texture::renderP(int x, int y) {
 /*
 	Load a texture give the path to the image loacation
 */
-SDL_Texture* Texture::loadTexture(std::string path) {	
+SDL_Texture* Texture::loadTexture(std::string path) {
 	SDL_Texture* newTexture = NULL;																		// The final texture
-		
+
 	SDL_Surface* loadedSurface = IMG_Load(path.c_str());												// Load image at specified path
 	if (loadedSurface == NULL) {
 		printf("Unable to load image %s! SDL_image Error: %s\n", path.c_str(), IMG_GetError());
 	}
-	else {		
+	else {
 		newTexture = SDL_CreateTextureFromSurface(Game::Instance()->getRenderer(), loadedSurface);		// Create texture from surface pixels
 		if (newTexture == NULL) {
 			printf("Unable to create texture from %s! SDL Error: %s\n", path.c_str(), SDL_GetError());	// Error message
@@ -153,7 +153,7 @@ bool Texture::loadFromFile(std::string path) {
 		if (newTexture == NULL) {
 			printf("Unable to create texture from %s! SDL Error: %s\n", path.c_str(), SDL_GetError());
 		}
-		else {			
+		else {
 			m_Width = loadedSurface->w;	// Get image dimensions
 			m_Height = loadedSurface->h;
 		}
@@ -176,13 +176,13 @@ bool Texture::renderTextToTexture(std::string textureText, SDL_Color textColor, 
 	else
 		m_TextSurface = TTF_RenderText_Blended_Wrapped(font, textureText.c_str(), textColor, 1000);	// Render text surface with text wrapping
 
-	if (m_TextSurface != NULL) {		
+	if (m_TextSurface != NULL) {
 		m_Texture = SDL_CreateTextureFromSurface(Game::Instance()->getRenderer(), m_TextSurface);		// Create texture from surface pixels
 
 		if (m_Texture == NULL) {
 			printf("Unable to create texture from rendered text! SDL Error: %s\n", SDL_GetError());
 		}
-		else {			
+		else {
 			m_Width = m_TextSurface->w;	// Get image dimensions
 			m_Height = m_TextSurface->h;
 		}
@@ -269,7 +269,7 @@ void Texture::flashGameObject(int rate, int times) {
 void Texture::modifyAlpha(Uint8 alpha, std::string id) {
 	if (id == "")
 		SDL_SetTextureAlphaMod(m_Texture, alpha);			// Modulate texture alpha
-	else 
+	else
 		SDL_SetTextureAlphaMod(m_TextureMap[id], alpha);
 }
 
@@ -299,7 +299,7 @@ void Texture::numRocketsLeft(std::string textureText) {
 	}
 }
 
-/* 
+/*
 	2017-02-15:
 	Function to render the players scores, the FPS, and the current game level
 */
@@ -345,7 +345,7 @@ void Texture::UITextTimer(std::string timerText, unsigned int Timer) {
 */
 
 //std::string previous1, previous2, previous3;
-void Texture::UITextPlayerMessage(std::string playerMessage, int type) {	
+void Texture::UITextPlayerMessage(std::string playerMessage, int type) {
 	free();
 
 	if (type == 0) {
@@ -419,7 +419,7 @@ std::string textures2[NUM_TEXTURES2][3] = {
 	// Game
 	{ "Art/Prof.png", "profID", "Professor" },										// Map texture to show the players current position inside the professor
 	{ "Art/Player1ShipBlue30.png", "mapShipID", "Blue Mini Map Ship" },				// Map texture to show the players current position inside the professor
-	
+
 	// Explosions
 	{ "Art/Explosion.png", "explosionID", "Explosion" },							// 2017/03/22 Added Explosion animation
 	{ "Art/ExplosionBlood.png", "eplosionBloodID", "Blood Explosion" },				// 2017/03/22 Added Blood Explosion animation
@@ -506,10 +506,10 @@ bool Texture::loadTextureMedia() {
 /*
 //Clear the Texture media
 
-void Texture::clearMedia() {	
+void Texture::clearMedia() {
 	for (int i = 0; i < NUM_TEXTURES2; i++) {
 		clearFromTextureMap(textures2[i][1]);	// 2017/03/26 Clear the ID field of texture information array
-	}	
+	}
 	//clearTextureMap();							// 2017/03/26 Clear the entire texture map
 }
 

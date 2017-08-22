@@ -11,6 +11,8 @@
 
 class Menu {
 public:
+	bool changeMenuBGColour = true;	// 2017/03/28
+
 	TTF_Font *gFont = NULL;		// Font to use when rendering text
 
 	// Menu Text

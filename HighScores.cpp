@@ -22,7 +22,9 @@ std::string line;
 void readScoresFromTextFile();
 void outputScoresToConsole();
 
-bool HighScores::loadHighScoresMedia() {
+bool HighScores::loadMedia() {
+	std::cout << "Loading media for High Scores" << std::endl;
+
 	bool success = true;
 
 	gFont = TTF_OpenFont("Fonts/Retro.ttf", 16);	// Open the font
