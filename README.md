@@ -84,12 +84,18 @@ The final third-year project code submission
 
 [Antibody-Split-Screen-Race-Mode Repo](https://github.com/joeaoregan/Antibody-Split-Screen-Race-Mode)
 
-#### 5. Year-Four Networked Games Project
+#### 5. Antibody (Code::Blocks compatible)
+I redid the entire project history to be compatible with Code::Blocks, for testing, and as part of testing for my fourth-year project. The game can be played without the need for installing Visual Studio, and is available to download on the GitHub release page.
+
+[Yr3-Project-Antibody Repo](https://github.com/joeaoregan/Yr3-Project-Antibody)
+
+#### 6. Year-Four Networked Games Project
 I've started creating a networked version of the game in Linux as part of my fourth-year project. The code base is cross platform, and I've included a finite state machine to help eliminate some of the problems with the original game.
 
 [Yr4-Project-Networked-Games-Library Repo](https://github.com/joeaoregan/Yr4-Project-Networked-Games-Library)
 
 ---
+
 
 #### Game Trailer by Seán Horgan:
 [![Game Trailer](https://i.ytimg.com/vi/HQiAlmhXLqA/1.jpg)](https://youtu.be/HQiAlmhXLqA)
