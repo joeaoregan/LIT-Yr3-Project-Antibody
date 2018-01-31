@@ -55,6 +55,35 @@ Antibody 2D: Power Ups for time, health, lasers, lives, rockets
 
 ## Links: 
 
+### Additional Repos (oldest to newest):
+
+#### 1. Journey To The Center Of My Headache
+Original long winded title for the game, this includes some of the earlier project versions before changing the name
+
+[JourneyToTheCenterOfMyHeadache Repo](https://github.com/joeaoregan/JourneyToTheCenterOfMyHeadache)
+
+#### 2. Games Fleadh 2017 Entry Version
+Winner in the "Best Windows Game" category at [Games Fleadh 2017](http://gamesfleadh.ie/results/)
+
+[Yr3-AntibodyGamesFleadh Repo](https://github.com/joeaoregan/Yr3-AntibodyGamesFleadh)
+
+#### 3. Project Submission
+The final third-year project code submission
+
+[Yr3-Antibody-Project-Submission Repo](https://github.com/joeaoregan/Yr3-Antibody-Project-Submission)
+
+#### 4. Antibody Race Mode
+2 Player split screen race mode test, as the theme for Games Fleadh 2017 was "Racing". This was not fully implemented. I began work on this near the beginning of the third-year project and abandoned due to time constraints.
+
+[Antibody-Split-Screen-Race-Mode Repo](https://github.com/joeaoregan/Antibody-Split-Screen-Race-Mode)
+
+#### 5. Year-Four Networked Games Project
+I've started creating a networked version of the game in Linux as part of my fourth-year project. The code base is cross platform, and I've included a finite state machine to help eliminate some of the problems with the original game.
+
+[Yr4-Project-Networked-Games-Library Repo](https://github.com/joeaoregan/Yr4-Project-Networked-Games-Library)
+
+---
+
 #### Game Trailer by Seán:
 [![Game Trailer](https://i.ytimg.com/vi/HQiAlmhXLqA/1.jpg)](https://youtu.be/HQiAlmhXLqA)
 
