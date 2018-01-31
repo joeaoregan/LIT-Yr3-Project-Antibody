@@ -67,7 +67,7 @@ bool HUD::loadLevelStuff() {
 	if (!gCreatedByTextTexture2.loadFromRenderedText("A GAME BY", { 0, 255, 0, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 16), true)) {				// Green Text
 		printf("createdByText(): Unable to render Created By Text Texture!\n");
 	}
-	if (!gCreatedByTextTexture3.loadFromRenderedText("JOE O'REGAN, SEAN HORGAN, BRIAN RYAN", { 0, 255, 0, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 16), true)) {				// Green Text
+	if (!gCreatedByTextTexture3.loadFromRenderedText("JOE O'REGAN, SEAN HORGAN", { 0, 255, 0, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 16), true)) {				// Green Text
 		printf("createdByText(): Unable to render Created By Text Texture!\n");
 	}
 
@@ -437,7 +437,7 @@ void HUD::createdByText() {
 		gCreatedByTextTexture2.render((SCREEN_WIDTH - gCreatedByTextTexture2.getWidth()) / 2, 120 - gCreatedByTextTexture2.getHeight() - 8);
 	}
 	else if (changeEverySecond % 3 == 0) {
-		//if (!gCreatedByTextTexture.loadFromRenderedText("JOE O'REGAN, SEAN HORGAN, BRIAN RYAN", { 0, 255, 0, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 16), true)) {				// Green Text
+		//if (!gCreatedByTextTexture.loadFromRenderedText("JOE O'REGAN, SEAN HORGAN", { 0, 255, 0, 255 }, TTF_OpenFont("Fonts/Retro.ttf", 16), true)) {				// Green Text
 		//	printf("createdByText(): Unable to render Created By Text Texture!\n");
 		//}
 		gCreatedByTextTexture3.render((SCREEN_WIDTH - gCreatedByTextTexture3.getWidth()) / 2, 120 - gCreatedByTextTexture3.getHeight() - 8);

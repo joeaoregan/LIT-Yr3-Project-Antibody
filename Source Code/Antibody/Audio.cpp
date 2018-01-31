@@ -195,7 +195,7 @@ void Audio::musicBackSongName() {						// Pick previous track on the list
 	if (currentSong > 0)
 		currentSong--;
 	else
-		currentSong = listOfMusic.size() - 1;
+		currentSong = (int) listOfMusic.size() - 1;
 
 	Mix_PlayMusic(listOfMusic[currentSong], -1);
 	identifyTrack(currentSong);

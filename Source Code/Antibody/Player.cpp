@@ -340,7 +340,7 @@ int Player::moveDiagonal() {
 	//if (getSpeedBoost() && getVelocity() != 0)
 	//	return getVelocity() + BOOST / sqrt(2);
 	
-	return getVelocity() / sqrt(2);
+	return (int) (getVelocity() / sqrt(2));
 }
 
 void Player::gameControllerDPad(SDL_Event& e) {
@@ -463,12 +463,12 @@ void Player::gameControllerButton(SDL_Event& e) {
 
 //void Player::initialiseRocket(bool active, bool barActive, int timer, int numRockets) {
 bool Player::initialiseRocket() {
-	setProjectileActive(true);					// Set the rocket active, ready to render to screen
-	setRocketBarActive(false);				// Set the rocket power bar inactive
-	setTimer(ROCKET_TIMER);					// Reset the rocket timer
-	setNumRockets(getNumRockets() - 1);		// decrement the number of rockets
+	setProjectileActive(true);															// Set the rocket active, ready to render to screen
+	setRocketBarActive(false);															// Set the rocket power bar inactive
+	setTimer(ROCKET_TIMER);																// Reset the rocket timer
+	setNumRockets(getNumRockets() - 1);													// decrement the number of rockets
 
-	return true;							// Ready to create a rocket
+	return true;																		// Ready to create a rocket
 }
 
 void Player::resetRocket() {
@@ -480,23 +480,23 @@ void Player::resetRocket() {
 
 void::Player::rocketScore() {
 	if (SDL_GetTicks() >= getTimerTracker() + 200) {
-		setTimerTracker(SDL_GetTicks());						// start the timer
-		setTimer(getTimer() - 0.2);								// Take away 10% of the timer
+		setTimerTracker((float) SDL_GetTicks());										// start the timer
+		setTimer((float) getTimer() - 0.2f);											// Take away 10% of the timer
 	}
 
-	setBonusScore(50 - (50.0 * (getTimer() / ROCKET_TIMER)));	// Score increments by 5 (10% of 50)
+	setBonusScore(50 - (int) (50.0f * (getTimer() / ROCKET_TIMER)));					// Score increments by 5 (10% of 50)
 
-	setKillRocket(false);										// The rocket can be erased
+	setKillRocket(false);																// The rocket can be erased
 }
 
 float Player::boostTimer() {
 	float boost = getBoostPercent();
 
 	if (getSpeedBoost()) {
-		if (SDL_GetTicks() > getLastTime() + 100) {								// Decrement countdown timer
+		if (SDL_GetTicks() > getLastTime() + 100) {										// Decrement countdown timer
 			setLastTime(SDL_GetTicks());
 
-			setBoostPercent(boost - 0.1);
+			setBoostPercent(boost - 0.1f);
 		}
 	}
 	return boost;
@@ -520,13 +520,13 @@ void Player::move() {
 
 	// If the ship went too far to the left or right
 	if ((getX() < 0) || ((getX() + getWidth()) > SCREEN_WIDTH)) {
-		setX(getX() - getVelX());										// Move back
+		setX(getX() - getVelX());														// Move back
 	}
 
-	//setY(getY() + getVelY());											// Move the ship up or down
+	//setY(getY() + getVelY());															// Move the ship up or down
 
-																		// If the ship went too far up or down
+																						// If the ship went too far up or down
 	if ((getY() < 40) || ((getY() + getHeight()) > SCREEN_HEIGHT_GAME - 40)) {
-		setY(getY() - getVelY());										// Move back
+		setY(getY() - getVelY());														// Move back
 	}
 }

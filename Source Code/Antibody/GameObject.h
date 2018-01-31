@@ -23,7 +23,7 @@
 
 #define MAX_HEALTH 100
 
-#define ROCKET_TIMER 3.0
+#define ROCKET_TIMER 3.0f		
 
 #include "GameObjectAbstract.h"
 #include <SDL.h>
@@ -240,7 +240,7 @@ protected:
 	// 31-01 Display time
 	float m_TimeTracker;			// Time to begin displaying
 	float m_Timer;					// Time to end displaying
-	unsigned int lastTime = 0.0;	// Previous stored time
+	unsigned int lastTime = 0;		// Previous stored time
 
 	// Textures and Animations
 	int m_Angle;					// 2017-02-07: Angle to rotate an object

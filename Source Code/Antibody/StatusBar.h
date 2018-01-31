@@ -11,9 +11,9 @@
 
 #include <SDL_image.h>
 
-#define MAX_HEALTH 100.0		// The max health for a player
-#define VIRUS_TIMER 3.0			// Virus Timer Max time
-#define ROCKET_TIMER_SET 3.0	// Rocket Timer Max time
+#define MAX_HEALTH 100.0f		// The max health for a player
+#define VIRUS_TIMER 3.0f		// Virus Timer Max time
+#define ROCKET_TIMER_SET 3.0f	// Rocket Timer Max time
 #define START_LEFT 0			// Move status bar left to right
 #define START_RIGHT 1			// Move status bar right to left
 

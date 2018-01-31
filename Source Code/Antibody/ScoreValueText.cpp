@@ -22,7 +22,7 @@ ScoreValueText::ScoreValueText(int x, int y, int score, int player) {
 	setName("+" + std::to_string(score));					// Individual string
 	setX(x);												// Set X coord
 	setY(y);												// Set Y coord
-	setTimerTracker(SDL_GetTicks());						// Set time the object was created
+	setTimerTracker((float) SDL_GetTicks());				// Set time the object was created
 	setScore(score);										// the value of the object
 	setAlive(true);											// set it active on the screen
 	setVelocity(8);											// Set the velocity to move the score text
@@ -39,8 +39,8 @@ ScoreValueText::ScoreValueText(int x, int y, int score, int player) {
 ScoreValueText::~ScoreValueText() {}
 int i = 0;
 void ScoreValueText::move(int x, int y) {	
-	float dx = x - getX();
-	float dy = y - getY();
+	float dx = (float) x - getX();
+	float dy = (float) y - getY();
 	float goal_dist = sqrt((dx * dx) + (dy * dy));
 
 	if (goal_dist > getVelocity()) {

@@ -25,7 +25,7 @@ void StatusBar::enemyBossBar(float health) {
 	createStatusBar(320, 5, 640, 30, health / MAX_HEALTH, { 30, 100, 240, 255 }, { 185, 40, 210, 255 }, HORIZONTAL, START_RIGHT);
 }
 void StatusBar::speedBoostBar(float percent, int startFrom) {
-	if (ROCKET_TIMER_SET - percent == 0) createStatusBar(0, 50, 60, 10, percent / ROCKET_TIMER_SET, { 36, 136, 36, 255 }, bgColour, HORIZONTAL, startFrom);	// -10 Places 10 pixels above Player Ship
+	if (ROCKET_TIMER_SET - percent == 0.0f) createStatusBar(0, 50, 60, 10, percent / ROCKET_TIMER_SET, { 36, 136, 36, 255 }, bgColour, HORIZONTAL, startFrom);	// -10 Places 10 pixels above Player Ship
 	else createStatusBar(0, 50, 60, 10, percent / ROCKET_TIMER_SET, { 0, 255, 0, 255 }, bgColour, HORIZONTAL, startFrom);	// -10 Places 10 pixels above Player Ship
 }
 void StatusBar::playerHealthBar(int x, int y, int w, float health) {

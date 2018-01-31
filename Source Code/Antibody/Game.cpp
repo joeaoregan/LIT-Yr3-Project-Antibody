@@ -204,7 +204,7 @@
 #include "WeaponPlSaw.h"			// 2017/01/17 JOE: Added Saw Weapon
 #include "BloodCell.h"				// 2017/01/10 JOE: Added Blood Cell obstacle
 #include "PowerUp.h"				// 2017/01/10 SEAN/JOE: Added Power Up
-#include "Menu.h"					// 2017/02/14 BRIAN/JOE: Class for handling menus. Includes button.h
+#include "Menu.h"					// 2017/02/14 JOE: Class for handling menus. Includes button.h
 #include "Explosion.h"				// 2017/01/25 JOE: Added explosions for Player Laser colliding with Enemy Ships and Virus
 #include "FPS.h"					// 2017/02/01 SEAN/JOE: Class for handling frames for second
 #include "SplashScreen.h"			// 2017/02/08 JOE: Class for displaying splash screens
@@ -402,7 +402,7 @@ bool Game::init() {
 
 		//gWindow = SDL_CreateWindow("Antibody", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_FULLSCREEN_DESKTOP);	/* Window name */
 		//gWindow = SDL_CreateWindow("Antibody", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);	/* Window name */
-		gWindow = SDL_CreateWindow("ANTIBODY by K00203642, K00202212, K00196030", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, windowFlag);	/* Window name */
+		gWindow = SDL_CreateWindow("ANTIBODY by Joe O'Regan K00203642, and Sean Horgan K00196030", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, windowFlag);	/* Window name */
 
 		if (gWindow == NULL) {
 			printf("Window could not be created! SDL Error: %s\n", SDL_GetError());
@@ -979,7 +979,7 @@ void Game::renderGamePlay() {
 					}
 				}
 
-				bar.enemyBossBar(listOfGameObjects[index]->getHealth());	// Health bar for enemy boss
+				bar.enemyBossBar((float) listOfGameObjects[index]->getHealth());	// Health bar for enemy boss
 				gEnemyBossStatusBarTextTexture.render((SCREEN_WIDTH - gEnemyBossStatusBarTextTexture.getWidth()) / 2, 6);	// Enemy identifer text for Health bar
 			}
 			else if (listOfGameObjects[index]->getSubType() == VIRUS_SMALL_GREEN) listOfGameObjects[index]->render(gSmallGreenVirusSpriteSheetTexture, &gSmallGreenVirusSpriteClips[frames / 10], frames, 4);
@@ -1007,7 +1007,7 @@ void Game::renderGamePlay() {
 		gFPSTextTexture.render((SCREEN_WIDTH - 150) / 2, 8);
 			
 		if (player1->getAlive()) {
-			bar.playerHealthBar(player1->getX(), player1->getY(), player1->getWidth(), player1->getHealth());	
+			bar.playerHealthBar(player1->getX(), player1->getY(), player1->getWidth(), (float) player1->getHealth());	
 				
 			if (player1->getRocketBarActive()) {
 				player1->rocketScore();				// Set the score for the rocket
@@ -1026,7 +1026,7 @@ void Game::renderGamePlay() {
 		}
 		// render the ship over the background
 		if (twoPlayer && player2->getAlive()) {
-			bar.playerHealthBar(player2->getX(), player2->getY(), player2->getWidth(), player2->getHealth());
+			bar.playerHealthBar(player2->getX(), player2->getY(), player2->getWidth(), (float) player2->getHealth());
 
 			if (player2->getRocketBarActive()) {	
 				player2->rocketScore();	// return true
@@ -1052,9 +1052,9 @@ void Game::renderGamePlay() {
 					listOfGameObjects[index]->setTimer(VIRUS_TIMER);										// Don't decrement the counter until the virus is appearing on screen // x, y, width, height
 				else{	
 					// Start counting down
-					if (SDL_GetTicks() >= listOfGameObjects[index]->getTimerTracker() + 500) {				// Every .5 seconds
-						listOfGameObjects[index]->setTimerTracker(SDL_GetTicks());							// reset the start time
-						listOfGameObjects[index]->setTimer(listOfGameObjects[index]->getTimer() - 0.5);		// Decrement the timer
+					if (SDL_GetTicks() >= listOfGameObjects[index]->getTimerTracker() + 500) {						// Every .5 seconds
+						listOfGameObjects[index]->setTimerTracker((float) SDL_GetTicks());							// reset the start time
+						listOfGameObjects[index]->setTimer((float) listOfGameObjects[index]->getTimer() - 0.5f);	// Decrement the timer
 					}
 				}
 
@@ -1074,9 +1074,9 @@ void Game::renderGamePlay() {
 					listOfGameObjects[index]->setTimer(VIRUS_TIMER);									// Don't decrement the counter until the virus is appearing on screen // x, y, width, height
 				}
 				else{
-					if (SDL_GetTicks() >= listOfGameObjects[index]->getTimerTracker() + 500) {			// Every .5 seconds
-						listOfGameObjects[index]->setTimerTracker(SDL_GetTicks());						// reset the start time
-						listOfGameObjects[index]->setTimer(listOfGameObjects[index]->getTimer() - 0.5);	// Decrement the timer
+					if (SDL_GetTicks() >= listOfGameObjects[index]->getTimerTracker() + 500) {						// Every .5 seconds
+						listOfGameObjects[index]->setTimerTracker((float) SDL_GetTicks());							// reset the start time
+						listOfGameObjects[index]->setTimer((float) listOfGameObjects[index]->getTimer() - 0.5f);	// Decrement the timer
 					}
 				}
 
@@ -1742,20 +1742,20 @@ void Game::spawnEnemyLaser(int xCoord, int yCoord, int subType, int whichVirus) 
 				p_Laser->setVelY(-p_Laser->getVelocity());
 			}
 			else if (i == 5) {
-				p_Laser->setVelX(p_Laser->getVelocity() / sqrt(2));
-				p_Laser->setVelY(-p_Laser->getVelocity() / sqrt(2));
+				p_Laser->setVelX((int) (p_Laser->getVelocity() / sqrt(2)));
+				p_Laser->setVelY((int) (-p_Laser->getVelocity() / sqrt(2)));
 			}
 			else if (i == 6) {
-				p_Laser->setVelX(p_Laser->getVelocity() / sqrt(2));
-				p_Laser->setVelY(p_Laser->getVelocity() / sqrt(2));
+				p_Laser->setVelX((int)(p_Laser->getVelocity() / sqrt(2)));
+				p_Laser->setVelY((int)(p_Laser->getVelocity() / sqrt(2)));
 			}
 			else if (i == 7) {
-				p_Laser->setVelX(-(p_Laser->getVelocity() / sqrt(2)));
-				p_Laser->setVelY(-(p_Laser->getVelocity() / sqrt(2)));
+				p_Laser->setVelX((int)(-(p_Laser->getVelocity() / sqrt(2))));
+				p_Laser->setVelY((int)(-(p_Laser->getVelocity() / sqrt(2))));
 			}
 			else if (i == 8) {
-				p_Laser->setVelX(-(p_Laser->getVelocity() / sqrt(2)));
-				p_Laser->setVelY(p_Laser->getVelocity() / sqrt(2));
+				p_Laser->setVelX((int)(-(p_Laser->getVelocity() / sqrt(2))));
+				p_Laser->setVelY((int)(p_Laser->getVelocity() / sqrt(2)));
 			}
 
 			listOfGameObjects.push_back(p_Laser);						// Add the Enemy Lasers to a list to move and render
@@ -1917,7 +1917,7 @@ void Game::managePlayerHealth(int player, int damage, std::string name) {
 			}
 		}
 		if (SDL_NumJoysticks() > 0) {
-			if (player2->getAlive() && SDL_HapticRumblePlay(gControllerHaptic, 0.9, 500) != 0) {	// Haptic (Force Feedback) Play rumble at 75% strenght for 500 milliseconds 2017/01/20 Moved to player 2, was rumbling for both players
+			if (player2->getAlive() && SDL_HapticRumblePlay(gControllerHaptic, 0.9f, 500) != 0) {	// Haptic (Force Feedback) Play rumble at 75% strenght for 500 milliseconds 2017/01/20 Moved to player 2, was rumbling for both players
 				printf("Warning: Unable to play rumble! %s\n", SDL_GetError());
 			}
 		}

@@ -137,8 +137,8 @@ void GameObject::orbit(int centerX, int centerY, float timer) {
 		rotateCounter %= 360;
 
 		if (timer != 0.5) {
-			setX(70 * cos(rotateCounter * 3.1415926f / 180.0f) + centerX);		// rotate the bullet object
-			setY(70 * sin(rotateCounter * 3.1415926f / 180.0f) + centerY);
+			setX(70 * (int) cos(rotateCounter * 3.1415926f / 180.0f) + centerX);		// rotate the bullet object
+			setY(70 * (int) sin(rotateCounter * 3.1415926f / 180.0f) + centerY);
 
 			rotateCounter += 3;
 		}
