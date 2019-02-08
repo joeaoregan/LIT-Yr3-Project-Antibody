@@ -26,10 +26,11 @@ To set up an SDL project starting from scratch, the information needed for a num
 
 ---
 
-#### Playable Version of Game
-Bare in mind, the game is incomplete
+## Releases
 
-[Release Page](https://github.com/joeaoregan/Yr3-Antibody-Project-Submission/releases)
+Playable versions of game, bare in mind, the game is incomplete
+
+[Release Page](https://github.com/joeaoregan/LIT-Yr3-Project-Antibody/releases)
 
 ---
 
