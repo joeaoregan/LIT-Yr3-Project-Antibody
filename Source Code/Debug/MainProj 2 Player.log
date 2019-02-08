@@ -1,0 +1,25 @@
+﻿  Game.cpp
+c:\users\sean\desktop\antibody source code - games fleadh version\mainproj 2 player\_testdata.h(50): warning C4005: 'SPAWN_NUM_POWER_UPS': macro redefinition
+  c:\users\sean\desktop\antibody source code - games fleadh version\mainproj 2 player\_testdata.h(21): note: see previous definition of 'SPAWN_NUM_POWER_UPS'
+c:\users\sean\desktop\antibody source code - games fleadh version\mainproj 2 player\gameobject.h(229): warning C4244: 'initializing': conversion from 'double' to 'unsigned int', possible loss of data
+c:\users\sean\desktop\antibody source code - games fleadh version\mainproj 2 player\statusbar.h(10): warning C4005: 'MAX_HEALTH': macro redefinition
+  c:\users\sean\desktop\antibody source code - games fleadh version\mainproj 2 player\gameobject.h(15): note: see previous definition of 'MAX_HEALTH'
+c:\users\sean\desktop\antibody source code - games fleadh version\mainproj 2 player\game.cpp(979): warning C4800: 'SDL_Renderer *': forcing value to bool 'true' or 'false' (performance warning)
+c:\users\sean\desktop\antibody source code - games fleadh version\mainproj 2 player\game.cpp(1393): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+c:\users\sean\desktop\antibody source code - games fleadh version\mainproj 2 player\game.cpp(1411): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+c:\users\sean\desktop\antibody source code - games fleadh version\mainproj 2 player\game.cpp(1436): warning C4244: 'argument': conversion from 'Uint32' to 'float', possible loss of data
+c:\users\sean\desktop\antibody source code - games fleadh version\mainproj 2 player\game.cpp(1437): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+c:\users\sean\desktop\antibody source code - games fleadh version\mainproj 2 player\game.cpp(1458): warning C4244: 'argument': conversion from 'Uint32' to 'float', possible loss of data
+c:\users\sean\desktop\antibody source code - games fleadh version\mainproj 2 player\game.cpp(1459): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+c:\users\sean\desktop\antibody source code - games fleadh version\mainproj 2 player\game.cpp(1570): warning C4305: 'argument': truncation from 'int' to 'bool'
+c:\users\sean\desktop\antibody source code - games fleadh version\mainproj 2 player\game.cpp(2106): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
+c:\users\sean\desktop\antibody source code - games fleadh version\mainproj 2 player\game.cpp(2107): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
+c:\users\sean\desktop\antibody source code - games fleadh version\mainproj 2 player\game.cpp(2110): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
+c:\users\sean\desktop\antibody source code - games fleadh version\mainproj 2 player\game.cpp(2111): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
+c:\users\sean\desktop\antibody source code - games fleadh version\mainproj 2 player\game.cpp(2114): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
+c:\users\sean\desktop\antibody source code - games fleadh version\mainproj 2 player\game.cpp(2115): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
+c:\users\sean\desktop\antibody source code - games fleadh version\mainproj 2 player\game.cpp(2118): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
+c:\users\sean\desktop\antibody source code - games fleadh version\mainproj 2 player\game.cpp(2119): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
+c:\users\sean\desktop\antibody source code - games fleadh version\mainproj 2 player\game.cpp(2247): warning C4305: 'argument': truncation from 'double' to 'float'
+  MainProj 2 Player.vcxproj -> C:\Users\Sean\Desktop\Antibody Source Code - Games Fleadh Version\Debug\MainProj 2 Player.exe
+  MainProj 2 Player.vcxproj -> C:\Users\Sean\Desktop\Antibody Source Code - Games Fleadh Version\Debug\MainProj 2 Player.pdb (Partial PDB)
