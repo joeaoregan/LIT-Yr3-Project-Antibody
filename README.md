@@ -1,5 +1,4 @@
-# Antibody
-## by Joe O'Regan & Sean Horgan
-### LIT Third-Year Group Project
-
-Multiplayer 2D Side-Scrolling Game in C++
+# Antibody-Split-Screen-Race-Mode
+Antibody Test Case: 2 Player Split Screen Race Mode
+>Created by Joe O'Regan
+>05/02/2017
