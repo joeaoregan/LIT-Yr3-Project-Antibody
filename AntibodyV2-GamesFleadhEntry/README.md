@@ -1,9 +1,7 @@
 # Antibody Games Fleadh Version 08/03/2017
 
-<!---[![Game Repo](https://avatars2.githubusercontent.com/u/25029460?v=3&s=460)](https://github.com/Antibody2D "Click to go to Antibody Repo")--->
 
-<a href="https://github.com/Antibody2D" target="_blank"><img src="https://avatars2.githubusercontent.com/u/25029460?v=3&s=460" 
-alt="Click to go to Antibody Repo" width="240" height="200" border="10" /></a>
+![Antibody 2D: Best Windows Game](https://raw.githubusercontent.com/joeaoregan/LIT-Yr3-Project-Antibody/master/Screenshots/BestWindowsGame.jpg "Antibody 2D: Best Windows Game")
 
 This version of the game was winner of **Best Windows Game** at Games Fleadh 2017
 
@@ -16,7 +14,7 @@ Library and include folder paths: C:\SDL Proj
 ---
 
 ## Screenshots:
-#### May include different versions of the game (See links below)
+#### May include pictures from different versions of the game
 
 ![Antibody 2D: Multiplayer](https://raw.githubusercontent.com/joeaoregan/Yr3-Antibody-Project-Submission/master/Screenshots/Antibody3Multiplayer.jpg "Antibody 2D: Multiplayer")
 Antibody 2D: 2 Player Local Multiplayer
@@ -50,42 +48,6 @@ Antibody 2D: End Of Level Boss
 
 ![Antibody 2D: Power Ups](https://raw.githubusercontent.com/joeaoregan/Yr3-Antibody-Project-Submission/master/Screenshots/Antibody9PowerUps.jpg "Antibody 2D: Power Ups")
 Antibody 2D: Power Ups for time, health, lasers, lives, rockets
-
----
-
-## Links: 
-
-### Additional Repos (oldest to newest):
-
-#### 1. Journey To The Center Of My Headache
-Original long winded title for the game, this includes some of the earlier project versions before changing the name
-
-[JourneyToTheCenterOfMyHeadache Repo](https://github.com/joeaoregan/JourneyToTheCenterOfMyHeadache)
-
-#### 2. Games Fleadh 2017 Entry Version
-Winner in the "Best Windows Game" category at [Games Fleadh 2017](http://gamesfleadh.ie/results/)
-
-[Yr3-AntibodyGamesFleadh Repo](https://github.com/joeaoregan/Yr3-AntibodyGamesFleadh)
-
-#### 3. Project Submission
-The final third-year project code submission
-
-[Yr3-Antibody-Project-Submission Repo](https://github.com/joeaoregan/Yr3-Antibody-Project-Submission)
-
-#### 4. Antibody Race Mode
-2 Player split screen race mode test, as the theme for Games Fleadh 2017 was "Racing". This was not fully implemented. I began work on this near the beginning of the third-year project and abandoned due to time constraints.
-
-[Antibody-Split-Screen-Race-Mode Repo](https://github.com/joeaoregan/Antibody-Split-Screen-Race-Mode)
-
-#### 5. Antibody (Code::Blocks compatible)
-I redid the entire project history to be compatible with Code::Blocks, for testing, and as part of testing for my fourth-year project
-
-[Yr3-Project-Antibody Repo](https://github.com/joeaoregan/Yr3-Project-Antibody)
-
-#### 6. Year-Four Networked Games Project
-I've started creating a networked version of the game in Linux as part of my fourth-year project. The code base is cross platform, and I've included a finite state machine to help eliminate some of the problems with the original game.
-
-[Yr4-Project-Networked-Games-Library Repo](https://github.com/joeaoregan/Yr4-Project-Networked-Games-Library)
 
 ---
 
