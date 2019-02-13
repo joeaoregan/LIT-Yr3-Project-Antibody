@@ -1,11 +1,15 @@
 ![Antibody 2D Logo](https://raw.githubusercontent.com/joeaoregan/LIT-Yr3-Project-Antibody/master/Screenshots/Antibody1Logo.jpg "Antibody: Game Logo")
 ![Antibody 2D Logo](https://raw.githubusercontent.com/joeaoregan/LIT-Yr3-Project-Antibody/master/Screenshots/Antibody2Credits.jpg "Antibody: Game Logo")
 
-# Antibody
-## By Joe O'Regan and Sean Horgan
-### Year 3 Group Project
-##### BSc Computing (Games Design and Development)
+# Third-Year Group Project: Antibody
+## By Joe O'Regan (K00203642) and Sean Horgan (K00196030)
+### Year 3 (2016/17), Semesters 5 and 6
+#### BSc Computing (Games Design and Development)
 ##### Limerick Institute of Technology
+
+---
+
+# Antibody
 
 ---
 
