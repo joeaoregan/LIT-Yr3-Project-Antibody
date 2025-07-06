@@ -54,8 +54,8 @@ Playable versions of game, bare in mind, the game is incomplete
 
 <details closed>
 <summary>
-<img src="https://raw.githubusercontent.com/joeaoregan/LIT-Yr3-Project-Antibody/master/Screenshots/Antibody3Multiplayer.jpg" title="Antibody 2D: Multiplayer" height="100"/> 
-<img src="https://raw.githubusercontent.com/joeaoregan/LIT-Yr3-Project-Antibody/master/Screenshots/Antibody9PowerUps.jpg" title="Antibody 2D: Power Ups" height="100"/> 
+<img src="https://raw.githubusercontent.com/joeaoregan/LIT-Yr3-Project-Antibody/master/Screenshots/Antibody3Multiplayer.jpg" title="Antibody 2D: Multiplayer" width="100"/> 
+<img src="https://raw.githubusercontent.com/joeaoregan/LIT-Yr3-Project-Antibody/master/Screenshots/Antibody8Boss.jpg" title="Antibody 2D: Power Ups" width="100"/> 
 <p>Click here for larger images, or individual thumbnails to go to raw images.</p>
 </summary>
 
