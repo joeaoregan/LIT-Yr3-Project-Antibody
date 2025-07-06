@@ -61,7 +61,7 @@ Playable versions of game, bare in mind, the game is incomplete
 <img src="https://raw.githubusercontent.com/joeaoregan/LIT-Yr3-Project-Antibody/master/Screenshots/Antibody6Map.jpg" title="Antibody: Map" height="100px"/> 
 </div>
 <div class="thumbnail">
-<img rc="https://raw.githubusercontent.com/joeaoregan/LIT-Yr3-Project-Antibody/master/Screenshots/Antibody7InfoMessages.jpg" title="Antibody 2D: Information Messages" height="100px"/> 
+<img src="https://raw.githubusercontent.com/joeaoregan/LIT-Yr3-Project-Antibody/master/Screenshots/Antibody7InfoMessages.jpg" title="Antibody 2D: Information Messages" height="100px"/> 
 <img src="https://raw.githubusercontent.com/joeaoregan/LIT-Yr3-Project-Antibody/master/Screenshots/Antibody8Boss.jpg" title="Antibody 2D: End Of Level Boss" height="100px"/> 
 <img src="https://raw.githubusercontent.com/joeaoregan/LIT-Yr3-Project-Antibody/master/Screenshots/Antibody9PowerUps.jpg" title="Antibody 2D: Power Ups" height="100px"/> 
 </div>
