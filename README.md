@@ -117,6 +117,10 @@ A Python based version of the game
 
 ---
 
+## Media:
+
+Game Trailer by Seán Horgan, and Original Game Tracks by Joe O'Regan
+
 <style>
     th, td {
         text-align: center;
@@ -128,36 +132,15 @@ A Python based version of the game
     <th>Game Trailer</th><th colspan=2>Soundtrack</th>
 </tr>
 <tr>
-    <td>1</td><td>2</td><td>3</td>
+    <td><a href="https://youtu.be/HQiAlmhXLqA"><img src="https://i.ytimg.com/vi/HQiAlmhXLqA/1.jpg" title="Game Trailer"/><br/>YouTube Trailer</a></td>
+    <td><a href="https://youtu.be/ibIjSwFLAGo"><img src="https://i.ytimg.com/vi/ibIjSwFLAGo/1.jpg" title="Game Trailer"/><br />1. Blood Level</a></td>
+    <td><a href="https://youtu.be/sHVVEVyt4xQ"><img src="https://i.ytimg.com/vi/sHVVEVyt4xQ/1.jpg" title="Game Trailer"/><br />2. Virus</a></td>
 </tr>
 <tr>
-    <td>2</td><td colspan=2>3</td>
+    <td>by Seán Horgan</td>
+    <td colspan=2>by Joe O'Regan</td>
 </tr>
 </table>
-
-|                                       Game Trailer                                        |                                                  Soundtrack                                                   |                                                                                                         |
-| :---------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------------: |
-| [![Game Trailer](https://i.ytimg.com/vi/HQiAlmhXLqA/1.jpg)](https://youtu.be/HQiAlmhXLqA) | [![Original Game Track: Blood Level](https://i.ytimg.com/vi/ibIjSwFLAGo/1.jpg)](https://youtu.be/ibIjSwFLAGo) | [![Original Game Track: Virus](https://i.ytimg.com/vi/sHVVEVyt4xQ/1.jpg)](https://youtu.be/sHVVEVyt4xQ) |
-|                                          by Seán                                          |                                                1. Blood Level                                                 |                                                2. Virus                                                 |
-|                            Horgan <td colspan=2>by Joe O'Regan                            |
-
-| Header |     |
-| :----: | :-: |
-|   0    |  1  |
-
-#### Game Trailer by Seán Horgan:
-
-[![Game Trailer](https://i.ytimg.com/vi/HQiAlmhXLqA/1.jpg)](https://youtu.be/HQiAlmhXLqA)
-
-#### Original Game Tracks by Joe O'Regan:
-
-##### 1. Blood Level
-
-[![Original Game Track: Blood Level](https://i.ytimg.com/vi/ibIjSwFLAGo/1.jpg)](https://youtu.be/ibIjSwFLAGo)
-
-##### 2. Virus
-
-[![Original Game Track: Virus](https://i.ytimg.com/vi/sHVVEVyt4xQ/1.jpg)](https://youtu.be/sHVVEVyt4xQ)
 
 ---
 
