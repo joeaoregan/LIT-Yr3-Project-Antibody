@@ -54,48 +54,55 @@ Playable versions of game, bare in mind, the game is incomplete
 
 <details closed>
 <summary>
-<img class="thumbnail" src="https://raw.githubusercontent.com/joeaoregan/LIT-Yr3-Project-Antibody/master/Screenshots/Antibody3Multiplayer.jpg" title="Antibody 2D: Multiplayer" height="100"/> 
-<img class="thumbnail" src="https://raw.githubusercontent.com/joeaoregan/LIT-Yr3-Project-Antibody/master/Screenshots/Antibody4Menu.jpg" title="Antibody 2D: Menu" height="100"/> 
-<img class="thumbnail" src="https://raw.githubusercontent.com/joeaoregan/LIT-Yr3-Project-Antibody/master/Screenshots/Antibody5Settings.jpg" title="Antibody 2D: Settings Menu" height="100"/> 
-<img class="thumbnail" src="https://raw.githubusercontent.com/joeaoregan/LIT-Yr3-Project-Antibody/master/Screenshots/Antibody6Map.jpg" title="Antibody: Map" height="100"/> 
-<img class="thumbnail" src="https://raw.githubusercontent.com/joeaoregan/LIT-Yr3-Project-Antibody/master/Screenshots/Antibody7InfoMessages.jpg" title="Antibody 2D: Information Messages" height="100"/> 
-<img class="thumbnail" src="https://raw.githubusercontent.com/joeaoregan/LIT-Yr3-Project-Antibody/master/Screenshots/Antibody8Boss.jpg" title="Antibody 2D: End Of Level Boss" height="100"/> 
-<img class="thumbnail" src="https://raw.githubusercontent.com/joeaoregan/LIT-Yr3-Project-Antibody/master/Screenshots/Antibody9PowerUps.jpg" title="Antibody 2D: Power Ups" height="100"/> 
+<img class="thumbnail" src="https://raw.githubusercontent.com/joeaoregan/LIT-Yr3-Project-Antibody/master/Screenshots/Antibody3Multiplayer.jpg" title="Antibody 2D: Multiplayer" height="100px"/> 
+<img class="thumbnail" src="https://raw.githubusercontent.com/joeaoregan/LIT-Yr3-Project-Antibody/master/Screenshots/Antibody4Menu.jpg" title="Antibody 2D: Menu" height="100px"/> 
+<img class="thumbnail" src="https://raw.githubusercontent.com/joeaoregan/LIT-Yr3-Project-Antibody/master/Screenshots/Antibody5Settings.jpg" title="Antibody 2D: Settings Menu" height="100px"/> 
+<img class="thumbnail" src="https://raw.githubusercontent.com/joeaoregan/LIT-Yr3-Project-Antibody/master/Screenshots/Antibody6Map.jpg" title="Antibody: Map" height="100px"/> 
+<img class="thumbnail" src="https://raw.githubusercontent.com/joeaoregan/LIT-Yr3-Project-Antibody/master/Screenshots/Antibody7InfoMessages.jpg" title="Antibody 2D: Information Messages" height="100px"/> 
+<img class="thumbnail" src="https://raw.githubusercontent.com/joeaoregan/LIT-Yr3-Project-Antibody/master/Screenshots/Antibody8Boss.jpg" title="Antibody 2D: End Of Level Boss" height="100px"/> 
+<img class="thumbnail" src="https://raw.githubusercontent.com/joeaoregan/LIT-Yr3-Project-Antibody/master/Screenshots/Antibody9PowerUps.jpg" title="Antibody 2D: Power Ups" height="100px"/> 
 <p>Click here for larger images, or individual thumbnails to go to raw images.</p>
 </summary>
 
 ![Antibody 2D: Multiplayer](https://raw.githubusercontent.com/joeaoregan/LIT-Yr3-Project-Antibody/master/Screenshots/Antibody3Multiplayer.jpg "Antibody 2D: Multiplayer")
-Antibody 2D: 2 Player Local Multiplayer
+
+###### Antibody 2D: 2 Player Local Multiplayer
 
 ---
 
 ![Antibody 2D: Menu](https://raw.githubusercontent.com/joeaoregan/LIT-Yr3-Project-Antibody/master/Screenshots/Antibody4Menu.jpg "Antibody 2D: Menu")
-Antibody 2D: Menu System
+
+###### Antibody 2D: Menu System
 
 ---
 
 ![Antibody 2D: Settings Menu](https://raw.githubusercontent.com/joeaoregan/LIT-Yr3-Project-Antibody/master/Screenshots/Antibody5Settings.jpg "Antibody 2D: Settings Menu")
-Antibody 2D: Settings Menu
+
+###### Antibody 2D: Settings Menu
 
 ---
 
 ![Antibody 2D: Map](https://raw.githubusercontent.com/joeaoregan/LIT-Yr3-Project-Antibody/master/Screenshots/Antibody6Map.jpg "Antibody: Map")
-Antibody 2D: Map
+
+###### Antibody 2D: Map
 
 ---
 
 ![Antibody 2D: Information Messages](https://raw.githubusercontent.com/joeaoregan/LIT-Yr3-Project-Antibody/master/Screenshots/Antibody7InfoMessages.jpg "Antibody 2D: Information Messages")
-Antibody 2D: Virus Enemies, Information Messages, and Power Ups
+
+###### Antibody 2D: Virus Enemies, Information Messages, and Power Ups
 
 ---
 
 ![Antibody 2D: End Of Level Boss](https://raw.githubusercontent.com/joeaoregan/LIT-Yr3-Project-Antibody/master/Screenshots/Antibody8Boss.jpg "Antibody 2D: End Of Level Boss")
-Antibody 2D: End Of Level Boss
+
+###### Antibody 2D: End Of Level Boss
 
 ---
 
 ![Antibody 2D: Power Ups](https://raw.githubusercontent.com/joeaoregan/LIT-Yr3-Project-Antibody/master/Screenshots/Antibody9PowerUps.jpg "Antibody 2D: Power Ups")
-Antibody 2D: Power Ups for time, health, lasers, lives, rockets
+
+###### Antibody 2D: Power Ups for time, health, lasers, lives, rockets
 
 </details>
 
