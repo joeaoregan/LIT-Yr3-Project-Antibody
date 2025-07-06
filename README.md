@@ -1,3 +1,5 @@
+<link href="styles.css" rel="stylesheet"></link>
+
 <img src="https://raw.githubusercontent.com/joeaoregan/LIT-Yr3-Project-Antibody/master/Screenshots/Antibody1Logo.jpg" width=250 alt="Antibody Game Logo" title="Antibody Game Logo"/> \
 <img src="https://raw.githubusercontent.com/joeaoregan/LIT-Yr3-Project-Antibody/master/Screenshots/Antibody2Credits.jpg" width=250 alt="Antibody Game Creators" title="Antibody Game Creators"/>
 
@@ -52,13 +54,13 @@ Playable versions of game, bare in mind, the game is incomplete
 
 <details closed>
 <summary>
-<img src="https://raw.githubusercontent.com/joeaoregan/LIT-Yr3-Project-Antibody/master/Screenshots/Antibody3Multiplayer.jpg" title="Antibody 2D: Multiplayer" height="100"/>
-<img src="https://raw.githubusercontent.com/joeaoregan/LIT-Yr3-Project-Antibody/master/Screenshots/Antibody4Menu.jpg" title="Antibody 2D: Menu" height="100"/>
-<img src="https://raw.githubusercontent.com/joeaoregan/LIT-Yr3-Project-Antibody/master/Screenshots/Antibody5Settings.jpg" title="Antibody 2D: Settings Menu" height="100"/>
-<img src="https://raw.githubusercontent.com/joeaoregan/LIT-Yr3-Project-Antibody/master/Screenshots/Antibody6Map.jpg" title="Antibody: Map" height="100"/>
-<img src="https://raw.githubusercontent.com/joeaoregan/LIT-Yr3-Project-Antibody/master/Screenshots/Antibody7InfoMessages.jpg" title="Antibody 2D: Information Messages" height="100"/>
-<img src="https://raw.githubusercontent.com/joeaoregan/LIT-Yr3-Project-Antibody/master/Screenshots/Antibody8Boss.jpg" title="Antibody 2D: End Of Level Boss" height="100"/>
-<img src="https://raw.githubusercontent.com/joeaoregan/LIT-Yr3-Project-Antibody/master/Screenshots/Antibody9PowerUps.jpg" title="Antibody 2D: Power Ups" height="100"/>
+<img class="thumbnail" src="https://raw.githubusercontent.com/joeaoregan/LIT-Yr3-Project-Antibody/master/Screenshots/Antibody3Multiplayer.jpg" title="Antibody 2D: Multiplayer" height="100"/> 
+<img class="thumbnail" src="https://raw.githubusercontent.com/joeaoregan/LIT-Yr3-Project-Antibody/master/Screenshots/Antibody4Menu.jpg" title="Antibody 2D: Menu" height="100"/> 
+<img class="thumbnail" src="https://raw.githubusercontent.com/joeaoregan/LIT-Yr3-Project-Antibody/master/Screenshots/Antibody5Settings.jpg" title="Antibody 2D: Settings Menu" height="100"/> 
+<img class="thumbnail" src="https://raw.githubusercontent.com/joeaoregan/LIT-Yr3-Project-Antibody/master/Screenshots/Antibody6Map.jpg" title="Antibody: Map" height="100"/> 
+<img class="thumbnail" src="https://raw.githubusercontent.com/joeaoregan/LIT-Yr3-Project-Antibody/master/Screenshots/Antibody7InfoMessages.jpg" title="Antibody 2D: Information Messages" height="100"/> 
+<img class="thumbnail" src="https://raw.githubusercontent.com/joeaoregan/LIT-Yr3-Project-Antibody/master/Screenshots/Antibody8Boss.jpg" title="Antibody 2D: End Of Level Boss" height="100"/> 
+<img class="thumbnail" src="https://raw.githubusercontent.com/joeaoregan/LIT-Yr3-Project-Antibody/master/Screenshots/Antibody9PowerUps.jpg" title="Antibody 2D: Power Ups" height="100"/> 
 <p>Click here for larger images, or individual thumbnails to go to raw images.</p>
 </summary>
 
@@ -120,12 +122,6 @@ A Python based version of the game
 ## Media:
 
 Game Trailer by Seán Horgan, and Original Game Tracks by Joe O'Regan
-
-<style>
-    th, td {
-        text-align: center;
-    }
-</style>
 
 <table>
 <tr>
