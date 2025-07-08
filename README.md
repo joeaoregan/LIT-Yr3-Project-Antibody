@@ -103,7 +103,7 @@ Playable versions of game, bare in mind, the game is incomplete
 
 ![Split Screen Race Mode](https://raw.githubusercontent.com/joeaoregan/LIT-Yr3-Project-Antibody/master/Split-Screen%20Race%20Mode/Art/racing.png "Split Screen Race Mode")
 
-###### Antibody 2D: Power Ups for time, health, lasers, lives, rockets
+###### Split screen race mode
 
 </details>
 
