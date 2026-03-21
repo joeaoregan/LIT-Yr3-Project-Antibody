@@ -11,6 +11,8 @@
 ![IDE](https://img.shields.io/badge/Visual%20Studio-2015-5C2D91?logo=visualstudio&logoColor=white)
 ![Game Engine](https://img.shields.io/badge/Type-Custom%20Engine-orange?logo=game-developer&logoColor=white)
 ![Genre](https://img.shields.io/badge/Genre-Action%20%2F%20Shooter-red)
+![GitHub repo size](https://img.shields.io/github/repo-size/joeaoregan/LIT-Yr3-Project-Antibody?color=orange)
+![GitHub last commit](https://img.shields.io/github/last-commit/joeaoregan/LIT-Yr3-Project-Antibody?color=blue)
 
 ### Dependencies
 ![SDL2](https://img.shields.io/badge/SDL2-2.0.5-5C2D91?logo=sdl&logoColor=white)
