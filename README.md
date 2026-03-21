@@ -11,8 +11,11 @@
 ![IDE](https://img.shields.io/badge/Visual%20Studio-2015-5C2D91?logo=visualstudio&logoColor=white)
 ![Game Engine](https://img.shields.io/badge/Type-Custom%20Engine-orange?logo=game-developer&logoColor=white)
 ![Genre](https://img.shields.io/badge/Genre-Action%20%2F%20Shooter-red)
+
 ![GitHub repo size](https://img.shields.io/github/repo-size/joeaoregan/LIT-Yr3-Project-Antibody?color=orange)
 ![GitHub last commit](https://img.shields.io/github/last-commit/joeaoregan/LIT-Yr3-Project-Antibody?color=blue)
+![Stars](https://img.shields.io/github/stars/joeaoregan/LIT-Yr3-Project-Antibody?style=social)
+
 
 ### Dependencies
 ![SDL2](https://img.shields.io/badge/SDL2-2.0.5-5C2D91?logo=sdl&logoColor=white)
@@ -212,3 +215,17 @@ Game Trailer by Seán Horgan, and Original Game Tracks by Joe O'Regan
 [SDL Game Development by Shaun Mitchell](https://www.packtpub.com/game-development/sdl-game-development)
 
 </details>
+
+---
+
+<div align="center">
+
+[![GitHub](https://img.shields.io/badge/GitHub-181717?style=flat&logo=github&logoColor=white)](https://github.com/joeaoregan)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-0A66C2?style=flat&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/joeaoregan/)
+[![Email](https://img.shields.io/badge/Email-D14836?style=flat&logo=gmail&logoColor=white)](mailto:joeaoregan@yahoo.ie)
+
+&copy; 2017 Joe O'Regan &bull; LIT | Group Project
+
+[⬆️ Back to Top](https://github.com/joeaoregan/LIT-Yr3-Project-Antibody)
+
+</div>
