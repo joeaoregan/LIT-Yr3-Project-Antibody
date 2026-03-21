@@ -3,21 +3,43 @@
 <img src="https://raw.githubusercontent.com/joeaoregan/LIT-Yr3-Project-Antibody/master/Screenshots/Antibody1Logo.jpg" width=250 alt="Antibody Game Logo" title="Antibody Game Logo"/> \
 <img src="https://raw.githubusercontent.com/joeaoregan/LIT-Yr3-Project-Antibody/master/Screenshots/Antibody2Credits.jpg" width=250 alt="Antibody Game Creators" title="Antibody Game Creators"/>
 
-# Third-Year Group Project: Antibody
+# Antibody
+## Third-Year Group Project
 
-## By Joe O'Regan (K00203642) and Sean Horgan (K00196030)
+![C++](https://img.shields.io/badge/C%2B%2B-14-00599C?logo=cplusplus&logoColor=white)
+![Platform](https://img.shields.io/badge/Platform-Windows-0078D4?logo=windows&logoColor=white)
+![IDE](https://img.shields.io/badge/Visual%20Studio-2015-5C2D91?logo=visualstudio&logoColor=white)
+![Game Engine](https://img.shields.io/badge/Type-Custom%20Engine-orange?logo=game-developer&logoColor=white)
+![Genre](https://img.shields.io/badge/Genre-Action%20%2F%20Shooter-red)
+
+### Dependencies
+![SDL2](https://img.shields.io/badge/SDL2-2.0.5-5C2D91?logo=sdl&logoColor=white)
+![SDL_image](https://img.shields.io/badge/SDL__image-Supported-blue)
+![SDL_mixer](https://img.shields.io/badge/SDL__mixer-Supported-blue)
+![SDL_ttf](https://img.shields.io/badge/SDL__ttf-Supported-blue)
+![zlib](https://img.shields.io/badge/zlib-1.2.x-78c34c)
+
+### Features
+
+![Input](https://img.shields.io/badge/Input-Gamepad%20%26%20Keyboard-success)
+![Audio](https://img.shields.io/badge/Audio-SDL__mixer-blueviolet)
+![Graphics](https://img.shields.io/badge/Graphics-2D%20Particles-ff69b4)
+
+---
 
 ### Limerick Institute of Technology: BSc Computing (Games Design and Development)
 
 #### Year 3 (2016/17), Semesters 5 and 6
 
----
-
-# Antibody
+Created by [Joe O'Regan (K00203642)](https://github.com/joeaoregan) and [Sean Horgan (K00196030)](https://github.com/sean-horgan)
 
 ---
 
-## About
+# 🦠💉 Antibody
+
+---
+
+## 📖 About
 
 Antibody is a 2D sidescrolling game create using C++ and the Simple DirectMedia Layer (SDL 2) cross-platform software development library.
 
@@ -25,7 +47,29 @@ To set up an SDL project starting from scratch, the information needed for a num
 
 ---
 
-## Versions
+## 🎮 Features
+### Core Systems
+
+- **State Management**: Uses a state-based architecture (e.g., StatePlay, SplashScreen, EnterName) for clean transitions between menus and gameplay.
+- **Physics & Collisions**: Custom collision detection (CollisionStuff.h) handling interactions between players, enemies, and environmental hazards.
+- **Input Handling**: Support for both Keyboard and Gamepads (Gamepad.h).
+- **Frame Rate Control**: Integrated FPS management (FPS.h and Timer.h) to ensure consistent gameplay speed.
+
+### Gameplay Mechanics
+- **Entity Inheritance**: A robust OOP structure with GameObjectAbstract serving as the base for Player, Enemy, and PowerUp.
+- **Diverse Arsenal**: Multiple weapon types including Lasers, Rockets, Saws, and Ninja Stars.
+- **Enemy Variety**: Specialized AI types including EnemyShip, EnemyVirus, and environmental Blockage.
+- **Scoring & Persistence**: High score entry system (EnterName.h) and dynamic score text rendering.
+
+### Visuals & Audio
+- **Particle System**: Dedicated system for effects like explosions and blood cell interactions (Particle.cpp).
+- **Scrolling Backgrounds**: Support for parallax or continuous background movement.
+- **Dynamic HUD**: Real-time health bars (StatusBar.h) and heads-up display info.
+- **Full Audio Suite**: Integration with SDL_mixer for music and sound effects management.
+
+---
+
+## 🛠️ Versions
 
 1. **Journey To The Center Of My Headache**: Original Game Title.
 2. **Games Fleadh Entry Version**: Games Fleadh award winning entry from 8th of March, 2017.
@@ -34,7 +78,7 @@ To set up an SDL project starting from scratch, the information needed for a num
 
 ---
 
-## Releases
+## 🚀 Releases
 
 Playable versions of game, bare in mind, the game is incomplete
 
@@ -42,7 +86,7 @@ Playable versions of game, bare in mind, the game is incomplete
 
 ---
 
-## Awards
+## 🏆 Awards
 
 <img src="https://raw.githubusercontent.com/joeaoregan/LIT-Yr3-Project-Antibody/master/Screenshots/BestWindowsGame.jpg" width=250 alt="Antibody 2D: Best Windows Game" title="Antibody 2D: Best Windows Game"/>
 
@@ -50,7 +94,7 @@ Playable versions of game, bare in mind, the game is incomplete
 
 ---
 
-## Screenshots (Updated 31/01/2018)
+## 📸 Screenshots (Updated 31/01/2018)
 
 <details closed>
 <summary>
@@ -101,6 +145,8 @@ Playable versions of game, bare in mind, the game is incomplete
 
 ###### Antibody 2D: Power Ups for time, health, lasers, lives, rockets
 
+---
+
 ![Split Screen Race Mode](https://raw.githubusercontent.com/joeaoregan/LIT-Yr3-Project-Antibody/master/Split-Screen%20Race%20Mode/Art/racing.png "Split Screen Race Mode")
 
 ###### Split screen race mode
@@ -109,7 +155,8 @@ Playable versions of game, bare in mind, the game is incomplete
 
 ---
 
-## Links:
+<details>
+  <summary>1. 🔗 Links</summary>
 
 ### Additional Repos:
 
@@ -127,7 +174,10 @@ A Python based version of the game
 
 ---
 
-## Media:
+</details>
+
+<details>
+  <summary>2. 🎵 Media</summary>
 
 Game Trailer by Seán Horgan, and Original Game Tracks by Joe O'Regan
 
@@ -148,8 +198,15 @@ Game Trailer by Seán Horgan, and Original Game Tracks by Joe O'Regan
 
 ---
 
-## References:
+</details>
+
+<details>
+  <summary>3. 📚 References</summary>
+
+### References:
 
 [Lazy Foo' Productions: Beginning Game Programming v2.0](http://lazyfoo.net/tutorials/SDL/)
 
 [SDL Game Development by Shaun Mitchell](https://www.packtpub.com/game-development/sdl-game-development)
+
+</details>
