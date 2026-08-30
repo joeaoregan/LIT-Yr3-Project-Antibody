@@ -1,7 +1,6 @@
 <link href="styles.css" rel="stylesheet"></link>
 
 # Antibody
-## Third-Year Group Project
 
 ![C++](https://img.shields.io/badge/C%2B%2B-14-00599C?logo=cplusplus&logoColor=white)
 ![Platform](https://img.shields.io/badge/Platform-Windows-0078D4?logo=windows&logoColor=white)
@@ -9,28 +8,27 @@
 ![Game Engine](https://img.shields.io/badge/Type-Custom%20Engine-orange?logo=game-developer&logoColor=white)
 ![Genre](https://img.shields.io/badge/Genre-Action%20%2F%20Shooter-red)
 
-![GitHub repo size](https://img.shields.io/github/repo-size/joeaoregan/LIT-Yr3-Project-Antibody?color=orange)
-![GitHub last commit](https://img.shields.io/github/last-commit/joeaoregan/LIT-Yr3-Project-Antibody?color=blue)
-![Stars](https://img.shields.io/github/stars/joeaoregan/LIT-Yr3-Project-Antibody?style=social)
-
-### Dependencies
 ![SDL2](https://img.shields.io/badge/SDL2-2.0.5-5C2D91?logo=sdl&logoColor=white)
 ![SDL_image](https://img.shields.io/badge/SDL__image-Supported-blue)
 ![SDL_mixer](https://img.shields.io/badge/SDL__mixer-Supported-blue)
 ![SDL_ttf](https://img.shields.io/badge/SDL__ttf-Supported-blue)
 ![zlib](https://img.shields.io/badge/zlib-1.2.x-78c34c)
 
-### Features
 ![Input](https://img.shields.io/badge/Input-Gamepad%20%26%20Keyboard-success)
 ![Audio](https://img.shields.io/badge/Audio-SDL__mixer-blueviolet)
 ![Graphics](https://img.shields.io/badge/Graphics-2D%20Particles-ff69b4)
 
+![GitHub repo size](https://img.shields.io/github/repo-size/joeaoregan/LIT-Yr3-Project-Antibody?color=orange)
+![GitHub last commit](https://img.shields.io/github/last-commit/joeaoregan/LIT-Yr3-Project-Antibody?color=blue)
+![Stars](https://img.shields.io/github/stars/joeaoregan/LIT-Yr3-Project-Antibody?style=social)
+
 ---
 
+## Limerick Institute of Technology: BSc Computing (Games Design and Development)
 
-### Limerick Institute of Technology: BSc Computing (Games Design and Development)
+### Year 3 (2016/17), Semesters 5 and 6
 
-#### Year 3 (2016/17), Semesters 5 and 6
+#### Third-Year Group Project
 
 Created by [Joe O'Regan (K00203642)](https://github.com/joeaoregan) and [Sean Horgan (K00196030)](https://github.com/sean-horgan)
 
