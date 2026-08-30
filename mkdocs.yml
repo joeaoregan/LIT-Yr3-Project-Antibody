@@ -49,8 +49,8 @@ theme:
 nav:
   - Home:
     - Overview: index.md
-    - Play AntibodyJS: https://joeaoregan.github.io/AntibodyJS-WebApp/static/index.html
-  - Play: https://joeaoregan.github.io/AntibodyJS-WebApp/static/index.html
+    - Play AntibodyJS ⇗: https://joeaoregan.github.io/AntibodyJS-WebApp/static/index.html
+  - Play ⇗: https://joeaoregan.github.io/AntibodyJS-WebApp/static/index.html
   - Setup: setup.md
   - How to Play: how-to-play.md
   - Game Controls: game-controls.md

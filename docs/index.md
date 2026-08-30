@@ -1,6 +1,6 @@
 # Antibody
 
-[Play JavaScript Verion](https://joeaoregan.github.io/AntibodyJS-WebApp/static/)
+[Play JavaScript Version ⇗](https://joeaoregan.github.io/AntibodyJS-WebApp/static/)
 
 # index.md
 
