@@ -7,7 +7,7 @@
 |        BloodCell          |
 ├---------------------------┤
 | -mMovement: int           | 
-├----------------------------
+├---------------------------┤
 | +Move() : virtual void    | - Up & down movement, random speed set in spawnBloodCell
 | +moveStalker() : virtual  | - Move White Blood Cells to small Enemy Virus to tidy up
 | +render() : virutal void  | - Render from Texture map using ID, rotation set in move

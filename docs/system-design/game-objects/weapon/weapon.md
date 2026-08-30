@@ -15,7 +15,7 @@
 └-------------------------------┘
 ```
 
-![Weapon Inheritance Tree](../../../images/weapon/weapon_inheritance.png)
+![Weapon Inheritance Tree](../../../images/diagrams/inheritance_weapons.png)
 
     Weapon Inheritance Tree
 
