@@ -1,8 +1,5 @@
 <link href="styles.css" rel="stylesheet"></link>
 
-<img src="https://raw.githubusercontent.com/joeaoregan/LIT-Yr3-Project-Antibody/master/Screenshots/Antibody1Logo.jpg" width=250 alt="Antibody Game Logo" title="Antibody Game Logo"/> \
-<img src="https://raw.githubusercontent.com/joeaoregan/LIT-Yr3-Project-Antibody/master/Screenshots/Antibody2Credits.jpg" width=250 alt="Antibody Game Creators" title="Antibody Game Creators"/>
-
 # Antibody
 ## Third-Year Group Project
 
@@ -16,7 +13,6 @@
 ![GitHub last commit](https://img.shields.io/github/last-commit/joeaoregan/LIT-Yr3-Project-Antibody?color=blue)
 ![Stars](https://img.shields.io/github/stars/joeaoregan/LIT-Yr3-Project-Antibody?style=social)
 
-
 ### Dependencies
 ![SDL2](https://img.shields.io/badge/SDL2-2.0.5-5C2D91?logo=sdl&logoColor=white)
 ![SDL_image](https://img.shields.io/badge/SDL__image-Supported-blue)
@@ -25,12 +21,12 @@
 ![zlib](https://img.shields.io/badge/zlib-1.2.x-78c34c)
 
 ### Features
-
 ![Input](https://img.shields.io/badge/Input-Gamepad%20%26%20Keyboard-success)
 ![Audio](https://img.shields.io/badge/Audio-SDL__mixer-blueviolet)
 ![Graphics](https://img.shields.io/badge/Graphics-2D%20Particles-ff69b4)
 
 ---
+
 
 ### Limerick Institute of Technology: BSc Computing (Games Design and Development)
 
@@ -42,13 +38,17 @@ Created by [Joe O'Regan (K00203642)](https://github.com/joeaoregan) and [Sean Ho
 
 # 🦠💉 Antibody
 
+<img src="https://raw.githubusercontent.com/joeaoregan/LIT-Yr3-Project-Antibody/master/Screenshots/Antibody1Logo.jpg" width=250 alt="Antibody Game Logo" title="Antibody Game Logo"/> \
+<img src="https://raw.githubusercontent.com/joeaoregan/LIT-Yr3-Project-Antibody/master/Screenshots/Antibody2Credits.jpg" width=250 alt="Antibody Game Creators" title="Antibody Game Creators"/>
+
 ---
 
 ## 📖 About
 
 Antibody is a 2D sidescrolling game create using C++ and the Simple DirectMedia Layer (SDL 2) cross-platform software development library.
 
-To set up an SDL project starting from scratch, the information needed for a number of platforms and IDE is available in the [Lazy Foo' SDL tutorials](http://lazyfoo.net/tutorials/SDL/)
+> [!TIP]
+> To set up an SDL project starting from scratch, the information needed for a number of platforms and IDE is available in the [Lazy Foo' SDL tutorials](http://lazyfoo.net/tutorials/SDL/)
 
 ---
 
@@ -80,6 +80,9 @@ To set up an SDL project starting from scratch, the information needed for a num
 2. **Games Fleadh Entry Version**: Games Fleadh award winning entry from 8th of March, 2017.
 3. **Third-Year Project Submission**: An improved version of Games Fleadh entry.
 4. **CodeBlocks**: This is an adapted version of the third-year project submission version of Antibody 2D, so the project can be compiled in Code::Blocks, and run without the need for Visual Studio DLLs.
+
+> [!NOTE]
+> "Files Commont To V2 and V3/" contains files commong to the Games Fleadh entery and Project Submission.
 
 ---
 
