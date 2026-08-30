@@ -2333,7 +2333,7 @@
 
 <h1 id="scrolling-background">Scrolling Background</h1>
 <h2 id="overview-scrollingbackgroundh">Overview (<code>ScrollingBackground.h</code>)</h2>
-<pre><code class="language-text">┌---------------------┐
+<div class="highlight"><pre><span></span><code>┌---------------------┐
 | ScrollingBackground |
 ├---------------------┤
 | +scrollingOffset    | - Offset the background, reset when backgrounds move off screen
@@ -2342,7 +2342,7 @@
 | +render()           | - Render texture to screen
 | +loadBackground()   | - Load media for Backgrounds
 └---------------------┘
-</code></pre>
+</code></pre></div>
 <p>The <code>ScrollingBackground</code> class handles seamless background rendering and scrolling as an active <code>GameObject</code>.</p>
 <ul>
 <li><strong>Looping Technique</strong>: Renders two identical background textures side by side. As the first image scrolls off the left edge, its offset resets to the right edge of the second image, creating an endless loop.</li>

@@ -2266,12 +2266,12 @@
 
 <h1 id="collisions">Collisions</h1>
 <h2 id="overview-collisionh">Overview (<code>Collision.h</code>)</h2>
-<pre><code class="language-text">┌-----------------------┐
+<div class="highlight"><pre><span></span><code>┌-----------------------┐
 |      Collision.h      |
 ├-----------------------┤
-| +checkCollision(*a,*b)| - Check collision between two objects, return true/false
+| +checkCollision(*a,*b)| - Check collision between 2 objects, return true/false
 └-----------------------┘
-</code></pre>
+</code></pre></div>
 <p>Collision detection is handled using <strong>Axis-Aligned Bounding Box (AABB)</strong> intersection testing. Each active game object maintains an <code>SDL_Rect</code> bounding volume mapped to its <code>(X, Y)</code> position and dimensions.</p>
 <h2 id="collision-logic">Collision Logic</h2>
 <p>The <code>checkCollision(SDL_Rect *a, SDL_Rect *b)</code> function compares the minimum and maximum boundaries of two bounding boxes:</p>

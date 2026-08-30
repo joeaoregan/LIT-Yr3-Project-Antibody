@@ -2288,8 +2288,7 @@
 
 <h1 id="heads-up-display-hud">Heads Up Display (HUD)</h1>
 <h2 id="overview-hudh-hudcpp">Overview (<code>HUD.h</code>, <code>HUD.cpp</code>)</h2>
-<p><code>`text
-┌------------------------┐
+<div class="highlight"><pre><span></span><code>┌------------------------┐
 |           HUD          |
 ├------------------------┤
 | +UIVP                  | - Menu below main game screen view port
@@ -2323,7 +2322,7 @@
 | +gNumRocketsText2      | - Player 2 number of rockets text texture
 | +gCreatedByText1       | - Animated created by text frame 1 - ANTIBODY
 | +gCreatedByText2       | - A GAME BY text texture
-| +gCreatedByText3       | - JOE O'REGAN, SEAN HORGAN, BRIAN RYAN text texture
+| +gCreatedByText3       | - JOE O&#39;REGAN, SEAN HORGAN, BRIAN RYAN text texture
 | +gP1LivesTexture       | - Player 1 Small ship for number of lives
 | +gP2LivesTexture       | - Player 2 Small ship for number of lives
 | +gP1ScoreText1         | - Player 1 current score
@@ -2344,7 +2343,8 @@
 | +displayLevelNum()     | - The current level number
 | +percentageNinjaStrs() | - NOT USED - Track kill rate for Ninja Star Weapons
 | +playerScoresCounter() | - NOT USED - Function was to indicate enemy numbers, etc.
-└------------------------┘</code></p>
+└------------------------┘
+</code></pre></div>
 <p>The HUD class manages the player dashboard fixed at the bottom of the screen.</p>
 <h2 id="dashboard-elements">Dashboard Elements</h2>
 <ul>
@@ -2353,6 +2353,10 @@
 <li><strong>Mini-Map</strong>: Renders a miniature cross-section of the Professor's body showing the journey's start and end checkpoints, toggleable between mini and full-screen viewports with <strong>T</strong>.</li>
 <li><strong>Optimisation</strong>: Uses cache checks (<code>displayLevelNum()</code>, <code>playerScore()</code>, <code>rocketIndicator()</code>) to make certain static text is only re-rendered to textures when values change, preventing severe memory leaks.</li>
 </ul>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Rendering text without managing memory correctly leads to big problems!</p>
+</div>
 <h2 id="images">Images</h2>
 <p><img alt="HUD" src="../../images/ui/hud.png" /></p>
 <pre><code>Heads Up Display (HUD)

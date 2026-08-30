@@ -2266,7 +2266,7 @@
 
 <h1 id="fps">FPS</h1>
 <h2 id="overview-fpsh-fpscpp">Overview (<code>FPS.h</code>, <code>FPS.cpp</code>)</h2>
-<pre><code class="language-text">┌---------------------------┐
+<div class="highlight"><pre><span></span><code>┌---------------------------┐
 |            FPS            |
 ├---------------------------┤
 | +gFPSTextTexture: Texture | - Frames/second texture
@@ -2282,7 +2282,7 @@
 | +setFPS() : void          | - Set the frames per second
 | +renderFPS() : void       | - Render FPS texture to screen
 └---------------------------┘
-</code></pre>
+</code></pre></div>
 <p>The <code>FPS</code> class calculates and displays the real-time frame rate, toggled on and off using the <strong>F1</strong> key.</p>
 <h2 id="calculation-logic">Calculation Logic</h2>
 <p>Instead of relying on single-frame measurements from <code>SDL_GetTicks()</code> (which can fluctuate wildly), the class averages frame times over a circular buffer array (<code>frameTimes[FRAME_VALUES]</code>):</p>

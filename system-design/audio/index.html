@@ -2266,7 +2266,7 @@
 
 <h1 id="audio">Audio</h1>
 <h2 id="overview-audioh-audiocpp">Overview (<code>Audio.h</code>, <code>Audio.cpp</code>)</h2>
-<pre><code class="language-text">┌---------------------------------┐
+<div class="highlight"><pre><span></span><code>┌---------------------------------┐
 |               Audio             |
 ├---------------------------------┤
 | -Audio                          | - Constructor, initialise game audio
@@ -2287,7 +2287,7 @@
 | +stopMusic() : void             | - Stop the current track from playing
 | +identifyTrack() : void         | - Clear music and effects chunks audio from memory
 └---------------------------------┘
-</code></pre>
+</code></pre></div>
 <p>The Audio class uses a Singleton pattern via <code>s_pInstance</code> to make certain only one audio manager exists throughout the lifecycle of the game.</p>
 <ul>
 <li><strong>Music Management</strong>: Music tracks are stored in a <code>listOfMusic</code> vector. The integer <code>currentSong</code> tracks the active song index.</li>

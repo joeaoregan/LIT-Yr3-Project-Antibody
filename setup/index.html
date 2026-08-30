@@ -2299,11 +2299,18 @@
 <li><strong>SDL_2_TTF</strong> (for True Type Fonts)</li>
 </ul>
 <h3 id="configuring-library-directories">Configuring Library Directories</h3>
+<p><img alt="SDL Includes" src="../images/sdl_includes.png" /></p>
+<pre><code>SDL Includes in Visual Studio 2015
+</code></pre>
 <ol>
 <li>Open the project in Visual Studio 2015.</li>
 <li>Select <strong>Project &gt; Properties &gt; VC++ Directories</strong>.</li>
-<li>Set the path to the <strong>Include Directories</strong> and <strong>Library Directories</strong> (as shown in Figure 83). Note: This version of the project does not use any SubSystem under the <em>Linker &gt; System</em> tab.</li>
+<li>Set the path to the <strong>Include Directories</strong> and <strong>Library Directories</strong> (as shown in image above). </li>
 </ol>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This version of the project does not use any SubSystem under the <em>Linker &gt; System</em> tab.</p>
+</div>
 <h3 id="project-path-setup">Project Path Setup</h3>
 <p>The project code is configured to use the path <code>C:/SDL Proj/</code>, which was the universal setup configuration used by all group members during development. The <code>SDL Proj</code> folder is included in the project files under <code>SDL Includes and Library – Contents of this folder needs to be on c drive</code>. Copy this folder directly to the <code>C</code> drive on your computer running Visual Studio 2015 to launch the project. WinRar was used to compress project folders as <code>.rar</code> files.</p>
 
