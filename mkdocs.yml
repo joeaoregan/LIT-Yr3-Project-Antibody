@@ -71,6 +71,7 @@ nav:
               - Enemy Boss: system-design/game-objects/enemy/enemy-boss.md
               - Enemy Ship / Nano-bots: system-design/game-objects/enemy/enemy-ship.md
               - Enemy Virus: system-design/game-objects/enemy/enemy-virus.md
+              - Blood Cells: system-design/game-objects/enemy/blood-cells.md
           - Weapon Base:
               - Overview: system-design/game-objects/weapon/weapon.md
               - Enemy Laser Weapon: system-design/game-objects/weapon/weapon-en-laser.md
@@ -78,7 +79,6 @@ nav:
               - Player Ninja Star Weapon: system-design/game-objects/weapon/weapon-pl-ninja-star.md
               - Player Rocket Weapon: system-design/game-objects/weapon/weapon-pl-rocket.md
               - Player Saw Weapon: system-design/game-objects/weapon/weapon-pl-saw.md
-          - Blood Cells: system-design/game-objects/blood-cells.md
           - Explosion: system-design/game-objects/explosion.md
           - Player: system-design/game-objects/player.md
           - Power Ups: system-design/game-objects/power-ups.md

@@ -32,14 +32,14 @@ Blood cells inherit from the `Enemy` base class and represent biological compone
 
 ## Sprite Sheet
 
-![Blood Cell](../../images/game-objects/BloodCell.png)
+![Blood Cell](../../../images/enemy/BloodCell.png)
 
     Blood Cell sprite
 
-![Blood Cell Small](../../images/game-objects/BloodCellSmall.png)
+![Blood Cell Small](../../../images/enemy/BloodCellSmall.png)
 
     Blood Cell Small sprite
 
-![Blood Cell Explosion](../../images/game-objects/ExplosionBlood.png)
+![Blood Cell Explosion](../../../images/explosion/ExplosionBlood.png)
 
     Blood Cell Explosion
