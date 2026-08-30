@@ -32,6 +32,9 @@ The Audio class uses a Singleton pattern via `s_pInstance` to make certain only 
 * **Music Management**: Music tracks are stored in a `listOfMusic` vector. The integer `currentSong` tracks the active song index.
 * **Sound Effects**: Sound effects (`Mix_Chunk*`) are stored within an `m_sfxs` map, allowing effects to be retrieved using an identifier string.
 
+!!! tip "Singleton Design Pattern"
+    The Singleton design pattern (`s_pInstance`) in core managers provides global access to shared assets and eliminates redundant loader calls.
+
 ## Key Functions
 
 * `Instance()`: Returns the static instance of the audio manager.

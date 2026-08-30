@@ -6,7 +6,7 @@
 
     Keyboard control layout
 
-!!! info
+!!! info "Default Input"
 
     The game uses the keyboard as the primary input device, divided into general game keys, Player 1 controls, and Player 2 controls (see image above).
 
@@ -26,9 +26,12 @@
 | **Spacebar** | **CTRL** | Fire laser weapon |
 | **N** | **SHIFT** | Fire ninja star weapon |
 
-!!! note
+!!! note "Rocket Status Bar"
 
     If C / V key not released before the rocker status bar finishes, the rocket will explode.
+
+!!! tip "Weapon Power Bar Strategy"
+    When using the charged rocket weapon, holding the fire button builds up power for extra score multipliers, but be certain to release it before the status bar fills completely or the rocket will self-destruct.
 
 ### Other Game Keys
 

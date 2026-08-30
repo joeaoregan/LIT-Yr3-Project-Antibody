@@ -21,4 +21,7 @@ The `checkCollision(SDL_Rect *a, SDL_Rect *b)` function compares the minimum and
 * `leftB = b->x`, `rightB = b->x + b->w`
 * `topB = b->y`, `bottomB = b->y + b->h`
 
+!!! note "AABB Collision Detection"
+    Axis-Aligned Bounding Box (AABB) collision detection was chosen because rectangular bounding volumes map directly to `SDL_Rect` structures, providing simple and efficient intersection checks.
+
 If any side of box `A` is completely outside box `B` on either axis, the function returns `false`. If overlap occurs across both the X and Y axes simultaneously, it returns `true`, triggering the appropriate gameplay response (e.g., health reduction, weapon destruction, or power-up collection).

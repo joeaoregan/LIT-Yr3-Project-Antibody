@@ -58,6 +58,9 @@
 
 The `Texture` class manages all hardware-accelerated rendering operations using `SDL_Texture` and `SDL_Surface`.
 
+!!! tip "Singleton Design Pattern"
+    The Singleton design pattern (`s_pInstance`) in core managers provides global access to shared assets and eliminates redundant loader calls.
+
 ## Core Capabilities
 
 * **Central Texture Map**: Stores loaded textures in a `std::map<std::string, SDL_Texture*>` indexed by string IDs, loaded from an array via `loadTextureMedia()`.

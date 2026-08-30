@@ -25,3 +25,6 @@ GameObjectAbstract (Pure Virtual Interface)
       ├── ScoreValueText (Floating Score Indicators)
       └── ScrollingBackground (Looping Blood Vessel Textures)
 ```
+
+!!! tip "Design Patterns"
+    Core managers like `Audio` and `Texture` use the Singleton design pattern (`s_pInstance`) to provide global access to shared assets and eliminate redundant loader calls.
