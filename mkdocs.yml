@@ -108,5 +108,8 @@ extra:
       link: https://github.com/joeaoregan/LIT-Yr3-Project-Antibody
 
 markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
   - pymdownx.tasklist:
       custom_checkbox: true

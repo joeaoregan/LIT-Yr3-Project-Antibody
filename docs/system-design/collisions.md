@@ -6,7 +6,7 @@
 ┌-----------------------┐
 |      Collision.h      |
 ├-----------------------┤
-| +checkCollision(*a,*b)| - Check collision between two objects, return true/false
+| +checkCollision(*a,*b)| - Check collision between 2 objects, return true/false
 └-----------------------┘
 ```
 

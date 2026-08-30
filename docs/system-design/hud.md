@@ -2,7 +2,7 @@
 
 ## Overview (`HUD.h`, `HUD.cpp`)
 
-````text
+```text
 ┌------------------------┐
 |           HUD          |
 ├------------------------┤
@@ -69,6 +69,10 @@ The HUD class manages the player dashboard fixed at the bottom of the screen.
 * **Weapon Indicators**: Shows active laser grade, remaining rocket ammo, and active speed boost countdown bars.
 * **Mini-Map**: Renders a miniature cross-section of the Professor's body showing the journey's start and end checkpoints, toggleable between mini and full-screen viewports with **T**.
 * **Optimisation**: Uses cache checks (`displayLevelNum()`, `playerScore()`, `rocketIndicator()`) to make certain static text is only re-rendered to textures when values change, preventing severe memory leaks.
+
+!!! warning
+
+    Rendering text without managing memory correctly leads to big problems!
 
 ## Images
 

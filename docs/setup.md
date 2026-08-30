@@ -10,9 +10,17 @@ Installing the game requires **Visual Studio Community 2015**, which is availabl
 
 ### Configuring Library Directories
 
+![SDL Includes](images/sdl_includes.png)
+
+    SDL Includes in Visual Studio 2015
+
 1. Open the project in Visual Studio 2015.
 2. Select **Project > Properties > VC++ Directories**.
-3. Set the path to the **Include Directories** and **Library Directories** (as shown in Figure 83). Note: This version of the project does not use any SubSystem under the *Linker > System* tab.
+3. Set the path to the **Include Directories** and **Library Directories** (as shown in image above). 
+
+!!! note
+
+    This version of the project does not use any SubSystem under the *Linker > System* tab.
 
 ### Project Path Setup
 
