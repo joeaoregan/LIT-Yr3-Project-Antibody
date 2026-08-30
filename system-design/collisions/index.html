@@ -2281,6 +2281,10 @@
 <li><code>leftB = b-&gt;x</code>, <code>rightB = b-&gt;x + b-&gt;w</code></li>
 <li><code>topB = b-&gt;y</code>, <code>bottomB = b-&gt;y + b-&gt;h</code></li>
 </ul>
+<div class="admonition note">
+<p class="admonition-title">AABB Collision Detection</p>
+<p>Axis-Aligned Bounding Box (AABB) collision detection was chosen because rectangular bounding volumes map directly to <code>SDL_Rect</code> structures, providing simple and efficient intersection checks.</p>
+</div>
 <p>If any side of box <code>A</code> is completely outside box <code>B</code> on either axis, the function returns <code>false</code>. If overlap occurs across both the X and Y axes simultaneously, it returns <code>true</code>, triggering the appropriate gameplay response (e.g., health reduction, weapon destruction, or power-up collection).</p>
 
 

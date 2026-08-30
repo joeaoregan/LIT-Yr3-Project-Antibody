@@ -2308,11 +2308,19 @@
 <li>Set the path to the <strong>Include Directories</strong> and <strong>Library Directories</strong> (as shown in image above). </li>
 </ol>
 <div class="admonition note">
-<p class="admonition-title">Note</p>
+<p class="admonition-title">Subsystem</p>
 <p>This version of the project does not use any SubSystem under the <em>Linker &gt; System</em> tab.</p>
 </div>
 <h3 id="project-path-setup">Project Path Setup</h3>
 <p>The project code is configured to use the path <code>C:/SDL Proj/</code>, which was the universal setup configuration used by all group members during development. The <code>SDL Proj</code> folder is included in the project files under <code>SDL Includes and Library – Contents of this folder needs to be on c drive</code>. Copy this folder directly to the <code>C</code> drive on your computer running Visual Studio 2015 to launch the project. WinRar was used to compress project folders as <code>.rar</code> files.</p>
+<div class="admonition warning">
+<p class="admonition-title">Mandatory Directory Structure</p>
+<p>The project code is hardcoded to look for the SDL libraries and files under <code>C:/SDL Proj/</code>. Make certain you copy the provided SDL folder directly to the root of your C drive.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Visual Studio Version</p>
+<p>This project was built using Visual Studio Community 2015. Opening the solution in newer versions of Visual Studio may prompt you to upgrade the Windows SDK target version.</p>
+</div>
 
 
 

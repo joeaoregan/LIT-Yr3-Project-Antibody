@@ -2293,6 +2293,10 @@
 <li><strong>Music Management</strong>: Music tracks are stored in a <code>listOfMusic</code> vector. The integer <code>currentSong</code> tracks the active song index.</li>
 <li><strong>Sound Effects</strong>: Sound effects (<code>Mix_Chunk*</code>) are stored within an <code>m_sfxs</code> map, allowing effects to be retrieved using an identifier string.</li>
 </ul>
+<div class="admonition tip">
+<p class="admonition-title">Singleton Design Pattern</p>
+<p>The Singleton design pattern (<code>s_pInstance</code>) in core managers provides global access to shared assets and eliminates redundant loader calls.</p>
+</div>
 <h2 id="key-functions">Key Functions</h2>
 <ul>
 <li><code>Instance()</code>: Returns the static instance of the audio manager.</li>

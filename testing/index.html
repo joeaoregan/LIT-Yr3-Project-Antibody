@@ -2371,6 +2371,10 @@
 <pre><code>Text Rendering Memory Leak
 </code></pre>
 <p>A severe memory leak of up to 40 MB per second was traced to rendering unchanging text strings to textures every frame. This was resolved by implementing conditional update checks so text is only re-rendered when values change.</p>
+<div class="admonition danger">
+<p class="admonition-title">Text Rendering Memory Leak</p>
+<p>Rendering unchanging text directly to textures every single frame caused a massive memory leak of up to 40 MB/s. Always make certain that conditional checks are used so text objects only re-render when their underlying values actually change.</p>
+</div>
 <hr />
 <h3 id="blue-virus-projectile-behavior">Blue Virus Projectile Behavior</h3>
 <p>The initial plan for the Blue Virus to expire upon timer completion was refactored into a looping reload mechanic where new satellite projectiles orbit until firing.</p>
@@ -2383,6 +2387,11 @@
 <pre><code>Collision Volume Storage
 </code></pre>
 <p>Standard <code>std::list</code> structures caused errors when storing game objects accompanied by <code>SDL_Rect</code> colliders. Replacing lists with <code>std::vector</code> containers completely resolved the issue.</p>
+<hr />
+<div class="admonition info">
+<p class="admonition-title">Team Sync Strategy</p>
+<p>Unifying the library paths and include directories across all developer machines early in the project lifecycle made it easy to zip and share stable builds via Google Drive without broken references.</p>
+</div>
 
 
 
