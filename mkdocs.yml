@@ -1,0 +1,109 @@
+site_name: LIT - Year 3 Project - Antibody
+site_url: https://joeaoregan.github.io/LIT-Yr3-Project-Antibody
+
+docs_dir: docs
+site_dir: site
+
+repo_url: https://github.com/joeaoregan/LIT-Yr3-Project-Antibody
+repo_name: GitHub
+
+theme:
+  name: material
+  palette: 
+    # Palette toggle for dark mode
+    - scheme: slate
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
+        primary: 'blue'
+        accent: 'light blue'
+
+    # Palette toggle for light mode
+    - scheme: default
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+
+  favicon: images/favicon.ico
+  icon:
+    admonition:
+      note: material/alpha-j
+      success: material/alpha-j
+      warning: material/alpha-j
+      danger: material/alpha-j
+  logo: images/logo.png
+        
+  features:
+    - navigation.tabs
+    - navigation.instant
+    - navigation.tabs.sticky
+    - navigation.sections
+    - toc.follow
+    - navigation.footer
+    - navigation.instant.preview
+    - navigation.tracking
+    - navigation.path
+    - navigation.top
+    - content.code.copy
+
+nav:
+  - Home: index.md
+  - Setup: setup.md
+  - How to Play: how-to-play.md
+  - Game Controls: game-controls.md
+  - System Design & Configuration:
+      - Overview: system-design/index.md
+      - Audio: system-design/audio.md
+      - Buttons: system-design/buttons.md
+      - Collisions: system-design/collisions.md
+      - Enter Name: system-design/enter-name.md
+      - FPS: system-design/fps.md
+      - Game: system-design/game.md
+      - Game Object:
+          - Overview: system-design/game-objects/game-object.md
+          - Game Object Abstract: system-design/game-objects/game-object-abstract.md
+          - Enemy Base:
+              - Overview: system-design/game-objects/enemy/enemy.md
+              - Blockage: system-design/game-objects/enemy/blockage.md
+              - Enemy Boss: system-design/game-objects/enemy/enemy-boss.md
+              - Enemy Ship / Nano-bots: system-design/game-objects/enemy/enemy-ship.md
+              - Enemy Virus: system-design/game-objects/enemy/enemy-virus.md
+          - Weapon Base:
+              - Overview: system-design/game-objects/weapon/weapon.md
+              - Enemy Laser Weapon: system-design/game-objects/weapon/weapon-en-laser.md
+              - Player Laser Weapon: system-design/game-objects/weapon/weapon-pl-laser.md
+              - Player Ninja Star Weapon: system-design/game-objects/weapon/weapon-pl-ninja-star.md
+              - Player Rocket Weapon: system-design/game-objects/weapon/weapon-pl-rocket.md
+              - Player Saw Weapon: system-design/game-objects/weapon/weapon-pl-saw.md
+          - Blood Cells: system-design/game-objects/blood-cells.md
+          - Explosion: system-design/game-objects/explosion.md
+          - Player: system-design/game-objects/player.md
+          - Power Ups: system-design/game-objects/power-ups.md
+          - Score Value Text: system-design/game-objects/score-value-text.md
+          - Scrolling Background: system-design/game-objects/scrolling-background.md
+      - Gamepad: system-design/gamepad.md
+      - High Scores: system-design/high-scores.md
+      - Heads Up Display (HUD): system-design/hud.md
+      - Level: system-design/level.md
+      - Main: system-design/main.md
+      - Main Menu: system-design/main-menu.md
+      - Particles: system-design/particles.md
+      - Random Message Generator: system-design/random-message-generator.md
+      - Settings Menu: system-design/settings-menu.md
+      - Splash Screen: system-design/splash-screen.md
+      - Status Bar: system-design/status-bar.md
+      - Texture: system-design/texture.md
+  - Example of Use: example-of-use.md
+  - Testing: testing.md
+  - Original Feature List: feature-list.md
+  - Acknowledgements: references.md
+
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/joeaoregan/LIT-Yr3-Project-Antibody
+
+markdown_extensions:
+  - pymdownx.tasklist:
+      custom_checkbox: true

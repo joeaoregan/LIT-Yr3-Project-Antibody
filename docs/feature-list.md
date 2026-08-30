@@ -1,0 +1,21 @@
+# Original Feature List
+
+- [x] **Movement**: Player movement through levels initially controlled via keyboard.
+- [ ] **Sub-feature**: Game controller or steering wheel input (partially implemented via gamepad support, but full steering wheel support was omitted).
+- [x] **Perspective**: Side-scrolling 2D perspective.
+- [x] **Enemy Spawning**: Enemies spawn at random or fixed points depending on the situation and level stage.
+- [x] **Player Weapons**: Players can shoot enemies using lasers, ninja stars, rockets, and saws.
+- [x] **Power Ups**: Players can collect power-ups for speed, defense, attack, and alternate weapons.
+- [x] **Collision**: Axis-Aligned Bounding Box (AABB) collision detection and contact handling.
+- [x] **Sound**: Background music and sound effects integration via SDL_Mixer.
+- [x] **Graphics**: Sprites, backgrounds, background layers for parallax, and explosion effects.
+- [x] **Timer**: Countdown clock, stage checkpoints, and time-stages.
+- [x] **Background**: Parallax and looping background movement.
+- [x] **Personality**: Distinct player ship sprites, colors, and enemy visual representations.
+- [x] **Levels**: Multi-level progression with increasing difficulty, varied enemies, and fewer power-ups.
+- [x] **User Interface**: Scores, timers, menus, map, hints, lives, health, and weapon inventories.
+- [x] **Enemy Variety**: Implementation of a variety of enemies, including standard nano-bots, viruses, and end-of-level bosses.
+- [ ] **AI**: Artificial intelligence for computer-controlled enemy racers.
+- [x] **Multiplayer**: Second player support to race or fight alongside player one.
+- [ ] **Network Play**: Playing multiplayer over a network.
+- [x] **Game Physics**: Force, velocity, and object speed management.
