@@ -36,8 +36,8 @@ Created by [Joe O'Regan (K00203642)](https://github.com/joeaoregan) and [Sean Ho
 
 # 🦠💉 Antibody
 
-<img src="https://raw.githubusercontent.com/joeaoregan/LIT-Yr3-Project-Antibody/master/Screenshots/Antibody1Logo.jpg" width=250 alt="Antibody Game Logo" title="Antibody Game Logo"/> \
-<img src="https://raw.githubusercontent.com/joeaoregan/LIT-Yr3-Project-Antibody/master/Screenshots/Antibody2Credits.jpg" width=250 alt="Antibody Game Creators" title="Antibody Game Creators"/>
+<img src="logos/antibody_theme_fx_sweep_2.svg" width=250 alt="Antibody Game Logo" title="Antibody Game Logo"/> \
+<img src="Screenshots/Antibody2Credits.jpg" width=250 alt="Antibody Game Creators" title="Antibody Game Creators"/>
 
 ---
 
@@ -104,56 +104,56 @@ Playable versions of game, bare in mind, the game is incomplete
 
 <details closed>
 <summary>
-<img src="https://raw.githubusercontent.com/joeaoregan/LIT-Yr3-Project-Antibody/master/Screenshots/Antibody3Multiplayer.jpg" title="Antibody 2D: Multiplayer" width="150"/> 
-<img src="https://raw.githubusercontent.com/joeaoregan/LIT-Yr3-Project-Antibody/master/Screenshots/Antibody6Map.jpg" title="Antibody: Map" width="150"/> 
-<img src="https://raw.githubusercontent.com/joeaoregan/LIT-Yr3-Project-Antibody/master/Screenshots/Antibody7InfoMessages.jpg" title="Antibody 2D: Information Messages" width="150"/> 
-<img src="https://raw.githubusercontent.com/joeaoregan/LIT-Yr3-Project-Antibody/master/Screenshots/Antibody8Boss.jpg" title="Antibody 2D: Power Ups" width="150"/> 
+<img src="Screenshots/Antibody3Multiplayer.jpg" title="Antibody 2D: Multiplayer" width="150"/> 
+<img src="Screenshots/Antibody6Map.jpg" title="Antibody: Map" width="150"/> 
+<img src="Screenshots/Antibody7InfoMessages.jpg" title="Antibody 2D: Information Messages" width="150"/> 
+<img src="Screenshots/Antibody8Boss.jpg" title="Antibody 2D: Power Ups" width="150"/> 
 <p>Click here for larger images, or individual thumbnails to go to raw images.</p>
 </summary>
 
-![Antibody 2D: Multiplayer](https://raw.githubusercontent.com/joeaoregan/LIT-Yr3-Project-Antibody/master/Screenshots/Antibody3Multiplayer.jpg "Antibody 2D: Multiplayer")
+![Antibody 2D: Multiplayer](Screenshots/Antibody3Multiplayer.jpg "Antibody 2D: Multiplayer")
 
 ###### Antibody 2D: 2 Player Local Multiplayer
 
 ---
 
-![Antibody 2D: Menu](https://raw.githubusercontent.com/joeaoregan/LIT-Yr3-Project-Antibody/master/Screenshots/Antibody4Menu.jpg "Antibody 2D: Menu")
+![Antibody 2D: Menu](Screenshots/Antibody4Menu.jpg "Antibody 2D: Menu")
 
 ###### Antibody 2D: Menu System
 
 ---
 
-![Antibody 2D: Settings Menu](https://raw.githubusercontent.com/joeaoregan/LIT-Yr3-Project-Antibody/master/Screenshots/Antibody5Settings.jpg "Antibody 2D: Settings Menu")
+![Antibody 2D: Settings Menu](Screenshots/Antibody5Settings.jpg "Antibody 2D: Settings Menu")
 
 ###### Antibody 2D: Settings Menu
 
 ---
 
-![Antibody 2D: Map](https://raw.githubusercontent.com/joeaoregan/LIT-Yr3-Project-Antibody/master/Screenshots/Antibody6Map.jpg "Antibody: Map")
+![Antibody 2D: Map](Screenshots/Antibody6Map.jpg "Antibody: Map")
 
 ###### Antibody 2D: Map
 
 ---
 
-![Antibody 2D: Information Messages](https://raw.githubusercontent.com/joeaoregan/LIT-Yr3-Project-Antibody/master/Screenshots/Antibody7InfoMessages.jpg "Antibody 2D: Information Messages")
+![Antibody 2D: Information Messages](Screenshots/Antibody7InfoMessages.jpg "Antibody 2D: Information Messages")
 
 ###### Antibody 2D: Virus Enemies, Information Messages, and Power Ups
 
 ---
 
-![Antibody 2D: End Of Level Boss](https://raw.githubusercontent.com/joeaoregan/LIT-Yr3-Project-Antibody/master/Screenshots/Antibody8Boss.jpg "Antibody 2D: End Of Level Boss")
+![Antibody 2D: End Of Level Boss](Screenshots/Antibody8Boss.jpg "Antibody 2D: End Of Level Boss")
 
 ###### Antibody 2D: End Of Level Boss
 
 ---
 
-![Antibody 2D: Power Ups](https://raw.githubusercontent.com/joeaoregan/LIT-Yr3-Project-Antibody/master/Screenshots/Antibody9PowerUps.jpg "Antibody 2D: Power Ups")
+![Antibody 2D: Power Ups](Screenshots/Antibody9PowerUps.jpg "Antibody 2D: Power Ups")
 
 ###### Antibody 2D: Power Ups for time, health, lasers, lives, rockets
 
 ---
 
-![Split Screen Race Mode](https://raw.githubusercontent.com/joeaoregan/LIT-Yr3-Project-Antibody/master/Split-Screen%20Race%20Mode/Art/racing.png "Split Screen Race Mode")
+![Split Screen Race Mode](Split-Screen%20Race%20Mode/Art/racing.png "Split Screen Race Mode")
 
 ###### Split screen race mode
 
