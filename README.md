@@ -95,6 +95,8 @@ Playable versions of game, bare in mind, the game is incomplete
 
 <img src="https://raw.githubusercontent.com/joeaoregan/LIT-Yr3-Project-Antibody/master/Screenshots/BestWindowsGame.jpg" width=250 alt="Antibody 2D: Best Windows Game" title="Antibody 2D: Best Windows Game"/>
 
+<img src="logos/credits4.svg" width="250" alt="Antibody Game Creators" title="Antibody Game Creators"/>
+
 **Best Windows Game** at [Games Fleadh 2017](http://gamesfleadh.ie/results/)
 
 ---

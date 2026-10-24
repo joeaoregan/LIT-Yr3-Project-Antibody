@@ -80,29 +80,12 @@
         repeatCount="indefinite" />
 
       <!-- Primary 4 Credits Items (280px pitch) -->
-      <text x="140" y="75" text-anchor="middle" class="scroll-text">A Game By</text>
+      <text x="140" y="75" text-anchor="middle" class="scroll-text">A Game By Joe O'Regan and Seán Horgan</text>
       <text x="280" y="75" text-anchor="middle" class="separator">&#x2022;</text>
 
-      <text x="420" y="75" text-anchor="middle" class="scroll-text">Joe O'Regan</text>
-      <text x="560" y="75" text-anchor="middle" class="separator">&#x2022;</text>
-
-      <text x="700" y="75" text-anchor="middle" class="scroll-text">And</text>
-      <text x="840" y="75" text-anchor="middle" class="separator">&#x2022;</text>
-
-      <text x="980" y="75" text-anchor="middle" class="scroll-text">Se&#xE1;n Horgan</text>
-      <text x="1120" y="75" text-anchor="middle" class="separator">&#x2022;</text>
-
       <!-- Seamless Loop Bridge Clones -->
-      <text x="1260" y="75" text-anchor="middle" class="scroll-text">A Game By</text>
+      <text x="1260" y="75" text-anchor="middle" class="scroll-text">A Game By Joe O'Regan and Seán Horgan</text>
       <text x="1400" y="75" text-anchor="middle" class="separator">&#x2022;</text>
-
-      <text x="1540" y="75" text-anchor="middle" class="scroll-text">Joe O'Regan</text>
-      <text x="1680" y="75" text-anchor="middle" class="separator">&#x2022;</text>
-
-      <text x="1820" y="75" text-anchor="middle" class="scroll-text">And</text>
-      <text x="1960" y="75" text-anchor="middle" class="separator">&#x2022;</text>
-
-      <text x="2100" y="75" text-anchor="middle" class="scroll-text">Se&#xE1;n Horgan</text>
     </g>
   </g>
 </svg>
