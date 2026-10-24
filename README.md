@@ -22,6 +22,12 @@
 ![GitHub last commit](https://img.shields.io/github/last-commit/joeaoregan/LIT-Yr3-Project-Antibody?color=blue)
 ![Stars](https://img.shields.io/github/stars/joeaoregan/LIT-Yr3-Project-Antibody?style=social)
 
+<div align="center">
+  <img src="logos/antibody_theme_fx_sweep_2.svg" width="400" alt="Antibody Game Logo" title="Antibody Game Logo"/>  
+  <br/>
+  <img src="logos/scrolling_text_3.svg" width="340" alt="Antibody Game Creators" title="Antibody Game Creators"/>
+</div>
+
 ---
 
 ## Limerick Institute of Technology: BSc Computing (Games Design and Development)
@@ -31,13 +37,6 @@
 #### Third-Year Group Project
 
 Created by [Joe O'Regan (K00203642)](https://github.com/joeaoregan) and [Sean Horgan (K00196030)](https://github.com/sean-horgan)
-
----
-
-# 🦠💉 Antibody
-
-<img src="logos/antibody_theme_fx_sweep_2.svg" width=250 alt="Antibody Game Logo" title="Antibody Game Logo"/> \
-<img src="Screenshots/Antibody2Credits.jpg" width=250 alt="Antibody Game Creators" title="Antibody Game Creators"/>
 
 ---
 

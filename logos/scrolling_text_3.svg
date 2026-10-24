@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="340" height="60" viewBox="0 0 340 60">
+  <defs>
+    <style>
+      :root {
+        /* LIGHT THEME */
+        --fill-start: #3ce5ff;
+        --fill-end: #d1d5db;
+        --stroke-color: #000000;
+      }
+      
+      @media (prefers-color-scheme: dark) {
+        :root {
+          /* DARK THEME */
+          --fill-start: #0044b4;
+          --fill-end: #000000;
+          --stroke-color: #ffffff;
+        }
+      }
+      
+      .scroll-text {
+        font-family: 'Impact', 'Arial Black', sans-serif;
+        font-size: 36px;
+        font-weight: 900;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        
+        fill: url(#text-fill-gradient);
+        stroke: var(--stroke-color);
+        stroke-width: 6px;
+        stroke-linejoin: round;
+        paint-order: stroke fill;  
+      }
+
+      .stop-start { stop-color: var(--fill-start); }
+      .stop-end { stop-color: var(--fill-end); }
+    </style>
+
+    <clipPath id="tight-text-window">
+      <rect x="0" y="0" width="340" height="60" />
+    </clipPath>
+
+    <linearGradient id="text-fill-gradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" class="stop-start" />
+      <stop offset="100%" class="stop-end" />
+    </linearGradient>
+  </defs>
+
+  <g clip-path="url(#tight-text-window)">
+    <!-- Moves the entire layer group upwards by 50px increments -->
+    <g>
+      <animateTransform 
+        attributeName="transform" 
+        type="translate" 
+        from="0,0" 
+        to="0,-250" 
+        dur="10s" 
+        repeatCount="indefinite" />
+
+      <!-- Every single line rests at the EXACT same vertical baseline position (y="42") inside the canvas structure -->
+      <!-- The 'transform="translate(0, X)"' modifier holds them safely off-stage until their scroll turn, meaning they never push the layout down -->
+      <g transform="translate(0, 0)">
+        <text x="170" y="42" text-anchor="middle" class="scroll-text">A Game By</text>
+      </g>
+      <g transform="translate(0, 50)">
+        <text x="170" y="42" text-anchor="middle" class="scroll-text">Joe O'Regan</text>
+      </g>
+      <g transform="translate(0, 100)">
+        <text x="170" y="42" text-anchor="middle" class="scroll-text">And</text>
+      </g>
+      <g transform="translate(0, 150)">
+        <text x="170" y="42" text-anchor="middle" class="scroll-text">Seán Horgan</text>
+      </g>
+      
+      <!-- 5th Line - Geometric divider bar -->
+      <g transform="translate(0, 200)">
+        <rect x="60" y="21" width="220" height="4" fill="var(--stroke-color)" rx="2" />
+      </g>
+      
+      <!-- Seamless Bridge Duplicates -->
+      <g transform="translate(0, 250)">
+        <text x="170" y="42" text-anchor="middle" class="scroll-text">A Game By</text>
+      </g>
+      <g transform="translate(0, 300)">
+        <text x="170" y="42" text-anchor="middle" class="scroll-text">Joe O'Regan</text>
+      </g>
+    </g>
+  </g>
+</svg>

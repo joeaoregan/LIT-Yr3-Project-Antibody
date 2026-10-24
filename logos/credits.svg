@@ -1,0 +1,108 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="150" viewBox="0 0 600 150">
+  <defs>
+    <style>
+      :root {
+        /* LIGHT THEME: Black outline with light blue gradient fill */
+        --bg-color: #ffffff;
+        --border-color: #2563eb;
+        --text-stroke: #000000;
+        --gradient-top: #3ce5ff;
+        --gradient-bottom: #0284c7;
+        --separator-fill: #0284c7;
+        --separator-stroke: #000000;
+      }
+      
+      @media (prefers-color-scheme: dark) {
+        :root {
+          /* DARK THEME: White/light grey outline with dark blue gradient fill */
+          --bg-color: #111111;
+          --border-color: #60a5fa;
+          --text-stroke: #ffffff;
+          --gradient-top: #1d4ed8;
+          --gradient-bottom: #001f5c;
+          --separator-fill: #60a5fa;
+          --separator-stroke: #ffffff;
+        }
+      }
+      
+      .scroll-text {
+        font-family: 'Impact', 'Arial Black', 'Montserrat', sans-serif;
+        font-size: 32px;
+        font-weight: 900;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        
+        fill: url(#credits-gradient);
+        stroke: var(--text-stroke);
+        stroke-width: 5px;
+        stroke-linejoin: round;
+        paint-order: stroke fill;
+        dominant-baseline: central;
+      }
+
+      .separator {
+        font-family: 'Impact', 'Arial Black', sans-serif;
+        font-size: 26px;
+        fill: var(--separator-fill);
+        stroke: var(--separator-stroke);
+        stroke-width: 4px;
+        stroke-linejoin: round;
+        paint-order: stroke fill;
+        dominant-baseline: central;
+      }
+    </style>
+
+    <!-- Vertical gradient fill adaptive across themes -->
+    <linearGradient id="credits-gradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="var(--gradient-top)" />
+      <stop offset="100%" stop-color="var(--gradient-bottom)" />
+    </linearGradient>
+
+    <!-- Clip window to keep text neatly bounded inside the box -->
+    <clipPath id="text-window">
+      <rect x="15" y="15" width="570" height="120" rx="6" />
+    </clipPath>
+  </defs>
+
+  <!-- Background card and frame -->
+  <rect x="0" y="0" width="600" height="150" fill="var(--bg-color)" />
+  <rect x="10" y="10" width="580" height="130" rx="8" fill="none" stroke="var(--border-color)" stroke-width="2" />
+
+  <g clip-path="url(#text-window)">
+    <g>
+      <!-- Fluid horizontal glide moving leftwards by 1120px (one full cycle of 4 items) -->
+      <animateTransform 
+        attributeName="transform" 
+        type="translate" 
+        from="0,0" 
+        to="-1120,0" 
+        dur="10s" 
+        repeatCount="indefinite" />
+
+      <!-- Primary 4 Credits Items (280px pitch) -->
+      <text x="140" y="75" text-anchor="middle" class="scroll-text">A Game By</text>
+      <text x="280" y="75" text-anchor="middle" class="separator">&#x2022;</text>
+
+      <text x="420" y="75" text-anchor="middle" class="scroll-text">Joe O'Regan</text>
+      <text x="560" y="75" text-anchor="middle" class="separator">&#x2022;</text>
+
+      <text x="700" y="75" text-anchor="middle" class="scroll-text">And</text>
+      <text x="840" y="75" text-anchor="middle" class="separator">&#x2022;</text>
+
+      <text x="980" y="75" text-anchor="middle" class="scroll-text">Se&#xE1;n Horgan</text>
+      <text x="1120" y="75" text-anchor="middle" class="separator">&#x2022;</text>
+
+      <!-- Seamless Loop Bridge Clones -->
+      <text x="1260" y="75" text-anchor="middle" class="scroll-text">A Game By</text>
+      <text x="1400" y="75" text-anchor="middle" class="separator">&#x2022;</text>
+
+      <text x="1540" y="75" text-anchor="middle" class="scroll-text">Joe O'Regan</text>
+      <text x="1680" y="75" text-anchor="middle" class="separator">&#x2022;</text>
+
+      <text x="1820" y="75" text-anchor="middle" class="scroll-text">And</text>
+      <text x="1960" y="75" text-anchor="middle" class="separator">&#x2022;</text>
+
+      <text x="2100" y="75" text-anchor="middle" class="scroll-text">Se&#xE1;n Horgan</text>
+    </g>
+  </g>
+</svg>
