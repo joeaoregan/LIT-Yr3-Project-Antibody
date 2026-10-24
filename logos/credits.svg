@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="600" height="150" viewBox="0 0 600 150">
+<svg xmlns="http://www.w3.org/2000/svg" width="340" height="60" viewBox="0 0 340 60">
   <defs>
     <style>
       :root {
@@ -14,7 +14,7 @@
       
       @media (prefers-color-scheme: dark) {
         :root {
-          /* DARK THEME: White/light grey outline with dark blue gradient fill */
+          /* DARK THEME: White outline with dark blue gradient fill */
           --bg-color: #111111;
           --border-color: #60a5fa;
           --text-stroke: #ffffff;
@@ -26,11 +26,12 @@
       }
       
       .scroll-text {
-        font-family: 'Impact', 'Arial Black', 'Montserrat', sans-serif;
-        font-size: 32px;
+        font-family: 'Impact', 'Arial Black', sans-serif;
+        font-size: 30px;
         font-weight: 900;
         text-transform: uppercase;
         letter-spacing: 2px;
+        white-space: pre;
         
         fill: url(#credits-gradient);
         stroke: var(--text-stroke);
@@ -41,51 +42,44 @@
       }
 
       .separator {
-        font-family: 'Impact', 'Arial Black', sans-serif;
-        font-size: 26px;
         fill: var(--separator-fill);
         stroke: var(--separator-stroke);
-        stroke-width: 4px;
+        stroke-width: 3px;
         stroke-linejoin: round;
         paint-order: stroke fill;
-        dominant-baseline: central;
       }
     </style>
 
-    <!-- Vertical gradient fill adaptive across themes -->
+    <!-- Vertical gradient fill for text -->
     <linearGradient id="credits-gradient" x1="0%" y1="0%" x2="0%" y2="100%">
       <stop offset="0%" stop-color="var(--gradient-top)" />
       <stop offset="100%" stop-color="var(--gradient-bottom)" />
     </linearGradient>
 
-    <!-- Clip window to keep text neatly bounded inside the box -->
+    <!-- Window crop bounded strictly inside the border -->
     <clipPath id="text-window">
-      <rect x="15" y="15" width="570" height="120" rx="6" />
+      <rect x="4" y="4" width="332" height="52" rx="4" />
     </clipPath>
   </defs>
 
-  <!-- Background card and frame -->
-  <rect x="0" y="0" width="600" height="150" fill="var(--bg-color)" />
-  <rect x="10" y="10" width="580" height="130" rx="8" fill="none" stroke="var(--border-color)" stroke-width="2" />
+  <!-- Narrow, compact container frame -->
+  <rect x="0" y="0" width="340" height="60" rx="8" fill="var(--bg-color)" />
+  <rect x="2" y="2" width="336" height="56" rx="6" fill="none" stroke="var(--border-color)" stroke-width="2" />
 
+  <!-- Animated marquee channel -->
   <g clip-path="url(#text-window)">
     <g>
-      <!-- Fluid horizontal glide moving leftwards by 1120px (one full cycle of 4 items) -->
+      <!-- Horizontal translation: starts immediately at 0 and glides left by one full cycle (585px) -->
       <animateTransform 
         attributeName="transform" 
         type="translate" 
         from="0,0" 
-        to="-1120,0" 
-        dur="10s" 
+        to="-585,0" 
+        dur="9s" 
         repeatCount="indefinite" />
 
-      <!-- Primary 4 Credits Items (280px pitch) -->
-      <text x="140" y="75" text-anchor="middle" class="scroll-text">A Game By Joe O'Regan and Seán Horgan</text>
-      <text x="280" y="75" text-anchor="middle" class="separator">&#x2022;</text>
-
-      <!-- Seamless Loop Bridge Clones -->
-      <text x="1260" y="75" text-anchor="middle" class="scroll-text">A Game By Joe O'Regan and Seán Horgan</text>
-      <text x="1400" y="75" text-anchor="middle" class="separator">&#x2022;</text>
+      <!-- Continuous credits string with one dot after Horgan and seamless bridge duplicate -->
+      <text x="12" y="30" class="scroll-text" xml:space="preserve">A GAME BY JOE O'REGAN AND SE&#xC1;N HORGAN <tspan class="separator">&#x2022;</tspan> A GAME BY JOE O'REGAN AND SE&#xC1;N HORGAN <tspan class="separator">&#x2022;</tspan> A GAME BY JOE O'REGAN AND SE&#xC1;N HORGAN <tspan class="separator">&#x2022;</tspan> </text>
     </g>
   </g>
 </svg>
