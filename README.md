@@ -15,7 +15,6 @@
 ![SDL_ttf](https://img.shields.io/badge/SDL__ttf-Supported-blue)
 ![zlib](https://img.shields.io/badge/zlib-1.2.x-78c34c)
 ![Input](https://img.shields.io/badge/Input-Gamepad%20%26%20Keyboard-success)
-![Audio](https://img.shields.io/badge/Audio-SDL__mixer-blueviolet)
 ![Graphics](https://img.shields.io/badge/Graphics-2D%20Particles-ff69b4)
 
 ![GitHub repo size](https://img.shields.io/github/repo-size/joeaoregan/LIT-Yr3-Project-Antibody?color=orange)
