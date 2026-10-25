@@ -165,7 +165,7 @@
   <text x="560" y="41" class="box-title">AntiBody Polymorphic Game Object &amp; Entity Hierarchy Architecture</text>
 
   <!-- Level 1: GameObjectAbstract (Pure Virtual Interface) -->
-  <rect x="350" y="76" width="420" height="58" rx="8" style="fill: var(--ab-header); stroke: var(--ab-purple); stroke-width: 2;" />
+  <rect x="290" y="76" width="540" height="58" rx="8" style="fill: var(--ab-header); stroke: var(--ab-purple); stroke-width: 2;" />
   <text x="560" y="96" class="box-title" style="font-size: 13.5px; fill: var(--ab-purple);">GameObjectAbstract (Pure Virtual Interface)</text>
   <text x="560" y="118" class="box-item" style="text-anchor: middle; font-size: 11px;">virtual void move() = 0; render() = 0; spawn() = 0; destroy() = 0;</text>
 
@@ -173,7 +173,7 @@
   <line x1="560" y1="134" x2="560" y2="158" class="flow-purple" marker-end="url(#arrow-purple)" />
 
   <!-- Level 2: GameObject (Concrete Base Class) -->
-  <rect x="360" y="158" width="400" height="70" rx="8" style="fill: var(--ab-bg); stroke: var(--ab-blue); stroke-width: 2;" />
+  <rect x="290" y="158" width="540" height="70" rx="8" style="fill: var(--ab-bg); stroke: var(--ab-blue); stroke-width: 2;" />
   <text x="560" y="178" class="box-title" style="font-size: 14px; fill: var(--ab-blue);">GameObject (Base Entity Class)</text>
   <text x="560" y="198" class="box-item" style="text-anchor: middle; font-size: 11px;">• SDL_Rect mBox (AABB Bounding Volume) &amp; Velocity (mVelX, mVelY)</text>
   <text x="560" y="214" class="box-item" style="text-anchor: middle; font-size: 10.5px; fill: var(--ab-muted);">• moveStalker(targetX, targetY) | orbit(centerX, centerY, timer)</text>

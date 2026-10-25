@@ -1,0 +1,285 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 680" width="100%" height="100%" role="img" aria-label="AntiBody AABB Collision Detection &amp; Resolution Pipeline Diagram">
+  <defs>
+    <style>
+      :root {
+        --cp-bg: rgba(15, 23, 42, 0.04);
+        --cp-header: rgba(37, 99, 235, 0.1);
+        --cp-stroke: #334155;
+        --cp-title: #0f172a;
+        --cp-text: #1e293b;
+        --cp-muted: #475569;
+        --cp-blue: #2563eb;
+        --cp-emerald: #059669;
+        --cp-amber: #d97706;
+        --cp-rose: #e11d48;
+        --cp-purple: #7c3aed;
+        --cp-cyan: #0891b2;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --cp-bg: rgba(15, 23, 42, 0.70);
+          --cp-header: rgba(59, 130, 246, 0.18);
+          --cp-stroke: #475569;
+          --cp-title: #f8fafc;
+          --cp-text: #e2e8f0;
+          --cp-muted: #94a3b8;
+          --cp-blue: #60a5fa;
+          --cp-emerald: #34d399;
+          --cp-amber: #fbbf24;
+          --cp-rose: #fb7185;
+          --cp-purple: #a78bfa;
+          --cp-cyan: #22d3ee;
+        }
+      }
+
+      .box-card {
+        fill: var(--cp-bg);
+        stroke: var(--cp-stroke);
+        stroke-width: 2;
+        rx: 10px;
+      }
+
+      .box-header {
+        fill: var(--cp-header);
+        stroke: var(--cp-stroke);
+        stroke-width: 1.5;
+        rx: 10px;
+      }
+
+      .box-title {
+        font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        font-weight: 700;
+        font-size: 14px;
+        fill: var(--cp-title);
+        text-anchor: middle;
+        dominant-baseline: central;
+      }
+
+      .box-item {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        font-weight: 500;
+        font-size: 12px;
+        fill: var(--cp-text);
+      }
+
+      .edge-label {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        font-weight: 700;
+        font-size: 10.5px;
+        fill: var(--cp-muted);
+        text-anchor: middle;
+      }
+
+      /* Animated flow connectors */
+      .flow-blue {
+        fill: none;
+        stroke: var(--cp-blue);
+        stroke-width: 2;
+        stroke-dasharray: 6 4;
+        animation: dashFlow 1.2s linear infinite;
+      }
+
+      .flow-emerald {
+        fill: none;
+        stroke: var(--cp-emerald);
+        stroke-width: 2;
+        stroke-dasharray: 6 4;
+        animation: dashFlow 1.2s linear infinite;
+      }
+
+      .flow-amber {
+        fill: none;
+        stroke: var(--cp-amber);
+        stroke-width: 2;
+        stroke-dasharray: 6 4;
+        animation: dashFlow 1.2s linear infinite;
+      }
+
+      .flow-rose {
+        fill: none;
+        stroke: var(--cp-rose);
+        stroke-width: 2;
+        stroke-dasharray: 6 4;
+        animation: dashFlow 1.2s linear infinite;
+      }
+
+      .flow-purple {
+        fill: none;
+        stroke: var(--cp-purple);
+        stroke-width: 2;
+        stroke-dasharray: 6 4;
+        animation: dashFlow 1.2s linear infinite;
+      }
+
+      .flow-cyan {
+        fill: none;
+        stroke: var(--cp-cyan);
+        stroke-width: 2;
+        stroke-dasharray: 6 4;
+        animation: dashFlow 1.2s linear infinite;
+      }
+
+      @keyframes dashFlow {
+        to {
+          stroke-dashoffset: -20;
+        }
+      }
+
+      /* Animated moving bounding box simulation */
+      @keyframes moveBoxA {
+        0% { transform: translateX(0px); }
+        50% { transform: translateX(45px); }
+        100% { transform: translateX(0px); }
+      }
+
+      @keyframes flashHit {
+        0%, 40% { opacity: 0; }
+        50%, 60% { opacity: 1; transform: scale(1.15); }
+        70%, 100% { opacity: 0; transform: scale(1.0); }
+      }
+
+      .anim-box-a {
+        animation: moveBoxA 3s ease-in-out infinite;
+      }
+
+      .anim-hit {
+        animation: flashHit 3s ease-in-out infinite;
+        transform-origin: 300px 185px;
+      }
+
+      @keyframes pulseDotR {
+        0% { transform: translateX(0px); opacity: 0; }
+        25% { opacity: 1; }
+        75% { opacity: 1; }
+        100% { transform: translateX(35px); opacity: 0; }
+      }
+
+      .dot-pulse-r {
+        fill: var(--cp-emerald);
+        animation: pulseDotR 1.8s ease-in-out infinite;
+      }
+    </style>
+
+    <!-- Markers -->
+    <marker id="arrow-blue" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="var(--cp-blue)" />
+    </marker>
+    <marker id="arrow-emerald" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="var(--cp-emerald)" />
+    </marker>
+    <marker id="arrow-amber" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="var(--cp-amber)" />
+    </marker>
+    <marker id="arrow-rose" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="var(--cp-rose)" />
+    </marker>
+    <marker id="arrow-purple" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="var(--cp-purple)" />
+    </marker>
+  </defs>
+
+  <!-- Container Box -->
+  <rect x="20" y="20" width="1060" height="640" class="box-card" />
+  <rect x="20" y="20" width="1060" height="42" class="box-header" />
+  <text x="550" y="41" class="box-title">AntiBody AABB Collision Detection &amp; Resolution Pipeline</text>
+
+  <!-- ==================== LEFT PANEL: MATHEMATICAL AABB INTERSECTION ==================== -->
+  <g id="panel-aabb-math">
+    <rect x="36" y="78" width="480" height="562" class="box-card" />
+    <rect x="36" y="78" width="480" height="38" class="box-header" />
+    <text x="276" y="97" class="box-title" style="font-size: 13.5px; fill: var(--cp-blue);">1. Axis-Aligned Bounding Box (AABB) Intersection</text>
+
+    <!-- Visual Bounding Box Demonstration Stage -->
+    <rect x="52" y="128" width="448" height="154" rx="8" style="fill: rgba(15, 23, 42, 0.08); stroke: var(--cp-stroke); stroke-dasharray: 4 4;" />
+
+    <!-- Static Box B: Target (Enemy/Hazard) -->
+    <g id="box-b-target">
+      <rect x="280" y="150" width="130" height="90" rx="6" style="fill: rgba(225, 29, 72, 0.15); stroke: var(--cp-rose); stroke-width: 2;" />
+      <text x="345" y="185" class="box-title" style="font-size: 13px; fill: var(--cp-rose);">SDL_Rect B</text>
+      <text x="345" y="205" class="box-item" style="text-anchor: middle; font-size: 11px; fill: var(--cp-muted);">Target / Enemy</text>
+      <!-- Coordinate Labels B -->
+      <text x="280" y="142" class="box-item" style="font-size: 10px; fill: var(--cp-rose);">leftB</text>
+      <text x="410" y="142" class="box-item" style="text-anchor: end; font-size: 10px; fill: var(--cp-rose);">rightB</text>
+      <text x="415" y="155" class="box-item" style="font-size: 10px; fill: var(--cp-rose);">topB</text>
+      <text x="415" y="240" class="box-item" style="font-size: 10px; fill: var(--cp-rose);">bottomB</text>
+    </g>
+
+    <!-- Animated Box A: Projectile / Player (Moves into B) -->
+    <g id="box-a-projectile" class="anim-box-a">
+      <rect x="110" y="165" width="120" height="60" rx="6" style="fill: rgba(37, 99, 235, 0.18); stroke: var(--cp-blue); stroke-width: 2;" />
+      <text x="170" y="195" class="box-title" style="font-size: 12.5px; fill: var(--cp-blue);">SDL_Rect A</text>
+      <text x="170" y="212" class="box-item" style="text-anchor: middle; font-size: 10.5px; fill: var(--cp-muted);">Player / Weapon</text>
+      <!-- Coordinate Labels A -->
+      <text x="110" y="158" class="box-item" style="font-size: 10px; fill: var(--cp-blue);">leftA</text>
+      <text x="230" y="158" class="box-item" style="text-anchor: end; font-size: 10px; fill: var(--cp-blue);">rightA</text>
+    </g>
+
+    <!-- Intersection Hit Marker (Appears when boxes overlap) -->
+    <g id="hit-marker" class="anim-hit">
+      <circle cx="280" cy="195" r="16" style="fill: rgba(251, 191, 36, 0.35); stroke: var(--cp-amber); stroke-width: 2.5;" />
+      <text x="280" y="199" style="font-family: system-ui; font-weight: 900; font-size: 14px; fill: var(--cp-amber); text-anchor: middle;">⚡</text>
+    </g>
+
+    <!-- Mathematical Evaluation Algorithm Block -->
+    <rect x="52" y="296" width="448" height="240" rx="8" style="fill: var(--cp-bg); stroke: var(--cp-stroke); stroke-width: 1.5;" />
+    <text x="70" y="322" class="box-title" style="text-anchor: start; font-size: 12.5px; fill: var(--cp-purple);">checkCollision(SDL_Rect *a, SDL_Rect *b)</text>
+
+    <!-- Separation Axis Tests -->
+    <text x="70" y="352" class="box-item" style="font-weight: 700; fill: var(--cp-muted);">// 4-Axis Separating Plane Tests:</text>
+    <text x="70" y="376" class="box-item">1. if (bottomA &lt;= topB)   <tspan style="fill: var(--cp-rose);">return false;</tspan> // Above</text>
+    <text x="70" y="400" class="box-item">2. if (topA &gt;= bottomB)   <tspan style="fill: var(--cp-rose);">return false;</tspan> // Below</text>
+    <text x="70" y="424" class="box-item">3. if (rightA &lt;= leftB)   <tspan style="fill: var(--cp-rose);">return false;</tspan> // Left</text>
+    <text x="70" y="448" class="box-item">4. if (leftA &gt;= rightB)   <tspan style="fill: var(--cp-rose);">return false;</tspan> // Right</text>
+
+    <line x1="70" y1="466" x2="480" y2="466" style="stroke: var(--cp-stroke); stroke-width: 1;" />
+    <text x="70" y="492" class="box-item" style="font-weight: 700; fill: var(--cp-emerald);">// Simultaneous 2D Overlap Detected:</text>
+    <text x="70" y="516" class="box-item" style="font-weight: 700; fill: var(--cp-emerald);">return true; // Triggers Resolution Pipeline</text>
+
+    <!-- Sub-info -->
+    <text x="52" y="562" class="box-item" style="font-size: 11px; fill: var(--cp-muted);">• Executed per frame across active Vector entities in Game::update()</text>
+    <text x="52" y="582" class="box-item" style="font-size: 11px; fill: var(--cp-muted);">• Zero trigonometric overhead; pure integer arithmetic comparison</text>
+  </g>
+
+  <!-- Flow Connector: Math Check to Resolution Matrix -->
+  <path d="M 516 350 L 546 350" class="flow-emerald" marker-end="url(#arrow-emerald)" />
+
+  <!-- ==================== RIGHT PANEL: COLLISION RESOLUTION MATRIX ==================== -->
+  <g id="panel-resolution-matrix">
+    <rect x="546" y="78" width="518" height="562" class="box-card" />
+    <rect x="546" y="78" width="518" height="38" class="box-header" />
+    <text x="805" y="97" class="box-title" style="font-size: 13.5px; fill: var(--cp-emerald);">2. Gameplay Event Dispatch &amp; Resolution Matrix</text>
+
+    <!-- Case 1: Player Weapon <-> Enemy -->
+    <rect x="562" y="128" width="486" height="116" rx="8" style="fill: var(--cp-bg); stroke: var(--cp-emerald); stroke-width: 1.5;" />
+    <text x="578" y="150" class="box-title" style="text-anchor: start; font-size: 13px; fill: var(--cp-emerald);">Case A: Player Weapon vs Enemy / Virus</text>
+    <text x="578" y="174" class="box-item">• listOfGameObjects[weaponIndex] &lt;--&gt; listOfGameObjects[enemyIndex]</text>
+    <text x="590" y="192" class="box-item" style="fill: var(--cp-muted); font-size: 11px;">→ Decrement enemy hit points (enemy-&gt;damage())</text>
+    <text x="590" y="210" class="box-item" style="fill: var(--cp-muted); font-size: 11px;">→ Ninja Star / Saw triggers virus split; Rockets trigger splash blast</text>
+    <text x="590" y="228" class="box-item" style="fill: var(--cp-muted); font-size: 11px;">→ Spawn floating ScoreValueText &amp; trigger Explosion animation</text>
+
+    <!-- Case 2: Player Ship <-> PowerUp -->
+    <rect x="562" y="256" width="486" height="106" rx="8" style="fill: var(--cp-bg); stroke: var(--cp-cyan); stroke-width: 1.5;" />
+    <text x="578" y="278" class="box-title" style="text-anchor: start; font-size: 13px; fill: var(--cp-cyan);">Case B: Player Ship vs Power-Up Crate</text>
+    <text x="578" y="302" class="box-item">• player1 / player2 &lt;--&gt; PowerUp</text>
+    <text x="590" y="320" class="box-item" style="fill: var(--cp-muted); font-size: 11px;">→ Health Crate: Restores ship integrity via StatusBar</text>
+    <text x="590" y="338" class="box-item" style="fill: var(--cp-muted); font-size: 11px;">→ Weapon Crate: Increments weaponGrade (Single -&gt; Twin -&gt; Triple Laser)</text>
+    <text x="590" y="354" class="box-item" style="fill: var(--cp-muted); font-size: 11px;">→ Audio::playFX(POWERUP_FX) &amp; destroy power-up instance</text>
+
+    <!-- Case 3: Player Ship <-> Enemy / Arterial Hazard -->
+    <rect x="562" y="374" width="486" height="126" rx="8" style="fill: var(--cp-bg); stroke: var(--cp-rose); stroke-width: 1.5;" />
+    <text x="578" y="396" class="box-title" style="text-anchor: start; font-size: 13px; fill: var(--cp-rose);">Case C: Player Ship vs Enemy / Plaque Blockage</text>
+    <text x="578" y="420" class="box-item">• player1 / player2 &lt;--&gt; Enemy / Blockage / BloodCell</text>
+    <text x="590" y="438" class="box-item" style="fill: var(--cp-muted); font-size: 11px;">→ Deplete player shield / health bar (StatusBar decrement)</text>
+    <text x="590" y="456" class="box-item" style="fill: var(--cp-muted); font-size: 11px;">→ Trigger player invulnerability flash window (stopFlashing timer)</text>
+    <text x="590" y="474" class="box-item" style="fill: var(--cp-muted); font-size: 11px;">→ Health == 0: Deduct life, trigger respawn, or switch to StateGameOver</text>
+    <text x="590" y="492" class="box-item" style="fill: var(--cp-muted); font-size: 11px;">→ Orange Virus: Instantly explodes on kinetic player impact</text>
+
+    <!-- Case 4: Projectile Boundary Constraints -->
+    <rect x="562" y="512" width="486" height="106" rx="8" style="fill: var(--cp-bg); stroke: var(--cp-amber); stroke-width: 1.5;" />
+    <text x="578" y="534" class="box-title" style="text-anchor: start; font-size: 13px; fill: var(--cp-amber);">Case D: Weapon Screen Boundary Collision</text>
+    <text x="578" y="558" class="box-item">• Weapon &lt;--&gt; Window Viewport Boundaries</text>
+    <text x="590" y="576" class="box-item" style="fill: var(--cp-muted); font-size: 11px;">→ Laser / Star exits screen: Invokes destroy() to prevent memory leakage</text>
+    <text x="590" y="594" class="box-item" style="fill: var(--cp-muted); font-size: 11px;">→ Steerable Rocket strikes screen bounds: Triggers terminal explosion</text>
+  </g>
+</svg>
+
