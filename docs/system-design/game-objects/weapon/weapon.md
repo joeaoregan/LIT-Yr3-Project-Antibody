@@ -1,51 +1,84 @@
-# Weapon Base
+# Weapon Arsenal & Projectile Systems
 
-## Overview (`Weapon.h`)
+![AntiBody Weapon Arsenal Characteristics & Combat Mechanics Matrix](../../../images/svg/weapon_arsenal_matrix.svg)
 
-```text
-┌-------------------------------┐
-|             Weapon            |
-├-------------------------------┤
-| -m_Angle: int                 | - Angle of rotation
-| -m_Grade: int                 | - Grade of the weapon
-├-------------------------------┤
-| +getGrade () : int            | - Get laser grade
-| +setGrade () : void           | - Set laser grade
-| +handleEvent() : virtual void | - Handle events for rocket
-└-------------------------------┘
-```
-
-![Weapon Inheritance Tree](../../../images/diagrams/inheritance_weapons.png)
-
-    Weapon Inheritance Tree
-
-`Weapon` is the base class for all player and enemy projectiles, inheriting from `GameObject`.
-
-* **Attributes**: Tracks weapon grade (single, double, triple beam), trajectory angles, velocity vectors, and projectile ownership (Player 1 vs Player 2).
-* **Input Handling**: Defines virtual input hooks used by controllable sub-weapons such as guided rockets.
+All ballistic, piercing, and energy ordnance in **AntiBody** inherit from the polymorphic base class `Weapon` (`Weapon.h`), which extends `GameObject`.
 
 ---
 
-![Player Laser](../../../images/weapon/LaserGreen.png)
+## 1. Weapon Class Characteristics & Comparison Matrix
 
-    Player Laser
+| Weapon Type | Class Header | Ammo Mode | Velocity | Damage / Potency | Unique Combat Mechanics |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **Primary Laser** | `WeaponPlLaser.h` | Unlimited | Fast ($800\text{ px/s}$) | $10\text{ HP / beam}$ | Progresses from Single $\rightarrow$ Twin $\rightarrow$ Triple Spread $(-15^\circ, 0^\circ, +15^\circ)$ via Laser Power-ups. |
+| **Steerable Rocket** | `WeaponPlRocket.h` | Stock (Pickups) | Accelerating | $100\text{ HP (Kinetic)}$ | Player-guided via analog stick (`handleEvent()`); emits 15 particle sparks; detonates on walls. |
+| **Ninja Star** | `WeaponPlNinjaStar.h` | Unlimited | Medium ($450\text{ px/s}$) | $35\text{ HP (Piercing)}$ | Rotates in flight; **slices viruses in half** into smaller cells; distinct colors (Yellow P1 / Blue P2). |
+| **Protective Saw** | `WeaponPlSaw.h` | Timed Shield | Ship-Anchored | $50\text{ HP (Continuous)}$ | Close-range melee saw shield; grants damage invulnerability and deflects incoming enemy energy bolts. |
+| **Enemy Pulse Laser** | `WeaponEnLaser.h` | Timed Barrage | Medium ($500\text{ px/s}$) | $15\text{ HP (Player Hit)}$ | Discharged by Boss multi-cannons, Nano-bots (`EnemyShip`), and Blue Virus orbital satellites. |
 
-![Enemy Laser](../../../images/weapon/LaserBlue.png)
+---
 
-    Enemy Laser
+## 2. Weapon Sub-Tree Inheritance
 
-![Blue Ninja Star](../../../images/weapon/NinjaStarBlue.png)
+```mermaid
+classDiagram
+    class GameObject {
+        #SDL_Rect mBox
+        #int mVelX
+        #int mVelY
+        +spawn()
+        +move()
+        +render()
+        +destroy()
+    }
 
-    Blue Ninja Star
+    class Weapon {
+        #int m_Angle
+        #int m_Grade
+        +getGrade(): int
+        +setGrade(int g): void
+        +handleEvent(): virtual void
+    }
 
-![Yellow Ninja Star](../../../images/weapon/NinjaStarYellow.png)
+    class WeaponPlLaser {
+        +spawnLaser(int x, int y, int angle)
+        +renderLaser()
+    }
 
-    Yellow Ninja Star
+    class WeaponPlRocket {
+        -TOTAL_PARTICLES_R: 15
+        +handleEvent()
+        +renderRocketParticles()
+    }
 
-![Rocket](../../../images/weapon/Rocket.png)
+    class WeaponPlNinjaStar {
+        +rotateStar()
+        +renderStar()
+    }
 
-    Rocket
+    class WeaponPlSaw {
+        +spawnSaw(int x, int y)
+        +renderSaw()
+    }
 
-![Saw](../../../images/weapon/SawBlue.png)
+    class WeaponEnLaser {
+        +spawnEnemyLaser()
+    }
 
-    Saw
+    GameObject <|-- Weapon
+    Weapon <|-- WeaponPlLaser
+    Weapon <|-- WeaponPlRocket
+    Weapon <|-- WeaponPlNinjaStar
+    Weapon <|-- WeaponPlSaw
+    Weapon <|-- WeaponEnLaser
+```
+
+---
+
+## 3. Virus Slicing & Tactical Mechanics
+
+!!! tip "Viral Slicing with Saws & Ninja Stars"  
+    Unlike conventional lasers that destroy organisms outright, **Ninja Stars** (`WeaponPlNinjaStar`) and **Perimeter Saws** (`WeaponPlSaw`) are engineered to slice large `EnemyVirus` entities into two smaller, fragmented virus particles. These smaller organisms carry lower health pools, allowing friendly **White Blood Cells** to consume them autonomously.
+
+* **Rocket Ordinance Inventory**: Rockets are non-renewable munitions replenished exclusively through `PowerUpRocket` collectible crates. A dedicated rocket icon in the viewport HUD tracks remaining stock.
+* **Close-Range Saw Risk vs Reward**: Activating `WeaponPlSaw` grants front-facing invulnerability against standard projectile hits, but requires close proximity to hazardous arterial walls and exploding Orange Viruses.

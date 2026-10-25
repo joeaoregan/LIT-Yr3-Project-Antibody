@@ -55,6 +55,7 @@ Antibody is a 2D sidescrolling game create using C++ and the Simple DirectMedia 
 - [System Design](https://joeaoregan.github.io/LIT-Yr3-Project-Antibody/system-design/)
 - [Game Engine & Maine Loop Architecture](https://joeaoregan.github.io/LIT-Yr3-Project-Antibody/system-design/game/)
 - [AABB Collision Detection](https://joeaoregan.github.io/LIT-Yr3-Project-Antibody/system-design/collisions/)
+- [Weapon Characteristics](https://joeaoregan.github.io/LIT-Yr3-Project-Antibody/system-design/game-objects/weapon/weapon/)
 
 ### Core Systems
 
