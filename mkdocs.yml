@@ -108,6 +108,8 @@ extra:
       link: https://github.com/joeaoregan/LIT-Yr3-Project-Antibody
 
 markdown_extensions:
+  - pymdownx.snippets:
+      base_path: docs
   - admonition
   - pymdownx.details
   - pymdownx.superfences
