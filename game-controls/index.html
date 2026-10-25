@@ -765,10 +765,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#other-game-keys" class="md-nav__link">
+  <a href="#system-jukebox-controls" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Other Game Keys
+        System &amp; Jukebox Controls
       
     </span>
   </a>
@@ -2260,10 +2260,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#other-game-keys" class="md-nav__link">
+  <a href="#system-jukebox-controls" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Other Game Keys
+        System &amp; Jukebox Controls
       
     </span>
   </a>
@@ -2314,99 +2314,751 @@
 
 <h1 id="game-controls">Game Controls</h1>
 <h2 id="keyboard-controls">Keyboard Controls</h2>
-<p><img alt="Keyboard Controls" src="../images/game_controls_keyboard.png" /></p>
-<pre><code>Keyboard control layout
-</code></pre>
+<!-- ![Animated Keyboard Controls Guide](images/svg/keyboard_controls.svg) -->
+<!-- ![](images/svg/keyboard_controls.svg) -->
+
+<!-- ![](images/svg/keyboard_controls.svg){ pre_inline="true" } -->
+
+<div align="center" markdown>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 435" width="100%" height="100%" role="img" aria-label="Animated Interactive Keyboard Controls Guide">
+
+  <defs>
+    <style>
+      :root {
+        --kb-case: #e2e8f0;
+        --kb-case-stroke: #cbd5e1;
+        --kb-key-fill: #ffffff;
+        --kb-key-stroke: #94a3b8;
+        --kb-text: #1e293b;
+        --kb-sub: #64748b;
+        --kb-dish: rgba(0, 0, 0, 0.03);
+
+        --p1-color: #ef4444;
+        --p1-bg: rgba(239, 68, 68, 0.15);
+        --p2-color: #06b6d4;
+        --p2-bg: rgba(6, 182, 212, 0.15);
+        --sys-color: #10b981;
+        --sys-bg: rgba(16, 185, 129, 0.15);
+        --media-color: #8b5cf6;
+        --media-bg: rgba(139, 92, 246, 0.15);
+
+        --banner-bg: rgba(15, 23, 42, 0.04);
+        --banner-stroke: #cbd5e1;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --kb-case: #1e293b;
+          --kb-case-stroke: #334155;
+          --kb-key-fill: #0f172a;
+          --kb-key-stroke: #475569;
+          --kb-text: #f8fafc;
+          --kb-sub: #94a3b8;
+          --kb-dish: rgba(255, 255, 255, 0.03);
+
+          --p1-color: #f87171;
+          --p1-bg: rgba(248, 113, 113, 0.25);
+          --p2-color: #38bdf8;
+          --p2-bg: rgba(56, 189, 248, 0.25);
+          --sys-color: #34d399;
+          --sys-bg: rgba(52, 211, 153, 0.25);
+          --media-color: #a78bfa;
+          --media-bg: rgba(167, 139, 250, 0.25);
+
+          --banner-bg: rgba(15, 23, 42, 0.75);
+          --banner-stroke: #334155;
+        }
+      }
+
+      .kb-case {
+        fill: var(--kb-case);
+        stroke: var(--kb-case-stroke);
+        stroke-width: 3;
+        rx: 24px;
+      }
+
+      .key-base {
+        fill: var(--kb-key-fill);
+        stroke: var(--kb-key-stroke);
+        stroke-width: 1.5;
+        rx: 6px;
+      }
+
+      .key-dish {
+        fill: var(--kb-dish);
+        rx: 4px;
+        pointer-events: none;
+      }
+
+      .key-lbl {
+        font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        font-weight: 600;
+        font-size: 11px;
+        fill: var(--kb-text);
+        text-anchor: middle;
+        dominant-baseline: central;
+        pointer-events: none;
+      }
+
+      .key-lbl-sub {
+        font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        font-weight: 500;
+        font-size: 8px;
+        fill: var(--kb-sub);
+        text-anchor: middle;
+        dominant-baseline: central;
+        pointer-events: none;
+      }
+
+      /* Control Category Outlines */
+      .cat-p1 { stroke: var(--p1-color); stroke-width: 1.8; }
+      .cat-p2 { stroke: var(--p2-color); stroke-width: 1.8; }
+      .cat-sys { stroke: var(--sys-color); stroke-width: 1.8; }
+      .cat-media { stroke: var(--media-color); stroke-width: 1.8; }
+
+      /* Animation Cycle (12 Steps x 2s = 24s total) */
+      /* Step 0:  0% - 8.33%   -> WASD (P1 Move)
+         Step 1:  8.33% - 16.66% -> Arrows (P2 Move)
+         Step 2: 16.66% - 25%    -> Spacebar (P1 Laser)
+         Step 3: 25% - 33.33%   -> Right Ctrl (P2 Laser)
+         Step 4: 33.33% - 41.66% -> N (P1 Ninja Star)
+         Step 5: 41.66% - 50%    -> Right Shift (P2 Ninja Star)
+         Step 6: 50% - 58.33%    -> E and R (Saw Shields)
+         Step 7: 58.33% - 66.66% -> F and G (Speed Boosts)
+         Step 8: 66.66% - 75%    -> C and V (Hold / Release Rockets)
+         Step 9: 75% - 83.33%    -> Keypad - and + (Rocket Elevation)
+         Step 10: 83.33% - 91.66%-> T and F1 (Game Map and FPS Display)
+         Step 11: 91.66% - 100%  -> Esc (Pause / Menu)
+      */
+
+      /* Explicit absolute keyframes for each caption step to prevent overlapping on load */
+      .cap-step {
+        opacity: 0;
+      }
+      @keyframes capCycle0 {
+        0%, 0.00% { opacity: 0; transform: translateY(4px); }
+        0.40%, 7.93% { opacity: 1; transform: translateY(0px); }
+        8.33%, 100% { opacity: 0; transform: translateY(-4px); }
+      }
+      .cap-0 {
+        animation: capCycle0 24s ease infinite;
+      }
+      @keyframes capCycle1 {
+        0%, 8.33% { opacity: 0; transform: translateY(4px); }
+        8.73%, 16.27% { opacity: 1; transform: translateY(0px); }
+        16.67%, 100% { opacity: 0; transform: translateY(-4px); }
+      }
+      .cap-1 {
+        animation: capCycle1 24s ease infinite;
+      }
+      @keyframes capCycle2 {
+        0%, 16.67% { opacity: 0; transform: translateY(4px); }
+        17.07%, 24.60% { opacity: 1; transform: translateY(0px); }
+        25.00%, 100% { opacity: 0; transform: translateY(-4px); }
+      }
+      .cap-2 {
+        animation: capCycle2 24s ease infinite;
+      }
+      @keyframes capCycle3 {
+        0%, 25.00% { opacity: 0; transform: translateY(4px); }
+        25.40%, 32.93% { opacity: 1; transform: translateY(0px); }
+        33.33%, 100% { opacity: 0; transform: translateY(-4px); }
+      }
+      .cap-3 {
+        animation: capCycle3 24s ease infinite;
+      }
+      @keyframes capCycle4 {
+        0%, 33.33% { opacity: 0; transform: translateY(4px); }
+        33.73%, 41.27% { opacity: 1; transform: translateY(0px); }
+        41.67%, 100% { opacity: 0; transform: translateY(-4px); }
+      }
+      .cap-4 {
+        animation: capCycle4 24s ease infinite;
+      }
+      @keyframes capCycle5 {
+        0%, 41.67% { opacity: 0; transform: translateY(4px); }
+        42.07%, 49.60% { opacity: 1; transform: translateY(0px); }
+        50.00%, 100% { opacity: 0; transform: translateY(-4px); }
+      }
+      .cap-5 {
+        animation: capCycle5 24s ease infinite;
+      }
+      @keyframes capCycle6 {
+        0%, 50.00% { opacity: 0; transform: translateY(4px); }
+        50.40%, 57.93% { opacity: 1; transform: translateY(0px); }
+        58.33%, 100% { opacity: 0; transform: translateY(-4px); }
+      }
+      .cap-6 {
+        animation: capCycle6 24s ease infinite;
+      }
+      @keyframes capCycle7 {
+        0%, 58.33% { opacity: 0; transform: translateY(4px); }
+        58.73%, 66.27% { opacity: 1; transform: translateY(0px); }
+        66.67%, 100% { opacity: 0; transform: translateY(-4px); }
+      }
+      .cap-7 {
+        animation: capCycle7 24s ease infinite;
+      }
+      @keyframes capCycle8 {
+        0%, 66.67% { opacity: 0; transform: translateY(4px); }
+        67.07%, 74.60% { opacity: 1; transform: translateY(0px); }
+        75.00%, 100% { opacity: 0; transform: translateY(-4px); }
+      }
+      .cap-8 {
+        animation: capCycle8 24s ease infinite;
+      }
+      @keyframes capCycle9 {
+        0%, 75.00% { opacity: 0; transform: translateY(4px); }
+        75.40%, 82.93% { opacity: 1; transform: translateY(0px); }
+        83.33%, 100% { opacity: 0; transform: translateY(-4px); }
+      }
+      .cap-9 {
+        animation: capCycle9 24s ease infinite;
+      }
+      @keyframes capCycle10 {
+        0%, 83.33% { opacity: 0; transform: translateY(4px); }
+        83.73%, 91.27% { opacity: 1; transform: translateY(0px); }
+        91.67%, 100% { opacity: 0; transform: translateY(-4px); }
+      }
+      .cap-10 {
+        animation: capCycle10 24s ease infinite;
+      }
+      @keyframes capCycle11 {
+        0%, 91.67% { opacity: 0; transform: translateY(4px); }
+        92.07%, 99.60% { opacity: 1; transform: translateY(0px); }
+        100.00%, 100% { opacity: 0; transform: translateY(-4px); }
+      }
+      .cap-11 {
+        animation: capCycle11 24s ease infinite;
+      }
+      @keyframes pressP1_0 {
+        0%, 0.00% { fill: var(--kb-key-fill); stroke: var(--p1-color); filter: none; transform: translateY(0px); }
+        0.40%, 7.93% { fill: var(--p1-color); stroke: var(--p1-color); filter: drop-shadow(0 0 7px var(--p1-color)); transform: translateY(2px); }
+        8.33%, 100% { fill: var(--kb-key-fill); stroke: var(--p1-color); filter: none; transform: translateY(0px); }
+      }
+      @keyframes pressP1_2 {
+        0%, 16.67% { fill: var(--kb-key-fill); stroke: var(--p1-color); filter: none; transform: translateY(0px); }
+        17.07%, 24.60% { fill: var(--p1-color); stroke: var(--p1-color); filter: drop-shadow(0 0 7px var(--p1-color)); transform: translateY(2px); }
+        25.00%, 100% { fill: var(--kb-key-fill); stroke: var(--p1-color); filter: none; transform: translateY(0px); }
+      }
+      @keyframes pressP1_4 {
+        0%, 33.33% { fill: var(--kb-key-fill); stroke: var(--p1-color); filter: none; transform: translateY(0px); }
+        33.73%, 41.27% { fill: var(--p1-color); stroke: var(--p1-color); filter: drop-shadow(0 0 7px var(--p1-color)); transform: translateY(2px); }
+        41.67%, 100% { fill: var(--kb-key-fill); stroke: var(--p1-color); filter: none; transform: translateY(0px); }
+      }
+      @keyframes pressP1_6 {
+        0%, 50.00% { fill: var(--kb-key-fill); stroke: var(--p1-color); filter: none; transform: translateY(0px); }
+        50.40%, 57.93% { fill: var(--p1-color); stroke: var(--p1-color); filter: drop-shadow(0 0 7px var(--p1-color)); transform: translateY(2px); }
+        58.33%, 100% { fill: var(--kb-key-fill); stroke: var(--p1-color); filter: none; transform: translateY(0px); }
+      }
+      @keyframes pressP1_7 {
+        0%, 58.33% { fill: var(--kb-key-fill); stroke: var(--p1-color); filter: none; transform: translateY(0px); }
+        58.73%, 66.27% { fill: var(--p1-color); stroke: var(--p1-color); filter: drop-shadow(0 0 7px var(--p1-color)); transform: translateY(2px); }
+        66.67%, 100% { fill: var(--kb-key-fill); stroke: var(--p1-color); filter: none; transform: translateY(0px); }
+      }
+      @keyframes pressP1_8 {
+        0%, 66.67% { fill: var(--kb-key-fill); stroke: var(--p1-color); filter: none; transform: translateY(0px); }
+        67.07%, 74.60% { fill: var(--p1-color); stroke: var(--p1-color); filter: drop-shadow(0 0 7px var(--p1-color)); transform: translateY(2px); }
+        75.00%, 100% { fill: var(--kb-key-fill); stroke: var(--p1-color); filter: none; transform: translateY(0px); }
+      }
+      @keyframes pressP2_1 {
+        0%, 8.33% { fill: var(--kb-key-fill); stroke: var(--p2-color); filter: none; transform: translateY(0px); }
+        8.73%, 16.27% { fill: var(--p2-color); stroke: var(--p2-color); filter: drop-shadow(0 0 7px var(--p2-color)); transform: translateY(2px); }
+        16.67%, 100% { fill: var(--kb-key-fill); stroke: var(--p2-color); filter: none; transform: translateY(0px); }
+      }
+      @keyframes pressP2_3 {
+        0%, 25.00% { fill: var(--kb-key-fill); stroke: var(--p2-color); filter: none; transform: translateY(0px); }
+        25.40%, 32.93% { fill: var(--p2-color); stroke: var(--p2-color); filter: drop-shadow(0 0 7px var(--p2-color)); transform: translateY(2px); }
+        33.33%, 100% { fill: var(--kb-key-fill); stroke: var(--p2-color); filter: none; transform: translateY(0px); }
+      }
+      @keyframes pressP2_5 {
+        0%, 41.67% { fill: var(--kb-key-fill); stroke: var(--p2-color); filter: none; transform: translateY(0px); }
+        42.07%, 49.60% { fill: var(--p2-color); stroke: var(--p2-color); filter: drop-shadow(0 0 7px var(--p2-color)); transform: translateY(2px); }
+        50.00%, 100% { fill: var(--kb-key-fill); stroke: var(--p2-color); filter: none; transform: translateY(0px); }
+      }
+      @keyframes pressP2_6 {
+        0%, 50.00% { fill: var(--kb-key-fill); stroke: var(--p2-color); filter: none; transform: translateY(0px); }
+        50.40%, 57.93% { fill: var(--p2-color); stroke: var(--p2-color); filter: drop-shadow(0 0 7px var(--p2-color)); transform: translateY(2px); }
+        58.33%, 100% { fill: var(--kb-key-fill); stroke: var(--p2-color); filter: none; transform: translateY(0px); }
+      }
+      @keyframes pressP2_7 {
+        0%, 58.33% { fill: var(--kb-key-fill); stroke: var(--p2-color); filter: none; transform: translateY(0px); }
+        58.73%, 66.27% { fill: var(--p2-color); stroke: var(--p2-color); filter: drop-shadow(0 0 7px var(--p2-color)); transform: translateY(2px); }
+        66.67%, 100% { fill: var(--kb-key-fill); stroke: var(--p2-color); filter: none; transform: translateY(0px); }
+      }
+      @keyframes pressP2_8 {
+        0%, 66.67% { fill: var(--kb-key-fill); stroke: var(--p2-color); filter: none; transform: translateY(0px); }
+        67.07%, 74.60% { fill: var(--p2-color); stroke: var(--p2-color); filter: drop-shadow(0 0 7px var(--p2-color)); transform: translateY(2px); }
+        75.00%, 100% { fill: var(--kb-key-fill); stroke: var(--p2-color); filter: none; transform: translateY(0px); }
+      }
+      @keyframes pressSys_9 {
+        0%, 75.00% { fill: var(--kb-key-fill); stroke: var(--sys-color); filter: none; transform: translateY(0px); }
+        75.40%, 82.93% { fill: var(--sys-color); stroke: var(--sys-color); filter: drop-shadow(0 0 7px var(--sys-color)); transform: translateY(2px); }
+        83.33%, 100% { fill: var(--kb-key-fill); stroke: var(--sys-color); filter: none; transform: translateY(0px); }
+      }
+      @keyframes pressSys_10 {
+        0%, 83.33% { fill: var(--kb-key-fill); stroke: var(--sys-color); filter: none; transform: translateY(0px); }
+        83.73%, 91.27% { fill: var(--sys-color); stroke: var(--sys-color); filter: drop-shadow(0 0 7px var(--sys-color)); transform: translateY(2px); }
+        91.67%, 100% { fill: var(--kb-key-fill); stroke: var(--sys-color); filter: none; transform: translateY(0px); }
+      }
+      @keyframes pressSys_11 {
+        0%, 91.67% { fill: var(--kb-key-fill); stroke: var(--sys-color); filter: none; transform: translateY(0px); }
+        92.07%, 99.60% { fill: var(--sys-color); stroke: var(--sys-color); filter: drop-shadow(0 0 7px var(--sys-color)); transform: translateY(2px); }
+        100.00%, 100% { fill: var(--kb-key-fill); stroke: var(--sys-color); filter: none; transform: translateY(0px); }
+      }
+
+      .anim-step-0 { animation: pressP1_0 24s infinite; }
+      .anim-step-1 { animation: pressP2_1 24s infinite; }
+      .anim-step-2 { animation: pressP1_2 24s infinite; }
+      .anim-step-3 { animation: pressP2_3 24s infinite; }
+      .anim-step-4 { animation: pressP1_4 24s infinite; }
+      .anim-step-5 { animation: pressP2_5 24s infinite; }
+      .anim-step-6-p1 { animation: pressP1_6 24s infinite; }
+      .anim-step-6-p2 { animation: pressP2_6 24s infinite; }
+      .anim-step-7-p1 { animation: pressP1_7 24s infinite; }
+      .anim-step-7-p2 { animation: pressP2_7 24s infinite; }
+      .anim-step-8-p1 { animation: pressP1_8 24s infinite; }
+      .anim-step-8-p2 { animation: pressP2_8 24s infinite; }
+      .anim-step-9 { animation: pressSys_9 24s infinite; }
+      .anim-step-10 { animation: pressSys_10 24s infinite; }
+      .anim-step-11 { animation: pressSys_11 24s infinite; }
+
+
+      .banner-box {
+        fill: var(--banner-bg);
+        stroke: var(--banner-stroke);
+        stroke-width: 1.5;
+        rx: 12px;
+      }
+      .banner-tag {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        font-weight: 800;
+        font-size: 11.5px;
+        letter-spacing: 0.1em;
+        text-anchor: middle;
+      }
+      .banner-text {
+        font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        font-weight: 700;
+        font-size: 15px;
+        fill: var(--kb-text);
+        text-anchor: middle;
+      }
+      .banner-sub {
+        font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        font-weight: 500;
+        font-size: 12px;
+        fill: var(--kb-sub);
+        text-anchor: middle;
+      }
+    </style>
+  </defs>
+
+  <!-- ==================== KEYBOARD CHASSIS ==================== -->
+  <rect x="0" y="0" width="960" height="318" class="kb-case" />
+
+  <!--  Top Logo -->
+  <a href="https://github.com/joeaoregan" target="_blank" rel="noopener noreferrer">
+    <rect x="15" y="0" width="930" height="20" class="banner-box" />
+    <text x="480" y="14" style="font-family: system-ui; font-weight: 800; font-size: 10px; fill: var(--kb-sub); text-anchor: middle; letter-spacing: 0.15em;">JoeTech</text>
+  </a>
+  <!--  Bottom Logo -->
+  <text x="905" y="312" style="font-family: system-ui; font-weight: 500; font-size: 6px; fill: var(--kb-sub); text-anchor: middle; letter-spacing: 0.15em;">© 2026 Joe O'Regan</text>
+
+  <!-- ==================== ROW 0: FUNCTION KEYS ==================== -->
+  <!-- Esc -->
+  <g id="k-esc" transform="translate(16, 25)">
+    <rect width="36" height="24" class="key-base cat-sys anim-step-11" />
+    <text x="18" y="13" class="key-lbl">esc</text>
+  </g>
+
+  <!-- F1-F4 -->
+  <g transform="translate(66, 25)">
+    <rect x="0" y="0" width="36" height="24" class="key-base cat-sys anim-step-10" /><text x="18" y="13" class="key-lbl">F1</text>
+    <rect x="42" y="0" width="36" height="24" class="key-base" /><text x="60" y="13" class="key-lbl">F2</text>
+    <rect x="84" y="0" width="36" height="24" class="key-base" /><text x="102" y="13" class="key-lbl">F3</text>
+    <rect x="126" y="0" width="36" height="24" class="key-base" /><text x="144" y="13" class="key-lbl">F4</text>
+  </g>
+
+  <!-- F5-F8 -->
+  <g transform="translate(248, 25)">
+    <rect x="0" y="0" width="36" height="24" class="key-base" /><text x="18" y="13" class="key-lbl">F5</text>
+    <rect x="42" y="0" width="36" height="24" class="key-base" /><text x="60" y="13" class="key-lbl">F6</text>
+    <rect x="84" y="0" width="36" height="24" class="key-base" /><text x="102" y="13" class="key-lbl">F7</text>
+    <rect x="126" y="0" width="36" height="24" class="key-base" /><text x="144" y="13" class="key-lbl">F8</text>
+  </g>
+
+  <!-- F9-F12 -->
+  <g transform="translate(430, 25)">
+    <rect x="0" y="0" width="36" height="24" class="key-base" /><text x="18" y="13" class="key-lbl">F9</text>
+    <rect x="42" y="0" width="36" height="24" class="key-base" /><text x="60" y="13" class="key-lbl">F10</text>
+    <rect x="84" y="0" width="36" height="24" class="key-base" /><text x="102" y="13" class="key-lbl">F11</text>
+    <rect x="126" y="0" width="36" height="24" class="key-base" /><text x="144" y="13" class="key-lbl">F12</text>
+  </g>
+
+  <!-- Nav cluster Top -->
+  <g transform="translate(638, 25)">
+    <rect x="0" y="0" width="36" height="24" class="key-base" /><text x="18" y="13" class="key-lbl-sub">1 💻</text>
+    <rect x="42" y="0" width="36" height="24" class="key-base" /><text x="60" y="13" class="key-lbl-sub">2 💻</text>
+    <rect x="84" y="0" width="36" height="24" class="key-base" /><text x="102" y="13" class="key-lbl-sub">3 💻</text>
+  </g>
+
+  <!-- Numpad Top row -->
+  <g transform="translate(774, 25)">
+    <rect x="0" y="0" width="38" height="24" class="key-base" /><text x="19" y="13" class="key-lbl-sub">calc</text>
+    <rect x="44" y="0" width="38" height="24" class="key-base" /><text x="63" y="13" class="key-lbl-sub">snip</text>
+    <rect x="88" y="0" width="38" height="24" class="key-base" /><text x="107" y="13" class="key-lbl-sub">search</text>
+    <rect x="132" y="0" width="38" height="24" class="key-base" /><text x="151" y="13" class="key-lbl-sub">lock</text>
+  </g>
+
+  <!-- ==================== ROW 1: NUMBERS ==================== -->
+  <g transform="translate(16, 60)">
+    <rect x="0" y="0" width="36" height="42" class="key-base" /><text x="18" y="22" class="key-lbl">`</text>
+    <rect x="42" y="0" width="36" height="42" class="key-base" /><text x="60" y="22" class="key-lbl">1</text>
+    <rect x="84" y="0" width="36" height="42" class="key-base" /><text x="102" y="22" class="key-lbl">2</text>
+    <rect x="126" y="0" width="36" height="42" class="key-base" /><text x="144" y="22" class="key-lbl">3</text>
+    <rect x="168" y="0" width="36" height="42" class="key-base" /><text x="186" y="22" class="key-lbl">4</text>
+    <rect x="210" y="0" width="36" height="42" class="key-base" /><text x="228" y="22" class="key-lbl">5</text>
+    <rect x="252" y="0" width="36" height="42" class="key-base" /><text x="270" y="22" class="key-lbl">6</text>
+    <rect x="294" y="0" width="36" height="42" class="key-base" /><text x="312" y="22" class="key-lbl">7</text>
+    <rect x="336" y="0" width="36" height="42" class="key-base" /><text x="354" y="22" class="key-lbl">8</text>
+    <rect x="378" y="0" width="36" height="42" class="key-base" /><text x="396" y="22" class="key-lbl">9</text>
+    <rect x="420" y="0" width="36" height="42" class="key-base cat-media" /><text x="438" y="22" class="key-lbl">0</text>
+    <rect x="462" y="0" width="36" height="42" class="key-base" /><text x="480" y="22" class="key-lbl">-</text>
+    <rect x="504" y="0" width="36" height="42" class="key-base" /><text x="522" y="22" class="key-lbl">=</text>
+    <rect x="546" y="0" width="60" height="42" class="key-base" /><text x="576" y="22" class="key-lbl">backspace</text>
+  </g>
+
+  <!-- Nav cluster row 1 -->
+  <g transform="translate(638, 60)">
+    <rect x="0" y="0" width="36" height="42" class="key-base" /><text x="18" y="22" class="key-lbl-sub">ins</text>
+    <rect x="42" y="0" width="36" height="42" class="key-base" /><text x="60" y="22" class="key-lbl-sub">home</text>
+    <rect x="84" y="0" width="36" height="42" class="key-base" /><text x="102" y="22" class="key-lbl-sub">pg up</text>
+  </g>
+
+  <!-- Numpad row 1 -->
+  <g transform="translate(774, 60)">
+    <rect x="0" y="0" width="38" height="42" class="key-base" /><text x="19" y="22" class="key-lbl">clear</text>
+    <rect x="44" y="0" width="38" height="42" class="key-base" /><text x="63" y="22" class="key-lbl">/</text>
+    <rect x="88" y="0" width="38" height="42" class="key-base" /><text x="107" y="22" class="key-lbl">*</text>
+    <rect x="132" y="0" width="38" height="42" class="key-base cat-sys anim-step-9" /><text x="151" y="22" class="key-lbl" style="font-weight: 800; font-size: 14px;">-</text>
+  </g>
+
+  <!-- ==================== ROW 2: QWERTY ==================== -->
+  <g transform="translate(16, 110)">
+    <rect x="0" y="0" width="54" height="42" class="key-base" /><text x="27" y="22" class="key-lbl">tab</text>
+    <rect x="60" y="0" width="36" height="42" class="key-base" /><text x="78" y="22" class="key-lbl">Q</text>
+    <!-- W (P1 Up) -->
+    <rect x="102" y="0" width="36" height="42" class="key-base cat-p1 anim-step-0" /><text x="120" y="22" class="key-lbl">W</text>
+    <!-- E (P1 Saw) -->
+    <rect x="144" y="0" width="36" height="42" class="key-base cat-p1 anim-step-6-p1" /><text x="162" y="22" class="key-lbl">E</text>
+    <!-- R (P2 Saw) -->
+    <rect x="186" y="0" width="36" height="42" class="key-base cat-p2 anim-step-6-p2" /><text x="204" y="22" class="key-lbl">R</text>
+    <!-- T (Game Map) -->
+    <rect x="228" y="0" width="36" height="42" class="key-base cat-sys anim-step-10" /><text x="246" y="22" class="key-lbl">T</text>
+    <rect x="270" y="0" width="36" height="42" class="key-base" /><text x="288" y="22" class="key-lbl">Y</text>
+    <rect x="312" y="0" width="36" height="42" class="key-base" /><text x="330" y="22" class="key-lbl">U</text>
+    <rect x="354" y="0" width="36" height="42" class="key-base" /><text x="372" y="22" class="key-lbl">I</text>
+    <rect x="396" y="0" width="36" height="42" class="key-base" /><text x="414" y="22" class="key-lbl">O</text>
+    <rect x="438" y="0" width="36" height="42" class="key-base" /><text x="456" y="22" class="key-lbl">P</text>
+    <rect x="480" y="0" width="36" height="42" class="key-base" /><text x="498" y="22" class="key-lbl">[</text>
+    <rect x="522" y="0" width="36" height="42" class="key-base" /><text x="540" y="22" class="key-lbl">]</text>
+    <rect x="564" y="0" width="42" height="42" class="key-base" /><text x="585" y="22" class="key-lbl">\</text>
+  </g>
+
+  <!-- Nav cluster row 2 -->
+  <g transform="translate(638, 110)">
+    <rect x="0" y="0" width="36" height="42" class="key-base" /><text x="18" y="22" class="key-lbl-sub">del</text>
+    <rect x="42" y="0" width="36" height="42" class="key-base" /><text x="60" y="22" class="key-lbl-sub">end</text>
+    <rect x="84" y="0" width="36" height="42" class="key-base" /><text x="102" y="22" class="key-lbl-sub">pg dn</text>
+  </g>
+
+  <!-- Numpad row 2 -->
+  <g transform="translate(774, 110)">
+    <rect x="0" y="0" width="38" height="42" class="key-base" /><text x="19" y="22" class="key-lbl">7</text>
+    <rect x="44" y="0" width="38" height="42" class="key-base" /><text x="63" y="22" class="key-lbl">8</text>
+    <rect x="88" y="0" width="38" height="42" class="key-base" /><text x="107" y="22" class="key-lbl">9</text>
+    <!-- Keypad + (Span 2 rows) -->
+    <rect x="132" y="0" width="38" height="92" class="key-base cat-sys anim-step-9" /><text x="151" y="46" class="key-lbl" style="font-weight: 800; font-size: 16px;">+</text>
+  </g>
+
+  <!-- ==================== ROW 3: ASDF ==================== -->
+  <g transform="translate(16, 160)">
+    <rect x="0" y="0" width="66" height="42" class="key-base" /><text x="33" y="22" class="key-lbl">caps</text>
+    <!-- A (P1 Left) -->
+    <rect x="72" y="0" width="36" height="42" class="key-base cat-p1 anim-step-0" /><text x="90" y="22" class="key-lbl">A</text>
+    <!-- S (P1 Down) -->
+    <rect x="114" y="0" width="36" height="42" class="key-base cat-p1 anim-step-0" /><text x="132" y="22" class="key-lbl">S</text>
+    <!-- D (P1 Right) -->
+    <rect x="156" y="0" width="36" height="42" class="key-base cat-p1 anim-step-0" /><text x="174" y="22" class="key-lbl">D</text>
+    <!-- F (P1 Boost) -->
+    <rect x="198" y="0" width="36" height="42" class="key-base cat-p1 anim-step-7-p1" /><text x="216" y="22" class="key-lbl">F</text>
+    <!-- G (P2 Boost) -->
+    <rect x="240" y="0" width="36" height="42" class="key-base cat-p2 anim-step-7-p2" /><text x="258" y="22" class="key-lbl">G</text>
+    <rect x="282" y="0" width="36" height="42" class="key-base" /><text x="300" y="22" class="key-lbl">H</text>
+    <rect x="324" y="0" width="36" height="42" class="key-base" /><text x="342" y="22" class="key-lbl">J</text>
+    <!-- K (Music Back) -->
+    <rect x="366" y="0" width="36" height="42" class="key-base cat-media" /><text x="384" y="22" class="key-lbl">K</text>
+    <!-- L (Music Forward) -->
+    <rect x="408" y="0" width="36" height="42" class="key-base cat-media" /><text x="426" y="22" class="key-lbl">L</text>
+    <rect x="450" y="0" width="36" height="42" class="key-base" /><text x="468" y="22" class="key-lbl">;</text>
+    <rect x="492" y="0" width="36" height="42" class="key-base" /><text x="510" y="22" class="key-lbl">'</text>
+    <rect x="534" y="0" width="72" height="42" class="key-base cat-sys" /><text x="570" y="22" class="key-lbl">enter</text>
+  </g>
+
+  <!-- Numpad row 3 -->
+  <g transform="translate(774, 160)">
+    <rect x="0" y="0" width="38" height="42" class="key-base" /><text x="19" y="22" class="key-lbl">4</text>
+    <rect x="44" y="0" width="38" height="42" class="key-base" /><text x="63" y="22" class="key-lbl">5</text>
+    <rect x="88" y="0" width="38" height="42" class="key-base" /><text x="107" y="22" class="key-lbl">6</text>
+  </g>
+
+  <!-- ==================== ROW 4: ZXCV ==================== -->
+  <g transform="translate(16, 210)">
+    <rect x="0" y="0" width="86" height="42" class="key-base" /><text x="43" y="22" class="key-lbl">shift</text>
+    <rect x="92" y="0" width="36" height="42" class="key-base" /><text x="110" y="22" class="key-lbl">Z</text>
+    <rect x="134" y="0" width="36" height="42" class="key-base" /><text x="152" y="22" class="key-lbl">X</text>
+    <!-- C (P1 Rocket) -->
+    <rect x="176" y="0" width="36" height="42" class="key-base cat-p1 anim-step-8-p1" /><text x="194" y="22" class="key-lbl">C</text>
+    <!-- V (P2 Rocket) -->
+    <rect x="218" y="0" width="36" height="42" class="key-base cat-p2 anim-step-8-p2" /><text x="236" y="22" class="key-lbl">V</text>
+    <rect x="260" y="0" width="36" height="42" class="key-base" /><text x="278" y="22" class="key-lbl">B</text>
+    <!-- N (P1 Ninja Star) -->
+    <rect x="302" y="0" width="36" height="42" class="key-base cat-p1 anim-step-4" /><text x="320" y="22" class="key-lbl">N</text>
+    <!-- M (Music Pause) -->
+    <rect x="344" y="0" width="36" height="42" class="key-base cat-media" /><text x="362" y="22" class="key-lbl">M</text>
+    <rect x="386" y="0" width="36" height="42" class="key-base" /><text x="404" y="22" class="key-lbl">,</text>
+    <rect x="428" y="0" width="36" height="42" class="key-base" /><text x="446" y="22" class="key-lbl">.</text>
+    <rect x="470" y="0" width="36" height="42" class="key-base" /><text x="488" y="22" class="key-lbl">/</text>
+    <!-- Right Shift (P2 Ninja Star) -->
+    <rect x="512" y="0" width="94" height="42" class="key-base cat-p2 anim-step-5" /><text x="559" y="22" class="key-lbl">shift</text>
+  </g>
+
+  <!-- Arrow Cluster: Up Arrow -->
+  <g transform="translate(680, 210)">
+    <rect x="0" y="0" width="36" height="42" class="key-base cat-p2 anim-step-1" /><text x="18" y="22" class="key-lbl">↑</text>
+  </g>
+
+  <!-- Numpad row 4 -->
+  <g transform="translate(774, 210)">
+    <rect x="0" y="0" width="38" height="42" class="key-base" /><text x="19" y="22" class="key-lbl">1</text>
+    <rect x="44" y="0" width="38" height="42" class="key-base" /><text x="63" y="22" class="key-lbl">2</text>
+    <rect x="88" y="0" width="38" height="42" class="key-base" /><text x="107" y="22" class="key-lbl">3</text>
+    <!-- Keypad Enter (Span 2 rows) -->
+    <rect x="132" y="0" width="38" height="92" class="key-base" /><text x="151" y="46" class="key-lbl-sub">enter</text>
+  </g>
+
+  <!-- ==================== ROW 5: BOTTOM MODIFIERS and SPACEBAR ==================== -->
+  <g transform="translate(16, 260)">
+    <rect x="0" y="0" width="46" height="42" class="key-base" /><text x="23" y="22" class="key-lbl">ctrl</text>
+    <rect x="52" y="0" width="52" height="42" class="key-base" /><text x="78" y="22" class="key-lbl">opt</text>
+    <rect x="110" y="0" width="56" height="42" class="key-base" /><text x="138" y="22" class="key-lbl">cmd</text>
+    <!-- Spacebar (P1 Laser) -->
+    <rect x="172" y="0" width="248" height="42" class="key-base cat-p1 anim-step-2" /><text x="296" y="22" class="key-lbl">Spacebar (P1 Fire Laser)</text>
+    <rect x="426" y="0" width="52" height="42" class="key-base" /><text x="452" y="22" class="key-lbl">cmd</text>
+    <rect x="484" y="0" width="46" height="42" class="key-base" /><text x="507" y="22" class="key-lbl">opt</text>
+    <!-- Right Ctrl (P2 Laser) -->
+    <rect x="536" y="0" width="70" height="42" class="key-base cat-p2 anim-step-3" /><text x="571" y="22" class="key-lbl">ctrl (P2)</text>
+  </g>
+
+  <!-- Arrow Cluster: Left, Down, Right -->
+  <g transform="translate(638, 260)">
+    <rect x="0" y="0" width="36" height="42" class="key-base cat-p2 anim-step-1" /><text x="18" y="22" class="key-lbl">←</text>
+    <rect x="42" y="0" width="36" height="42" class="key-base cat-p2 anim-step-1" /><text x="60" y="22" class="key-lbl">↓</text>
+    <rect x="84" y="0" width="36" height="42" class="key-base cat-p2 anim-step-1" /><text x="102" y="22" class="key-lbl">→</text>
+  </g>
+
+  <!-- Numpad row 5 -->
+  <g transform="translate(774, 260)">
+    <rect x="0" y="0" width="82" height="42" class="key-base" /><text x="41" y="22" class="key-lbl">0</text>
+    <rect x="88" y="0" width="38" height="42" class="key-base" /><text x="107" y="22" class="key-lbl">.</text>
+  </g>
+
+  <!-- ==================== ANIMATED ACTION BANNER (UNDERNEATH) ==================== -->
+  <g id="action-banner" transform="translate(0, 334)">
+    <rect width="960" height="85" class="banner-box" />
+
+    <!-- Step 0: WASD (P1 Move) -->
+    <g class="cap-step cap-0">
+      <text x="490" y="26" class="banner-tag" style="fill: var(--p1-color);">PLAYER 1 • KINEMATIC NAVIGATION</text>
+      <text x="490" y="48" class="banner-text">W / A / S / D  →  Move Up, Left, Down, Right</text>
+      <text x="490" y="68" class="banner-sub">8-way directional propulsion through arterial vessels with dynamic particle trail</text>
+    </g>
+
+    <!-- Step 1: Arrows (P2 Move) -->
+    <g class="cap-step cap-1">
+      <text x="490" y="26" class="banner-tag" style="fill: var(--p2-color);">PLAYER 2 • KINEMATIC NAVIGATION</text>
+      <text x="490" y="48" class="banner-text">Arrow Keys ( ↑ / ← / ↓ / → )  →  Move Up, Left, Down, Right</text>
+      <text x="490" y="68" class="banner-sub">Independent propulsion for Player 2 blue nano-submarine in cooperative play</text>
+    </g>
+
+    <!-- Step 2: Spacebar (P1 Laser) -->
+    <g class="cap-step cap-2">
+      <text x="490" y="26" class="banner-tag" style="fill: var(--p1-color);">PLAYER 1 • PRIMARY WEAPON</text>
+      <text x="490" y="48" class="banner-text">Spacebar  →  Fire Primary Laser Cannons</text>
+      <text x="490" y="68" class="banner-sub">Unlimited high-velocity laser beams; upgrades to dual and triple-beam angles</text>
+    </g>
+
+    <!-- Step 3: Right Ctrl (P2 Laser) -->
+    <g class="cap-step cap-3">
+      <text x="490" y="26" class="banner-tag" style="fill: var(--p2-color);">PLAYER 2 • PRIMARY WEAPON</text>
+      <text x="490" y="48" class="banner-text">Right Control  →  Fire Primary Laser Cannons</text>
+      <text x="490" y="68" class="banner-sub">Rapid energy projectiles assigned to Player 2 with dedicated audio feedback</text>
+    </g>
+
+    <!-- Step 4: N (P1 Ninja Star) -->
+    <g class="cap-step cap-4">
+      <text x="490" y="26" class="banner-tag" style="fill: var(--p1-color);">PLAYER 1 • PIERCING MUNITION</text>
+      <text x="490" y="48" class="banner-text">N Key  →  Launch Rotating Ninja Star (Yellow)</text>
+      <text x="490" y="68" class="banner-sub">Cuts large Enemy Viruses into two smaller, digestible cells with score bonus</text>
+    </g>
+
+    <!-- Step 5: Right Shift (P2 Ninja Star) -->
+    <g class="cap-step cap-5">
+      <text x="490" y="26" class="banner-tag" style="fill: var(--p2-color);">PLAYER 2 • PIERCING MUNITION</text>
+      <text x="490" y="48" class="banner-text">Right Shift  →  Launch Rotating Ninja Star (Blue)</text>
+      <text x="490" y="68" class="banner-sub">Player 2 viral-slicing throwing star with custom acoustic sound effects</text>
+    </g>
+
+    <!-- Step 6: E and R (Saw Shields) -->
+    <g class="cap-step cap-6">
+      <text x="490" y="26" class="banner-tag" style="fill: var(--p1-color);">DEFENSIVE PERIMETER • SHIELD SYSTEM</text>
+      <text x="490" y="48" class="banner-text">E (Player 1) / R (Player 2)  →  Activate / Deactivate Perimeter Saw</text>
+      <text x="490" y="68" class="banner-sub">Grants frontal invulnerability, deflects incoming bolts, and slices viruses in melee</text>
+    </g>
+
+    <!-- Step 7: F and G (Speed Boosts) -->
+    <g class="cap-step cap-7">
+      <text x="490" y="26" class="banner-tag" style="fill: var(--sys-color);">TACTICAL MOBILITY • AFTERBURNERS</text>
+      <text x="490" y="48" class="banner-text">F (Player 1) / G (Player 2)  →  Activate Speed Boost</text>
+      <text x="490" y="68" class="banner-sub">Surges ship velocity for 3.0 seconds; remaining duration tracked on HUD gauge</text>
+    </g>
+
+    <!-- Step 8: C and V (Rockets) -->
+    <g class="cap-step cap-8">
+      <text x="490" y="26" class="banner-tag" style="fill: var(--p1-color);">HEAVY ORDNANCE • CHARGED ROCKET</text>
+      <text x="490" y="48" class="banner-text">C (Player 1) / V (Player 2)  →  Hold to Charge, Release to Launch</text>
+      <text x="490" y="68" class="banner-sub">Release before power bar finishes or rocket explodes internally; steerable trajectory</text>
+    </g>
+
+    <!-- Step 9: Keypad - and + (Rocket Elevation) -->
+    <g class="cap-step cap-9">
+      <text x="490" y="26" class="banner-tag" style="fill: var(--sys-color);">ORDNANCE STEERING • FLIGHT CONTROL</text>
+      <text x="490" y="48" class="banner-text">Keypad [ - ] / [ + ]  →  Pitch Rocket Up / Down</text>
+      <text x="490" y="68" class="banner-sub">Adjusts rocket Y-axis elevation dynamically in flight to bypass arterial plaque</text>
+    </g>
+
+    <!-- Step 10: T and F1 (Game Map and FPS) -->
+    <g class="cap-step cap-10">
+      <text x="490" y="26" class="banner-tag" style="fill: var(--sys-color);">TELEMETRY &amp; NAVIGATION</text>
+      <text x="490" y="48" class="banner-text">T: Toggle Full Game Map  |  F1: Toggle FPS Counter</text>
+      <text x="490" y="68" class="banner-sub">Reveals upcoming boss checkpoints and active rolling 10-frame tick benchmark</text>
+    </g>
+
+    <!-- Step 11: Esc (Pause / Menu) -->
+    <g class="cap-step cap-11">
+      <text x="490" y="26" class="banner-tag" style="fill: var(--sys-color);">SYSTEM NAVIGATION</text>
+      <text x="490" y="48" class="banner-text">Esc  →  Pause Game / Return to Main Menu</text>
+      <text x="490" y="68" class="banner-sub">Instantly pauses simulation and saves checkpoint standings without state destruction</text>
+    </g>
+  </g>
+</svg>
+
+</div>
+
 <div class="admonition info">
 <p class="admonition-title">Default Input</p>
-<p>The game uses the keyboard as the primary input device, divided into general game keys, Player 1 controls, and Player 2 controls (see image above).</p>
+<p>The game uses the keyboard as the primary input device, divided into general system keys, Player 1 controls (Red/White Ship), and Player 2 controls (Blue Ship).</p>
 </div>
+<hr />
 <h3 id="keyboard-controls_1">Keyboard Controls</h3>
 <table>
 <thead>
 <tr>
-<th>Player 1</th>
-<th>Player 2</th>
-<th>Description</th>
+<th style="text-align: center;">Player 1</th>
+<th style="text-align: center;">Player 2</th>
+<th style="text-align: left;">Action &amp; Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><strong>A</strong></td>
-<td><strong>←</strong></td>
-<td>Move left</td>
+<td style="text-align: center;"><strong>A</strong></td>
+<td style="text-align: center;"><strong>←</strong></td>
+<td style="text-align: left;">Move left through arterial vessel</td>
 </tr>
 <tr>
-<td><strong>S</strong></td>
-<td><strong>↓</strong></td>
-<td>Move down</td>
+<td style="text-align: center;"><strong>S</strong></td>
+<td style="text-align: center;"><strong>↓</strong></td>
+<td style="text-align: left;">Move down</td>
 </tr>
 <tr>
-<td><strong>D</strong></td>
-<td><strong>→</strong></td>
-<td>Move right</td>
+<td style="text-align: center;"><strong>D</strong></td>
+<td style="text-align: center;"><strong>→</strong></td>
+<td style="text-align: left;">Move right</td>
 </tr>
 <tr>
-<td><strong>W</strong></td>
-<td><strong>↑</strong></td>
-<td>Move up</td>
+<td style="text-align: center;"><strong>W</strong></td>
+<td style="text-align: center;"><strong>↑</strong></td>
+<td style="text-align: left;">Move up</td>
 </tr>
 <tr>
-<td><strong>E</strong></td>
-<td><strong>R</strong></td>
-<td>Activate/Deactivate Saw (shield deactivates when Saw is active, and vice versa)</td>
+<td style="text-align: center;"><strong>E</strong></td>
+<td style="text-align: center;"><strong>R</strong></td>
+<td style="text-align: left;">Activate / Deactivate Perimeter Saw (shield deactivates when Saw is active, and vice versa)</td>
 </tr>
 <tr>
-<td><strong>F</strong></td>
-<td><strong>G</strong></td>
-<td>Activate Speed Boost (lasts 3.0 seconds; remaining time is indicated by the status bar on the HUD)</td>
+<td style="text-align: center;"><strong>F</strong></td>
+<td style="text-align: center;"><strong>G</strong></td>
+<td style="text-align: left;">Activate Speed Boost (lasts 3.0 seconds; remaining duration displayed on the HUD status bar)</td>
 </tr>
 <tr>
-<td><strong>C</strong></td>
-<td><strong>V</strong></td>
-<td>Hold to activate the rocket and power bar; release to fire. (<strong>*see note</strong>)</td>
+<td style="text-align: center;"><strong>C</strong></td>
+<td style="text-align: center;"><strong>V</strong></td>
+<td style="text-align: left;">Hold to charge rocket ordnance power bar; release to fire (<em>see note below</em>)</td>
 </tr>
 <tr>
-<td><strong>-</strong></td>
-<td><strong>-</strong></td>
-<td>Move the rocket up the screen (decreases Y-axis value)</td>
+<td style="text-align: center;"><strong>Keypad -</strong></td>
+<td style="text-align: center;"><strong>Keypad -</strong></td>
+<td style="text-align: left;">Pitch rocket elevation upwards (decreases Y-axis position)</td>
 </tr>
 <tr>
-<td><strong>+</strong></td>
-<td><strong>+</strong></td>
-<td>Move the rocket down the screen (increases Y-axis value)</td>
+<td style="text-align: center;"><strong>Keypad +</strong></td>
+<td style="text-align: center;"><strong>Keypad +</strong></td>
+<td style="text-align: left;">Pitch rocket elevation downwards (increases Y-axis position)</td>
 </tr>
 <tr>
-<td><strong>Spacebar</strong></td>
-<td><strong>CTRL</strong></td>
-<td>Fire laser weapon</td>
+<td style="text-align: center;"><strong>Spacebar</strong></td>
+<td style="text-align: center;"><strong>Right Ctrl</strong></td>
+<td style="text-align: left;">Fire primary laser cannons (Single / Twin / Triple beams)</td>
 </tr>
 <tr>
-<td><strong>N</strong></td>
-<td><strong>SHIFT</strong></td>
-<td>Fire ninja star weapon</td>
+<td style="text-align: center;"><strong>N</strong></td>
+<td style="text-align: center;"><strong>Right Shift</strong></td>
+<td style="text-align: left;">Fire rotating ninja star (slices large viruses in half)</td>
 </tr>
 </tbody>
 </table>
 <div class="admonition note">
-<p class="admonition-title">Rocket Status Bar</p>
-<p>If C / V key not released before the rocker status bar finishes, the rocket will explode.</p>
+<p class="admonition-title">Rocket Overcharge Status Warning</p>
+<p>If the <strong>C</strong> (Player 1) or <strong>V</strong> (Player 2) key is not released before the rocket power bar fills completely, the rocket will self-destruct internally.</p>
 </div>
 <div class="admonition tip">
 <p class="admonition-title">Weapon Power Bar Strategy</p>
-<p>When using the charged rocket weapon, holding the fire button builds up power for extra score multipliers, but be certain to release it before the status bar fills completely or the rocket will self-destruct.</p>
+<p>Holding the rocket fire key charges missile kinetic potency for higher point multipliers, but releasing it just before the threshold guarantees safe launch past defensive plaque walls.</p>
 </div>
-<h3 id="other-game-keys">Other Game Keys</h3>
+<hr />
+<h3 id="system-jukebox-controls">System &amp; Jukebox Controls</h3>
 <ul>
-<li><strong>Esc</strong>: Pause / Main Menu / Back to menu from sub-menu</li>
-<li><strong>F1</strong>: Show Frames Per Second (FPS)</li>
-<li><strong>T</strong>: Show/Hide the Game Map</li>
-<li><strong>0</strong>: Stop the music</li>
-<li><strong>K</strong>: Skip music track backwards</li>
-<li><strong>L</strong>: Skip music track forwards</li>
-<li><strong>M</strong>: Pause the music track</li>
-<li><strong>ENTER</strong>: Enter text from the Enter Name screen</li>
+<li><strong>Esc</strong>: Pause gameplay / Return to Main Menu from any active sub-menu</li>
+<li><strong>F1</strong>: Toggle real-time rolling Frames Per Second (FPS) diagnostic counter</li>
+<li><strong>T</strong>: Toggle full-screen procedural game map and boss checkpoints</li>
+<li><strong>Enter</strong>: Confirm player handle on the high-score text entry screen</li>
+<li><strong>0</strong>: Stop background music playback</li>
+<li><strong>K</strong>: Skip active music track backwards</li>
+<li><strong>L</strong>: Skip active music track forwards</li>
+<li><strong>M</strong>: Toggle music track pause / resume</li>
 </ul>
+<hr />
 <h2 id="gamepad-controls">Gamepad Controls</h2>
 <p><img alt="Game Controller 1" src="../images/game_controller1.png" /></p>
 <p><img alt="Game Controller 2" src="../images/game_controller2.png" /></p>

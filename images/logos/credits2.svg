@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="340" height="60" viewBox="0 0 340 60">
+  <defs>
+    <style>
+      :root {
+        /* LIGHT THEME */
+        --fill-start: #3ce5ff;
+        --fill-end: #d1d5db;
+        --stroke-color: #000000;
+      }
+      
+      @media (prefers-color-scheme: dark) {
+        :root {
+          /* DARK THEME */
+          --fill-start: #0044b4;
+          --fill-end: #000000;
+          --stroke-color: #ffffff;
+        }
+      }
+      
+      .scroll-text {
+        font-family: 'Impact', 'Arial Black', sans-serif;
+        font-size: 34px;
+        font-weight: 900;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        
+        fill: url(#text-fill-gradient);
+        stroke: var(--stroke-color);
+        stroke-width: 6px;
+        stroke-linejoin: round;
+        paint-order: stroke fill;  
+      }
+
+      .stop-start { stop-color: var(--fill-start); }
+      .stop-end { stop-color: var(--fill-end); }
+    </style>
+
+    <!-- Clip window matching the inside of the 60px test box -->
+    <clipPath id="tight-text-window">
+      <rect x="0" y="0" width="340" height="60" />
+    </clipPath>
+
+    <linearGradient id="text-fill-gradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" class="stop-start" />
+      <stop offset="100%" class="stop-end" />
+    </linearGradient>
+  </defs>
+
+  <!-- Temporary bounding box outline to verify dimensions -->
+  <rect x="0" y="0" width="340" height="60" fill="none" stroke="var(--stroke-color)" stroke-width="2" />
+
+  <g clip-path="url(#tight-text-window)">
+    <!-- Horizontal animation tracker container -->
+    <!-- from="0,0": Starts with "A Game By Joe O'Regan" text flush left inside the window -->
+    <!-- to="-750,0": Shifts left by exactly the length of the string plus the single divider dot -->
+    <g>
+      <animateTransform 
+        attributeName="transform" 
+        type="translate" 
+        from="0,0" 
+        to="-750,0" 
+        dur="12s" 
+        repeatCount="indefinite" />
+
+      <!-- Track 1: First full iteration (Sits flush at x="10" to align with left window edge instantly) -->
+      <!-- 'y="44"' positions the baseline perfectly centered vertically within the tight 60px boundary box -->
+      <text x="10" y="44" class="scroll-text">A Game By Joe O'Regan and Seán Horgan .</text>
+
+      <!-- Track 2: Duplicate looping bridge positioned precisely at the end of the text track width string -->
+      <!-- x="760" maps perfectly right after the dot to create a gapless loop stream -->
+      <text x="760" y="44" class="scroll-text">A Game By Joe O'Regan and Seán Horgan .</text>
+    </g>
+  </g>
+</svg>

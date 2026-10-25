@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2172" height="724" viewBox="0 0 2172 724">
+  <title>ANTIBODY Outline - Simplified Geometry</title>
+  <desc>Clean vector outline of ANTIBODY with a vertical background gradient and an overlaid animated sweep.</desc>
+  <defs>
+    <style>
+      :root {
+        --svg-accent: #AAAAAA;
+        --gradient-start: #0000b4;
+        --gradient-end: #01004e;
+        --sweep-color: rgba(255, 255, 255, 0.4); /* Color and intensity of the overlay beam */
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --svg-accent: #60a5fa;
+          --gradient-start: #23d5ab;
+          --gradient-end: #9a4eff;
+          --sweep-color: rgba(255, 255, 255, 0.5);
+        }
+      }
+      .line {
+        fill: url(#vertical-gradient);
+        fill-rule: evenodd;
+        clip-rule: evenodd;
+      }
+      
+      /* Styles for the animated overlay mask layer */
+      .sweep-line {
+        fill: url(#sweep-gradient);
+        fill-rule: evenodd;
+        clip-rule: evenodd;
+        mix-blend-mode: screen; /* Blends the light naturally over the base colors */
+      }
+
+      .stop-top { stop-color: var(--gradient-start); }
+      .stop-bottom { stop-color: var(--gradient-end); }
+    </style>
+    
+    <!-- Your original vertical background gradient -->
+    <linearGradient id="vertical-gradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" class="stop-top" />
+      <stop offset="100%" class="stop-bottom" />
+    </linearGradient>
+
+    <!-- The isolated horizontal sweep gradient layer -->
+    <linearGradient id="sweep-gradient" y1="0%" y2="0%" gradientUnits="userSpaceOnUse" x1="-600" x2="600">
+      <animate attributeName="x1" from="-600" to="2172" dur="3s" repeatCount="indefinite" />
+      <animate attributeName="x2" from="600" to="3372" dur="3s" repeatCount="indefinite" />
+      <stop offset="0%" stop-color="transparent" />
+      <stop offset="40%" stop-color="transparent" />
+      <stop offset="50%" stop-color="var(--sweep-color)" /> <!-- Highlight core -->
+      <stop offset="60%" stop-color="transparent" />
+      <stop offset="100%" stop-color="transparent" />
+    </linearGradient>
+  </defs>
+
+  <!-- LAYER 1: Your original artwork rendering the vertical gradient -->
+  <g id="base-text-layer">
+    <g id="A"><path id="sA" d="M 132,135 L 12,484 L 12,497 L 17,501 L 83,502 L 109,502 L 117,497 L 191,299 L 227,407 L 169,408 L 163,412 L 162,497 L 206,502 L 357,501 L 363,490 L 351,447 L 248,138 L 238,133 L 137,133 Z M 143,151 L 236,153 L 343,485 L 178,484 L 179,425 L 239,425 L 246,417 L 197,269 L 185,269 L 181,274 L 104,483 L 30,483 L 117,224 Z" class="line" /></g>
+    <g id="N"><path id="sN" d="M 370,134 L 365,140 L 365,495 L 374,502 L 471,499 L 473,233 L 537,231 L 539,496 L 544,501 L 641,501 L 647,494 L 645,138 L 638,133 L 373,133 Z M 382,151 L 630,152 L 629,485 L 555,483 L 555,221 L 548,214 L 464,214 L 458,219 L 457,483 L 381,483 L 381,152 Z" class="line" /></g>
+    <g id="T"><path id="sT" d="M 890,133 L 666,133 L 655,139 L 656,228 L 727,232 L 728,642 L 739,645 L 839,596 L 839,232 L 891,231 L 898,224 L 897,138 Z M 881,151 L 882,213 L 829,214 L 823,220 L 823,587 L 744,624 L 743,220 L 737,214 L 672,214 L 671,152 L 864,150 Z" class="line" /></g>
+    <g id="I"><path id="sI" d="M 910,133 L 902,141 L 902,495 L 908,501 L 946,502 L 1004,501 L 1010,495 L 1010,141 L 1003,133 Z M 920,151 L 991,150 L 994,154 L 993,483 L 918,483 L 919,152 Z" class="line" /></g>
+    <g id="B"><path id="sB" d="M 1294,169 L 1287,154 L 1259,134 L 1024,133 L 1017,137 L 1015,495 L 1020,501 L 1258,501 L 1273,495 L 1292,471 L 1297,450 L 1297,287 Z M 1265,155 L 1280,182 L 1280,288 L 1268,307 L 1251,314 L 1250,323 L 1269,332 L 1280,351 L 1280,452 L 1271,474 L 1257,484 L 1032,484 L 1031,152 L 1255,151 Z M 1107,349 L 1106,419 L 1110,424 L 1195,425 L 1202,418 L 1202,355 L 1198,347 L 1112,345 Z M 1124,362 L 1184,362 L 1185,407 L 1124,408 L 1122,368 Z M 1106,221 L 1106,288 L 1110,293 L 1195,294 L 1200,290 L 1202,225 L 1198,216 L 1112,214 Z M 1122,233 L 1185,233 L 1183,277 L 1124,277 L 1123,272 Z" class="line" /></g>
+    <g id="O"><path id="sO" d="M 1300,466 L 1316,492 L 1334,501 L 1539,502 L 1566,495 L 1577,483 L 1582,466 L 1582,166 L 1572,145 L 1543,133 L 1340,133 L 1318,142 L 1307,154 L 1297,185 L 1298,349 Z M 1329,155 L 1339,151 L 1547,151 L 1561,160 L 1565,173 L 1562,474 L 1549,484 L 1357,485 L 1336,484 L 1321,472 L 1314,448 L 1314,185 L 1321,163 Z M 1398,214 L 1391,221 L 1390,323 L 1391,418 L 1398,425 L 1480,425 L 1487,418 L 1487,222 L 1480,214 Z M 1409,231 L 1470,232 L 1470,407 L 1408,407 L 1408,232 Z" class="line" /></g>
+    <g id="D"><path id="sD" d="M 1595,134 L 1589,142 L 1592,499 L 1777,502 L 1843,498 L 1861,483 L 1873,446 L 1872,184 L 1860,151 L 1841,136 L 1822,133 L 1598,133 Z M 1607,151 L 1831,151 L 1849,164 L 1856,189 L 1856,448 L 1852,465 L 1841,480 L 1831,484 L 1606,483 L 1606,152 Z M 1687,214 L 1680,222 L 1680,417 L 1687,425 L 1771,425 L 1778,419 L 1779,223 L 1771,214 Z M 1698,231 L 1762,233 L 1762,406 L 1697,407 L 1697,232 Z" class="line" /></g>
+    <g id="Y"><path id="sY" d="M 1865,135 L 1862,148 L 1955,321 L 1955,495 L 1961,501 L 2058,501 L 2064,494 L 2064,320 L 2153,158 L 2158,138 L 2151,133 L 2050,135 L 2009,216 L 1970,135 L 1871,133 Z M 1888,150 L 1960,151 L 2001,239 L 2010,244 L 2018,239 L 2060,151 L 2137,152 L 2047,317 L 2046,485 L 1972,484 L 1972,317 L 1883,152 Z" class="line" /></g>
+  </g>
+
+  <!-- LAYER 2: Overlaid vector layer capturing the moving light reflection -->
+  <g id="animated-sweep-overlay">
+    <path d="M 132,135 L 12,484 L 12,497 L 17,501 L 83,502 L 109,502 L 117,497 L 191,299 L 227,407 L 169,408 L 163,412 L 162,497 L 206,502 L 357,501 L 363,490 L 351,447 L 248,138 L 238,133 L 137,133 Z M 143,151 L 236,153 L 343,485 L 178,484 L 179,425 L 239,425 L 246,417 L 197,269 L 185,269 L 181,274 L 104,483 L 30,483 L 117,224 Z" class="sweep-line" />
+    <path d="M 370,134 L 365,140 L 365,495 L 374,502 L 471,499 L 473,233 L 537,231 L 539,496 L 544,501 L 641,501 L 647,494 L 645,138 L 638,133 L 373,133 Z M 382,151 L 630,152 L 629,485 L 555,483 L 555,221 L 548,214 L 464,214 L 458,219 L 457,483 L 381,483 L 381,152 Z" class="sweep-line" />
+    <path d="M 890,133 L 666,133 L 655,139 L 656,228 L 727,232 L 728,642 L 739,645 L 839,596 L 839,232 L 891,231 L 898,224 L 897,138 Z M 881,151 L 882,213 L 829,214 L 823,220 L 823,587 L 744,624 L 743,220 L 737,214 L 672,214 L 671,152 L 864,150 Z" class="sweep-line" />
+    <path d="M 910,133 L 902,141 L 902,495 L 908,501 L 946,502 L 1004,501 L 1010,495 L 1010,141 L 1003,133 Z M 920,151 L 991,150 L 994,154 L 993,483 L 918,483 L 919,152 Z" class="sweep-line" />
+    <path d="M 1294,169 L 1287,154 L 1259,134 L 1024,133 L 1017,137 L 1015,495 L 1020,501 L 1258,501 L 1273,495 L 1292,471 L 1297,450 L 1297,287 Z M 1265,155 L 1280,182 L 1280,288 L 1268,307 L 1251,314 L 1250,323 L 1269,332 L 1280,351 L 1280,452 L 1271,474 L 1257,484 L 1032,484 L 1031,152 L 1255,151 Z M 1107,349 L 1106,419 L 1110,424 L 1195,425 L 1202,418 L 1202,355 L 1198,347 L 1112,345 Z M 1124,362 L 1184,362 L 1185,407 L 1124,408 L 1122,368 Z M 1106,221 L 1106,288 L 1110,293 L 1195,294 L 1200,290 L 1202,225 L 1198,216 L 1112,214 Z M 1122,233 L 1185,233 L 1183,277 L 1124,277 L 1123,272 Z" class="sweep-line" />
+    <path d="M 1300,466 L 1316,492 L 1334,501 L 1539,502 L 1566,495 L 1577,483 L 1582,466 L 1582,166 L 1572,145 L 1543,133 L 1340,133 L 1318,142 L 1307,154 L 1297,185 L 1298,349 Z M 1329,155 L 1339,151 L 1547,151 L 1561,160 L 1565,173 L 1562,474 L 1549,484 L 1357,485 L 1336,484 L 1321,472 L 1314,448 L 1314,185 L 1321,163 Z M 1398,214 L 1391,221 L 1390,323 L 1391,418 L 1398,425 L 1480,425 L 1487,418 L 1487,222 L 1480,214 Z M 1409,231 L 1470,232 L 1470,407 L 1408,407 L 1408,232 Z" class="sweep-line" />
+    <path d="M 1595,134 L 1589,142 L 1592,499 L 1777,502 L 1843,498 L 1861,483 L 1873,446 L 1872,184 L 1860,151 L 1841,136 L 1822,133 L 1598,133 Z M 1607,151 L 1831,151 L 1849,164 L 1856,189 L 1856,448 L 1852,465 L 1841,480 L 1831,484 L 1606,483 L 1606,152 Z M 1687,214 L 1680,222 L 1680,417 L 1687,425 L 1771,425 L 1778,419 L 1779,223 L 1771,214 Z M 1698,231 L 1762,233 L 1762,406 L 1697,407 L 1697,232 Z" class="sweep-line" />
+    <path d="M 1865,135 L 1862,148 L 1955,321 L 1955,495 L 1961,501 L 2058,501 L 2064,494 L 2064,320 L 2153,158 L 2158,138 L 2151,133 L 2050,135 L 2009,216 L 1970,135 L 1871,133 Z M 1888,150 L 1960,151 L 2001,239 L 2010,244 L 2018,239 L 2060,151 L 2137,152 L 2047,317 L 2046,485 L 1972,484 L 1972,317 L 1883,152 Z" class="sweep-line" />
+  </g>
+</svg>

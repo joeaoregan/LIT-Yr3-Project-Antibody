@@ -101,7 +101,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#weapon-base" class="md-skip">
+        <a href="#weapon-arsenal-projectile-systems" class="md-skip">
           Skip to content
         </a>
       
@@ -1417,10 +1417,32 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#overview-weaponh" class="md-nav__link">
+  <a href="#1-weapon-class-characteristics-comparison-matrix" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Overview (Weapon.h)
+        1. Weapon Class Characteristics &amp; Comparison Matrix
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-weapon-sub-tree-inheritance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Weapon Sub-Tree Inheritance
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-virus-slicing-tactical-mechanics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Virus Slicing &amp; Tactical Mechanics
       
     </span>
   </a>
@@ -2210,10 +2232,32 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#overview-weaponh" class="md-nav__link">
+  <a href="#1-weapon-class-characteristics-comparison-matrix" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Overview (Weapon.h)
+        1. Weapon Class Characteristics &amp; Comparison Matrix
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-weapon-sub-tree-inheritance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Weapon Sub-Tree Inheritance
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-virus-slicing-tactical-mechanics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Virus Slicing &amp; Tactical Mechanics
       
     </span>
   </a>
@@ -2307,46 +2351,128 @@
   
 
 
-<h1 id="weapon-base">Weapon Base</h1>
-<h2 id="overview-weaponh">Overview (<code>Weapon.h</code>)</h2>
-<div class="highlight"><pre><span></span><code>┌-------------------------------┐
-|             Weapon            |
-├-------------------------------┤
-| -m_Angle: int                 | - Angle of rotation
-| -m_Grade: int                 | - Grade of the weapon
-├-------------------------------┤
-| +getGrade () : int            | - Get laser grade
-| +setGrade () : void           | - Set laser grade
-| +handleEvent() : virtual void | - Handle events for rocket
-└-------------------------------┘
-</code></pre></div>
-<p><img alt="Weapon Inheritance Tree" src="../../../../images/diagrams/inheritance_weapons.png" /></p>
-<pre><code>Weapon Inheritance Tree
-</code></pre>
-<p><code>Weapon</code> is the base class for all player and enemy projectiles, inheriting from <code>GameObject</code>.</p>
-<ul>
-<li><strong>Attributes</strong>: Tracks weapon grade (single, double, triple beam), trajectory angles, velocity vectors, and projectile ownership (Player 1 vs Player 2).</li>
-<li><strong>Input Handling</strong>: Defines virtual input hooks used by controllable sub-weapons such as guided rockets.</li>
-</ul>
+<h1 id="weapon-arsenal-projectile-systems">Weapon Arsenal &amp; Projectile Systems</h1>
+<p><img alt="AntiBody Weapon Arsenal Characteristics &amp; Combat Mechanics Matrix" src="../../../../images/svg/weapon_arsenal_matrix.svg" /></p>
+<p>All ballistic, piercing, and energy ordnance in <strong>AntiBody</strong> inherit from the polymorphic base class <code>Weapon</code> (<code>Weapon.h</code>), which extends <code>GameObject</code>.</p>
 <hr />
-<p><img alt="Player Laser" src="../../../../images/weapon/LaserGreen.png" /></p>
-<pre><code>Player Laser
-</code></pre>
-<p><img alt="Enemy Laser" src="../../../../images/weapon/LaserBlue.png" /></p>
-<pre><code>Enemy Laser
-</code></pre>
-<p><img alt="Blue Ninja Star" src="../../../../images/weapon/NinjaStarBlue.png" /></p>
-<pre><code>Blue Ninja Star
-</code></pre>
-<p><img alt="Yellow Ninja Star" src="../../../../images/weapon/NinjaStarYellow.png" /></p>
-<pre><code>Yellow Ninja Star
-</code></pre>
-<p><img alt="Rocket" src="../../../../images/weapon/Rocket.png" /></p>
-<pre><code>Rocket
-</code></pre>
-<p><img alt="Saw" src="../../../../images/weapon/SawBlue.png" /></p>
-<pre><code>Saw
-</code></pre>
+<h2 id="1-weapon-class-characteristics-comparison-matrix">1. Weapon Class Characteristics &amp; Comparison Matrix</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Weapon Type</th>
+<th style="text-align: left;">Class Header</th>
+<th style="text-align: left;">Ammo Mode</th>
+<th style="text-align: left;">Velocity</th>
+<th style="text-align: left;">Damage / Potency</th>
+<th style="text-align: left;">Unique Combat Mechanics</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Primary Laser</strong></td>
+<td style="text-align: left;"><code>WeaponPlLaser.h</code></td>
+<td style="text-align: left;">Unlimited</td>
+<td style="text-align: left;">Fast ($800\text{ px/s}$)</td>
+<td style="text-align: left;">$10\text{ HP / beam}$</td>
+<td style="text-align: left;">Progresses from Single $\rightarrow$ Twin $\rightarrow$ Triple Spread $(-15^\circ, 0^\circ, +15^\circ)$ via Laser Power-ups.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Steerable Rocket</strong></td>
+<td style="text-align: left;"><code>WeaponPlRocket.h</code></td>
+<td style="text-align: left;">Stock (Pickups)</td>
+<td style="text-align: left;">Accelerating</td>
+<td style="text-align: left;">$100\text{ HP (Kinetic)}$</td>
+<td style="text-align: left;">Player-guided via analog stick (<code>handleEvent()</code>); emits 15 particle sparks; detonates on walls.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Ninja Star</strong></td>
+<td style="text-align: left;"><code>WeaponPlNinjaStar.h</code></td>
+<td style="text-align: left;">Unlimited</td>
+<td style="text-align: left;">Medium ($450\text{ px/s}$)</td>
+<td style="text-align: left;">$35\text{ HP (Piercing)}$</td>
+<td style="text-align: left;">Rotates in flight; <strong>slices viruses in half</strong> into smaller cells; distinct colors (Yellow P1 / Blue P2).</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Protective Saw</strong></td>
+<td style="text-align: left;"><code>WeaponPlSaw.h</code></td>
+<td style="text-align: left;">Timed Shield</td>
+<td style="text-align: left;">Ship-Anchored</td>
+<td style="text-align: left;">$50\text{ HP (Continuous)}$</td>
+<td style="text-align: left;">Close-range melee saw shield; grants damage invulnerability and deflects incoming enemy energy bolts.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Enemy Pulse Laser</strong></td>
+<td style="text-align: left;"><code>WeaponEnLaser.h</code></td>
+<td style="text-align: left;">Timed Barrage</td>
+<td style="text-align: left;">Medium ($500\text{ px/s}$)</td>
+<td style="text-align: left;">$15\text{ HP (Player Hit)}$</td>
+<td style="text-align: left;">Discharged by Boss multi-cannons, Nano-bots (<code>EnemyShip</code>), and Blue Virus orbital satellites.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="2-weapon-sub-tree-inheritance">2. Weapon Sub-Tree Inheritance</h2>
+<div class="highlight"><pre><span></span><code>classDiagram
+    class GameObject {
+        #SDL_Rect mBox
+        #int mVelX
+        #int mVelY
+        +spawn()
+        +move()
+        +render()
+        +destroy()
+    }
+
+    class Weapon {
+        #int m_Angle
+        #int m_Grade
+        +getGrade(): int
+        +setGrade(int g): void
+        +handleEvent(): virtual void
+    }
+
+    class WeaponPlLaser {
+        +spawnLaser(int x, int y, int angle)
+        +renderLaser()
+    }
+
+    class WeaponPlRocket {
+        -TOTAL_PARTICLES_R: 15
+        +handleEvent()
+        +renderRocketParticles()
+    }
+
+    class WeaponPlNinjaStar {
+        +rotateStar()
+        +renderStar()
+    }
+
+    class WeaponPlSaw {
+        +spawnSaw(int x, int y)
+        +renderSaw()
+    }
+
+    class WeaponEnLaser {
+        +spawnEnemyLaser()
+    }
+
+    GameObject &lt;|-- Weapon
+    Weapon &lt;|-- WeaponPlLaser
+    Weapon &lt;|-- WeaponPlRocket
+    Weapon &lt;|-- WeaponPlNinjaStar
+    Weapon &lt;|-- WeaponPlSaw
+    Weapon &lt;|-- WeaponEnLaser
+</code></pre></div>
+<hr />
+<h2 id="3-virus-slicing-tactical-mechanics">3. Virus Slicing &amp; Tactical Mechanics</h2>
+<div class="admonition tip">
+<p class="admonition-title">Viral Slicing with Saws &amp; Ninja Stars</p>
+<p>Unlike conventional lasers that destroy organisms outright, <strong>Ninja Stars</strong> (<code>WeaponPlNinjaStar</code>) and <strong>Perimeter Saws</strong> (<code>WeaponPlSaw</code>) are engineered to slice large <code>EnemyVirus</code> entities into two smaller, fragmented virus particles. These smaller organisms carry lower health pools, allowing friendly <strong>White Blood Cells</strong> to consume them autonomously.</p>
+</div>
+<ul>
+<li><strong>Rocket Ordinance Inventory</strong>: Rockets are non-renewable munitions replenished exclusively through <code>PowerUpRocket</code> collectible crates. A dedicated rocket icon in the viewport HUD tracks remaining stock.</li>
+<li><strong>Close-Range Saw Risk vs Reward</strong>: Activating <code>WeaponPlSaw</code> grants front-facing invulnerability against standard projectile hits, but requires close proximity to hazardous arterial walls and exploding Orange Viruses.</li>
+</ul>
 
 
 

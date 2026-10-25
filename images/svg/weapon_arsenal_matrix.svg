@@ -1,0 +1,371 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 680" width="100%" height="100%" role="img" aria-label="AntiBody Weapon Arsenal Characteristics + Combat Matrix Diagram">
+  <defs>
+    <style>
+      :root {
+        --wm-bg: rgba(15, 23, 42, 0.04);
+        --wm-header: rgba(37, 99, 235, 0.1);
+        --wm-stroke: #334155;
+        --wm-title: #0f172a;
+        --wm-text: #1e293b;
+        --wm-muted: #475569;
+        --wm-blue: #2563eb;
+        --wm-emerald: #059669;
+        --wm-amber: #d97706;
+        --wm-rose: #e11d48;
+        --wm-purple: #7c3aed;
+        --wm-cyan: #0891b2;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --wm-bg: rgba(15, 23, 42, 0.70);
+          --wm-header: rgba(59, 130, 246, 0.18);
+          --wm-stroke: #475569;
+          --wm-title: #f8fafc;
+          --wm-text: #e2e8f0;
+          --wm-muted: #94a3b8;
+          --wm-blue: #60a5fa;
+          --wm-emerald: #34d399;
+          --wm-amber: #fbbf24;
+          --wm-rose: #fb7185;
+          --wm-purple: #a78bfa;
+          --wm-cyan: #22d3ee;
+        }
+      }
+
+      .box-card {
+        fill: var(--wm-bg);
+        stroke: var(--wm-stroke);
+        stroke-width: 2;
+        rx: 10px;
+      }
+
+      .box-header {
+        fill: var(--wm-header);
+        stroke: var(--wm-stroke);
+        stroke-width: 1.5;
+        rx: 10px;
+      }
+
+      .box-title {
+        font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        font-weight: 700;
+        font-size: 14px;
+        fill: var(--wm-title);
+        text-anchor: middle;
+        dominant-baseline: central;
+      }
+
+      .box-item {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        font-weight: 500;
+        font-size: 12px;
+        fill: var(--wm-text);
+      }
+
+      .edge-label {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        font-weight: 700;
+        font-size: 10.5px;
+        fill: var(--wm-muted);
+        text-anchor: middle;
+      }
+
+      /* Animated flow connectors */
+      .flow-blue {
+        fill: none;
+        stroke: var(--wm-blue);
+        stroke-width: 2;
+        stroke-dasharray: 6 4;
+        animation: dashFlow 1.2s linear infinite;
+      }
+
+      .flow-emerald {
+        fill: none;
+        stroke: var(--wm-emerald);
+        stroke-width: 2;
+        stroke-dasharray: 6 4;
+        animation: dashFlow 1.2s linear infinite;
+      }
+
+      .flow-amber {
+        fill: none;
+        stroke: var(--wm-amber);
+        stroke-width: 2;
+        stroke-dasharray: 6 4;
+        animation: dashFlow 1.2s linear infinite;
+      }
+
+      .flow-rose {
+        fill: none;
+        stroke: var(--wm-rose);
+        stroke-width: 2;
+        stroke-dasharray: 6 4;
+        animation: dashFlow 1.2s linear infinite;
+      }
+
+      .flow-purple {
+        fill: none;
+        stroke: var(--wm-purple);
+        stroke-width: 2;
+        stroke-dasharray: 6 4;
+        animation: dashFlow 1.2s linear infinite;
+      }
+
+      .flow-cyan {
+        fill: none;
+        stroke: var(--wm-cyan);
+        stroke-width: 2;
+        stroke-dasharray: 6 4;
+        animation: dashFlow 1.2s linear infinite;
+      }
+
+      @keyframes dashFlow {
+        to {
+          stroke-dashoffset: -20;
+        }
+      }
+
+      /* Projectile Spin Animation for Saw and Star */
+      @keyframes spinItem {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+      }
+
+      .anim-spin-star {
+        animation: spinItem 2s linear infinite;
+        transform-origin: 550px 164px;
+      }
+
+      .anim-spin-saw {
+        animation: spinItem 1.4s linear infinite;
+        transform-origin: 758px 164px;
+      }
+
+      /* Projectile Laser Pulse */
+      @keyframes pulseBeam {
+        0%, 100% { transform: scaleX(0.9); opacity: 0.7; }
+        50% { transform: scaleX(1.1); opacity: 1; }
+      }
+
+      .anim-beam {
+        animation: pulseBeam 1s ease-in-out infinite;
+        transform-origin: 72px 164px;
+      }
+    </style>
+
+    <!-- Markers -->
+    <marker id="arrow-blue" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="var(--wm-blue)" />
+    </marker>
+    <marker id="arrow-emerald" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="var(--wm-emerald)" />
+    </marker>
+    <marker id="arrow-amber" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="var(--wm-amber)" />
+    </marker>
+    <marker id="arrow-rose" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="var(--wm-rose)" />
+    </marker>
+    <marker id="arrow-purple" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="var(--wm-purple)" />
+    </marker>
+  </defs>
+
+  <!-- Container Box -->
+  <rect x="20" y="20" width="1060" height="640" class="box-card" />
+  <rect x="20" y="20" width="1060" height="42" class="box-header" />
+  <text x="550" y="41" class="box-title">AntiBody Weapon Arsenal Characteristics &amp; Combat Mechanics Matrix</text>
+
+  <!-- ==================== 5 WEAPON COLUMNS ==================== -->
+
+  <!-- 1. WeaponPlLaser -->
+  <g id="col-laser">
+    <rect x="36" y="78" width="196" height="562" class="box-card" />
+    <rect x="36" y="78" width="196" height="38" class="box-header" />
+    <text x="134" y="97" class="box-title" style="font-size: 13px; fill: var(--wm-emerald);">Primary Laser</text>
+
+    <!-- Visual Icon Stage -->
+    <rect x="48" y="128" width="172" height="72" rx="6" style="fill: rgba(5, 150, 105, 0.12); stroke: var(--wm-emerald); stroke-dasharray: 4 4;" />
+    <!-- Laser Beam Vector -->
+    <g class="anim-beam">
+      <line x1="72" y1="164" x2="196" y2="164" style="stroke: var(--wm-emerald); stroke-width: 4; stroke-linecap: round;" />
+      <line x1="72" y1="156" x2="186" y2="152" style="stroke: rgba(5, 150, 105, 0.6); stroke-width: 2.5; stroke-linecap: round;" />
+      <line x1="72" y1="172" x2="186" y2="176" style="stroke: rgba(5, 150, 105, 0.6); stroke-width: 2.5; stroke-linecap: round;" />
+    </g>
+
+    <!-- Details -->
+    <text x="48" y="222" class="box-item" style="font-weight: 700; fill: var(--wm-emerald);">WeaponPlLaser</text>
+    <text x="48" y="244" class="box-item">• Ammo: Unlimited</text>
+    <text x="48" y="264" class="box-item">• Velocity: High (800 px/s)</text>
+    <text x="48" y="284" class="box-item">• Trajectory: Linear</text>
+    <text x="48" y="304" class="box-item">• Damage: 10 HP / beam</text>
+
+    <line x1="48" y1="318" x2="220" y2="318" style="stroke: var(--wm-stroke); stroke-width: 1;" />
+    <text x="48" y="338" class="box-item" style="font-weight: 700; fill: var(--wm-muted);">Grade Progression:</text>
+    <text x="48" y="358" class="box-item">1. Single Beam (Center)</text>
+    <text x="48" y="378" class="box-item">2. Dual Twin Beams</text>
+    <text x="48" y="398" class="box-item">3. Triple Spread Angles</text>
+    <text x="60" y="416" class="box-item" style="font-size: 10.5px; fill: var(--wm-muted);">(-15°, 0°, +15° spread)</text>
+
+    <line x1="48" y1="432" x2="220" y2="432" style="stroke: var(--wm-stroke); stroke-width: 1;" />
+    <text x="48" y="452" class="box-item" style="font-weight: 700; fill: var(--wm-muted);">Special Interactions:</text>
+    <text x="48" y="472" class="box-item">• Rapid continuous fire</text>
+    <text x="48" y="492" class="box-item">• Pierces soft cells</text>
+    <text x="48" y="512" class="box-item">• Absorbed by Plaque</text>
+    <text x="48" y="532" class="box-item">• Texture ID: LaserGreen</text>
+    <text x="48" y="552" class="box-item">• Cleansed on viewport exit</text>
+  </g>
+
+  <!-- 2. WeaponPlRocket -->
+  <g id="col-rocket">
+    <rect x="244" y="78" width="196" height="562" class="box-card" />
+    <rect x="244" y="78" width="196" height="38" class="box-header" />
+    <text x="342" y="97" class="box-title" style="font-size: 13px; fill: var(--wm-rose);">Steerable Rocket</text>
+
+    <!-- Visual Icon Stage -->
+    <rect x="256" y="128" width="172" height="72" rx="6" style="fill: rgba(225, 29, 72, 0.12); stroke: var(--wm-rose); stroke-dasharray: 4 4;" />
+    <!-- Rocket Visual -->
+    <g transform="translate(310, 154)">
+      <rect x="0" y="4" width="46" height="12" rx="3" style="fill: var(--wm-rose);" />
+      <polygon points="46,4 58,10 46,16" style="fill: var(--wm-amber);" />
+      <polygon points="0,2 10,6 0,6" style="fill: var(--wm-stroke);" />
+      <polygon points="0,18 10,14 0,14" style="fill: var(--wm-stroke);" />
+      <circle cx="-6" cy="10" r="3" style="fill: var(--wm-amber); opacity: 0.8;" />
+    </g>
+
+    <!-- Details -->
+    <text x="256" y="222" class="box-item" style="font-weight: 700; fill: var(--wm-rose);">WeaponPlRocket</text>
+    <text x="256" y="244" class="box-item">• Ammo: Stock (Pickups)</text>
+    <text x="256" y="264" class="box-item">• Velocity: Accelerating</text>
+    <text x="256" y="284" class="box-item">• Trajectory: Steerable</text>
+    <text x="256" y="304" class="box-item">• Damage: 100 HP (Kinetic)</text>
+
+    <line x1="256" y1="318" x2="428" y2="318" style="stroke: var(--wm-stroke); stroke-width: 1;" />
+    <text x="256" y="338" class="box-item" style="font-weight: 700; fill: var(--wm-muted);">Control Mechanics:</text>
+    <text x="256" y="358" class="box-item">• Guided by analog stick</text>
+    <text x="256" y="378" class="box-item">• `handleEvent()` hooks</text>
+    <text x="256" y="398" class="box-item">• 15 Smoke/Spark Particles</text>
+    <text x="268" y="416" class="box-item" style="font-size: 10.5px; fill: var(--wm-muted);">(TOTAL_PARTICLES_R)</text>
+
+    <line x1="256" y1="432" x2="428" y2="432" style="stroke: var(--wm-stroke); stroke-width: 1;" />
+    <text x="256" y="452" class="box-item" style="font-weight: 700; fill: var(--wm-muted);">Special Interactions:</text>
+    <text x="256" y="472" class="box-item">• Wall impact explosion</text>
+    <text x="256" y="492" class="box-item">• High damage vs Bosses</text>
+    <text x="256" y="512" class="box-item">• Splashes viral clusters</text>
+    <text x="256" y="532" class="box-item">• HUD rocket icon stock</text>
+    <text x="256" y="552" class="box-item">• Screen bounds trigger FX</text>
+  </g>
+
+  <!-- 3. WeaponPlNinjaStar -->
+  <g id="col-star">
+    <rect x="452" y="78" width="196" height="562" class="box-card" />
+    <rect x="452" y="78" width="196" height="38" class="box-header" />
+    <text x="550" y="97" class="box-title" style="font-size: 13px; fill: var(--wm-purple);">Ninja Star</text>
+
+    <!-- Visual Icon Stage -->
+    <rect x="464" y="128" width="172" height="72" rx="6" style="fill: rgba(124, 58, 237, 0.12); stroke: var(--wm-purple); stroke-dasharray: 4 4;" />
+    <!-- Spinning Star -->
+    <g class="anim-spin-star">
+      <polygon points="550,146 556,160 570,164 556,168 550,182 544,168 530,164 544,160" style="fill: var(--wm-purple); stroke: var(--wm-cyan); stroke-width: 1.5;" />
+      <circle cx="550" cy="164" r="3" style="fill: #ffffff;" />
+    </g>
+
+    <!-- Details -->
+    <text x="464" y="222" class="box-item" style="font-weight: 700; fill: var(--wm-purple);">WeaponPlNinjaStar</text>
+    <text x="464" y="244" class="box-item">• Ammo: Unlimited</text>
+    <text x="464" y="264" class="box-item">• Velocity: Medium (450 px/s)</text>
+    <text x="464" y="284" class="box-item">• Trajectory: Angular Rotation</text>
+    <text x="464" y="304" class="box-item">• Damage: 35 HP (Piercing)</text>
+
+    <line x1="464" y1="318" x2="636" y2="318" style="stroke: var(--wm-stroke); stroke-width: 1;" />
+    <text x="464" y="338" class="box-item" style="font-weight: 700; fill: var(--wm-muted);">Distinct Player Themes:</text>
+    <text x="464" y="358" class="box-item">• Player 1: Yellow Star</text>
+    <text x="464" y="378" class="box-item">• Player 2: Blue Star</text>
+    <text x="464" y="398" class="box-item">• Unique sound effect per ship</text>
+    <text x="476" y="416" class="box-item" style="font-size: 10.5px; fill: var(--wm-muted);">(Audio::playFX(STAR_FX))</text>
+
+    <line x1="464" y1="432" x2="636" y2="432" style="stroke: var(--wm-stroke); stroke-width: 1;" />
+    <text x="464" y="452" class="box-item" style="font-weight: 700; fill: var(--wm-muted);">Virus Slicing Mechanic:</text>
+    <text x="464" y="472" class="box-item">• **Cuts Viruses in Two**</text>
+    <text x="476" y="490" class="box-item" style="font-size: 10.5px; fill: var(--wm-muted);">(Splits large virus into halves)</text>
+    <text x="464" y="512" class="box-item">• Higher point multiplier</text>
+    <text x="464" y="532" class="box-item">• Pierces initial contact</text>
+    <text x="464" y="552" class="box-item">• Rotates in move() cycle</text>
+  </g>
+
+  <!-- 4. WeaponPlSaw -->
+  <g id="col-saw">
+    <rect x="660" y="78" width="196" height="562" class="box-card" />
+    <rect x="660" y="78" width="196" height="38" class="box-header" />
+    <text x="758" y="97" class="box-title" style="font-size: 13px; fill: var(--wm-cyan);">Protective Saw</text>
+
+    <!-- Visual Icon Stage -->
+    <rect x="672" y="128" width="172" height="72" rx="6" style="fill: rgba(8, 145, 178, 0.12); stroke: var(--wm-cyan); stroke-dasharray: 4 4;" />
+    <!-- Spinning Radial Saw -->
+    <g class="anim-spin-saw">
+      <circle cx="758" cy="164" r="18" style="fill: none; stroke: var(--wm-cyan); stroke-width: 3; stroke-dasharray: 6 3;" />
+      <circle cx="758" cy="164" r="6" style="fill: var(--wm-cyan);" />
+      <line x1="738" y1="164" x2="778" y2="164" style="stroke: var(--wm-cyan); stroke-width: 2;" />
+      <line x1="758" y1="144" x2="758" y2="184" style="stroke: var(--wm-cyan); stroke-width: 2;" />
+    </g>
+
+    <!-- Details -->
+    <text x="672" y="222" class="box-item" style="font-weight: 700; fill: var(--wm-cyan);">WeaponPlSaw</text>
+    <text x="672" y="244" class="box-item">• Ammo: Timed Shield</text>
+    <text x="672" y="264" class="box-item">• Velocity: Ship-Anchored</text>
+    <text x="672" y="284" class="box-item">• Trajectory: Radial Orbit</text>
+    <text x="672" y="304" class="box-item">• Damage: 50 HP (Continuous)</text>
+
+    <line x1="672" y1="318" x2="844" y2="318" style="stroke: var(--wm-stroke); stroke-width: 1;" />
+    <text x="672" y="338" class="box-item" style="font-weight: 700; fill: var(--wm-muted);">Defensive Perimeter:</text>
+    <text x="672" y="358" class="box-item">• Invulnerable while active</text>
+    <text x="672" y="378" class="box-item">• Deflects projectile hits</text>
+    <text x="672" y="398" class="box-item">• Anchored to player origin</text>
+    <text x="684" y="416" class="box-item" style="font-size: 10.5px; fill: var(--wm-muted);">(spawnPlayerSaw() method)</text>
+
+    <line x1="672" y1="432" x2="844" y2="432" style="stroke: var(--wm-stroke); stroke-width: 1;" />
+    <text x="672" y="452" class="box-item" style="font-weight: 700; fill: var(--wm-muted);">Melee Virus Slicing:</text>
+    <text x="672" y="472" class="box-item">• **Slices Viruses on Contact**</text>
+    <text x="684" y="490" class="box-item" style="font-size: 10.5px; fill: var(--wm-muted);">(More manageable for WBCs)</text>
+    <text x="672" y="512" class="box-item">• Short melee range risk</text>
+    <text x="672" y="532" class="box-item">• Orange Virus safe kill</text>
+    <text x="672" y="552" class="box-item">• Texture ID: SawBlue</text>
+  </g>
+
+  <!-- 5. WeaponEnLaser -->
+  <g id="col-enlaser">
+    <rect x="868" y="78" width="196" height="562" class="box-card" />
+    <rect x="868" y="78" width="196" height="38" class="box-header" />
+    <text x="966" y="97" class="box-title" style="font-size: 13px; fill: var(--wm-amber);">Enemy Laser</text>
+
+    <!-- Visual Icon Stage -->
+    <rect x="880" y="128" width="172" height="72" rx="6" style="fill: rgba(217, 119, 6, 0.12); stroke: var(--wm-amber); stroke-dasharray: 4 4;" />
+    <!-- Enemy Bolt Vector -->
+    <g transform="translate(930, 164)">
+      <line x1="60" y1="0" x2="0" y2="0" style="stroke: var(--wm-amber); stroke-width: 3.5; stroke-linecap: round;" />
+      <circle cx="10" cy="0" r="4" style="fill: var(--wm-rose);" />
+    </g>
+
+    <!-- Details -->
+    <text x="880" y="222" class="box-item" style="font-weight: 700; fill: var(--wm-amber);">WeaponEnLaser</text>
+    <text x="880" y="244" class="box-item">• Fired by: Boss / Ships</text>
+    <text x="880" y="264" class="box-item">• Velocity: 500 px/s (Left)</text>
+    <text x="880" y="284" class="box-item">• Trajectory: Linear / Target</text>
+    <text x="880" y="304" class="box-item">• Damage: 15 HP (Player Hit)</text>
+
+    <line x1="880" y1="318" x2="1052" y2="318" style="stroke: var(--wm-stroke); stroke-width: 1;" />
+    <text x="880" y="338" class="box-item" style="font-weight: 700; fill: var(--wm-muted);">Firing Sources:</text>
+    <text x="880" y="358" class="box-item">1. EnemyShip (Nano-bots)</text>
+    <text x="880" y="378" class="box-item">2. Orange Virus Bolts</text>
+    <text x="880" y="398" class="box-item">3. Blue Virus Satellites</text>
+    <text x="892" y="416" class="box-item" style="font-size: 10.5px; fill: var(--wm-muted);">(orbit() projectile release)</text>
+
+    <line x1="880" y1="432" x2="1052" y2="432" style="stroke: var(--wm-stroke); stroke-width: 1;" />
+    <text x="880" y="452" class="box-item" style="font-weight: 700; fill: var(--wm-muted);">Player Threat:</text>
+    <text x="880" y="472" class="box-item">• Depletes player StatusBar</text>
+    <text x="880" y="492" class="box-item">• Triggers damage rumble</text>
+    <text x="880" y="512" class="box-item">• Boss multi-cannon bursts</text>
+    <text x="880" y="532" class="box-item">• Deflected by active Saw</text>
+    <text x="880" y="552" class="box-item">• Texture ID: LaserBlue/Orange</text>
+  </g>
+</svg>

@@ -1,0 +1,264 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 680" width="100%" height="100%" role="img" aria-label="AntiBody Main Game Loop and Subsystem Architecture Diagram">
+  <defs>
+    <style>
+      :root {
+        --gl-bg: rgba(15, 23, 42, 0.04);
+        --gl-header: rgba(37, 99, 235, 0.1);
+        --gl-stroke: #334155;
+        --gl-title: #0f172a;
+        --gl-text: #1e293b;
+        --gl-muted: #475569;
+        --gl-blue: #2563eb;
+        --gl-emerald: #059669;
+        --gl-amber: #d97706;
+        --gl-rose: #e11d48;
+        --gl-purple: #7c3aed;
+        --gl-cyan: #0891b2;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --gl-bg: rgba(15, 23, 42, 0.70);
+          --gl-header: rgba(59, 130, 246, 0.18);
+          --gl-stroke: #475569;
+          --gl-title: #f8fafc;
+          --gl-text: #e2e8f0;
+          --gl-muted: #94a3b8;
+          --gl-blue: #60a5fa;
+          --gl-emerald: #34d399;
+          --gl-amber: #fbbf24;
+          --gl-rose: #fb7185;
+          --gl-purple: #a78bfa;
+          --gl-cyan: #22d3ee;
+        }
+      }
+
+      .box-card {
+        fill: var(--gl-bg);
+        stroke: var(--gl-stroke);
+        stroke-width: 2;
+        rx: 10px;
+      }
+
+      .box-header {
+        fill: var(--gl-header);
+        stroke: var(--gl-stroke);
+        stroke-width: 1.5;
+        rx: 10px;
+      }
+
+      .box-title {
+        font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        font-weight: 700;
+        font-size: 14px;
+        fill: var(--gl-title);
+        text-anchor: middle;
+        dominant-baseline: central;
+      }
+
+      .box-item {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        font-weight: 500;
+        font-size: 12px;
+        fill: var(--gl-text);
+      }
+
+      .edge-label {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        font-weight: 700;
+        font-size: 10.5px;
+        fill: var(--gl-muted);
+        text-anchor: middle;
+      }
+
+      /* Animated flow connectors */
+      .flow-blue {
+        fill: none;
+        stroke: var(--gl-blue);
+        stroke-width: 2;
+        stroke-dasharray: 6 4;
+        animation: dashFlow 1.2s linear infinite;
+      }
+
+      .flow-emerald {
+        fill: none;
+        stroke: var(--gl-emerald);
+        stroke-width: 2;
+        stroke-dasharray: 6 4;
+        animation: dashFlow 1.2s linear infinite;
+      }
+
+      .flow-amber {
+        fill: none;
+        stroke: var(--gl-amber);
+        stroke-width: 2;
+        stroke-dasharray: 6 4;
+        animation: dashFlow 1.2s linear infinite;
+      }
+
+      .flow-rose {
+        fill: none;
+        stroke: var(--gl-rose);
+        stroke-width: 2;
+        stroke-dasharray: 6 4;
+        animation: dashFlow 1.2s linear infinite;
+      }
+
+      .flow-purple {
+        fill: none;
+        stroke: var(--gl-purple);
+        stroke-width: 2;
+        stroke-dasharray: 6 4;
+        animation: dashFlow 1.2s linear infinite;
+      }
+
+      .flow-cyan {
+        fill: none;
+        stroke: var(--gl-cyan);
+        stroke-width: 2;
+        stroke-dasharray: 6 4;
+        animation: dashFlow 1.2s linear infinite;
+      }
+
+      @keyframes dashFlow {
+        to {
+          stroke-dashoffset: -20;
+        }
+      }
+
+      @keyframes pulseTickD {
+        0% { transform: translateY(0px); opacity: 0; }
+        25% { opacity: 1; }
+        75% { opacity: 1; }
+        100% { transform: translateY(32px); opacity: 0; }
+      }
+
+      .dot-tick-d {
+        fill: var(--gl-emerald);
+        animation: pulseTickD 1.8s ease-in-out infinite;
+      }
+    </style>
+
+    <!-- Markers -->
+    <marker id="arrow-blue" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="var(--gl-blue)" />
+    </marker>
+    <marker id="arrow-emerald" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="var(--gl-emerald)" />
+    </marker>
+    <marker id="arrow-amber" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="var(--gl-amber)" />
+    </marker>
+    <marker id="arrow-rose" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="var(--gl-rose)" />
+    </marker>
+    <marker id="arrow-purple" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="var(--gl-purple)" />
+    </marker>
+    <marker id="arrow-cyan" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="var(--gl-cyan)" />
+    </marker>
+  </defs>
+
+  <!-- Container Box -->
+  <rect x="20" y="20" width="1060" height="640" class="box-card" />
+  <rect x="20" y="20" width="1060" height="42" class="box-header" />
+  <text x="550" y="41" class="box-title">AntiBody Core Game Loop &amp; Subsystem Architecture</text>
+
+  <!-- ==================== LEFT COLUMN: MAIN TICK LIFECYCLE (Main.cpp -> Game::update) ==================== -->
+  <g id="box-loop-lifecycle">
+    <rect x="36" y="78" width="510" height="562" class="box-card" />
+    <rect x="36" y="78" width="510" height="38" class="box-header" />
+    <text x="291" y="97" class="box-title" style="font-size: 13.5px; fill: var(--gl-blue);">1. 60 FPS Main Loop Pipeline (`Main.cpp` &amp; `Game.cpp`)</text>
+
+    <!-- Stage 1: Main Entry & Singleton Boot -->
+    <rect x="52" y="128" width="478" height="66" rx="8" style="fill: var(--gl-bg); stroke: var(--gl-purple); stroke-width: 1.8;" />
+    <text x="291" y="148" class="box-title" style="font-size: 13px; fill: var(--gl-purple);">Main.cpp Entry Point</text>
+    <text x="64" y="170" class="box-item">• srand(time(0)); Seed random generator</text>
+    <text x="64" y="186" class="box-item">• Game::Instance()-&gt;update(); Begin tick loop</text>
+
+    <!-- Flow: Main to Init/Load -->
+    <line x1="291" y1="194" x2="291" y2="214" class="flow-purple" marker-end="url(#arrow-purple)" />
+
+    <!-- Stage 2: SDL Init & Media Load -->
+    <rect x="52" y="214" width="478" height="64" rx="8" style="fill: var(--gl-bg); stroke: var(--gl-blue); stroke-width: 1.8;" />
+    <text x="291" y="234" class="box-title" style="font-size: 13px; fill: var(--gl-blue);">SDL2 Subsystem Initialisation (`init()` &amp; `loadMedia()`)</text>
+    <text x="64" y="254" class="box-item">• SDL_CreateWindow(), SDL_CreateRenderer(ACCELERATED | VSYNC)</text>
+    <text x="64" y="270" class="box-item">• Preload Texture sheets, TTF fonts, and SDL_mixer audio banks</text>
+
+    <!-- Flow: Init to while(!quit) -->
+    <line x1="291" y1="278" x2="291" y2="298" class="flow-blue" marker-end="url(#arrow-blue)" />
+
+    <!-- Stage 3: The Continuous 60 FPS Loop Block -->
+    <rect x="52" y="298" width="478" height="326" rx="8" style="fill: rgba(15, 23, 42, 0.08); stroke: var(--gl-emerald); stroke-width: 2;" />
+    <text x="291" y="318" class="box-title" style="font-size: 13.5px; fill: var(--gl-emerald);">Continuous Game Loop: `while (!quit)`</text>
+
+    <!-- Sub-Step A: Input Polling -->
+    <rect x="68" y="334" width="446" height="52" rx="6" style="fill: var(--gl-bg); stroke: var(--gl-cyan); stroke-width: 1.5;" />
+    <text x="80" y="352" class="box-item" style="font-weight: 700; fill: var(--gl-cyan);">Step 1: Input Polling (`playerInput(quit)` &amp; `SDL_PollEvent`)</text>
+    <text x="92" y="372" class="box-item" style="font-size: 11px;">→ Dual Xbox Gamepad poll (`gController1/2`) &amp; WASD/Arrow keys</text>
+
+    <!-- Sub-Step B: Level State Routing -->
+    <rect x="68" y="394" width="446" height="52" rx="6" style="fill: var(--gl-bg); stroke: var(--gl-amber); stroke-width: 1.5;" />
+    <text x="80" y="412" class="box-item" style="font-weight: 700; fill: var(--gl-amber);">Step 2: Level State Branching (`getCurrentLevel()`)</text>
+    <text x="92" y="432" class="box-item" style="font-size: 11px;">→ Route to `menu1.draw()`, `settings.draw()`, or `playLevel()`</text>
+
+    <!-- Sub-Step C: Active Stage Update Pipeline -->
+    <rect x="68" y="454" width="446" height="74" rx="6" style="fill: var(--gl-header); stroke: var(--gl-emerald); stroke-width: 1.5;" />
+    <text x="80" y="472" class="box-item" style="font-weight: 700; fill: var(--gl-emerald);">Step 3: Gameplay Cycle (`playLevel(levelNum)`)</text>
+    <text x="92" y="492" class="box-item" style="font-size: 11px;">• `spawnMovingObjects()` : Autonomous enemy &amp; plaque generation</text>
+    <text x="92" y="508" class="box-item" style="font-size: 11px;">• `moveGameObjects()`   : Kinematic velocity &amp; orbit calculations</text>
+    <text x="92" y="524" class="box-item" style="font-size: 11px;">• `collisionCheck()`     : 4-Axis AABB intersection resolution</text>
+
+    <!-- Sub-Step D: Render & Frame Presentation -->
+    <rect x="68" y="536" width="446" height="74" rx="6" style="fill: var(--gl-bg); stroke: var(--gl-rose); stroke-width: 1.5;" />
+    <text x="80" y="554" class="box-item" style="font-weight: 700; fill: var(--gl-rose);">Step 4: Presentation Pipeline (`render()` &amp; `FPS.h`)</text>
+    <text x="92" y="574" class="box-item" style="font-size: 11px;">• `SDL_RenderClear(gRenderer)`</text>
+    <text x="92" y="590" class="box-item" style="font-size: 11px;">• Blit Parallax Vessel, Entities, HUD, Particles &amp; Floating Scores</text>
+    <text x="92" y="606" class="box-item" style="font-size: 11px;">• `SDL_RenderPresent(gRenderer)` &amp; calculate delta time (FPS)</text>
+  </g>
+
+  <!-- Flow Connector: Left Column to Right Column Subsystems -->
+  <path d="M 546 450 L 576 450" class="flow-emerald" marker-end="url(#arrow-emerald)" />
+
+  <!-- ==================== RIGHT COLUMN: SINGLETON MANAGERS & SUBSYSTEMS ==================== -->
+  <g id="box-subsystems">
+    <rect x="576" y="78" width="488" height="562" class="box-card" />
+    <rect x="576" y="78" width="488" height="38" class="box-header" />
+    <text x="820" y="97" class="box-title" style="font-size: 13.5px; fill: var(--gl-emerald);">2. Core Managers &amp; Architectural Subsystems</text>
+
+    <!-- Subsystem 1: Texture & Rendering Singleton -->
+    <rect x="592" y="128" width="456" height="116" rx="8" style="fill: var(--gl-bg); stroke: var(--gl-blue); stroke-width: 1.5;" />
+    <text x="608" y="150" class="box-title" style="text-anchor: start; font-size: 13px; fill: var(--gl-blue);">Texture Manager (`Texture::Instance()`)</text>
+    <text x="608" y="174" class="box-item">• loadFromFile(std::string path) &amp; texture caching</text>
+    <text x="608" y="192" class="box-item">• render(x, y, clip, angle, center, flip)</text>
+    <text x="608" y="210" class="box-item">• loadFromRenderedText() for TrueType font rendering</text>
+    <text x="608" y="228" class="box-item" style="fill: var(--gl-muted); font-size: 10.5px;">→ Wraps SDL_Texture and eliminates duplicate asset loads</text>
+
+    <!-- Subsystem 2: Audio & Sound Bank Singleton -->
+    <rect x="592" y="256" width="456" height="116" rx="8" style="fill: var(--gl-bg); stroke: var(--gl-amber); stroke-width: 1.5;" />
+    <text x="608" y="278" class="box-title" style="text-anchor: start; font-size: 13px; fill: var(--gl-amber);">Audio Engine (`Audio::Instance()`)</text>
+    <text x="608" y="302" class="box-item">• playFX(SoundFX fx) : Button, Laser, Explosion, Hit sounds</text>
+    <text x="608" y="320" class="box-item">• playOriginalMusic(Music track) &amp; volume control</text>
+    <text x="608" y="338" class="box-item">• Background music looping via SDL_mixer channels</text>
+    <text x="608" y="356" class="box-item" style="fill: var(--gl-muted); font-size: 10.5px;">→ Manages Mix_Chunk SFX and Mix_Music orchestrations</text>
+
+    <!-- Subsystem 3: Dual Controller & Gamepad Polling -->
+    <rect x="592" y="384" width="456" height="116" rx="8" style="fill: var(--gl-bg); stroke: var(--gl-cyan); stroke-width: 1.5;" />
+    <text x="608" y="406" class="box-title" style="text-anchor: start; font-size: 13px; fill: var(--gl-cyan);">Input Dispatcher (`Gamepad.h`)</text>
+    <text x="608" y="430" class="box-item">• SDL_GameControllerOpen() for Player 1 &amp; Player 2</text>
+    <text x="608" y="448" class="box-item">• Analog stick deadzone filtering (JOYSTICK_DEAD_ZONE = 8000)</text>
+    <text x="608" y="466" class="box-item">• Primary weapon triggers, rocket launches, and pause triggers</text>
+    <text x="608" y="484" class="box-item" style="fill: var(--gl-muted); font-size: 10.5px;">→ Seamless fallbacks between Keyboard and Xbox 360 gamepads</text>
+
+    <!-- Subsystem 4: HUD & Diagnostic Telemetry -->
+    <rect x="592" y="512" width="456" height="112" rx="8" style="fill: var(--gl-bg); stroke: var(--gl-rose); stroke-width: 1.5;" />
+    <text x="608" y="534" class="box-title" style="text-anchor: start; font-size: 13px; fill: var(--gl-rose);">HUD &amp; Diagnostics (`HUD.h`, `StatusBar`, `FPS`)</text>
+    <text x="608" y="558" class="box-item">• StatusBar: Dynamic dual health and shield energy gauges</text>
+    <text x="608" y="576" class="box-item">• HUD: Remaining lives, stage score tallies, checkpoint clock</text>
+    <text x="608" y="594" class="box-item">• FPS Counter: Rolling 10-frame delta time measurement</text>
+    <text x="608" y="612" class="box-item" style="fill: var(--gl-muted); font-size: 10.5px;">→ Real-time telemetry overlaid without affecting entity state</text>
+  </g>
+
+  <circle cx="291" cy="200" r="3" class="dot-tick-d" />
+</svg>
+

@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="150" viewBox="0 0 600 150">
+  <defs>
+    <style>
+      :root {
+        /* LIGHT THEME */
+        --bg-color: #ffffff;       
+        --fill-start: #3ce5ff;    /* Light Blue */
+        --fill-end: #d1d5db;      /* Light Grey */
+        --stroke-color: #000000;  /* Black Outline */
+      }
+      
+      @media (prefers-color-scheme: dark) {
+        :root {
+          /* DARK THEME */
+          --bg-color: #111111;     
+          --fill-start: #0044b4;  /* Dark Blue */
+          --fill-end: #000000;    /* Black */
+          --stroke-color: #ffffff;/* White Outline */
+        }
+      }
+      
+      .scroll-text {
+        font-family: 'Impact', 'Arial Black', sans-serif;
+        font-size: 36px;
+        font-weight: 900;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        
+        /* Forces the gradient to process locally per line bounding box */
+        fill: url(#text-fill-gradient);
+        stroke: var(--stroke-color);
+        stroke-width: 6px;
+        stroke-linejoin: round;
+        paint-order: stroke fill;  
+      }
+
+      .stop-start { stop-color: var(--fill-start); }
+      .stop-end { stop-color: var(--fill-end); }
+    </style>
+
+    <!-- Visual window cropped to show exactly 2 text lines at a time -->
+    <clipPath id="tight-text-window">
+      <rect x="0" y="25" width="600" height="100" />
+    </clipPath>
+
+    <!-- Local bounding box gradient calculation -->
+    <linearGradient id="text-fill-gradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" class="stop-start" />
+      <stop offset="100%" class="stop-end" />
+    </linearGradient>
+  </defs>
+
+  <!-- Auto-switching backdrop layer -->
+  <rect x="0" y="0" width="600" height="150" fill="var(--bg-color)" />
+
+  <!-- Scroll container constrained strictly inside the window -->
+  <g clip-path="url(#tight-text-window)">
+    <g>
+      <!-- Moves exactly up by 200px (total height of the 4 core lines) -->
+      <animateTransform 
+        attributeName="transform" 
+        type="translate" 
+        from="0,0" 
+        to="0,-200" 
+        dur="8s" 
+        repeatCount="indefinite" />
+
+      <!-- The Core Credits Stack (Perfect 50px line increments) -->
+      <text x="300" y="65" text-anchor="middle" class="scroll-text">A Game By</text>
+      <text x="300" y="115" text-anchor="middle" class="scroll-text">Joe O'Regan</text>
+      <text x="300" y="165" text-anchor="middle" class="scroll-text">And</text>
+      <text x="300" y="215" text-anchor="middle" class="scroll-text">Sean Horgan</text>
+      
+      <!-- Seamless Bridge Duplicates -->
+      <text x="300" y="265" text-anchor="middle" class="scroll-text">A Game By</text>
+      <text x="300" y="315" text-anchor="middle" class="scroll-text">Joe O'Regan</text>
+    </g>
+  </g>
+</svg>

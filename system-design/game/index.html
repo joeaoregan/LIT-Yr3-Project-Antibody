@@ -101,7 +101,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#game" class="md-skip">
+        <a href="#game-engine-main-loop-architecture" class="md-skip">
           Skip to content
         </a>
       
@@ -1005,21 +1005,71 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#core-systems" class="md-nav__link">
+  <a href="#2-main-loop-pipeline-breakdown" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Core Systems
+        2. Main Loop Pipeline Breakdown
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Main Loop Pipeline Breakdown">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#step-1-input-polling-playerinput" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 1: Input Polling (playerInput())
       
     </span>
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#game-loop" class="md-nav__link">
+        
+          <li class="md-nav__item">
+  <a href="#step-2-state-level-routing-getcurrentlevel" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Game Loop
+        Step 2: State &amp; Level Routing (getCurrentLevel())
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-3-simulation-physics-playlevel" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 3: Simulation &amp; Physics (playLevel())
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-4-presentation-diagnostics-render" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 4: Presentation &amp; Diagnostics (render())
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-core-architecture-subsystems" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Core Architecture Subsystems
       
     </span>
   </a>
@@ -2239,21 +2289,71 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#core-systems" class="md-nav__link">
+  <a href="#2-main-loop-pipeline-breakdown" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Core Systems
+        2. Main Loop Pipeline Breakdown
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Main Loop Pipeline Breakdown">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#step-1-input-polling-playerinput" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 1: Input Polling (playerInput())
       
     </span>
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#game-loop" class="md-nav__link">
+        
+          <li class="md-nav__item">
+  <a href="#step-2-state-level-routing-getcurrentlevel" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Game Loop
+        Step 2: State &amp; Level Routing (getCurrentLevel())
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-3-simulation-physics-playlevel" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 3: Simulation &amp; Physics (playLevel())
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-4-presentation-diagnostics-render" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 4: Presentation &amp; Diagnostics (render())
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-core-architecture-subsystems" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Core Architecture Subsystems
       
     </span>
   </a>
@@ -2286,9 +2386,10 @@
   
 
 
-<h1 id="game">Game</h1>
+<h1 id="game-engine-main-loop-architecture">Game Engine &amp; Main Loop Architecture</h1>
 <h2 id="overview-gameh-gamecpp">Overview (<code>Game.h</code>, <code>Game.cpp</code>)</h2>
-<div class="highlight"><pre><span></span><code>┌-------------------------┐
+<p><img alt="AntiBody Main Game Loop and Subsystem Architecture" src="../../images/svg/game_loop_architecture.svg" /></p>
+<p><div class="highlight"><pre><span></span><code>┌-------------------------┐
 |          Game           |
 ├-------------------------┤
 | -gRender: SDL_Renderer* | - SDL_Renderer renders textures to screen, this is global
@@ -2381,19 +2482,63 @@
 | +managePlayerScores()   | - Set Player score after destroying Enemy objects
 └-------------------------┘
 </code></pre></div>
+[Main.cpp] ──&gt; Game::Instance()-&gt;update()
+                      │
+                      ▼
+               [SDL Init &amp; Media Load]
+                      │
+                      ▼
+             ┌─&gt; while (!quit) ────────────────────────────────┐
+             │     │                                           │
+             │     ├─&gt; playerInput(quit) [Gamepad &amp; Keys]      │
+             │     │                                           │
+             │     ├─&gt; State Routing:                          │
+             │     │     ├─&gt; MENU        : menu1.draw()        │
+             │     │     ├─&gt; SETTINGS    : settings.draw()     │
+             │     │     ├─&gt; HIGH_SCORES : highScore.draw()    │
+             │     │     └─&gt; Level 1..3  : playLevel(levelNum) │
+             │     │                         │                 │
+             │     │                         ├─&gt; spawnObjects()│
+             │     │                         ├─&gt; moveObjects() │
+             │     │                         └─&gt; collision()   │
+             │     │                                           │
+             │     └─&gt; render()                                │
+             │           ├─&gt; SDL_RenderClear()                 │
+             │           ├─&gt; Render Entities &amp; HUD             │
+             │           └─&gt; SDL_RenderPresent() &amp; FPS Calc    │
+             │                                                 │
+             └─────────────────────────────────────────────────┘
+                      │
+                      ▼
+             Game::Instance()-&gt;close() [Free SDL &amp; Textures]
+```</p>
 <p>The <code>Game</code> class is the central Singleton engine driving the entire project. It manages window initialisation, subsystem setup, media loading, the core game loop, entity spawning, collision testing, and state transitions.</p>
-<h2 id="core-systems">Core Systems</h2>
+<h2 id="2-main-loop-pipeline-breakdown">2. Main Loop Pipeline Breakdown</h2>
+<h3 id="step-1-input-polling-playerinput">Step 1: Input Polling (<code>playerInput()</code>)</h3>
+<p>The main loop reads events each tick using <code>SDL_PollEvent()</code>, querying connected Xbox gamepads (<code>gController1</code>, <code>gController2</code>) and keyboard bindings. Analog inputs pass through threshold deadzone filters (<code>JOYSTICK_DEAD_ZONE = 8000</code>) before translating into 8-way directional velocity vectors.</p>
+<h3 id="step-2-state-level-routing-getcurrentlevel">Step 2: State &amp; Level Routing (<code>getCurrentLevel()</code>)</h3>
+<p>The loop checks the active game stage:
+* <strong>Menu States</strong>: Renders interactive UI buttons for <code>MENU</code>, <code>PAUSE</code>, <code>SETTINGS</code>, <code>HIGH_SCORES</code>, and <code>ENTER_NAME</code>.
+* <strong>Gameplay Stages</strong>: Hands control to <code>playLevel(levelNum)</code>, driving active artery levels (Level 1 Artery, Level 2 Heart Valve, Level 3 Brain Capillaries).</p>
+<h3 id="step-3-simulation-physics-playlevel">Step 3: Simulation &amp; Physics (<code>playLevel()</code>)</h3>
+<p>During gameplay, each frame executes three core subroutines:
+1. <strong><code>spawnMovingObjects()</code></strong>: Uses procedural timers and pseudo-random offsets to introduce enemy viruses, arterial blockages, blood cells, and power-up crates.
+2. <strong><code>moveGameObjects()</code></strong>: Updates linear propulsion, homing trajectories (<code>moveStalker()</code>), and satellite circular orbits (<code>orbit()</code>).
+3. <strong><code>collisionCheck()</code></strong>: Resolves 4-axis AABB bounding box intersections between active projectile vectors, player hulls, and obstacles.</p>
+<h3 id="step-4-presentation-diagnostics-render">Step 4: Presentation &amp; Diagnostics (<code>render()</code>)</h3>
+<p>The graphics pipeline clears the backbuffer via <code>SDL_RenderClear(gRenderer)</code>, rasterizes the dual-layer parallax background, blits active entity textures and particle bubble emitters, overlays the <code>HUD</code> / <code>StatusBar</code>, and presents the frame via <code>SDL_RenderPresent(gRenderer)</code>. Diagnostic frame timings are tracked by <code>FPS.h</code> across a rolling 10-frame buffer.</p>
+<hr />
+<h2 id="3-core-architecture-subsystems">3. Core Architecture Subsystems</h2>
 <ul>
-<li><code>init()</code>: Initialises SDL subsystems (Video, Audio, Joystick, Haptic), sets up <code>gWindow</code> and <code>gRenderer</code>, configures TTF fonts, and initialises gamepads.</li>
-<li><code>update()</code>: Houses the main game loop, polling input events, checking state flags, updating moving objects, resolving collisions, and cleaning dead entities.</li>
-<li><code>spawnMovingObjects()</code>: Spawns enemies, power-ups, obstacles, and blood cells based on active level rules and randomized attribute pools.</li>
-<li><code>destroyGameObjects()</code>: Iterates through the game object list and deallocates entities marked as dead (<code>m_Alive == false</code>).</li>
-<li><code>resetGame()</code>: Clears active entities, resets timers, and reinitialises player states when restarting or advancing levels.</li>
+<li><strong><code>Texture</code> Singleton</strong>: Wraps <code>SDL_Texture</code> allocation and destruction, caching sprite sheets and supporting TrueType text blitting.</li>
+<li><strong><code>Audio</code> Engine</strong>: Coordinates <code>SDL_mixer</code> sound effects channels (<code>Mix_PlayChannel</code>) and looping background musical tracks (<code>Mix_PlayMusic</code>).</li>
+<li><strong><code>Gamepad</code> Handler</strong>: Provides plug-and-play Xbox 360 controller integration with dual rumble vibration support.</li>
+<li><strong><code>StatusBar</code> &amp; <code>HUD</code></strong>: Visualises remaining lives, shield integrity, stage score tallies, and the countdown clock.</li>
 </ul>
-<h2 id="game-loop">Game Loop</h2>
-<p><img alt="Game Loop" src="../../images/game_loop.png" /></p>
-<pre><code>Game Loop Diagram
-</code></pre>
+<div class="admonition tip">
+<p class="admonition-title">Singleton Design Pattern</p>
+<p>Accessing the core engine via <code>Game::Instance()</code> ensures that global game state (scores, active level flags, renderer pointers, and viewports) is accessible throughout all polymorphic entities without requiring tight parameter coupling.</p>
+</div>
 
 
 

@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="200" viewBox="0 0 600 200">
+  <defs>
+    <style>
+      :root {
+        /* LIGHT THEME (As Pictured) */
+        --bg-color: #ffffff;       
+        --text-fill: #3ce5ff;      /* Light Blue fill */
+        --text-stroke: #000000;    /* Black outline */
+        --border-color: #2563eb;
+      }
+      
+      @media (prefers-color-scheme: dark) {
+        :root {
+          /* DARK THEME */
+          --bg-color: #111111;     
+          --text-fill: #0044b4;    /* Dark Blue fill */
+          --text-stroke: #ffffff;  /* White border */
+          --border-color: #60a5fa;
+        }
+      }
+      
+      .scroll-text {
+        font-family: 'Impact', 'Arial Black', sans-serif;
+        font-size: 32px;
+        font-weight: 900;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        
+        /* Apply dynamic cross-theme variables */
+        fill: var(--text-fill);
+        stroke: var(--text-stroke);
+        stroke-width: 5px;
+        stroke-linejoin: round;
+        paint-order: stroke fill;  
+      }
+    </style>
+
+    <clipPath id="text-window">
+      <rect x="20" y="20" width="560" height="160" />
+    </clipPath>
+  </defs>
+
+  <!-- The background shifts automatically depending on user's system theme choice -->
+  <rect x="0" y="0" width="600" height="200" fill="var(--bg-color)" />
+
+  <g clip-path="url(#text-window)">
+    <g>
+      <animateTransform 
+        attributeName="transform" 
+        type="translate" 
+        from="0,0" 
+        to="0,-200" 
+        dur="8s" 
+        repeatCount="indefinite" />
+
+      <!-- The Core Credits Stack -->
+      <text x="300" y="90" text-anchor="middle" class="scroll-text">A Game By</text>
+      <text x="300" y="140" text-anchor="middle" class="scroll-text">Joe O'Regan</text>
+      <text x="300" y="190" text-anchor="middle" class="scroll-text">And</text>
+      <text x="300" y="240" text-anchor="middle" class="scroll-text">Sean Horgan</text>
+      
+      <!-- Seamless Bridge Copies -->
+      <text x="300" y="290" text-anchor="middle" class="scroll-text">A Game By</text>
+      <text x="300" y="340" text-anchor="middle" class="scroll-text">Joe O'Regan</text>
+    </g>
+  </g>
+</svg>

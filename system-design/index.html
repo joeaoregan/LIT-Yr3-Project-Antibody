@@ -826,10 +826,21 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#overview" class="md-nav__link">
+  <a href="#1-polymorphic-entity-hierarchy" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Overview
+        1. Polymorphic Entity Hierarchy
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-core-architecture-subsystems" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Core Architecture Subsystems
       
     </span>
   </a>
@@ -2206,10 +2217,21 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#overview" class="md-nav__link">
+  <a href="#1-polymorphic-entity-hierarchy" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Overview
+        1. Polymorphic Entity Hierarchy
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-core-architecture-subsystems" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Core Architecture Subsystems
       
     </span>
   </a>
@@ -2243,31 +2265,98 @@
 
 
 <h1 id="system-design-configuration">System Design &amp; Configuration</h1>
-<h2 id="overview">Overview</h2>
-<p>The architecture of <strong>AntiBody</strong> is structured using C++ and the SDL2 library. It employs object-oriented principles such as inheritance, polymorphism, and the Singleton design pattern to manage game systems, rendering, physics, and state transitions.</p>
-<div class="highlight"><pre><span></span><code>GameObjectAbstract (Pure Virtual Interface)
- └── GameObject (Base Class)
-      ├── Enemy (Base Class)
-      │    ├── EnemyShip (Nano-bots)
-      │    ├── EnemyVirus (Green, Orange, Blue Viruses)
-      │    ├── EnemyBoss (Level Bosses)
-      │    ├── Blockage (Cholesterol Wall Obstacles)
-      │    └── BloodCell (Large, Small, White Blood Cells)
-      ├── Player (Player 1 &amp; Player 2 Ships)
-      ├── PowerUp (Health, Laser, Life, Rocket, Checkpoint Clock)
-      ├── Weapon (Base Class)
-      │    ├── WeaponEnLaser (Enemy Lasers &amp; Projectiles)
-      │    ├── WeaponPlLaser (Single / Multi-beam Lasers)
-      │    ├── WeaponPlNinjaStar (Rotating Stars)
-      │    ├── WeaponPlRocket (Steerable Charged Rockets)
-      │    └── WeaponPlSaw (Close-range Shielded Saw)
-      ├── Explosion (Standard &amp; Splatter Explosions)
-      ├── ScoreValueText (Floating Score Indicators)
-      └── ScrollingBackground (Looping Blood Vessel Textures)
+<p><img alt="AntiBody Polymorphic Game Object &amp; Entity Hierarchy" src="../images/svg/entity_hierarchy.svg" /></p>
+<p>The architecture of <strong>AntiBody</strong> is structured using C++ and the <strong>SDL2</strong> library. It employs object-oriented principles such as inheritance, polymorphism, and the Singleton design pattern to manage game systems, rendering, physics, and state transitions.</p>
+<hr />
+<h2 id="1-polymorphic-entity-hierarchy">1. Polymorphic Entity Hierarchy</h2>
+<p>Every interactive game object in AntiBody derives from the pure virtual interface <code>GameObjectAbstract</code>, routed through the base implementation <code>GameObject</code>:</p>
+<div class="highlight"><pre><span></span><code>classDiagram
+    class GameObjectAbstract {
+        &lt;&lt;Interface&gt;&gt;
+        +move(int x, int y)*
+        +render()*
+        +spawn(int x, int y, int vx, int vy)*
+        +destroy()*
+    }
+
+    class GameObject {
+        #SDL_Rect mBox
+        #int mVelX
+        #int mVelY
+        +spawn(int x, int y, int vx, int vy)
+        +move(int x, int y)
+        +moveStalker(int targetX, int targetY)
+        +orbit(int centerX, int centerY, float timer)
+        +render()
+        +destroy()
+    }
+
+    class Player {
+        +render(Texture &amp;player)
+        +renderParticles()
+        +spawnPlayerSaw(int x, int y, int type)
+        +rendPlayerLives()
+    }
+
+    class Enemy {
+        +damage()
+        +spawn()
+    }
+
+    class Weapon {
+        +setGrade(int g)
+    }
+
+    class PowerUp {
+        +destroy()
+    }
+
+    class ScrollingBackground {
+    }
+
+    class Explosion {
+    }
+
+    class ScoreValueText {
+    }
+
+    GameObjectAbstract &lt;|-- GameObject
+    GameObject &lt;|-- Player
+    GameObject &lt;|-- Enemy
+    GameObject &lt;|-- Weapon
+    GameObject &lt;|-- PowerUp
+    GameObject &lt;|-- ScrollingBackground
+    GameObject &lt;|-- Explosion
+    GameObject &lt;|-- ScoreValueText
+
+    Enemy &lt;|-- EnemyVirus
+    Enemy &lt;|-- EnemyShip
+    Enemy &lt;|-- BloodCell
+    Enemy &lt;|-- Blockage
+    Enemy &lt;|-- EnemyBoss
+
+    Weapon &lt;|-- WeaponPlLaser
+    Weapon &lt;|-- WeaponPlRocket
+    Weapon &lt;|-- WeaponPlNinjaStar
+    Weapon &lt;|-- WeaponPlSaw
+    Weapon &lt;|-- WeaponEnLaser
 </code></pre></div>
+<hr />
+<h2 id="2-core-architecture-subsystems">2. Core Architecture Subsystems</h2>
+<ul>
+<li><strong>Player Submarines (<code>Player</code>)</strong>: Controls Player 1 (Red/White) and Player 2 (Blue) ships, handling directional propulsion, particle bubble emitters, weapon cycling, and invulnerability blinking.</li>
+<li><strong>Enemy Ecosystem (<code>Enemy</code>)</strong>:</li>
+<li><code>EnemyVirus</code>: Autonomous viral organisms in Green, Orange, and orbital Blue variants.</li>
+<li><code>EnemyShip</code>: Fast-moving nano-bot vessels firing targeted energy bolts.</li>
+<li><code>BloodCell</code>: Passive arterial cells (Large, Small, White) that act as kinetic obstacles.</li>
+<li><code>Blockage</code>: Dense cholesterol plaque formations obstructing blood vessels.</li>
+<li><code>EnemyBoss</code>: Multi-phase end-of-stage encounters with composite health bars.</li>
+<li><strong>Weapons Arsenal (<code>Weapon</code>)</strong>: High-velocity lasers (<code>WeaponPlLaser</code>), tracking ordnance (<code>WeaponPlRocket</code>), spinning piercing weapons (<code>WeaponPlNinjaStar</code>), close-range perimeter shields (<code>WeaponPlSaw</code>), and enemy laser barrages (<code>WeaponEnLaser</code>).</li>
+<li><strong>Environmental &amp; FX Systems</strong>: Dual-speed parallax vessel walls (<code>ScrollingBackground</code>), animated particle bubble exhausts (<code>Particle</code>), splatter explosions (<code>Explosion</code>), and floating combat score notifications (<code>ScoreValueText</code>).</li>
+</ul>
 <div class="admonition tip">
-<p class="admonition-title">Design Patterns</p>
-<p>Core managers like <code>Audio</code> and <code>Texture</code> use the Singleton design pattern (<code>s_pInstance</code>) to provide global access to shared assets and eliminate redundant loader calls.</p>
+<p class="admonition-title">Design Patterns &amp; Performance</p>
+<p>Core managers like <code>Audio</code> and <code>Texture</code> utilise the <strong>Singleton design pattern</strong> (<code>s_pInstance</code>) to provide global access to shared assets and eliminate redundant loader calls. All entity bounding boxes (<code>mBox</code>) map directly to <code>SDL_Rect</code> structures for accelerated AABB collision detection.</p>
 </div>
 
 

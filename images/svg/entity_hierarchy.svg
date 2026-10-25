@@ -1,0 +1,295 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 740" width="100%" height="100%" role="img" aria-label="Antibody Polymorphic Game Object &amp; Entity Hierarchy Architecture Diagram">
+  <defs>
+    <style>
+      :root {
+        --ab-bg: rgba(15, 23, 42, 0.04);
+        --ab-header: rgba(37, 99, 235, 0.1);
+        --ab-stroke: #334155;
+        --ab-title: #0f172a;
+        --ab-text: #1e293b;
+        --ab-muted: #475569;
+        --ab-blue: #2563eb;
+        --ab-emerald: #059669;
+        --ab-amber: #d97706;
+        --ab-rose: #e11d48;
+        --ab-purple: #7c3aed;
+        --ab-cyan: #0891b2;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --ab-bg: rgba(15, 23, 42, 0.70);
+          --ab-header: rgba(59, 130, 246, 0.18);
+          --ab-stroke: #475569;
+          --ab-title: #f8fafc;
+          --ab-text: #e2e8f0;
+          --ab-muted: #94a3b8;
+          --ab-blue: #60a5fa;
+          --ab-emerald: #34d399;
+          --ab-amber: #fbbf24;
+          --ab-rose: #fb7185;
+          --ab-purple: #a78bfa;
+          --ab-cyan: #22d3ee;
+        }
+      }
+
+      .box-card {
+        fill: var(--ab-bg);
+        stroke: var(--ab-stroke);
+        stroke-width: 2;
+        rx: 10px;
+      }
+
+      .box-header {
+        fill: var(--ab-header);
+        stroke: var(--ab-stroke);
+        stroke-width: 1.5;
+        rx: 10px;
+      }
+
+      .box-title {
+        font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        font-weight: 700;
+        font-size: 14px;
+        fill: var(--ab-title);
+        text-anchor: middle;
+        dominant-baseline: central;
+      }
+
+      .box-item {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        font-weight: 500;
+        font-size: 11.5px;
+        fill: var(--ab-text);
+      }
+
+      .edge-label {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        font-weight: 700;
+        font-size: 10.5px;
+        fill: var(--ab-muted);
+        text-anchor: middle;
+      }
+
+      /* Animated flow connectors */
+      .flow-blue {
+        fill: none;
+        stroke: var(--ab-blue);
+        stroke-width: 2;
+        stroke-dasharray: 6 4;
+        animation: dashFlow 1.2s linear infinite;
+      }
+
+      .flow-emerald {
+        fill: none;
+        stroke: var(--ab-emerald);
+        stroke-width: 2;
+        stroke-dasharray: 6 4;
+        animation: dashFlow 1.2s linear infinite;
+      }
+
+      .flow-amber {
+        fill: none;
+        stroke: var(--ab-amber);
+        stroke-width: 2;
+        stroke-dasharray: 6 4;
+        animation: dashFlow 1.2s linear infinite;
+      }
+
+      .flow-rose {
+        fill: none;
+        stroke: var(--ab-rose);
+        stroke-width: 2;
+        stroke-dasharray: 6 4;
+        animation: dashFlow 1.2s linear infinite;
+      }
+
+      .flow-purple {
+        fill: none;
+        stroke: var(--ab-purple);
+        stroke-width: 2;
+        stroke-dasharray: 6 4;
+        animation: dashFlow 1.2s linear infinite;
+      }
+
+      .flow-cyan {
+        fill: none;
+        stroke: var(--ab-cyan);
+        stroke-width: 2;
+        stroke-dasharray: 6 4;
+        animation: dashFlow 1.2s linear infinite;
+      }
+
+      @keyframes dashFlow {
+        to {
+          stroke-dashoffset: -20;
+        }
+      }
+
+      @keyframes pulseDotD {
+        0% { transform: translateY(0px); opacity: 0; }
+        25% { opacity: 1; }
+        75% { opacity: 1; }
+        100% { transform: translateY(24px); opacity: 0; }
+      }
+
+      .dot-blue-d {
+        fill: var(--ab-blue);
+        animation: pulseDotD 1.8s ease-in-out infinite;
+      }
+    </style>
+
+    <!-- Markers -->
+    <marker id="arrow-blue" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="var(--ab-blue)" />
+    </marker>
+    <marker id="arrow-emerald" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="var(--ab-emerald)" />
+    </marker>
+    <marker id="arrow-amber" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="var(--ab-amber)" />
+    </marker>
+    <marker id="arrow-rose" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="var(--ab-rose)" />
+    </marker>
+    <marker id="arrow-purple" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="var(--ab-purple)" />
+    </marker>
+    <marker id="arrow-cyan" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="var(--ab-cyan)" />
+    </marker>
+  </defs>
+
+  <!-- Container Box -->
+  <rect x="20" y="20" width="1080" height="700" class="box-card" />
+  <rect x="20" y="20" width="1080" height="42" class="box-header" />
+  <text x="560" y="41" class="box-title">AntiBody Polymorphic Game Object &amp; Entity Hierarchy Architecture</text>
+
+  <!-- Level 1: GameObjectAbstract (Pure Virtual Interface) -->
+  <rect x="290" y="76" width="540" height="58" rx="8" style="fill: var(--ab-header); stroke: var(--ab-purple); stroke-width: 2;" />
+  <text x="560" y="96" class="box-title" style="font-size: 13.5px; fill: var(--ab-purple);">GameObjectAbstract (Pure Virtual Interface)</text>
+  <text x="560" y="118" class="box-item" style="text-anchor: middle; font-size: 11px;">virtual void move() = 0; render() = 0; spawn() = 0; destroy() = 0;</text>
+
+  <!-- Connector: Abstract to Base -->
+  <line x1="560" y1="134" x2="560" y2="158" class="flow-purple" marker-end="url(#arrow-purple)" />
+
+  <!-- Level 2: GameObject (Concrete Base Class) -->
+  <rect x="290" y="158" width="540" height="70" rx="8" style="fill: var(--ab-bg); stroke: var(--ab-blue); stroke-width: 2;" />
+  <text x="560" y="178" class="box-title" style="font-size: 14px; fill: var(--ab-blue);">GameObject (Base Entity Class)</text>
+  <text x="560" y="198" class="box-item" style="text-anchor: middle; font-size: 11px;">• SDL_Rect mBox (AABB Bounding Volume) &amp; Velocity (mVelX, mVelY)</text>
+  <text x="560" y="214" class="box-item" style="text-anchor: middle; font-size: 10.5px; fill: var(--ab-muted);">• moveStalker(targetX, targetY) | orbit(centerX, centerY, timer)</text>
+
+  <!-- Spine from GameObject to 4 Primary Categories -->
+  <line x1="560" y1="228" x2="560" y2="252" style="stroke: var(--ab-stroke); stroke-width: 1.5;" />
+  <!-- Horizontal distribution rail -->
+  <line x1="140" y1="252" x2="980" y2="252" style="stroke: var(--ab-stroke); stroke-width: 1.5;" />
+
+  <!-- Drop connectors -->
+  <line x1="140" y1="252" x2="140" y2="274" class="flow-emerald" marker-end="url(#arrow-emerald)" />
+  <line x1="420" y1="252" x2="420" y2="274" class="flow-rose" marker-end="url(#arrow-rose)" />
+  <line x1="700" y1="252" x2="700" y2="274" class="flow-amber" marker-end="url(#arrow-amber)" />
+  <line x1="980" y1="252" x2="980" y2="274" class="flow-cyan" marker-end="url(#arrow-cyan)" />
+
+  <!-- ==================== COLUMN 1: PLAYER ENTITIES ==================== -->
+  <rect x="36" y="274" width="232" height="206" rx="8" style="fill: var(--ab-bg); stroke: var(--ab-emerald); stroke-width: 1.8;" />
+  <text x="152" y="294" class="box-title" style="font-size: 13px; fill: var(--ab-emerald);">Player (Submarine Ship)</text>
+  <text x="48" y="320" class="box-item">• rendPlayerLives() / render()</text>
+  <text x="48" y="340" class="box-item">• renderParticles() (Engine Trail)</text>
+  <text x="48" y="360" class="box-item">• spawnPlayerSaw() Shield</text>
+  <text x="48" y="380" class="box-item">• Dual Gamepad / Keyboard Polling</text>
+  <text x="48" y="400" class="box-item">• Health &amp; Shield Status Integration</text>
+  <text x="48" y="420" class="box-item">• Invulnerability Respawn Flashing</text>
+  <text x="48" y="440" class="box-item">• Bounding Box: 64x32 SDL_Rect</text>
+  <text x="48" y="460" class="box-item" style="fill: var(--ab-muted); font-size: 10.5px;">→ Player 1 (Red) &amp; Player 2 (Blue)</text>
+
+  <!-- Player Sub-Card: Movement & Upgrades -->
+  <rect x="36" y="492" width="232" height="212" rx="8" style="fill: var(--ab-header); stroke: var(--ab-emerald); stroke-width: 1.5;" />
+  <text x="152" y="512" class="box-title" style="font-size: 12.5px; fill: var(--ab-emerald);">Player Combat State</text>
+  <text x="48" y="536" class="box-item">1. Movement Kinematics</text>
+  <text x="60" y="552" class="box-item" style="fill: var(--ab-muted); font-size: 10.5px;">→ 8-way directional velocity</text>
+  <text x="48" y="574" class="box-item">2. Weapon Cycling</text>
+  <text x="60" y="590" class="box-item" style="fill: var(--ab-muted); font-size: 10.5px;">→ Lasers / Rockets / Saws</text>
+  <text x="48" y="612" class="box-item">3. Particle Trail Generator</text>
+  <text x="60" y="628" class="box-item" style="fill: var(--ab-muted); font-size: 10.5px;">→ Dynamic bubble / engine thrust</text>
+  <text x="48" y="650" class="box-item">4. Health &amp; Lives Counter</text>
+  <text x="60" y="666" class="box-item" style="fill: var(--ab-muted); font-size: 10.5px;">→ 3 initial lives, HUD tied</text>
+
+  <line x1="152" y1="480" x2="152" y2="492" class="flow-emerald" marker-end="url(#arrow-emerald)" />
+
+  <!-- ==================== COLUMN 2: ENEMY HIERARCHY ==================== -->
+  <rect x="290" y="274" width="260" height="154" rx="8" style="fill: var(--ab-bg); stroke: var(--ab-rose); stroke-width: 1.8;" />
+  <text x="420" y="294" class="box-title" style="font-size: 13px; fill: var(--ab-rose);">Enemy (Base Biological/Nano)</text>
+  <text x="302" y="320" class="box-item">• Inherits GameObject</text>
+  <text x="302" y="340" class="box-item">• damage() &amp; hit points tally</text>
+  <text x="302" y="360" class="box-item">• Autonomous spawn &amp; path AI</text>
+  <text x="302" y="380" class="box-item">• Drops PowerUp on defeat (RNG)</text>
+  <text x="302" y="400" class="box-item">• Spawns ScoreValueText indicator</text>
+
+  <!-- Derived Biological & Boss Enemies -->
+  <rect x="290" y="440" width="260" height="264" rx="8" style="fill: var(--ab-bg); stroke: var(--ab-rose); stroke-width: 1.5;" />
+  <text x="420" y="460" class="box-title" style="font-size: 12.5px; fill: var(--ab-rose);">Derived Enemy Hierarchy</text>
+  <text x="302" y="484" class="box-item">• EnemyVirus (Green / Orange / Blue)</text>
+  <text x="314" y="500" class="box-item" style="fill: var(--ab-muted); font-size: 10.5px;">→ Blue uses orbit() satellite AI</text>
+  <text x="302" y="522" class="box-item">• EnemyShip (Invasive Nano-bots)</text>
+  <text x="314" y="538" class="box-item" style="fill: var(--ab-muted); font-size: 10.5px;">→ High-speed laser-firing scouts</text>
+  <text x="302" y="560" class="box-item">• BloodCell (Large, Small, White)</text>
+  <text x="314" y="576" class="box-item" style="fill: var(--ab-muted); font-size: 10.5px;">→ Passive obstacles; cell damage</text>
+  <text x="302" y="598" class="box-item">• Blockage (Cholesterol Wall)</text>
+  <text x="314" y="614" class="box-item" style="fill: var(--ab-muted); font-size: 10.5px;">→ High-durability artery blockade</text>
+  <text x="302" y="636" class="box-item">• EnemyBoss (Level 1, 2, 3 Bosses)</text>
+  <text x="314" y="652" class="box-item" style="fill: var(--ab-muted); font-size: 10.5px;">→ Multi-phase health bars &amp; barrage</text>
+
+  <line x1="420" y1="428" x2="420" y2="440" class="flow-rose" marker-end="url(#arrow-rose)" />
+
+  <!-- ==================== COLUMN 3: WEAPON ARSENAL ==================== -->
+  <rect x="572" y="274" width="256" height="154" rx="8" style="fill: var(--ab-bg); stroke: var(--ab-amber); stroke-width: 1.8;" />
+  <text x="700" y="294" class="box-title" style="font-size: 13px; fill: var(--ab-amber);">Weapon (Base Projectile)</text>
+  <text x="584" y="320" class="box-item">• Inherits GameObject</text>
+  <text x="584" y="340" class="box-item">• setGrade(int g) weapon power</text>
+  <text x="584" y="360" class="box-item">• Trajectory &amp; velocity calculation</text>
+  <text x="584" y="380" class="box-item">• AABB hit detection vs Targets</text>
+  <text x="584" y="400" class="box-item">• Destroys on screen boundary exit</text>
+
+  <!-- Derived Weapons -->
+  <rect x="572" y="440" width="256" height="264" rx="8" style="fill: var(--ab-bg); stroke: var(--ab-amber); stroke-width: 1.5;" />
+  <text x="700" y="460" class="box-title" style="font-size: 12.5px; fill: var(--ab-amber);">Derived Weapon Arsenal</text>
+  <text x="584" y="484" class="box-item">• WeaponPlLaser (Player Laser)</text>
+  <text x="596" y="500" class="box-item" style="fill: var(--ab-muted); font-size: 10.5px;">→ Single, Double &amp; Triple Beams</text>
+  <text x="584" y="522" class="box-item">• WeaponPlRocket (Steerable Rocket)</text>
+  <text x="596" y="538" class="box-item" style="fill: var(--ab-muted); font-size: 10.5px;">→ High-damage kinetic explosion</text>
+  <text x="584" y="560" class="box-item">• WeaponPlNinjaStar (Ninja Star)</text>
+  <text x="596" y="576" class="box-item" style="fill: var(--ab-muted); font-size: 10.5px;">→ High-velocity spinning star</text>
+  <text x="584" y="598" class="box-item">• WeaponPlSaw (Protective Saw)</text>
+  <text x="596" y="614" class="box-item" style="fill: var(--ab-muted); font-size: 10.5px;">→ Close-range rotating perimeter</text>
+  <text x="584" y="636" class="box-item">• WeaponEnLaser (Enemy Projectile)</text>
+  <text x="596" y="652" class="box-item" style="fill: var(--ab-muted); font-size: 10.5px;">→ Timed enemy projectile barrages</text>
+
+  <line x1="700" y1="428" x2="700" y2="440" class="flow-amber" marker-end="url(#arrow-amber)" />
+
+  <!-- ==================== COLUMN 4: ENVIRONMENT & COLLECTABLES ==================== -->
+  <rect x="850" y="274" width="230" height="206" rx="8" style="fill: var(--ab-bg); stroke: var(--ab-cyan); stroke-width: 1.8;" />
+  <text x="965" y="294" class="box-title" style="font-size: 13px; fill: var(--ab-cyan);">VFX &amp; Environment</text>
+  <text x="862" y="320" class="box-item">• ScrollingBackground</text>
+  <text x="874" y="336" class="box-item" style="fill: var(--ab-muted); font-size: 10.5px;">→ Dual-layer blood vessel loop</text>
+  <text x="862" y="358" class="box-item">• Explosion (Animated Sprite)</text>
+  <text x="874" y="374" class="box-item" style="fill: var(--ab-muted); font-size: 10.5px;">→ Virus splatter &amp; blasts</text>
+  <text x="862" y="396" class="box-item">• ScoreValueText</text>
+  <text x="874" y="412" class="box-item" style="fill: var(--ab-muted); font-size: 10.5px;">→ Floating floating score text</text>
+  <text x="862" y="434" class="box-item">• Particle (Bubble / Spark)</text>
+  <text x="874" y="450" class="box-item" style="fill: var(--ab-muted); font-size: 10.5px;">→ Engine trail emitter</text>
+
+  <!-- PowerUp Types (Sub-Card) -->
+  <rect x="850" y="492" width="230" height="212" rx="8" style="fill: var(--ab-header); stroke: var(--ab-cyan); stroke-width: 1.5;" />
+  <text x="965" y="512" class="box-title" style="font-size: 12.5px; fill: var(--ab-cyan);">PowerUp Collectables</text>
+  <text x="862" y="536" class="box-item">1. Health Crate (First Aid)</text>
+  <text x="874" y="552" class="box-item" style="fill: var(--ab-muted); font-size: 10.5px;">→ Restores ship integrity</text>
+  <text x="862" y="574" class="box-item">2. Laser Power-up</text>
+  <text x="874" y="590" class="box-item" style="fill: var(--ab-muted); font-size: 10.5px;">→ Increases laser beam count</text>
+  <text x="862" y="612" class="box-item">3. Rocket Ordnance</text>
+  <text x="874" y="628" class="box-item" style="fill: var(--ab-muted); font-size: 10.5px;">→ Replenishes rocket stock</text>
+  <text x="862" y="650" class="box-item">4. Extra Life (+1 Ship)</text>
+  <text x="862" y="670" class="box-item">5. Checkpoint Timer Bonus</text>
+
+  <line x1="965" y1="480" x2="965" y2="492" class="flow-cyan" marker-end="url(#arrow-cyan)" />
+
+  <circle cx="560" cy="146" r="3" class="dot-blue-d" />
+</svg>

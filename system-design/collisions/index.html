@@ -101,7 +101,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#collisions" class="md-skip">
+        <a href="#collisions-aabb-intersection-pipeline" class="md-skip">
           Skip to content
         </a>
       
@@ -910,10 +910,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#overview-collisionh" class="md-nav__link">
+  <a href="#1-mathematical-logic-collisionstuffh" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Overview (Collision.h)
+        1. Mathematical Logic (CollisionStuff.h)
       
     </span>
   </a>
@@ -921,10 +921,21 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#collision-logic" class="md-nav__link">
+  <a href="#2-event-dispatch-collision-resolution-matrix" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Collision Logic
+        2. Event Dispatch &amp; Collision Resolution Matrix
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-historical-development-milestones" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Historical Development &amp; Milestones
       
     </span>
   </a>
@@ -2217,10 +2228,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#overview-collisionh" class="md-nav__link">
+  <a href="#1-mathematical-logic-collisionstuffh" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Overview (Collision.h)
+        1. Mathematical Logic (CollisionStuff.h)
       
     </span>
   </a>
@@ -2228,10 +2239,21 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#collision-logic" class="md-nav__link">
+  <a href="#2-event-dispatch-collision-resolution-matrix" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Collision Logic
+        2. Event Dispatch &amp; Collision Resolution Matrix
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-historical-development-milestones" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Historical Development &amp; Milestones
       
     </span>
   </a>
@@ -2264,28 +2286,76 @@
   
 
 
-<h1 id="collisions">Collisions</h1>
-<h2 id="overview-collisionh">Overview (<code>Collision.h</code>)</h2>
-<div class="highlight"><pre><span></span><code>┌-----------------------┐
-|      Collision.h      |
-├-----------------------┤
-| +checkCollision(*a,*b)| - Check collision between 2 objects, return true/false
-└-----------------------┘
+<h1 id="collisions-aabb-intersection-pipeline">Collisions &amp; AABB Intersection Pipeline</h1>
+<p><img alt="AntiBody AABB Collision Detection and Resolution Pipeline" src="../../images/svg/aabb_collision_pipeline.svg" /></p>
+<p>Collision detection in <strong>AntiBody</strong> is managed via Axis-Aligned Bounding Box (<strong>AABB</strong>) intersection testing declared in <code>CollisionStuff.h</code> and executed across the entity vector each frame in <code>Game::update()</code>.</p>
+<hr />
+<h2 id="1-mathematical-logic-collisionstuffh">1. Mathematical Logic (<code>CollisionStuff.h</code>)</h2>
+<p>Every interactive game object inherits an <code>SDL_Rect</code> bounding volume (<code>mBox</code>) mapped to its position and visual dimensions. The <code>checkCollision(SDL_Rect *a, SDL_Rect *b)</code> algorithm checks for separating planes across the horizontal and vertical axes:</p>
+<div class="highlight"><pre><span></span><code><span class="kt">bool</span><span class="w"> </span><span class="nf">Game::checkCollision</span><span class="p">(</span><span class="n">SDL_Rect</span><span class="w"> </span><span class="o">*</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">SDL_Rect</span><span class="w"> </span><span class="o">*</span><span class="n">b</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">leftA</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">a</span><span class="p">).</span><span class="n">x</span><span class="p">,</span><span class="w">          </span><span class="n">rightA</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">a</span><span class="p">).</span><span class="n">x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">a</span><span class="p">).</span><span class="n">w</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">topA</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">a</span><span class="p">).</span><span class="n">y</span><span class="p">,</span><span class="w">          </span><span class="n">bottomA</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">a</span><span class="p">).</span><span class="n">y</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">a</span><span class="p">).</span><span class="n">h</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">leftB</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">b</span><span class="p">).</span><span class="n">x</span><span class="p">,</span><span class="w">          </span><span class="n">rightB</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">b</span><span class="p">).</span><span class="n">x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">b</span><span class="p">).</span><span class="n">w</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">topB</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">b</span><span class="p">).</span><span class="n">y</span><span class="p">,</span><span class="w">          </span><span class="n">bottomB</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">b</span><span class="p">).</span><span class="n">y</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">b</span><span class="p">).</span><span class="n">h</span><span class="p">;</span>
+
+<span class="w">    </span><span class="c1">// 1. Separating axis tests</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">bottomA</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">topB</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span><span class="w"> </span><span class="c1">// Box A is completely above Box B</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">topA</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">bottomB</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span><span class="w"> </span><span class="c1">// Box A is completely below Box B</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">rightA</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">leftB</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span><span class="w"> </span><span class="c1">// Box A is completely left of Box B</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">leftA</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">rightB</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span><span class="w"> </span><span class="c1">// Box A is completely right of Box B</span>
+
+<span class="w">    </span><span class="c1">// 2. Overlap occurs across both axes simultaneously</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+<span class="p">}</span>
 </code></pre></div>
-<p>Collision detection is handled using <strong>Axis-Aligned Bounding Box (AABB)</strong> intersection testing. Each active game object maintains an <code>SDL_Rect</code> bounding volume mapped to its <code>(X, Y)</code> position and dimensions.</p>
-<h2 id="collision-logic">Collision Logic</h2>
-<p>The <code>checkCollision(SDL_Rect *a, SDL_Rect *b)</code> function compares the minimum and maximum boundaries of two bounding boxes:</p>
-<ul>
-<li><code>leftA = a-&gt;x</code>, <code>rightA = a-&gt;x + a-&gt;w</code></li>
-<li><code>topA = a-&gt;y</code>, <code>bottomA = a-&gt;y + a-&gt;h</code></li>
-<li><code>leftB = b-&gt;x</code>, <code>rightB = b-&gt;x + b-&gt;w</code></li>
-<li><code>topB = b-&gt;y</code>, <code>bottomB = b-&gt;y + b-&gt;h</code></li>
-</ul>
 <div class="admonition note">
-<p class="admonition-title">AABB Collision Detection</p>
-<p>Axis-Aligned Bounding Box (AABB) collision detection was chosen because rectangular bounding volumes map directly to <code>SDL_Rect</code> structures, providing simple and efficient intersection checks.</p>
+<p class="admonition-title">Performance of AABB Bounding Volumes</p>
+<p>AABB collision detection relies exclusively on integer arithmetic comparisons without square roots or trigonometric functions, enabling dozens of concurrent bullet, enemy, and particle checks within the 60 FPS tick budget.</p>
 </div>
-<p>If any side of box <code>A</code> is completely outside box <code>B</code> on either axis, the function returns <code>false</code>. If overlap occurs across both the X and Y axes simultaneously, it returns <code>true</code>, triggering the appropriate gameplay response (e.g., health reduction, weapon destruction, or power-up collection).</p>
+<hr />
+<h2 id="2-event-dispatch-collision-resolution-matrix">2. Event Dispatch &amp; Collision Resolution Matrix</h2>
+<p>When <code>checkCollision()</code> returns <code>true</code>, the engine executes context-specific game mechanics based on object types:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Intersecting Entities</th>
+<th style="text-align: left;">Resolution &amp; Gameplay Mechanics</th>
+<th style="text-align: left;">Audio &amp; Visual Feedback</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Player Weapon $\leftrightarrow$ Enemy</strong></td>
+<td style="text-align: left;">Decrements target hit points; Ninja Stars and Saws split viral cells; rockets trigger area blast damage.</td>
+<td style="text-align: left;">Spawns floating <code>ScoreValueText</code>, triggers particle burst, and plays explosion SFX.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Player Ship $\leftrightarrow$ Power-Up</strong></td>
+<td style="text-align: left;">Restores ship hit points (<code>HealthBox</code>), cycles primary cannons (<code>LaserBox</code>), or awards extra lives.</td>
+<td style="text-align: left;">Plays <code>Audio::playFX(POWERUP_FX)</code> and disposes the collectible instance.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Player Ship $\leftrightarrow$ Enemy / Plaque</strong></td>
+<td style="text-align: left;">Depletes player shield/health bar (<code>StatusBar</code>) and triggers temporary invulnerability respawn flashing.</td>
+<td style="text-align: left;">Orange Viruses detonate on contact; health zero drops player lives.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Projectile $\leftrightarrow$ Viewport Boundary</strong></td>
+<td style="text-align: left;">Cleans up bullets leaving the screen (<code>destroy()</code>) to prevent memory leaks; rockets detonate against wall plaque.</td>
+<td style="text-align: left;">Trigger terminal explosion animation for exploding ordnance.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="3-historical-development-milestones">3. Historical Development &amp; Milestones</h2>
+<ul>
+<li><strong>2017/01/07</strong>: Initial <code>SDL_Rect</code> bounding volume created for enemy objects.</li>
+<li><strong>2017/01/11</strong>: Transitioned from raw linked lists to <code>std::vector</code> for active lasers, enabling multi-object collision bounding and player damage flashing.</li>
+<li><strong>2017/01/17</strong>: Implemented rotational bounding boxes for Ninja Stars and spinning Saws.</li>
+<li><strong>2017/01/25</strong>: Added explosive kinetic impact reaction for colliding Orange Viruses.</li>
+<li><strong>2017/02/08</strong>: Added boundary collision detection triggering steerable rocket detonations.</li>
+<li><strong>2017/02/21</strong>: Introduced conditional slicing checks so that only Ninja Stars and Saws fragment virus satellites into mini-cells.</li>
+</ul>
 
 
 
