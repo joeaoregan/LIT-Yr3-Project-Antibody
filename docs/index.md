@@ -1,8 +1,13 @@
 # Antibody
 
-[Play JavaScript Version ⇗](https://joeaoregan.github.io/AntibodyJS-WebApp/static/)
+<div align="center">
+  <img src="images/logos/antibody_theme_fx_sweep_2.svg" width="400" alt="Antibody Game Logo" title="Antibody Game Logo"/>  
+  <br/>
+  <img src="images/logos/credits4.svg" width="340" alt="Antibody Game Creators" title="Antibody Game Creators"/><br/>
+  <a href="https://joeaoregan.github.io/AntibodyJS-WebApp/static/" alt="Play Antibody JS">Play JavaScript Version ⇗</a>
+</div>
 
-# index.md
+## Index
 
 * [Setup](setup.md)
 * [How to Play](how-to-play.md)

@@ -22,9 +22,9 @@
 ![Stars](https://img.shields.io/github/stars/joeaoregan/LIT-Yr3-Project-Antibody?style=social)
 
 <div align="center">
-  <img src="logos/antibody_theme_fx_sweep_2.svg" width="400" alt="Antibody Game Logo" title="Antibody Game Logo"/>  
+  <img src="docs/images/logos/antibody_theme_fx_sweep_2.svg" width="400" alt="Antibody Game Logo" title="Antibody Game Logo"/>  
   <br/>
-  <img src="logos/scrolling_text_3.svg" width="340" alt="Antibody Game Creators" title="Antibody Game Creators"/>
+  <img src="docs/images/logos/scrolling_text_3.svg" width="340" alt="Antibody Game Creators" title="Antibody Game Creators"/>
 </div>
 
 ---
@@ -94,7 +94,7 @@ Playable versions of game, bare in mind, the game is incomplete
 
 <img src="https://raw.githubusercontent.com/joeaoregan/LIT-Yr3-Project-Antibody/master/Screenshots/BestWindowsGame.jpg" width=250 alt="Antibody 2D: Best Windows Game" title="Antibody 2D: Best Windows Game"/>
 
-<img src="logos/credits4.svg" width="250" alt="Antibody Game Creators" title="Antibody Game Creators"/>
+<img src="docs/images/logos/credits4.svg" width="250" alt="Antibody Game Creators" title="Antibody Game Creators"/>
 
 **Best Windows Game** at [Games Fleadh 2017](http://gamesfleadh.ie/results/)
 
