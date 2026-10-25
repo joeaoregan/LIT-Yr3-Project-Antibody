@@ -78,7 +78,7 @@ Antibody is a 2D sidescrolling game create using C++ and the Simple DirectMedia 
 
 ### Controls
 
-![Keyboard Controls](docs\images\svg\keyboard_controls.svg)
+![Keyboard Controls](docs/images/svg/keyboard_controls.svg)
 
 - [Game Controls docs](https://joeaoregan.github.io/LIT-Yr3-Project-Antibody/game-controls/)
 
