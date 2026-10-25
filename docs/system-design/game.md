@@ -1,6 +1,8 @@
-# Game
+# Game Engine & Main Loop Architecture
 
 ## Overview (`Game.h`, `Game.cpp`)
+
+![AntiBody Main Game Loop and Subsystem Architecture](../images/svg/game_loop_architecture.svg)
 
 ```text
 ┌-------------------------┐
@@ -96,19 +98,66 @@
 | +managePlayerScores()   | - Set Player score after destroying Enemy objects
 └-------------------------┘
 ```
+[Main.cpp] ──> Game::Instance()->update()
+                      │
+                      ▼
+               [SDL Init & Media Load]
+                      │
+                      ▼
+             ┌─> while (!quit) ────────────────────────────────┐
+             │     │                                           │
+             │     ├─> playerInput(quit) [Gamepad & Keys]      │
+             │     │                                           │
+             │     ├─> State Routing:                          │
+             │     │     ├─> MENU        : menu1.draw()        │
+             │     │     ├─> SETTINGS    : settings.draw()     │
+             │     │     ├─> HIGH_SCORES : highScore.draw()    │
+             │     │     └─> Level 1..3  : playLevel(levelNum) │
+             │     │                         │                 │
+             │     │                         ├─> spawnObjects()│
+             │     │                         ├─> moveObjects() │
+             │     │                         └─> collision()   │
+             │     │                                           │
+             │     └─> render()                                │
+             │           ├─> SDL_RenderClear()                 │
+             │           ├─> Render Entities & HUD             │
+             │           └─> SDL_RenderPresent() & FPS Calc    │
+             │                                                 │
+             └─────────────────────────────────────────────────┘
+                      │
+                      ▼
+             Game::Instance()->close() [Free SDL & Textures]
+```
 
 The `Game` class is the central Singleton engine driving the entire project. It manages window initialisation, subsystem setup, media loading, the core game loop, entity spawning, collision testing, and state transitions.
 
-## Core Systems
+## 2. Main Loop Pipeline Breakdown
 
-* `init()`: Initialises SDL subsystems (Video, Audio, Joystick, Haptic), sets up `gWindow` and `gRenderer`, configures TTF fonts, and initialises gamepads.
-* `update()`: Houses the main game loop, polling input events, checking state flags, updating moving objects, resolving collisions, and cleaning dead entities.
-* `spawnMovingObjects()`: Spawns enemies, power-ups, obstacles, and blood cells based on active level rules and randomized attribute pools.
-* `destroyGameObjects()`: Iterates through the game object list and deallocates entities marked as dead (`m_Alive == false`).
-* `resetGame()`: Clears active entities, resets timers, and reinitialises player states when restarting or advancing levels.
+### Step 1: Input Polling (`playerInput()`)
+The main loop reads events each tick using `SDL_PollEvent()`, querying connected Xbox gamepads (`gController1`, `gController2`) and keyboard bindings. Analog inputs pass through threshold deadzone filters (`JOYSTICK_DEAD_ZONE = 8000`) before translating into 8-way directional velocity vectors.
 
-## Game Loop
+### Step 2: State & Level Routing (`getCurrentLevel()`)
+The loop checks the active game stage:
+* **Menu States**: Renders interactive UI buttons for `MENU`, `PAUSE`, `SETTINGS`, `HIGH_SCORES`, and `ENTER_NAME`.
+* **Gameplay Stages**: Hands control to `playLevel(levelNum)`, driving active artery levels (Level 1 Artery, Level 2 Heart Valve, Level 3 Brain Capillaries).
 
-![Game Loop](../images/game_loop.png)
+### Step 3: Simulation & Physics (`playLevel()`)
+During gameplay, each frame executes three core subroutines:
+1. **`spawnMovingObjects()`**: Uses procedural timers and pseudo-random offsets to introduce enemy viruses, arterial blockages, blood cells, and power-up crates.
+2. **`moveGameObjects()`**: Updates linear propulsion, homing trajectories (`moveStalker()`), and satellite circular orbits (`orbit()`).
+3. **`collisionCheck()`**: Resolves 4-axis AABB bounding box intersections between active projectile vectors, player hulls, and obstacles.
 
-    Game Loop Diagram
+### Step 4: Presentation & Diagnostics (`render()`)
+The graphics pipeline clears the backbuffer via `SDL_RenderClear(gRenderer)`, rasterizes the dual-layer parallax background, blits active entity textures and particle bubble emitters, overlays the `HUD` / `StatusBar`, and presents the frame via `SDL_RenderPresent(gRenderer)`. Diagnostic frame timings are tracked by `FPS.h` across a rolling 10-frame buffer.
+
+---
+
+## 3. Core Architecture Subsystems
+
+* **`Texture` Singleton**: Wraps `SDL_Texture` allocation and destruction, caching sprite sheets and supporting TrueType text blitting.
+* **`Audio` Engine**: Coordinates `SDL_mixer` sound effects channels (`Mix_PlayChannel`) and looping background musical tracks (`Mix_PlayMusic`).
+* **`Gamepad` Handler**: Provides plug-and-play Xbox 360 controller integration with dual rumble vibration support.
+* **`StatusBar` & `HUD`**: Visualises remaining lives, shield integrity, stage score tallies, and the countdown clock.
+
+!!! tip "Singleton Design Pattern"  
+    Accessing the core engine via `Game::Instance()` ensures that global game state (scores, active level flags, renderer pointers, and viewports) is accessible throughout all polymorphic entities without requiring tight parameter coupling.
