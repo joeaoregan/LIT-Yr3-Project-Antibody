@@ -49,6 +49,11 @@ Antibody is a 2D sidescrolling game create using C++ and the Simple DirectMedia 
 ---
 
 ## 🎮 Features
+
+![Entity Hierarchy](docs/images/svg/entity_hierarchy.svg)
+
+- [System Design](https://joeaoregan.github.io/LIT-Yr3-Project-Antibody/system-design/)
+
 ### Core Systems
 
 - **State Management**: Uses a state-based architecture (e.g., StatePlay, SplashScreen, EnterName) for clean transitions between menus and gameplay.
